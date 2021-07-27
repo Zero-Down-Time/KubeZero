@@ -1,16 +1,26 @@
-clusterVersion: 1.19.0
-listenAddress: 0.0.0.0
 clusterName: pleasechangeme
-apiEndpoint: kube-api.changeme.org:6443
-etcdExtraArgs: {}
-apiExtraArgs: {}
-clusterHighAvailable: false
-allEtcdEndpoints: ""
+domain: changeme.org
+
+serviceIp: set_via_cmdline
+
+api:
+  endpoint: kube-api.changeme.org:6443
+  listenPort: 6443
+  allEtcdEndpoints: ""
+  extraArgs: {}
+
+etcd:
+  nodeName: set_via_cmdline
+  extraArgs: {}
+
+highAvailable: false
+listenAddress: 0.0.0.0
+
 # supported values aws,bare-metal
 platform: "aws"
 # Set to false for openrc, eg. on Gentoo or Alpine
 systemd: true
 protectKernelDefaults: true
 
-WorkerNodeRole: "arn:aws:iam::000000000000:role/KubernetesNode"
-KubeAdminRole: "arn:aws:iam::000000000000:role/KubernetesNode"
+workerNodeRole: "arn:aws:iam::000000000000:role/KubernetesNode"
+kubeAdminRole: "arn:aws:iam::000000000000:role/KubernetesNode"

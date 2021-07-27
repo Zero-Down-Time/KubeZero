@@ -4,14 +4,14 @@ set -ex
 ### TODO
 # - https://istio.io/latest/docs/ops/configuration/security/harden-docker-images/
 
-export ISTIO_VERSION=1.9.3
+export ISTIO_VERSION=1.10.3
 
 rm -rf istio
 curl -sL "https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istio-${ISTIO_VERSION}-linux-amd64.tar.gz" | tar xz
 mv istio-${ISTIO_VERSION} istio
 
 # remove unused old telemetry filters
-rm -f istio/manifests/charts/istio-control/istio-discovery/templates/telemetryv2_1.[678].yaml
+rm -f istio/manifests/charts/istio-control/istio-discovery/templates/telemetryv2_1.[6789].yaml
 
 # Patch
 patch -p0 -i zdt.patch --no-backup-if-mismatch

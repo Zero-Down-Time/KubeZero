@@ -10,4 +10,4 @@ name: fluentd
 sources:
 - https://github.com/fluent/fluentd/
 - https://github.com/fluent/fluentd-kubernetes-daemonset
-version: 0.2.2
+version: 0.2.6

@@ -5,12 +5,16 @@ discovery:
     kubeConfigPath: /root/.kube/config
 controlPlane:
   localAPIEndpoint:
-    advertiseAddress: IP_ADDRESS
-    bindPort: {{ regexSplit ":" .Values.apiEndpoint -1 | last }}
+    advertiseAddress: {{ .Values.serviceIp }}
+    bindPort: {{ .Values.api.listenPort }}
 nodeRegistration:
   ignorePreflightErrors:
   - DirAvailable--var-lib-etcd
   - FileAvailable--etc-kubernetes-pki-ca.crt
   - Swap
+  - KubeletVersion
   kubeletExtraArgs:
     node-labels: {{ .Values.nodeLabels | quote }}
+    {{- with .Values.providerID }}
+    provider-id: {{ . }}
+    {{- end }}

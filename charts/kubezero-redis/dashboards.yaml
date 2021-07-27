@@ -1,0 +1,9 @@
+configmap: grafana-dashboards
+gzip: true
+# folder: Logging
+condition: 'or .Values.redis.metrics.enabled ( index .Values "redis-cluster" "metrics" "enabled")'
+dashboards:
+- name: redis
+  url: https://grafana.com/api/dashboards/11835/revisions/1/download
+  tags:
+  - Redis

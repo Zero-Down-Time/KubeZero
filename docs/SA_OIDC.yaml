@@ -1,0 +1,15 @@
+# Service Account Tokens
+
+## Federation with AWS IAM
+
+### Discovery
+- public S3 location for openid and jwks config files
+- synchronized from the api-server to S3 during version upgrades  
+service-account-issuer: `arn:aws:s3:::${ConfigBucketName}/k8s/${ClusterName}`  
+api-audiences: `sts.amazonaws.com`
+
+## Projection
+
+## Resources
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-issuer-discovery

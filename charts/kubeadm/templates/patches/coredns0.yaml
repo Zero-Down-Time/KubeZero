@@ -1,5 +1,5 @@
 spec:
-  replicas: {{ ternary 3 1 .Values.clusterHighAvailable }}
+  replicas: {{ ternary 3 1 .Values.highAvailable }}
   template:
     spec:
       containers:

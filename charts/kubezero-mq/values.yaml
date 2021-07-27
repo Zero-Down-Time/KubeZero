@@ -3,8 +3,6 @@ nats:
   enabled: false
 
   nats:
-    image: nats:2.2.1-alpine3.13
-
     advertise: false
 
     jetstream:
@@ -16,6 +14,9 @@ nats:
   exporter:
     serviceMonitor:
       enabled: false
+
+  mqtt:
+    enabled: false
 
 # rabbitmq
 rabbitmq:

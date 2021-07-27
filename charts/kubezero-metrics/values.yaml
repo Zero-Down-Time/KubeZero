@@ -104,6 +104,7 @@ kube-prometheus-stack:
       # gather all monitors 
       podMonitorSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
+      ruleSelectorNilUsesHelmValues: false
 
       resources:
         requests:
@@ -154,9 +155,6 @@ kube-prometheus-stack:
         default_timezone: UTC
 
     sidecar:
-      # We require at least 1.12.0 for the SCRIPT and relative folder names
-      image:
-        tag: 1.12.0
       dashboards:
         searchNamespace: ALL
         provider:
@@ -218,8 +216,8 @@ prometheus-adapter:
     default: false
     resource:
       cpu:
-        containerQuery: sum(irate(container_cpu_usage_seconds_total{<<.LabelMatchers>>,container!="POD",container!="",pod!=""}[3m])) by (<<.GroupBy>>)
-        nodeQuery: sum(1 - irate(node_cpu_seconds_total{mode="idle"}[3m]) * on(namespace, pod) group_left(node) node_namespace_pod:kube_pod_info:{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+        containerQuery: sum(irate(container_cpu_usage_seconds_total{<<.LabelMatchers>>,container!="POD",container!="",pod!=""}[5m])) by (<<.GroupBy>>)
+        nodeQuery: sum(1 - irate(node_cpu_seconds_total{mode="idle"}[5m]) * on(namespace, pod) group_left(node) node_namespace_pod:kube_pod_info:{<<.LabelMatchers>>}) by (<<.GroupBy>>)
         resources:
           overrides:
             node:
@@ -241,7 +239,14 @@ prometheus-adapter:
             pod:
               resource: pod
         containerLabel: container
-      window: 3m
+      window: 5m
+
+# Pushgateway
+prometheus-pushgateway:
+  enabled: false
+
+  serviceMonitor:
+    enabled: true
 
 istio:
   grafana:

@@ -1,0 +1,10 @@
+configmap: grafana-dashboards-metrics
+gzip: true
+folder: Metrics
+dashboards:
+- name: AlertManager
+  url: https://grafana.com/api/dashboards/9578/revisions/4/download
+  tags: []
+- name: Prometheus
+  url: https://grafana.com/api/dashboards/3662/revisions/2/download
+  tags: []

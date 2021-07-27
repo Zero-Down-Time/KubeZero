@@ -1,10 +1,16 @@
 {{- define "aws-ebs-csi-driver-values" }}
 aws-ebs-csi-driver:
-  replicaCount: {{ ternary 2 1 .Values.HighAvailableControlplane }}
-  podAnnotations:
-    iam.amazonaws.com/role: {{ index .Values "aws-ebs-csi-driver" "IamArn" | quote }}
-  extraVolumeTags:
-    Name: {{ .Values.ClusterName }}
+  controller:
+    replicaCount: {{ ternary 2 1 .Values.HighAvailableControlplane }}
+    k8sTagClusterId: {{ .Values.ClusterName }}
+    env:
+      ebsPlugin:
+      - name: AWS_ROLE_ARN
+        value: {{ index .Values "aws-ebs-csi-driver" "IamArn" | quote }}
+      - name: AWS_WEB_IDENTITY_TOKEN_FILE
+        value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+      - name: AWS_STS_REGIONAL_ENDPOINTS
+        value: regional
 {{- end }}
 
 

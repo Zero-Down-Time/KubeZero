@@ -16,9 +16,22 @@ istio-ingress:
       {{- toYaml . | nindent 6 }}
   {{- end }}
   {{- with index .Values "istio-ingress" "public" "dnsNames" }}
+  # Legacy
   dnsNames:
   {{- toYaml . | nindent 2 }}
+
+  certificates:
+  - name: ingress-cert
+    dnsNames:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
+  # New multi cert gateway
+  {{- range $cert := (index .Values "istio-ingress" "public" "certificates") }}
+  - name: {{ $cert.name }}
+    dnsNames:
+    {{- toYaml $cert.dnsNames | nindent 4 }}
+  {{- end }}
+  proxyProtocol: {{ default false (index .Values "istio-ingress" "public" "proxyProtocol") }}
 {{- end }}
 
 {{- if index .Values "istio-ingress" "private" }}
@@ -32,9 +45,22 @@ istio-private-ingress:
       {{- toYaml . | nindent 6 }}
   {{- end }}
   {{- with index .Values "istio-ingress" "private" "dnsNames" }}
+  # Legacy
   dnsNames:
   {{- toYaml . | nindent 2 }}
+
+  certificates:
+  - name: private-ingress-cert
+    dnsNames:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
+  # New multi cert gateway
+  {{- range $cert := (index .Values "istio-ingress" "private" "certificates") }}
+  - name: {{ $cert.name }}
+    dnsNames:
+    {{- toYaml $cert.dnsNames | nindent 4 }}
+  {{- end }}
+  proxyProtocol: {{ default false (index .Values "istio-ingress" "private" "proxyProtocol") }}
 {{- end }}
 
 {{- end }}

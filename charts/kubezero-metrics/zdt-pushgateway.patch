@@ -1,0 +1,66 @@
+diff -tubr charts/prometheus-pushgateway/templates/deployment.yaml charts/prometheus-pushgateway.zdt/templates/deployment.yaml
+--- charts/prometheus-pushgateway/templates/deployment.yaml	2021-07-21 15:04:50.196722434 +0200
++++ charts/prometheus-pushgateway.zdt/templates/deployment.yaml	2021-07-21 14:51:39.618598904 +0200
+@@ -2,6 +2,7 @@
+ kind: Deployment
+ metadata:
+   name: {{ template "prometheus-pushgateway.fullname" . }}
++  namespace: {{ .Release.Namespace }}
+   labels:
+ {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
+ spec:
+diff -tubr charts/prometheus-pushgateway/templates/ingress.yaml charts/prometheus-pushgateway.zdt/templates/ingress.yaml
+--- charts/prometheus-pushgateway/templates/ingress.yaml	2021-07-21 15:04:50.196722434 +0200
++++ charts/prometheus-pushgateway.zdt/templates/ingress.yaml	2021-07-21 14:51:49.698702493 +0200
+@@ -16,6 +16,7 @@
+   labels:
+ {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" dict) .  }}
+   name: {{ template "prometheus-pushgateway.fullname" . }}
++  namespace: {{ .Release.Namespace }}
+ spec:
+   rules:
+     {{- range $host := .Values.ingress.hosts }}
+diff -tubr charts/prometheus-pushgateway/templates/pdb.yaml charts/prometheus-pushgateway.zdt/templates/pdb.yaml
+--- charts/prometheus-pushgateway/templates/pdb.yaml	2021-07-21 15:04:50.196722434 +0200
++++ charts/prometheus-pushgateway.zdt/templates/pdb.yaml	2021-07-21 14:52:17.902325652 +0200
+@@ -3,6 +3,7 @@
+ kind: PodDisruptionBudget
+ metadata:
+   name: {{ template "prometheus-pushgateway.fullname" . }}
++  namespace: {{ .Release.Namespace }}
+   labels:
+ {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
+ spec:
+diff -tubr charts/prometheus-pushgateway/templates/pushgateway-pvc.yaml charts/prometheus-pushgateway.zdt/templates/pushgateway-pvc.yaml
+--- charts/prometheus-pushgateway/templates/pushgateway-pvc.yaml	2021-07-21 15:04:50.196722434 +0200
++++ charts/prometheus-pushgateway.zdt/templates/pushgateway-pvc.yaml	2021-07-21 14:52:31.325796911 +0200
+@@ -10,6 +10,7 @@
+   labels:
+ {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.persistentVolumeLabels) .  }}
+   name: {{ template "prometheus-pushgateway.fullname" . }}
++  namespace: {{ .Release.Namespace }}
+ spec:
+   accessModes:
+ {{ toYaml .Values.persistentVolume.accessModes | indent 4 }}
+diff -tubr charts/prometheus-pushgateway/templates/service.yaml charts/prometheus-pushgateway.zdt/templates/service.yaml
+--- charts/prometheus-pushgateway/templates/service.yaml	2021-07-21 15:04:50.196722434 +0200
++++ charts/prometheus-pushgateway.zdt/templates/service.yaml	2021-07-21 14:52:39.355879424 +0200
+@@ -2,6 +2,7 @@
+ kind: Service
+ metadata:
+   name: {{ template "prometheus-pushgateway.fullname" . }}
++  namespace: {{ .Release.Namespace }}
+   annotations:
+ {{ .Values.serviceAnnotations | toYaml | indent 4 }}
+   labels:
+diff -tubr charts/prometheus-pushgateway/templates/serviceaccount.yaml charts/prometheus-pushgateway.zdt/templates/serviceaccount.yaml
+--- charts/prometheus-pushgateway/templates/serviceaccount.yaml	2021-07-21 15:04:50.196722434 +0200
++++ charts/prometheus-pushgateway.zdt/templates/serviceaccount.yaml	2021-07-21 14:52:44.682600827 +0200
+@@ -3,6 +3,7 @@
+ kind: ServiceAccount
+ metadata:
+   name: {{ template "prometheus-pushgateway.serviceAccountName" . }}
++  namespace: {{ .Release.Namespace }}
+   labels:
+ {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.serviceAccountLabels) .  }}
+ {{- end -}}

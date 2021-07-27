@@ -1,6 +1,6 @@
 # kubezero-istio-ingress
 
-![Version: 0.5.6](https://img.shields.io/badge/Version-0.5.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.9.3](https://img.shields.io/badge/AppVersion-1.9.3-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.10.2](https://img.shields.io/badge/AppVersion-1.10.2-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio based Ingress
 
@@ -20,8 +20,8 @@ Kubernetes: `>= 1.18.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | istio-ingress | 1.9.3 |
-|  | istio-private-ingress | 1.9.3 |
+|  | istio-ingress | 1.10.2 |
+|  | istio-private-ingress | 1.10.2 |
 | https://zero-down-time.github.io/kubezero/ | kubezero-lib | >= 0.1.3 |
 
 ## Values
@@ -30,10 +30,10 @@ Kubernetes: `>= 1.18.0`
 |-----|------|---------|-------------|
 | global.arch.amd64 | int | `2` |  |
 | global.defaultPodDisruptionBudget.enabled | bool | `false` |  |
-| global.jwtPolicy | string | `"first-party-jwt"` |  |
 | global.logAsJson | bool | `true` |  |
 | global.priorityClassName | string | `"system-cluster-critical"` |  |
-| istio-ingress.dnsNames | list | `[]` |  |
+| istio-ingress.certificates[0].dnsNames | list | `[]` |  |
+| istio-ingress.certificates[0].name | string | `"ingress-cert"` |  |
 | istio-ingress.enabled | bool | `false` |  |
 | istio-ingress.gateways.istio-ingressgateway.autoscaleEnabled | bool | `false` |  |
 | istio-ingress.gateways.istio-ingressgateway.configVolumes[0].configMapName | string | `"istio-gateway-bootstrap-config"` |  |
@@ -69,10 +69,16 @@ Kubernetes: `>= 1.18.0`
 | istio-ingress.gateways.istio-ingressgateway.rollingMaxUnavailable | int | `0` |  |
 | istio-ingress.gateways.istio-ingressgateway.type | string | `"NodePort"` |  |
 | istio-ingress.meshConfig.defaultConfig.proxyMetadata | string | `nil` |  |
+| istio-ingress.proxyProtocol | bool | `false` |  |
 | istio-ingress.telemetry.enabled | bool | `false` |  |
-| istio-private-ingress.dnsNames | list | `[]` |  |
+| istio-private-ingress.certificates[0].dnsNames | list | `[]` |  |
+| istio-private-ingress.certificates[0].name | string | `"private-ingress-cert"` |  |
 | istio-private-ingress.enabled | bool | `false` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.autoscaleEnabled | bool | `false` |  |
+| istio-private-ingress.gateways.istio-ingressgateway.configVolumes[0].configMapName | string | `"istio-gateway-bootstrap-config"` |  |
+| istio-private-ingress.gateways.istio-ingressgateway.configVolumes[0].mountPath | string | `"/etc/istio/custom-bootstrap"` |  |
+| istio-private-ingress.gateways.istio-ingressgateway.configVolumes[0].name | string | `"custom-bootstrap-volume"` |  |
+| istio-private-ingress.gateways.istio-ingressgateway.env.ISTIO_BOOTSTRAP_OVERRIDE | string | `"/etc/istio/custom-bootstrap/custom_bootstrap.json"` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.externalTrafficPolicy | string | `"Local"` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.labels.app | string | `"istio-private-ingressgateway"` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.labels.istio | string | `"private-ingressgateway"` |  |
@@ -97,16 +103,6 @@ Kubernetes: `>= 1.18.0`
 | istio-private-ingress.gateways.istio-ingressgateway.ports[2].port | int | `443` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.ports[2].protocol | string | `"TCP"` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.ports[2].targetPort | int | `8443` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[3].name | string | `"tcp-istiod"` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[3].nodePort | int | `31012` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[3].port | int | `15012` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[3].protocol | string | `"TCP"` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[3].targetPort | int | `15012` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[4].name | string | `"tls"` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[4].nodePort | int | `31044` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[4].port | int | `15443` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[4].protocol | string | `"TCP"` |  |
-| istio-private-ingress.gateways.istio-ingressgateway.ports[4].targetPort | int | `15443` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.replicaCount | int | `1` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.resources.limits.memory | string | `"512Mi"` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.resources.requests.cpu | string | `"50m"` |  |
@@ -115,6 +111,7 @@ Kubernetes: `>= 1.18.0`
 | istio-private-ingress.gateways.istio-ingressgateway.rollingMaxUnavailable | int | `0` |  |
 | istio-private-ingress.gateways.istio-ingressgateway.type | string | `"NodePort"` |  |
 | istio-private-ingress.meshConfig.defaultConfig.proxyMetadata | string | `nil` |  |
+| istio-private-ingress.proxyProtocol | bool | `false` |  |
 | istio-private-ingress.telemetry.enabled | bool | `false` |  |
 
 ## Resources

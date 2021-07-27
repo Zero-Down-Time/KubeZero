@@ -1,0 +1,87 @@
+diff -rtubN charts/aws-ebs-csi-driver/templates/controller.yaml charts/aws-ebs-csi-driver.zdt/templates/controller.yaml
+--- charts/aws-ebs-csi-driver/templates/controller.yaml	2021-06-17 22:22:22.000000000 +0200
++++ charts/aws-ebs-csi-driver.zdt/templates/controller.yaml	2021-06-24 16:31:37.042386198 +0200
+@@ -116,6 +116,9 @@
+           volumeMounts:
+             - name: socket-dir
+               mountPath: /var/lib/csi/sockets/pluginproxy/
++            - name: aws-token
++              mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
++              readOnly: true
+           ports:
+             - name: healthz
+               containerPort: 9808
+@@ -144,7 +147,7 @@
+           image: {{ printf "%s:%s" .Values.sidecars.provisionerImage.repository .Values.sidecars.provisionerImage.tag }}
+           args:
+             - --csi-address=$(ADDRESS)
+-            - --v=5
++            - --v={{ .Values.controller.logLevel }}
+             - --feature-gates=Topology=true
+             {{- if or .Values.controller.extraCreateMetadata .Values.extraCreateMetadata }}
+             - --extra-create-metadata
+@@ -171,7 +174,7 @@
+           image: {{ printf "%s:%s" .Values.sidecars.attacherImage.repository .Values.sidecars.attacherImage.tag }}
+           args:
+             - --csi-address=$(ADDRESS)
+-            - --v=5
++            - --v={{ .Values.controller.logLevel }}
+             - --leader-election=true
+           env:
+             - name: ADDRESS
+@@ -215,7 +218,7 @@
+           imagePullPolicy: Always
+           args:
+             - --csi-address=$(ADDRESS)
+-            - --v=5
++            - --v={{ .Values.controller.logLevel }}
+           env:
+             - name: ADDRESS
+               value: /var/lib/csi/sockets/pluginproxy/csi.sock
+@@ -252,3 +255,10 @@
+       volumes:
+         - name: socket-dir
+           emptyDir: {}
++        - name: aws-token
++          projected:
++            sources:
++            - serviceAccountToken:
++                path: token
++                expirationSeconds: 86400
++                audience: "sts.amazonaws.com"
+diff -rtubN charts/aws-ebs-csi-driver/templates/node.yaml charts/aws-ebs-csi-driver.zdt/templates/node.yaml
+--- charts/aws-ebs-csi-driver/templates/node.yaml	2021-06-17 22:22:22.000000000 +0200
++++ charts/aws-ebs-csi-driver.zdt/templates/node.yaml	2021-06-24 15:03:44.532351851 +0200
+@@ -107,7 +107,7 @@
+           args:
+             - --csi-address=$(ADDRESS)
+             - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+-            - --v=5
++            - --v={{ .Values.node.logLevel }}
+           env:
+             - name: ADDRESS
+               value: /csi/csi.sock
+diff -rtubN charts/aws-ebs-csi-driver/templates/snapshot-controller.yaml charts/aws-ebs-csi-driver.zdt/templates/snapshot-controller.yaml
+--- charts/aws-ebs-csi-driver/templates/snapshot-controller.yaml	2021-06-17 22:22:22.000000000 +0200
++++ charts/aws-ebs-csi-driver.zdt/templates/snapshot-controller.yaml	2021-06-24 15:04:17.999018733 +0200
+@@ -57,7 +57,7 @@
+             {{- include "aws-ebs-csi-driver.http-proxy" . | nindent 12 }}
+           {{- end }}
+           args:
+-            - --v=5
++            - --v=2
+             - --leader-election=false
+       {{- if .Values.imagePullSecrets }}
+       imagePullSecrets:
+diff -rtubN charts/aws-ebs-csi-driver/values.yaml charts/aws-ebs-csi-driver.zdt/values.yaml
+--- charts/aws-ebs-csi-driver/values.yaml	2021-06-17 22:22:22.000000000 +0200
++++ charts/aws-ebs-csi-driver.zdt/values.yaml	2021-06-22 17:08:52.501232371 +0200
+@@ -56,7 +56,7 @@
+ replicaCount: 2
+ resources: {}
+ tolerations: []
+-topologySpreadConstraints: []
++topolk8sTagClusterIdogySpreadConstraints: []
+ 
+ controller:
+   affinity: {}

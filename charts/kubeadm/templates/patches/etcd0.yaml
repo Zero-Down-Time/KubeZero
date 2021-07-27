@@ -5,3 +5,4 @@ spec:
       requests:
         cpu: 200m
         memory: 192Mi
+        ephemeral-storage: 1Gi

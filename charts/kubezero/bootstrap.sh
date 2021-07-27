@@ -72,8 +72,8 @@ function delete_ns() {
 
 # Extract crds via helm calls and apply delta=crds only
 function _crds() {
-  helm template $(chart_location $chart) --namespace $namespace --name-template $release --skip-crds -f $TMPDIR/values.yaml > $TMPDIR/helm-no-crds.yaml
-  helm template $(chart_location $chart) --namespace $namespace --name-template $release --include-crds -f $TMPDIR/values.yaml > $TMPDIR/helm-crds.yaml
+  helm template $(chart_location $chart) --namespace $namespace --name-template $release --skip-crds --set ${release}.installCRDs=false -f $TMPDIR/values.yaml > $TMPDIR/helm-no-crds.yaml
+  helm template $(chart_location $chart) --namespace $namespace --name-template $release --include-crds --set ${release}.installCRDs=true -f $TMPDIR/values.yaml > $TMPDIR/helm-crds.yaml
   diff -e $TMPDIR/helm-no-crds.yaml $TMPDIR/helm-crds.yaml | head -n-1 | tail -n+2 > $TMPDIR/crds.yaml
   [ -s $TMPDIR/crds.yaml ] && kubectl apply -f $TMPDIR/crds.yaml
 }
@@ -186,10 +186,6 @@ function kiam-pre() {
 function kiam-post() {
   wait_for 'kubectl get daemonset -n kube-system kiam-agent'
   kubectl rollout status daemonset -n kube-system kiam-agent
-
-  # Make sure kube-system and cert-manager are allowed to kiam
-  kubectl annotate --overwrite namespace kube-system 'iam.amazonaws.com/permitted=.*'
-  kubectl annotate --overwrite namespace cert-manager 'iam.amazonaws.com/permitted=.*CertManagerRole.*'
 }
 
 

@@ -9,6 +9,7 @@ metadata:
   annotations: {
     {{- if eq (len $containers) 1 }}
     kubectl.kubernetes.io/default-logs-container: "{{ index $containers 0 }}",
+    kubectl.kubernetes.io/default-container: "{{ index $containers 0 }}",
     {{ end }}
 {{- if .Values.istio_cni.enabled }}
     {{- if not .Values.istio_cni.chained }}
@@ -80,7 +81,7 @@ spec:
     - "--run-validation"
     - "--skip-rule-apply"
     {{ end -}}
-    imagePullPolicy: "{{ valueOrDefault .Values.global.imagePullPolicy `Always` }}"
+    {{with .Values.global.imagePullPolicy }}imagePullPolicy: "{{.}}"{{end}}
   {{- if .ProxyConfig.ProxyMetadata }}
     env:
     {{- range $key, $value := .ProxyConfig.ProxyMetadata }}
@@ -149,7 +150,7 @@ spec:
   {{- else }}
     image: "{{ .Values.global.hub }}/{{ .Values.global.proxy_init.image }}:{{ .Values.global.tag }}"
   {{- end }}
-    imagePullPolicy: "{{ valueOrDefault .Values.global.imagePullPolicy `Always` }}"
+    {{with .Values.global.imagePullPolicy }}imagePullPolicy: "{{.}}"{{end}}
     resources: {}
     securityContext:
       allowPrivilegeEscalation: true
@@ -211,6 +212,10 @@ spec:
           - wait
   {{- end }}
     env:
+    {{- if eq (env "PILOT_ENABLE_INBOUND_PASSTHROUGH" "true") "false" }}
+    - name: REWRITE_PROBE_LEGACY_LOCALHOST_DESTINATION
+      value: "true"
+    {{- end }}
     - name: JWT_POLICY
       value: {{ .Values.global.jwtPolicy }}
     - name: PILOT_CERT_PROVIDER
@@ -313,7 +318,7 @@ spec:
     - name: {{ $key }}
       value: "{{ $value }}"
     {{- end }}
-    imagePullPolicy: "{{ valueOrDefault .Values.global.imagePullPolicy `Always` }}"
+    {{with .Values.global.imagePullPolicy }}imagePullPolicy: "{{.}}"{{end}}
     {{ if ne (annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort) `0` }}
     readinessProbe:
       httpGet:

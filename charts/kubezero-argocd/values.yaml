@@ -42,7 +42,7 @@ argo-cd:
 
   global:
     image:
-      tag: v1.8.7
+      tag: v2.0.4
 
   controller:
     args:
@@ -55,8 +55,6 @@ argo-cd:
       enabled: false
       serviceMonitor:
         enabled: true
-        additionalLabels:
-          release: metrics
 
     resources:
       # limits:
@@ -72,12 +70,13 @@ argo-cd:
       enabled: false
       serviceMonitor:
         enabled: true
-        additionalLabels:
-          release: metrics
 
   server:
     logFormat: json
     config:
+      ui.bannercontent: "KubeZero Release 2.20 incl. ArgoCD 2.0 -> Release notes"
+      ui.bannerurl: "https://blog.argoproj.io/argo-cd-v2-0-rc1-is-here-f7d21ff1aa64"
+
       # argo-cd.server.config.url -- ArgoCD hostname to be exposed via Istio
       url: argocd.example.com
 
@@ -117,8 +116,6 @@ argo-cd:
       enabled: false
       serviceMonitor:
         enabled: true
-        additionalLabels:
-          release: metrics
 
     extraArgs:
     - --insecure

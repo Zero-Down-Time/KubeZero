@@ -1,35 +1,39 @@
-{{- if index .Values "istio-ingress" "dnsNames" }}
+{{- range $cert := (index .Values "istio-ingress" "certificates") }}
+{{- if $cert.dnsNames }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: ingress-cert
-  namespace: {{ .Release.Namespace }}
+  name: {{ $cert.name }}
+  namespace: {{ $.Release.Namespace }}
   labels:
-{{ include "kubezero-lib.labels" . | indent 4 }}
+{{ include "kubezero-lib.labels" $ | indent 4 }}
 spec:
-  secretName: ingress-cert
+  secretName: {{ $cert.name }}
   issuerRef:
-    name: letsencrypt-dns-prod
+    name: {{ default "letsencrypt-dns-prod" $cert.issuer }}
     kind: ClusterIssuer
   dnsNames:
-{{ toYaml (index .Values "istio-ingress" "dnsNames") | indent 4 }}
+{{ toYaml $cert.dnsNames | indent 4 }}
+---
+{{- end }}
 {{- end }}
 
-{{- if index .Values "istio-private-ingress" "dnsNames" }}
----
+{{- range $cert := (index .Values "istio-private-ingress" "certificates") }}
+{{- if $cert.dnsNames }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: private-ingress-cert
-  namespace: {{ .Release.Namespace }}
+  name: {{ $cert.name }}
+  namespace: {{ $.Release.Namespace }}
   labels:
-{{ include "kubezero-lib.labels" . | indent 4 }}
+{{ include "kubezero-lib.labels" $ | indent 4 }}
 spec:
   secretName: private-ingress-cert
   issuerRef:
-    name: letsencrypt-dns-prod
+    name: {{ default "letsencrypt-dns-prod" $cert.issuer }}
     kind: ClusterIssuer
   dnsNames:
-{{ toYaml (index .Values "istio-private-ingress" "dnsNames") | indent 4 }}
+{{ toYaml $cert.dnsNames | indent 4 }}
+---
 {{- end }}
-
+{{- end }}

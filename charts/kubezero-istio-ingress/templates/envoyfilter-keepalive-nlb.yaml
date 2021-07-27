@@ -1,4 +1,4 @@
-{{- if or (index .Values "istio-ingress" "enabled") (index .Values "istio-private-ingress" "enabled") }}
+{{- if index .Values "istio-ingress" "enabled" }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -7,6 +7,47 @@ metadata:
   labels:
 {{ include "kubezero-lib.labels" . | indent 4 }}
 spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: LISTENER
+    patch:
+      operation: MERGE
+      value:
+        socket_options:
+          # SOL_SOCKET = 1
+          # SO_KEEPALIVE = 9
+          - level: 1
+            name: 9
+            int_value: 1
+            state: STATE_LISTENING
+          # IPPROTO_TCP = 6
+          # TCP_KEEPIDLE = 4
+          - level: 6
+            name: 4
+            int_value: 120
+            state: STATE_LISTENING
+          # TCP_KEEPINTVL = 5
+          - level: 6
+            name: 5
+            int_value: 60
+            state: STATE_LISTENING
+{{- end }}
+
+{{- if index .Values "istio-private-ingress" "enabled" }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: private-ingressgateway-listener-tcp-keepalive
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "kubezero-lib.labels" . | indent 4 }}
+spec:
+  workloadSelector:
+    labels:
+      istio: private-ingressgateway
   configPatches:
   - applyTo: LISTENER
     patch:

@@ -1,0 +1,44 @@
+{{- if and (index .Values "istio-ingress" "enabled") (index .Values "istio-ingress" "proxyProtocol") }}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ingressgateway-proxy-protocol
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "kubezero-lib.labels" . | indent 4 }}
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: LISTENER
+    patch:
+      operation: MERGE
+      value:
+        listener_filters:
+        - name: envoy.listener.proxy_protocol
+        - name: envoy.listener.tls_inspector
+{{- end }}
+
+{{- if and (index .Values "istio-private-ingress" "enabled") (index .Values "istio-private-ingress" "proxyProtocol") }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: private-ingressgateway-proxy-protocol
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "kubezero-lib.labels" . | indent 4 }}
+spec:
+  workloadSelector:
+    labels:
+      istio: private-ingressgateway
+  configPatches:
+  - applyTo: LISTENER
+    patch:
+      operation: MERGE
+      value:
+        listener_filters:
+        - name: envoy.listener.proxy_protocol
+        - name: envoy.listener.tls_inspector
+{{- end }}

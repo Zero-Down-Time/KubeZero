@@ -1,4 +1,3 @@
-
 {{- $gateway := index .Values "gateways" "istio-ingressgateway" }}
 {{- if eq $gateway.injectionTemplate "" }}
 apiVersion: apps/v1
@@ -45,17 +44,14 @@ spec:
         istio.io/rev: {{ .Values.revision | default "default" }}
         install.operator.istio.io/owning-resource: {{ .Values.ownerName | default "unknown" }}
         operator.istio.io/component: "IngressGateways"
-        sidecar.istio.io/inject: "{{- ne $gateway.injectionTemplate "" }}"
+        sidecar.istio.io/inject: "false"
       annotations:
         {{- if .Values.meshConfig.enablePrometheusMerge }}
         prometheus.io/port: "15020"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/stats/prometheus"
         {{- end }}
-        sidecar.istio.io/inject: "{{- ne $gateway.injectionTemplate "" }}"
-        {{- if ne $gateway.injectionTemplate "" }}
-        inject.istio.io/templates: "{{ $gateway.injectionTemplate }}"
-        {{- end}}
+        sidecar.istio.io/inject: "false"
 {{- if $gateway.podAnnotations }}
 {{ toYaml $gateway.podAnnotations | indent 8 }}
 {{ end }}
@@ -219,13 +215,13 @@ spec:
           {{- if $.Values.global.meshID }}
           - name: ISTIO_META_MESH_ID
             value: "{{ $.Values.global.meshID }}"
-          {{- else if $.Values.global.trustDomain | default (index .Values.meshConfig "trustDomain") }}
+          {{- else if .Values.meshConfig.trustDomain }}
           - name: ISTIO_META_MESH_ID
-            value: "{{ $.Values.global.trustDomain  | default (index .Values.meshConfig "trustDomain") }}"
+            value: "{{ .Values.meshConfig.trustDomain }}"
           {{- end }}
-          {{- if .Values.global.trustDomain | default (index .Values.meshConfig "trustDomain") }}
+          {{- if .Values.meshConfig.trustDomain }}
           - name: TRUST_DOMAIN
-            value: "{{ .Values.global.trustDomain | default (index .Values.meshConfig "trustDomain") }}"
+            value: "{{ .Values.meshConfig.trustDomain }}"
           {{- end }}
           {{- if not $gateway.runAsRoot }}
           - name: ISTIO_META_UNPRIVILEGED_POD
@@ -233,7 +229,7 @@ spec:
           {{- end }}
           {{- range $key, $val := $gateway.env }}
           - name: {{ $key }}
-            value: {{ $val }}
+            value: "{{ $val }}"
           {{- end }}
           {{- range $key, $value := .Values.meshConfig.defaultConfig.proxyMetadata }}
           - name: {{ $key }}

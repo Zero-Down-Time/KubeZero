@@ -1,16 +1,10 @@
 # kubezero-cert-manager
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for cert-manager
 
 **Homepage:** <https://kubezero.com>
-
-## Maintainers
-
-| Name | Email | Url |
-| ---- | ------ | --- |
-| Quarky9 |  |  |
 
 ## Requirements
 
@@ -18,7 +12,7 @@ Kubernetes: `>= 1.18.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.jetstack.io | cert-manager | 1.2.0 |
+| https://charts.jetstack.io | cert-manager | 1.4.0 |
 | https://zero-down-time.github.io/kubezero/ | kubezero-lib | >= 0.1.3 |
 
 ## AWS - IAM Role
@@ -44,7 +38,6 @@ If your resolvers need additional sercrets like CloudFlare API tokens etc. make 
 | cert-manager.ingressShim.defaultIssuerKind | string | `"ClusterIssuer"` |  |
 | cert-manager.ingressShim.defaultIssuerName | string | `"letsencrypt-dns-prod"` |  |
 | cert-manager.nodeSelector."node-role.kubernetes.io/master" | string | `""` |  |
-| cert-manager.podAnnotations | object | `{}` |  |
 | cert-manager.prometheus.servicemonitor.enabled | bool | `false` |  |
 | cert-manager.tolerations[0].effect | string | `"NoSchedule"` |  |
 | cert-manager.tolerations[0].key | string | `"node-role.kubernetes.io/master"` |  |

@@ -1,6 +1,6 @@
+{{- if or (index .Values "istio-ingress" "enabled") (index .Values "istio-private-ingress" "enabled") }}
 # https://www.envoyproxy.io/docs/envoy/v1.17.1/configuration/best_practices/edge#configuring-envoy-as-an-edge-proxy
 # https://github.com/istio/istio/issues/24715
-{{- if or (index .Values "istio-ingress" "enabled") (index .Values "istio-private-ingress" "enabled") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

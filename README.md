@@ -13,12 +13,14 @@ KubeZero is a Kubernetes distribution providing an integrated container platform
 
 # Version / Support Matrix
 
-| KubeZero \ Kubernetes Version          | v1.18 | v1.19 | v1.20 | EOL         |
+| KubeZero \ Kubernetes Version          | v1.19 | v1.20 | v1.21 | EOL         |
 |----------------------------------------|-------|-------|-------|-------------|
-| master branch                          | yes   | yes   | beta  |             |
-| stable branch                          | yes   | yes   | no    |             |
-| v2.19.0                                | yes   | yes   | no    | 30 Jun 2021 |
-| v2.18.0                                | yes   | no    | no    | 30 Apr 2021 |
+| master branch                          | no    | yes   | alpha |             |
+| stable branch                          | yes   | no    | no    |             |
+| v2.20.0                                | no    | yes   | no    | 30 Aug 2021 |
+| v2.19.0                                | yes   | no    | no    | 30 Aug 2021 |
+
+[Upstream release policy](https://kubernetes.io/releases/)
 
 # Architecure
 ![aws_architecture](docs/aws_architecture.png)

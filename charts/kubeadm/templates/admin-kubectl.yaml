@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Config
 clusters:
 - cluster:
-    server: https://{{ .Values.apiEndpoint }}
+    server: https://{{ .Values.api.endpoint }}
   name: {{ .Values.clusterName }}
 contexts:
 - context:

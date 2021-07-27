@@ -8,8 +8,6 @@ FORCE=${2:-''}
 SRCROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GIT_PUSH=${GIT_PUSH:-true}
 
-[[ "$(git branch --show-current)" == "stable" || -n "$FORCE" ]] || { echo "Helm packages should only be built from stable branch !"; exit 1; }
-
 TMPDIR=$(mktemp -d kubezero-repo.XXX)
 mkdir -p $TMPDIR/stage && trap 'rm -rf $TMPDIR' ERR EXIT
 

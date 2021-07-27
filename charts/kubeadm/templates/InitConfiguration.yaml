@@ -3,10 +3,14 @@ kind: InitConfiguration
 metadata:
   name: kubezero-initconfiguration
 localAPIEndpoint:
-  bindPort: {{ regexSplit ":" .Values.apiEndpoint -1 | last }}
+  bindPort: {{ .Values.api.listenPort }}
 nodeRegistration:
   ignorePreflightErrors:
   - Swap
   - DirAvailable--var-lib-etcd
+  - KubeletVersion
   kubeletExtraArgs:
     node-labels: {{ .Values.nodeLabels | quote }}
+    {{- with .Values.providerID }}
+    provider-id: {{ . }}
+    {{- end }}

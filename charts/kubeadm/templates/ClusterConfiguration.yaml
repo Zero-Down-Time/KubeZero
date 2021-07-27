@@ -2,40 +2,54 @@ apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
 metadata:
   name: kubezero-clusterconfiguration
-kubernetesVersion: {{ .Values.clusterVersion }}
+kubernetesVersion: {{ .Chart.Version }}
 clusterName: {{ .Values.clusterName }}
-controlPlaneEndpoint: {{ .Values.apiEndpoint }}
+controlPlaneEndpoint: {{ .Values.api.endpoint }}
 networking:
   podSubnet: 10.244.0.0/16
 etcd:
   local:
     extraArgs:
+      ### DNS discovery
+      #discovery-srv: {{ .Values.domain }}
+      #discovery-srv-name: {{ .Values.clusterName }}
+      #initial-cluster:
+      initial-cluster-token: etcd-{{ .Values.clusterName }}
       listen-metrics-urls: "http://{{ .Values.listenAddress }}:2381"
       logger: "zap"
       # log-level: "warn"
-      {{- with .Values.etcdExtraArgs }}
+      {{- with .Values.etcd.extraArgs }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
+    # These will only be used to create the etcd certs but removed for Init/Join kudeadm calls allowing us to sneak in aliases for etcd nodes
+    serverCertSANs:
+    - "{{ .Values.etcd.nodeName }}"
+    - "{{ .Values.etcd.nodeName }}.{{ .Values.domain }}"
+    - "{{ .Values.domain }}"
+    peerCertSANs:
+    - "{{ .Values.etcd.nodeName }}"
+    - "{{ .Values.etcd.nodeName }}.{{ .Values.domain }}"
+    - "{{ .Values.domain }}"
 controllerManager:
   extraArgs:
     profiling: "false"
     bind-address: {{ .Values.listenAddress }}
     terminated-pod-gc-threshold: "300"
-    leader-elect: {{ .Values.clusterHighAvailable | quote }}
+    # leader-elect: {{ .Values.highAvailable | quote }}
     logging-format: json
     feature-gates: {{ include "kubeadm.featuregates" ( dict "return" "csv" "platform" .Values.platform ) | trimSuffix "," | quote }}
 scheduler:
   extraArgs:
     profiling: "false"
     bind-address: {{ .Values.listenAddress }}
-    leader-elect: {{ .Values.clusterHighAvailable | quote }}
+    # leader-elect: {{ .Values.highAvailable | quote }}
     logging-format: json
     feature-gates: {{ include "kubeadm.featuregates" ( dict "return" "csv" "platform" .Values.platform ) | trimSuffix "," | quote }}
 apiServer:
   certSANs:
-  - {{ regexSplit ":" .Values.apiEndpoint -1 | first }}
+  -  {{ regexSplit ":" .Values.api.endpoint -1 | first }}
   extraArgs:
-    etcd-servers: {{ .Values.allEtcdEndpoints }}
+    etcd-servers: {{ .Values.api.allEtcdEndpoints }}
     profiling: "false"
     audit-log-path: "/var/log/kubernetes/audit.log"
     audit-policy-file: /etc/kubernetes/apiserver/audit-policy.yaml
@@ -46,15 +60,22 @@ apiServer:
     tls-cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
     admission-control-config-file: /etc/kubernetes/apiserver/admission-configuration.yaml
     {{- if eq .Values.platform "aws" }}
+    service-account-issuer: "{{ .Values.serviceAccountIssuer }}"
+    service-account-jwks-uri: "{{ .Values.serviceAccountIssuer }}/openid/v1/jwks"
+    api-audiences: "istio-ca,sts.amazonaws.com"
     authentication-token-webhook-config-file: /etc/kubernetes/apiserver/aws-iam-authenticator.yaml
+    {{- else }}
+    api-audiences: "istio-ca"
     {{- end }}
     feature-gates: {{ include "kubeadm.featuregates" ( dict "return" "csv" "platform" .Values.platform ) | trimSuffix "," | quote }}
+    # for 1.21
+    # enable-admission-plugins: DenyServiceExternalIPs,NodeRestriction,EventRateLimit
     enable-admission-plugins: NodeRestriction,EventRateLimit
-    {{- if .Values.clusterHighAvailable }}
-    goaway-chance: ".001"
-    {{- end }}
+    # {{- if .Values.highAvailable }}
+    # goaway-chance: ".001"
+    # {{- end }}
     logging-format: json
-    {{- with .Values.apiExtraArgs }}
+    {{- with .Values.api.extraArgs }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   extraVolumes:

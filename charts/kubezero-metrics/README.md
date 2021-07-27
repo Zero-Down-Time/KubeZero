@@ -18,8 +18,8 @@ Kubernetes: `>= 1.18.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | kube-prometheus-stack | 15.4.4 |
-| https://prometheus-community.github.io/helm-charts | prometheus-adapter | 2.12.3 |
+|  | kube-prometheus-stack | 16.12.0 |
+| https://prometheus-community.github.io/helm-charts | prometheus-adapter | 2.14.2 |
 | https://zero-down-time.github.io/kubezero/ | kubezero-lib | >= 0.1.3 |
 
 ## Values
@@ -49,7 +49,7 @@ Kubernetes: `>= 1.18.0`
 | kube-prometheus-stack.grafana."grafana.ini"."auth.anonymous".enabled | bool | `true` |  |
 | kube-prometheus-stack.grafana."grafana.ini".alerting.enabled | bool | `false` |  |
 | kube-prometheus-stack.grafana."grafana.ini".analytics.check_for_updates | bool | `false` |  |
-| kube-prometheus-stack.grafana."grafana.ini".dashboards.default_home_dashboard_path | string | `"/tmp/dashboards/zdt-home.json"` |  |
+| kube-prometheus-stack.grafana."grafana.ini".dashboards.default_home_dashboard_path | string | `"/tmp/dashboards/home.json"` |  |
 | kube-prometheus-stack.grafana."grafana.ini".dashboards.min_refresh_interval | string | `"30s"` |  |
 | kube-prometheus-stack.grafana."grafana.ini".date_formats.default_timezone | string | `"UTC"` |  |
 | kube-prometheus-stack.grafana."grafana.ini".security.cookie_secure | bool | `true` |  |
@@ -67,7 +67,6 @@ Kubernetes: `>= 1.18.0`
 | kube-prometheus-stack.grafana.service.portName | string | `"http-grafana"` |  |
 | kube-prometheus-stack.grafana.sidecar.dashboards.provider.foldersFromFilesStructure | bool | `true` |  |
 | kube-prometheus-stack.grafana.sidecar.dashboards.searchNamespace | string | `"ALL"` |  |
-| kube-prometheus-stack.grafana.sidecar.image.tag | string | `"1.12.0"` |  |
 | kube-prometheus-stack.grafana.testFramework.enabled | bool | `false` |  |
 | kube-prometheus-stack.kube-state-metrics.nodeSelector."node-role.kubernetes.io/master" | string | `""` |  |
 | kube-prometheus-stack.kube-state-metrics.podSecurityPolicy.enabled | bool | `false` |  |
@@ -110,6 +109,7 @@ Kubernetes: `>= 1.18.0`
 | kube-prometheus-stack.prometheus.prometheusSpec.resources.requests.cpu | string | `"500m"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.resources.requests.memory | string | `"512Mi"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.retention | string | `"8d"` |  |
+| kube-prometheus-stack.prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues | bool | `false` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues | bool | `false` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage | string | `"16Gi"` |  |
@@ -132,8 +132,8 @@ Kubernetes: `>= 1.18.0`
 | prometheus-adapter.prometheus.url | string | `"http://metrics-kube-prometheus-st-prometheus"` |  |
 | prometheus-adapter.rules.default | bool | `false` |  |
 | prometheus-adapter.rules.resource.cpu.containerLabel | string | `"container"` |  |
-| prometheus-adapter.rules.resource.cpu.containerQuery | string | `"sum(irate(container_cpu_usage_seconds_total{<<.LabelMatchers>>,container!=\"POD\",container!=\"\",pod!=\"\"}[3m])) by (<<.GroupBy>>)"` |  |
-| prometheus-adapter.rules.resource.cpu.nodeQuery | string | `"sum(1 - irate(node_cpu_seconds_total{mode=\"idle\"}[3m]) * on(namespace, pod) group_left(node) node_namespace_pod:kube_pod_info:{<<.LabelMatchers>>}) by (<<.GroupBy>>)"` |  |
+| prometheus-adapter.rules.resource.cpu.containerQuery | string | `"sum(irate(container_cpu_usage_seconds_total{<<.LabelMatchers>>,container!=\"POD\",container!=\"\",pod!=\"\"}[5m])) by (<<.GroupBy>>)"` |  |
+| prometheus-adapter.rules.resource.cpu.nodeQuery | string | `"sum(1 - irate(node_cpu_seconds_total{mode=\"idle\"}[5m]) * on(namespace, pod) group_left(node) node_namespace_pod:kube_pod_info:{<<.LabelMatchers>>}) by (<<.GroupBy>>)"` |  |
 | prometheus-adapter.rules.resource.cpu.resources.overrides.namespace.resource | string | `"namespace"` |  |
 | prometheus-adapter.rules.resource.cpu.resources.overrides.node.resource | string | `"node"` |  |
 | prometheus-adapter.rules.resource.cpu.resources.overrides.pod.resource | string | `"pod"` |  |
@@ -143,15 +143,13 @@ Kubernetes: `>= 1.18.0`
 | prometheus-adapter.rules.resource.memory.resources.overrides.namespace.resource | string | `"namespace"` |  |
 | prometheus-adapter.rules.resource.memory.resources.overrides.node.resource | string | `"node"` |  |
 | prometheus-adapter.rules.resource.memory.resources.overrides.pod.resource | string | `"pod"` |  |
-| prometheus-adapter.rules.resource.window | string | `"3m"` |  |
+| prometheus-adapter.rules.resource.window | string | `"5m"` |  |
 | prometheus-adapter.tolerations[0].effect | string | `"NoSchedule"` |  |
 | prometheus-adapter.tolerations[0].key | string | `"node-role.kubernetes.io/master"` |  |
 
 # Dashboards
 
-## Etcs
-- https://grafana.com/grafana/dashboards/3070
-
-## ElasticSearch
-- https://grafana.com/grafana/dashboards/266
-
+## Alertmanager
+- https://grafana.com/api/dashboards/9578/revisions/4/download
+## Prometheus
+- https://grafana.com/api/dashboards/3662/revisions/2/download

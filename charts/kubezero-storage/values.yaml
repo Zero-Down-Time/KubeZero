@@ -1,0 +1,40 @@
+openebs:
+  enabled: true
+
+  apiserver:
+    enabled: false
+  provisioner:
+    enabled: false
+  localprovisioner:
+    enabled: false
+  ndm:
+    enabled: false
+  ndmOperator:
+    enabled: false
+  snapshotOperator:
+    enabled: false
+  webhook:
+    enabled: false
+
+  # Google Analytics ??
+  analytics:
+    enabled: false
+
+  # We only use LVM for now
+  lvm-localpv:
+    enabled: true
+
+    lvmNode:
+      nodeSelector:
+        node.kubernetes.io/lvm: "openebs"
+      tolerations:
+      - key: kubezero-workergroup
+        effect: NoSchedule
+        operator: Exists
+
+    lvmController:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      nodeSelector:
+        node-role.kubernetes.io/master: ""

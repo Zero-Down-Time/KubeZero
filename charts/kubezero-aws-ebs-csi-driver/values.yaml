@@ -1,33 +1,39 @@
 aws-ebs-csi-driver:
-  replicaCount: 1
-  logLevel: 1
-
-  enableVolumeScheduling: true
-  enableVolumeResizing: true
   enableVolumeSnapshot: true
 
-  nodeSelector:
-    node-role.kubernetes.io/master: ""
+  controller:
+    replicaCount: 1
+    logLevel: 1
 
-  tolerations:
+    nodeSelector:
+      node-role.kubernetes.io/master: ""
+    tolerations:
     - key: node-role.kubernetes.io/master
       effect: NoSchedule
 
-  # aws-ebs-csi-driver.podAnnotations --  iam.amazonaws.com/role: <IAM role ARN> to assume
-  podAnnotations: {}
-  # iam.amazonaws.com/role: ''
+    # k8sTagClusterId: <CLUSTER_NAME>
 
-  # aws-ebs-csi-driver.extraVolumeTags -- Optional tags to be added to each EBS volume
-  extraVolumeTags: {}
-  #  Name: KubeZero-Cluster
+    #env:
+    #  ebsPlugin:
+      #- name: AWS_ROLE_ARN
+      #  value: "<ebs-csi-driver IAM ROLE ARN>"
+      #- name: AWS_WEB_IDENTITY_TOKEN_FILE
+      #  value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+      #- name: AWS_STS_REGIONAL_ENDPOINTS
+      #  value: regional
+    resources:
+      requests:
+        cpu: 10m
+        memory: 24Mi
+      limits:
+        # cpu: 50m
+        memory: 40Mi
 
-  resources:
-    requests:
-      cpu: 10m
-      memory: 24Mi
-    limits:
-      # cpu: 50m
-      memory: 40Mi
+  node:
+    tolerations:
+    - key: kubezero-workergroup
+      effect: NoSchedule
+      operator: Exists
 
   storageClasses:
   - name: ebs-sc-gp2-xfs
@@ -46,3 +52,10 @@ aws-ebs-csi-driver:
       csi.storage.k8s.io/fstype: xfs
       type: gp3
       encrypted: "true"
+
+  # This will probably move to snapshot later on
+  nodeSelector:
+    node-role.kubernetes.io/master: ""
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule

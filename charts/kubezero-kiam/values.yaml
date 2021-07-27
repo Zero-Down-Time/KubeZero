@@ -65,6 +65,9 @@ kiam:
     tolerations:
     - key: node-role.kubernetes.io/master
       effect: NoSchedule
+    - key: kubezero-workergroup
+      effect: NoSchedule
+      operator: Exists
     priorityClassName: system-node-critical
     prometheus:
       servicemonitor:

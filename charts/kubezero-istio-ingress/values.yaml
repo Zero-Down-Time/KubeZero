@@ -1,10 +1,9 @@
 # Make sure these values match kuberzero-istio !!!
 global:
   #hub: docker.io/istio
-  #tag: 1.9.3
+  #tag: 1.10.2
 
   logAsJson: true
-  jwtPolicy: first-party-jwt
 
   priorityClassName: "system-cluster-critical"
 
@@ -69,21 +68,13 @@ istio-ingress:
         targetPort: 8443
         nodePort: 30443
         protocol: TCP
-     ## multi-cluster - disabled on public LBs
-     #- name: tcp-istiod
-     #  port: 15012
-     #  targetPort: 15012
-     #  nodePort: 30012
-     #  protocol: TCP
-     ## multi-cluster sni east-west
-     #- name: tls
-     #  port: 15443
-     #  targetPort: 15443
-     #  nodePort: 30044
-     #  protocol: TCP
 
-  dnsNames: []
-# - '*.example.com'
+  certificates:
+  - name: ingress-cert
+    dnsNames: []
+  #  - '*.example.com'
+
+  proxyProtocol: false
 
   meshConfig:
    defaultConfig:
@@ -123,8 +114,16 @@ istio-private-ingress:
         values: istio-private-ingressgateway
       type: NodePort
       podAnnotations:
-      #  sidecar.istio.io/bootstrapOverride: istio-gateway-bootstrap-config
         proxy.istio.io/config: '{ "terminationDrainDuration": "20s" }'
+
+      # custom hardened bootstrap config
+      env:
+        ISTIO_BOOTSTRAP_OVERRIDE: /etc/istio/custom-bootstrap/custom_bootstrap.json
+      configVolumes:
+      - name: custom-bootstrap-volume
+        mountPath: /etc/istio/custom-bootstrap
+        configMapName: istio-gateway-bootstrap-config
+
       nodeSelector:
         node.kubernetes.io/ingress.private: "31080_31443"
         #nodeSelector: "31080_31443_31671_31672_31224"
@@ -143,18 +142,6 @@ istio-private-ingress:
         targetPort: 8443
         nodePort: 31443
         protocol: TCP
-      # multi-cluster
-      - name: tcp-istiod
-        port: 15012
-        targetPort: 15012
-        nodePort: 31012
-        protocol: TCP
-      # multi-cluster sni east-west
-      - name: tls
-        port: 15443
-        targetPort: 15443
-        nodePort: 31044
-        protocol: TCP
       #- name: fluentd-forward
       #  port: 24224
       #  nodePort: 31224
@@ -168,8 +155,12 @@ istio-private-ingress:
       #  port: 6379
       #  nodePort: 31379
 
-  dnsNames: []
-# - '*.example.com'
+  certificates:
+  - name: private-ingress-cert
+    dnsNames: []
+    #- '*.example.com'
+
+  proxyProtocol: false
 
   meshConfig:
    defaultConfig:

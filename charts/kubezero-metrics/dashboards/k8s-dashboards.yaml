@@ -38,6 +38,7 @@ dashboards:
   url: file://kube-mixin/namespace-by-workload.json
 - name: persistentvolumesusage
   url: file://kube-mixin/persistentvolumesusage.json
+  tags: ['kubernetes', 'csi']
 - name: pod-total
   url: file://kube-mixin/pod-total.json
 - name: proxy

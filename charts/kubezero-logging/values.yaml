@@ -11,7 +11,7 @@ eck-operator:
     node-role.kubernetes.io/master: ""
 
 # Version for ElasticSearch and Kibana have to match so we define it at top-level
-version: 7.11.1
+version: 7.13.2
 
 elastic_password: "" # super_secret_elastic_password
 
@@ -46,7 +46,7 @@ fluentd:
   enabled: false
   image:
     repository: fluent/fluentd-kubernetes-daemonset
-    tag: v1.12-debian-elasticsearch7-1
+    tag: v1-debian-elasticsearch
   istio:
     enabled: false
 
@@ -120,7 +120,9 @@ fluentd:
     00_system.conf: |-
       <system>
         root_dir /var/log/fluentd
-        # log_level debug
+        log_level info
+        ignore_repeated_log_interval 60s
+        ignore_same_log_interval 60s
         workers 2
       </system>
     01_sources.conf: |-
@@ -165,7 +167,7 @@ fluentd:
         <match **>
           @id out_es
           @type elasticsearch
-          @log_level info
+          # @log_level debug
           include_tag_key true
           id_key id
           remove_keys id
@@ -185,20 +187,26 @@ fluentd:
           reload_on_failure true
           request_timeout 60s
           suppress_type_name true
-          slow_flush_log_threshold 40.0
-          # bulk_message_request_threshold 2097152
+          slow_flush_log_threshold 55.0
 
-          <buffer tag>
-            @type file_single
-            chunk_limit_size 16MB
-            total_limit_size 4GB
+          # Retry failed bulk requests
+          # https://github.com/uken/fluent-plugin-elasticsearch#unrecoverable-error-types
+          unrecoverable_error_types ["out_of_memory_error"]
+          bulk_message_request_threshold 2097152
+
+          <buffer>
+            @type file
+
             flush_mode interval
-            flush_thread_count 2
-            flush_interval 10s
+            flush_thread_count 1
+            flush_interval 30s
+
+            chunk_limit_size 8MB
+            total_limit_size 2GB
+
             flush_at_shutdown true
             retry_type exponential_backoff
-            retry_timeout 2h
-            flush_thread_interval 30s
+            retry_timeout 6h
             overflow_action drop_oldest_chunk
             disable_chunk_backup true
           </buffer>
@@ -208,6 +216,9 @@ fluentd:
 fluent-bit:
   enabled: false
 
+  image:
+    tag: 1.8.1
+
   serviceMonitor:
     enabled: false
     selector:
@@ -216,6 +227,9 @@ fluent-bit:
   tolerations:
   - key: node-role.kubernetes.io/master
     effect: NoSchedule
+  - key: kubezero-workergroup
+    effect: NoSchedule
+    operator: Exists
 
   resources:
     requests:
@@ -234,7 +248,7 @@ fluent-bit:
       memBufLimit: 4MB
       refreshInterval: 10
 
-    logLevel: warn
+    logLevel: info
     flushInterval: 5
 
     #extraRecords:
@@ -255,10 +269,12 @@ fluent-bit:
           Name tail
           Path /var/log/containers/*.log
           Parser cri-log
+          #multiline.parser cri
           Tag cri.*
           Skip_Long_Lines On
           DB /var/log/flb_kube.db
           DB.Sync Normal
+          DB.locking true
           {{- with .Values.config.input }}
           Mem_Buf_Limit {{ default "4MB" .memBufLimit }}
           Refresh_Interval {{ default 10 .refreshInterval }}
@@ -280,8 +296,9 @@ fluent-bit:
           Keep_Log Off
           K8S-Logging.Parser Off
           K8S-Logging.Exclude Off
+          Kube_Meta_Cache_TTL 3600s
+          Buffer_Size 0
           #Use_Kubelet true
-          #Kubelet_Port 10250
 
       {{- if index .Values "config" "extraRecords" }}
 
@@ -320,7 +337,7 @@ fluent-bit:
       [PARSER]
           Name cri-log
           Format regex
-          Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+          Regex ^(?<time>.+) (?<stream>stdout|stderr) (?<logtag>F|P) (?<log>.*)$
           Time_Key    time
           Time_Format %Y-%m-%dT%H:%M:%S.%L%z
 

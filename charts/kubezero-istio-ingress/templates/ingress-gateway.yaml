@@ -1,6 +1,6 @@
+{{- if and (index .Values "istio-ingress" "enabled") (index .Values "istio-ingress" "certificates") }}
 # https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/#configure-a-tls-ingress-gateway-for-multiple-hosts
 
-{{- if and (index .Values "istio-ingress" "enabled") (index .Values "istio-ingress" "dnsNames") }}
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
@@ -17,23 +17,25 @@ spec:
       name: http
       protocol: HTTP2
     hosts:
-    {{- toYaml (index .Values "istio-ingress" "dnsNames") | nindent 4 }}
+    {{- range $cert := (index .Values "istio-ingress" "certificates") }}
+    {{- toYaml $cert.dnsNames | nindent 4 }}
+    {{- end }}
     tls:
       httpsRedirect: true
+  {{- range $cert := (index .Values "istio-ingress" "certificates") }}
   - port:
       number: 443
       name: https
       protocol: HTTPS
     hosts:
-    {{- toYaml (index .Values "istio-ingress" "dnsNames") | nindent 4 }}
+    {{- toYaml $cert.dnsNames | nindent 4 }}
     tls:
       mode: SIMPLE
-      privateKey: /etc/istio/ingressgateway-certs/tls.key
-      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
-      credentialName: ingress-cert
+      credentialName: {{ $cert.name }}
+  {{- end }}
 {{- end }}
 
-{{- if and (index .Values "istio-private-ingress" "enabled") (index .Values "istio-private-ingress" "dnsNames") }}
+{{- if and (index .Values "istio-private-ingress" "enabled") (index .Values "istio-private-ingress" "certificates") }}
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
@@ -51,53 +53,62 @@ spec:
       name: http
       protocol: HTTP2
     hosts:
-    {{- toYaml (index .Values "istio-private-ingress" "dnsNames") | nindent 4 }}
+    {{- range $certs := (index .Values "istio-private-ingress" "certificates") }}
+    {{- toYaml $certs.dnsNames | nindent 4 }}
+    {{- end }}
     tls:
       httpsRedirect: true
+  # All SSL hosts one entry per ingress-certificate
+  {{- range $cert := (index .Values "istio-private-ingress" "certificates") }}
   - port:
       number: 443
       name: https
       protocol: HTTPS
     hosts:
-    {{- toYaml (index .Values "istio-private-ingress" "dnsNames") | nindent 4 }}
+    {{- toYaml $cert.dnsNames | nindent 4 }}
     tls:
       mode: SIMPLE
-      privateKey: /etc/istio/ingressgateway-certs/tls.key
-      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
-      credentialName: private-ingress-cert
-  - port:
-      number: 5672
-      name: amqp
-      protocol: TCP
-    hosts:
-    {{- toYaml (index .Values "istio-private-ingress" "dnsNames") | nindent 4 }}
-  - port:
-      number: 5671
-      name: amqps
-      protocol: TCP
-    hosts:
-    {{- toYaml (index .Values "istio-private-ingress" "dnsNames") | nindent 4 }}
+      credentialName: {{ $cert.name }}
   - port:
       number: 24224
       name: fluentd-forward
       protocol: TLS
     hosts:
-    {{- toYaml (index .Values "istio-private-ingress" "dnsNames") | nindent 4 }}
+    {{- toYaml $cert.dnsNames | nindent 4 }}
     tls:
       mode: SIMPLE
-      privateKey: /etc/istio/ingressgateway-certs/tls.key
-      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
-      credentialName: private-ingress-cert
+      credentialName: {{ $cert.name }}
+  {{- end }}
+  - port:
+      number: 5672
+      name: amqp
+      protocol: TCP
+    hosts:
+    {{- range $certs := (index .Values "istio-private-ingress" "certificates") }}
+    {{- toYaml $certs.dnsNames | nindent 4 }}
+    {{- end }}
+  - port:
+      number: 5671
+      name: amqps
+      protocol: TCP
+    hosts:
+    {{- range $certs := (index .Values "istio-private-ingress" "certificates") }}
+    {{- toYaml $certs.dnsNames | nindent 4 }}
+    {{- end }}
   - port:
       number: 6379
       name: redis
       protocol: TCP
     hosts:
-    {{- toYaml (index .Values "istio-private-ingress" "dnsNames") | nindent 4 }}
+    {{- range $certs := (index .Values "istio-private-ingress" "certificates") }}
+    {{- toYaml $certs.dnsNames | nindent 4 }}
+    {{- end }}
   - port:
       number: 6380
       name: redis-1
       protocol: TCP
     hosts:
-    {{- toYaml (index .Values "istio-private-ingress" "dnsNames") | nindent 4 }}
+    {{- range $certs := (index .Values "istio-private-ingress" "certificates") }}
+    {{- toYaml $certs.dnsNames | nindent 4 }}
+    {{- end }}
 {{- end }}

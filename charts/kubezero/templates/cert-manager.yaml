@@ -4,8 +4,27 @@ localCA:
   enabled: true
 {{ with index .Values "cert-manager" "IamArn" }}
 cert-manager:
-  podAnnotations:
-    iam.amazonaws.com/role: "{{ . }}"
+  extraEnv:
+  - name: AWS_ROLE_ARN
+    value: "{{ . }}"
+  - name: AWS_WEB_IDENTITY_TOKEN_FILE
+    value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+  - name: AWS_STS_REGIONAL_ENDPOINTS
+    value: regional
+
+  volumes:
+  - name: aws-token
+    projected:
+      sources:
+      - serviceAccountToken:
+          path: token
+          expirationSeconds: 86400
+          audience: "sts.amazonaws.com"
+
+  volumeMounts:
+  - name: aws-token
+    mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
+    readOnly: true
 {{- end }}
 
 {{- with index .Values "cert-manager" "clusterIssuer" }}

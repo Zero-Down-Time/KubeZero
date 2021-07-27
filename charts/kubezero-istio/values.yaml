@@ -1,9 +1,8 @@
 global:
   # hub: docker.io/istio
-  # tag: 1.9.3
+  # tag: 1.10.2
 
   logAsJson: true
-  jwtPolicy: first-party-jwt
 
   defaultPodDisruptionBudget:
     enabled: false

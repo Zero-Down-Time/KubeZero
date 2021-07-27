@@ -26,11 +26,9 @@ aws-node-termination-handler:
 timecapsule:
   enabled: false
 
-local-volume-provisioner:
+storage:
   enabled: false
-
-local-path-provisioner:
-  enabled: false
+  crds: true
 
 aws-ebs-csi-driver:
   enabled: false

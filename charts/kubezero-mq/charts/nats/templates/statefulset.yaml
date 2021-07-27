@@ -3,14 +3,15 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "nats.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
     {{- if .Values.statefulSetAnnotations}}
-    annotations:
-    {{- range $key, $value := .Values.statefulSetAnnotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
-    {{- end }}
+  annotations:
+  {{- range $key, $value := .Values.statefulSetAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -115,6 +116,12 @@ spec:
         secret:
           secretName: {{ $secretName }}
       {{- end }}
+      {{- with .Values.mqtt.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-mqtt-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
       {{- with .Values.cluster.tls }}
       {{ $secretName := .secret.name }}
       - name: {{ $secretName }}-cluster-volume
@@ -140,9 +147,9 @@ spec:
           secretName: {{ $secretName }}
       {{- end }}
       {{- if .Values.leafnodes.enabled }}
-      # 
+      #
       # Leafnode credential volumes
-      # 
+      #
       {{- range .Values.leafnodes.remotes }}
       {{- with .credentials }}
       - name: {{ .secret.name }}-volume
@@ -182,6 +189,8 @@ spec:
               fieldPath: spec.nodeName
         image: {{ .Values.bootconfig.image }}
         imagePullPolicy: {{ .Values.bootconfig.pullPolicy }}
+        resources:
+          {{- toYaml .Values.bootconfig.resources | nindent 10 }}
         volumeMounts:
         - mountPath: /etc/nats-config/advertise
           name: advertiseconfig
@@ -222,6 +231,13 @@ spec:
           name: monitor
         - containerPort: 7777
           name: metrics
+        {{- if .Values.mqtt.enabled }}
+        - containerPort: 1883
+          name: mqtt
+          {{- if .Values.nats.externalAccess }}
+          hostPort: 1883
+          {{- end }}
+        {{- end }}
         {{- if .Values.websocket.enabled }}
         - containerPort: {{ .Values.websocket.port }}
           name: websocket
@@ -297,6 +313,11 @@ spec:
           - name: {{ $secretName }}-clients-volume
             mountPath: /etc/nats-certs/clients/{{ $secretName }}
           {{- end }}
+          {{- with .Values.mqtt.tls }}
+          {{ $secretName := .secret.name }}
+          - name: {{ $secretName }}-mqtt-volume
+            mountPath: /etc/nats-certs/mqtt/{{ $secretName }}
+          {{- end }}
           {{- with .Values.cluster.tls }}
           {{ $secretName := .secret.name }}
           - name: {{ $secretName }}-cluster-volume
@@ -320,9 +341,9 @@ spec:
           {{- end }}
 
           {{- if .Values.leafnodes.enabled }}
-          # 
+          #
           # Leafnode credential volumes
-          # 
+          #
           {{- range .Values.leafnodes.remotes }}
           {{- with .credentials }}
           - name: {{ .secret.name }}-volume
@@ -369,6 +390,8 @@ spec:
       - name: reloader
         image: {{ .Values.reloader.image }}
         imagePullPolicy: {{ .Values.reloader.pullPolicy }}
+        resources:
+          {{- toYaml .Values.reloader.resources | nindent 10 }}
         command:
          - "nats-server-config-reloader"
          - "-pid"
@@ -391,6 +414,8 @@ spec:
       - name: metrics
         image: {{ .Values.exporter.image }}
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
+        resources:
+          {{- toYaml .Values.exporter.resources | nindent 10 }}
         args:
         - -connz
         - -routez
@@ -398,6 +423,9 @@ spec:
         - -varz
         - -prefix=nats
         - -use_internal_server_id
+        {{- if .Values.nats.jetstream.enabled }}
+        - -jsz=all
+        {{- end }}
         - http://localhost:8222/
         ports:
         - containerPort: 7777
@@ -415,7 +443,7 @@ spec:
     - metadata:
         name: nats-jwt-pvc
       spec:
-        accessModes: 
+        accessModes:
         - ReadWriteOnce
         resources:
           requests:

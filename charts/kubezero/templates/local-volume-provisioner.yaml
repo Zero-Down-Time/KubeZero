@@ -1,7 +1,0 @@
-{{- define "local-volume-provisioner-values" }}
-{{- end }}
-
-{{- define "local-volume-provisioner-argo" }}
-{{- end }}
-
-{{ include "kubezero-app.app" . }}

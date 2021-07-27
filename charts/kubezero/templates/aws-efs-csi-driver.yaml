@@ -1,18 +1,16 @@
 {{- define "aws-efs-csi-driver-values" }}
-{{- with index .Values "aws-efs-csi-driver" "nodeSelector" }}
 aws-efs-csi-driver:
-  nodeSelector:
-  {{- toYaml . | nindent 4 }}
-{{- end }}
+  controller:
+    extraEnv:
+    - name: AWS_ROLE_ARN
+      value: {{ index .Values "aws-efs-csi-driver" "IamArn" | quote }}
+    - name: AWS_WEB_IDENTITY_TOKEN_FILE
+      value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+    - name: AWS_STS_REGIONAL_ENDPOINTS
+      value: regional
 {{- with index .Values "aws-efs-csi-driver" "PersistentVolumes" }}
 PersistentVolumes:
 {{- toYaml . | nindent 2 }}
-{{- end }}
-{{- if index .Values "aws-efs-csi-driver" "EfsId" }}
-PersistentVolume:
-  create: true
-  EfsId: {{ index .Values "aws-efs-csi-driver" "EfsId" }}
-  Name: {{ default "kubezero-efs-pv" ( index .Values "aws-efs-csi-driver" "PVName" ) }}
 {{- end }}
 
 {{- end }}

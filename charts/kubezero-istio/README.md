@@ -1,6 +1,6 @@
 # kubezero-istio
 
-![Version: 0.5.6](https://img.shields.io/badge/Version-0.5.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.9.3](https://img.shields.io/badge/AppVersion-1.9.3-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.10.2](https://img.shields.io/badge/AppVersion-1.10.2-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio
 
@@ -20,8 +20,8 @@ Kubernetes: `>= 1.18.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | base | 1.9.3 |
-|  | istio-discovery | 1.9.3 |
+|  | base | 1.10.2 |
+|  | istio-discovery | 1.10.2 |
 | https://zero-down-time.github.io/kubezero/ | kubezero-lib | >= 0.1.3 |
 
 ## Values
@@ -29,7 +29,6 @@ Kubernetes: `>= 1.18.0`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | global.defaultPodDisruptionBudget.enabled | bool | `false` |  |
-| global.jwtPolicy | string | `"first-party-jwt"` |  |
 | global.logAsJson | bool | `true` |  |
 | global.priorityClassName | string | `"system-cluster-critical"` |  |
 | istio-discovery.meshConfig.accessLogEncoding | string | `"JSON"` |  |

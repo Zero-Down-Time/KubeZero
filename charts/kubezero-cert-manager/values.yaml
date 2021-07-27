@@ -23,8 +23,28 @@ cert-manager:
     leaderElection:
       namespace: "cert-manager"
 
-  podAnnotations: {}
-  #   iam.amazonaws.com/role: ""
+  # On AWS enable Projected Service Accounts to assume IAM role
+  #extraEnv:
+  #- name: AWS_ROLE_ARN
+  #  value: "<cert-manager IAM ROLE ARN>"
+  #- name: AWS_WEB_IDENTITY_TOKEN_FILE
+  #  value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+  #- name: AWS_STS_REGIONAL_ENDPOINTS
+  #  value: regional
+
+  #volumes:
+  #- name: aws-token
+  #  projected:
+  #    sources:
+  #    - serviceAccountToken:
+  #        path: token
+  #        expirationSeconds: 86400
+  #        audience: "sts.amazonaws.com"
+
+  #volumeMounts:
+  #- name: aws-token
+  #  mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
+  #  readOnly: true
 
   tolerations:
   - key: node-role.kubernetes.io/master

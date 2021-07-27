@@ -1,0 +1,7 @@
+{{- define "storage-values" }}
+{{- end }}
+
+{{- define "storage-argo" }}
+{{- end }}
+
+{{ include "kubezero-app.app" . }}

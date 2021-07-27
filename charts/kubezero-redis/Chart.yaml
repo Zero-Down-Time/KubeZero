@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-redis
 description: KubeZero Umbrella Chart for Redis HA
 type: application
-version: 0.2.1
+version: 0.2.2
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:

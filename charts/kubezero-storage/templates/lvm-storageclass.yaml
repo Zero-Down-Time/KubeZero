@@ -1,0 +1,11 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openebs-lvm
+volumeBindingMode: WaitForFirstConsumer  
+reclaimPolicy: Delete
+parameters:
+  storage: lvm
+  vgpattern: "openebs.*"
+  fsType: xfs
+provisioner: local.csi.openebs.io

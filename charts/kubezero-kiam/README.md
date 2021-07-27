@@ -1,6 +1,6 @@
 # kubezero-kiam
 
-![Version: 0.3.2](https://img.shields.io/badge/Version-0.3.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0](https://img.shields.io/badge/AppVersion-4.0-informational?style=flat-square)
+![Version: 0.3.4](https://img.shields.io/badge/Version-0.3.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0](https://img.shields.io/badge/AppVersion-4.0-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Kiam
 
@@ -53,9 +53,9 @@ By default all access to the meta-data service is blocked, expect for:
 | kiam.agent.prometheus.servicemonitor.enabled | bool | `false` |  |
 | kiam.agent.prometheus.servicemonitor.interval | string | `"30s"` |  |
 | kiam.agent.prometheus.servicemonitor.labels.release | string | `"metrics"` |  |
-| kiam.agent.resources.limits.memory | string | `"20Mi"` |  |
+| kiam.agent.resources.limits.memory | string | `"64Mi"` |  |
 | kiam.agent.resources.requests.cpu | string | `"50m"` |  |
-| kiam.agent.resources.requests.memory | string | `"20Mi"` |  |
+| kiam.agent.resources.requests.memory | string | `"16Mi"` |  |
 | kiam.agent.sslCertHostPath | string | `"/etc/ssl/certs"` |  |
 | kiam.agent.tlsCerts.caFileName | string | `"ca.crt"` |  |
 | kiam.agent.tlsCerts.certFileName | string | `"tls.crt"` |  |
@@ -74,9 +74,9 @@ By default all access to the meta-data service is blocked, expect for:
 | kiam.server.prometheus.servicemonitor.enabled | bool | `false` |  |
 | kiam.server.prometheus.servicemonitor.interval | string | `"30s"` |  |
 | kiam.server.prometheus.servicemonitor.labels.release | string | `"metrics"` |  |
-| kiam.server.resources.limits.memory | string | `"100Mi"` |  |
+| kiam.server.resources.limits.memory | string | `"128Mi"` |  |
 | kiam.server.resources.requests.cpu | string | `"50m"` |  |
-| kiam.server.resources.requests.memory | string | `"50Mi"` |  |
+| kiam.server.resources.requests.memory | string | `"64Mi"` |  |
 | kiam.server.service.port | int | `6444` |  |
 | kiam.server.service.targetPort | int | `6444` |  |
 | kiam.server.sslCertHostPath | string | `"/etc/ssl/certs"` |  |

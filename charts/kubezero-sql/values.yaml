@@ -12,6 +12,10 @@ mariadb-galera:
   galera:
     mariabackup:
       password: 12345qwert
+    # For a single node "cluster" force bootstrap
+    #bootstrap:
+    #  bootstrapFromNode: 0
+    #  forceSafeToBootstrap: true
 
   metrics:
     enabled: false

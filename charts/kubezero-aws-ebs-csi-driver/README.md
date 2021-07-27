@@ -1,6 +1,6 @@
 # kubezero-aws-ebs-csi-driver
 
-![Version: 0.4.4](https://img.shields.io/badge/Version-0.4.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.9.0](https://img.shields.io/badge/AppVersion-0.9.0-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.2.3](https://img.shields.io/badge/AppVersion-1.2.3-informational?style=flat-square)
 
 KubeZero Umbrella Chart for aws-ebs-csi-driver
 
@@ -23,7 +23,7 @@ Kubernetes: `>= 1.18.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://kubernetes-sigs.github.io/aws-ebs-csi-driver | aws-ebs-csi-driver | 0.9.14 |
+|  | aws-ebs-csi-driver | 1.2.3 |
 | https://zero-down-time.github.io/kubezero/ | kubezero-lib | >= 0.1.3 |
 
 ## IAM Role
@@ -41,17 +41,16 @@ This class is by default also set as default storage class.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| aws-ebs-csi-driver.enableVolumeResizing | bool | `true` |  |
-| aws-ebs-csi-driver.enableVolumeScheduling | bool | `true` |  |
+| aws-ebs-csi-driver.controller.logLevel | int | `1` |  |
+| aws-ebs-csi-driver.controller.nodeSelector."node-role.kubernetes.io/master" | string | `""` |  |
+| aws-ebs-csi-driver.controller.replicaCount | int | `1` |  |
+| aws-ebs-csi-driver.controller.resources.limits.memory | string | `"40Mi"` |  |
+| aws-ebs-csi-driver.controller.resources.requests.cpu | string | `"10m"` |  |
+| aws-ebs-csi-driver.controller.resources.requests.memory | string | `"24Mi"` |  |
+| aws-ebs-csi-driver.controller.tolerations[0].effect | string | `"NoSchedule"` |  |
+| aws-ebs-csi-driver.controller.tolerations[0].key | string | `"node-role.kubernetes.io/master"` |  |
 | aws-ebs-csi-driver.enableVolumeSnapshot | bool | `true` |  |
-| aws-ebs-csi-driver.extraVolumeTags | object | `{}` | Optional tags to be added to each EBS volume |
-| aws-ebs-csi-driver.logLevel | int | `1` |  |
 | aws-ebs-csi-driver.nodeSelector."node-role.kubernetes.io/master" | string | `""` |  |
-| aws-ebs-csi-driver.podAnnotations | object | `{}` | iam.amazonaws.com/role: <IAM role ARN> to assume |
-| aws-ebs-csi-driver.replicaCount | int | `1` |  |
-| aws-ebs-csi-driver.resources.limits.memory | string | `"40Mi"` |  |
-| aws-ebs-csi-driver.resources.requests.cpu | string | `"10m"` |  |
-| aws-ebs-csi-driver.resources.requests.memory | string | `"24Mi"` |  |
 | aws-ebs-csi-driver.storageClasses[0].allowVolumeExpansion | bool | `true` |  |
 | aws-ebs-csi-driver.storageClasses[0].name | string | `"ebs-sc-gp2-xfs"` |  |
 | aws-ebs-csi-driver.storageClasses[0].parameters."csi.storage.k8s.io/fstype" | string | `"xfs"` |  |

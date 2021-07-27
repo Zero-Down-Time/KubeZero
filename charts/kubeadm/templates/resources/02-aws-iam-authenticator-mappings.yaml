@@ -5,7 +5,7 @@ kind: IAMIdentityMapping
 metadata:
   name: kubezero-worker-nodes
 spec:
-  arn: {{ .Values.WorkerNodeRole }}
+  arn: {{ .Values.workerNodeRole }}
   username: system:node:{{ "{{" }}EC2PrivateDNSName{{ "}}" }}
   groups:
   # For now use masters, define properly with 1.20

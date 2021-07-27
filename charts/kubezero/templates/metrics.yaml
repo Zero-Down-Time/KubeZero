@@ -4,17 +4,17 @@
 istio:
 {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- if index .Values "metrics" "kube-prometheus-stack" }}
+{{- with index .Values "metrics" "kube-prometheus-stack" }}
 kube-prometheus-stack:
-  {{- with index .Values "metrics" "kube-prometheus-stack" }}
   {{- toYaml . | nindent 2 }}
-  {{- end }}
 {{- end }}
-{{- if index .Values "metrics" "prometheus-adapter" }}
+{{- with index .Values "metrics" "prometheus-adapter" }}
 prometheus-adapter:
-  {{- with index .Values "metrics" "prometheus-adapter" }}
   {{- toYaml . | nindent 2 }}
-  {{- end }}
+{{- end }}
+{{- with index .Values "metrics" "prometheus-pushgateway" }}
+prometheus-pushgateway:
+  {{- toYaml . | nindent 2 }}
 {{- end }}
 
 {{- end }}
