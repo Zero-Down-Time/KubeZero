@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-redis
 description: KubeZero Umbrella Chart for Redis HA
 type: application
-version: 0.2.2
+version: 0.3.0
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -19,7 +19,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
   - name: redis-cluster
-    version: 4.1.0
+    version: 6.2.7
     repository: https://charts.bitnami.com/bitnami
     condition: redis-cluster.enabled
 

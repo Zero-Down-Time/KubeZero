@@ -38,3 +38,7 @@ openebs:
         effect: NoSchedule
       nodeSelector:
         node-role.kubernetes.io/master: ""
+
+storageClass:
+  vgpattern: ""
+  default: true

@@ -26,6 +26,7 @@ spec:
       {{- end }}
       indices.memory.index_buffer_size: "20%"
     podTemplate:
+      # Remove once https://github.com/elastic/elasticsearch/pull/65923 is merged
       {{- if $.Values.es.s3Snapshot.iamrole }}
       metadata:
         annotations:
@@ -54,11 +55,34 @@ spec:
           {{- with .resources }}
           resources: {{ toYaml . | nindent 12 }}
           {{- end }}
+        #  {{- if or .jvm_heap $.Values.es.s3Snapshot.iamrole }}
+        #  env:
+        #  {{- end }}
           {{- if .jvm_heap }}
           env:
           - name: ES_JAVA_OPTS
             value: -Xms{{ .jvm_heap }}g -Xmx{{ .jvm_heap }}g
           {{- end }}
+        #{{- if $.Values.es.s3Snapshot.iamrole }}
+        #  - name: AWS_ROLE_ARN
+        #    value: {{ $.Values.es.s3Snapshot.iamrole }}
+        #  - name: AWS_WEB_IDENTITY_TOKEN_FILE
+        #    value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+        #  - name: AWS_STS_REGIONAL_ENDPOINTS
+        #    value: regional
+        #  volumeMounts:
+        #  - name: aws-token
+        #    mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
+        #    readOnly: true
+        #volumes:
+        #- name: aws-token
+        #  projected:
+        #    sources:
+        #    - serviceAccountToken:
+        #        path: token
+        #        expirationSeconds: 86400
+        #        audience: "sts.amazonaws.com"
+        #{{- end }}
         affinity:
           podAntiAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -98,7 +122,9 @@ spec:
         resources:
           requests:
             storage: {{ .storage.size }}
-        storageClassName: {{ .storage.class }}
+        {{- with .storage.class }}
+        storageClassName: {{ . }}
+        {{- end }}
   {{- end }}
   http:
     tls:

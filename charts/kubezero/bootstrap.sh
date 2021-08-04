@@ -198,14 +198,6 @@ function metrics-pre() {
 }
 
 
-###########
-# Logging #
-###########
-function logging-post() {
-  kubectl annotate --overwrite namespace logging 'iam.amazonaws.com/permitted=.*ElasticSearchSnapshots.*'
-}
-
-
 ## MAIN ##
 if [ $1 == "deploy" ]; then
   for t in ${ARTIFACTS[@]}; do

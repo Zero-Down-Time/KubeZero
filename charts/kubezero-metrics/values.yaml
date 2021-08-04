@@ -118,7 +118,7 @@ kube-prometheus-stack:
       storageSpec:
         volumeClaimTemplate:
           spec:
-            storageClassName: ebs-sc-gp3-xfs
+            # storageClassName: ebs-sc-gp3-xfs
             accessModes: ["ReadWriteOnce"]
             resources:
               requests:

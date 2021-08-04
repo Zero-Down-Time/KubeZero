@@ -20,8 +20,6 @@ redis:
     enabled: false
     serviceMonitor:
       enabled: false
-      selector:
-        release: metrics
 #   extraArgs:
 #     redis.addr: "redis://localhost:6379"
 
@@ -40,8 +38,6 @@ redis-cluster:
     enabled: false
     serviceMonitor:
       enabled: false
-      selector:
-        release: metrics
 
   persistence:
     enabled: false

@@ -1,4 +1,10 @@
 {{- define "storage-values" }}
+
+{{- with index .Values "storage" "storageClass" }}
+storageClass:
+  {{- . | toYaml | nindent 2 }}
+{{- end }}
+
 {{- end }}
 
 {{- define "storage-argo" }}

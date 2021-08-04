@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+set -eux
 
 CHARTS=${1:-'.*'}
 FORCE=${2:-''}
