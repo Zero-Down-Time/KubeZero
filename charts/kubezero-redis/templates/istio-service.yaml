@@ -13,10 +13,10 @@ spec:
   - {{ .Values.istio.gateway }}
   tcp:
   - match:
-    - port: {{ default 6379 .Values.redis.redisPort }}
+    - port: {{ default 6379 .Values.istio.port }}
     route:
     - destination:
-        host: redis-headless
+        host: redis-cluster-headless
         port:
-          number: {{ default 6379 .Values.redis.redisPort }}
+          number: 6379
 {{- end }}

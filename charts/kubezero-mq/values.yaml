@@ -18,6 +18,11 @@ nats:
   mqtt:
     enabled: false
 
+  istio:
+    enabled: false
+    # url: "mq.example.com"
+    gateway: istio-ingress/private-ingressgateway
+
 # rabbitmq
 rabbitmq:
   enabled: false

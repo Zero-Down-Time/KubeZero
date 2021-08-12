@@ -1,0 +1,22 @@
+{{- if .Values.nats.istio.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}-nats
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "kubezero-lib.labels" . | indent 4 }}
+spec:
+  hosts:
+  - {{ .Values.nats.istio.url }}
+  gateways:
+  - {{ .Values.nats.istio.gateway }}
+  tcp:
+  - match:
+    - port: 1883
+    route:
+    - destination:
+        host: nats
+        port:
+          number: 1883
+{{- end }}

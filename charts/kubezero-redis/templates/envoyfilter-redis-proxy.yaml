@@ -13,7 +13,7 @@ spec:
     match:
       context: GATEWAY
       listener:
-        name: 0.0.0.0_{{ index .Values "redis-cluster" "redisPort" }}
+        name: 0.0.0.0_{{ default 6379 .Values.istio.port }}
         filterChain:
           filter:
             name: "envoy.filters.network.tcp_proxy"

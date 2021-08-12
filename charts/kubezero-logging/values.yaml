@@ -156,6 +156,15 @@ fluentd:
           @label @FLUENT_LOG
         </match>
 
+        # Exclude current fluent-bit multiline noise
+        <filter kube.logging.fluent-bit>
+          @type grep
+          <exclude>
+            key log
+            pattern /could not append content to multiline context/
+          </exclude>
+        </filter>
+
         <match **>
           @type relabel
           @label @DISPATCH

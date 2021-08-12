@@ -1,15 +1,4 @@
 {{- /*
-Common set of labels
-*/ -}}
-{{- define "kubezero-lib.labels" -}}
-helm.sh/chart: {{ include "kubezero-lib.chart" . }}
-app.kubernetes.io/name: {{ include "kubezero-lib.name" . }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/part-of: kubezero
-{{- end -}}
-
-{{- /*
 Common naming functions
 */ -}}
 {{- define "kubezero-lib.name" -}}
@@ -32,3 +21,22 @@ Common naming functions
 {{- define "kubezero-lib.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Selector labels
+*/}}
+{{- define "kubezero-lib.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kubezero-lib.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{- /*
+Common set of labels
+*/ -}}
+{{- define "kubezero-lib.labels" -}}
+helm.sh/chart: {{ include "kubezero-lib.chart" . }}
+{{ include "kubezero-lib.selectorLabels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/part-of: kubezero
+{{- end -}}
+

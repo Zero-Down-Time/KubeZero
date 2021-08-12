@@ -5,6 +5,9 @@ kube-prometheus-stack:
 
   defaultRules:
     create: true
+    #additionalRuleLabels:
+    #  clusterName: myTestCluster
+    #  awsRegion: eu-central-1
 
   coreDns:
     enabled: true
@@ -198,6 +201,64 @@ kube-prometheus-stack:
     alertmanagerSpec:
       # externalUrl:
       logFormat: json
+
+      # for none AWS cluster or if SNS AlertHub should NOT be used, remove sns-forwarder by overwriting containers eg.:
+      # containers: []
+
+      # Add sns-forwarder to AlertManager pod, see: https://github.com/DataReply/alertmanager-sns-forwarder
+      # uses the alertmanager serviceaccount to assume IAM role, requires annotation: kubezero.com/sns_forwarder_arn_prefix to point to SNSAlertHub
+      # eg: "arn:aws:sns:eu-central-1:123456789012:"
+      #containers:
+      #- name: alertmanager-sns-forwarder
+      #  image: datareply/alertmanager-sns-forwarder:latest
+      #  imagePullPolicy: Always
+      #  env:
+      #  - name: SNS_FORWARDER_ARN_PREFIX
+      #    valueFrom:
+      #      fieldRef:
+      #        fieldPath: metadata.annotations['kubezero.com/sns_forwarder_ARN_PREFIX']
+      #  - name: AWS_ROLE_ARN
+      #    valueFrom:
+      #      fieldRef:
+      #        fieldPath: metadata.annotations['kubezero.com/sns_forwarder_AWS_ROLE_ARN']
+      #  - name: AWS_WEB_IDENTITY_TOKEN_FILE
+      #    value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+      #  - name: AWS_STS_REGIONAL_ENDPOINTS
+      #    value: regional
+      #  volumeMounts:
+      #  - name: aws-token
+      #    mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
+      #    readOnly: true
+      #  resources:
+      #    limits:
+      #      memory: 64Mi
+      #      cpu: 100m
+      #    requests:
+      #      cpu: 25m
+      #      memory: 32Mi
+      #  ports:
+      #  - containerPort: 9087
+      #    name: webhook-port
+      #  livenessProbe:
+      #    httpGet:
+      #      path: /health
+      #      port: webhook-port
+      #    initialDelaySeconds: 30
+      #    timeoutSeconds: 10
+      #  readinessProbe:
+      #    httpGet:
+      #      path: /health
+      #      port: webhook-port
+      #    initialDelaySeconds: 10
+      #    timeoutSeconds: 10
+      #volumes:
+      #- name: aws-token
+      #  projected:
+      #    sources:
+      #    - serviceAccountToken:
+      #        path: token
+      #        expirationSeconds: 86400
+      #        audience: "sts.amazonaws.com"
 
 # Metrics adapter
 prometheus-adapter:

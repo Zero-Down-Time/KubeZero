@@ -21,6 +21,6 @@ spec:
         {{- end }}
     to:
     - operation:
-        ports: ["{{ default 6379 .Values.redis.redisPort }}"]
+        ports: ["{{ default 6379 .Values.istio.port }}"]
 {{- end }}
 {{- end }}

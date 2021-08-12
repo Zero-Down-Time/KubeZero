@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-mq
 description: KubeZero umbrella chart for MQ systems like NATS, RabbitMQ
 type: application
-version: 0.2.1
+version: 0.2.2
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:

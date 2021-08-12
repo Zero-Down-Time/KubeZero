@@ -1,12 +1,13 @@
 redis:
   enabled: false
 
-  redisPort: 6379
+  architecture: standalone
 
-  cluster:
-    slaveCount: 0
+  replica:
+    replicaCount: 0
   
-  usePassword: false
+  auth:
+    enabled: false
   
   master:
     persistence:
@@ -20,14 +21,11 @@ redis:
     enabled: false
     serviceMonitor:
       enabled: false
-#   extraArgs:
-#     redis.addr: "redis://localhost:6379"
 
 
 redis-cluster:
   enabled: false
 
-  redisPort: 6379
   usePassword: false
 
   cluster:
