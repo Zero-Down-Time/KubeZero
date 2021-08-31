@@ -3,7 +3,7 @@ entries:
   clamav:
   - apiVersion: v2
     appVersion: 0.104.0
-    created: "2021-08-31T17:34:19.566543029+02:00"
+    created: "2021-08-31T17:53:18.987054587+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -25,7 +25,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: 0.104.0
-    created: "2021-08-31T17:34:19.565672969+02:00"
+    created: "2021-08-31T17:53:18.986055862+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -47,7 +47,7 @@ entries:
     version: 0.1.0
   kubeadm:
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.570953123+02:00"
+    created: "2021-08-31T17:53:18.990561607+02:00"
     description: KubeZero Kubeadm golden config
     digest: 3561e341b84e824adb55e65b62616ca5d45ce30dbae329faf066acb67d8f238d
     home: https://kubezero.com
@@ -64,7 +64,7 @@ entries:
     - kubeadm-1.20.8.tgz
     version: 1.20.8
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.570100444+02:00"
+    created: "2021-08-31T17:53:18.989743865+02:00"
     description: KubeZero Kubeadm golden config
     digest: 52c3502585b7fbf8735f726fede98e173dc8ba8566df648bbc09fc4319608116
     home: https://kubezero.com
@@ -81,7 +81,7 @@ entries:
     - kubeadm-1.20.2.tgz
     version: 1.20.2
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.568234914+02:00"
+    created: "2021-08-31T17:53:18.988882826+02:00"
     description: KubeZero Kubeadm golden config
     digest: f39ed2638ca3aaabada6dab21cfbdb9946dda21591744f7f218a40656197902f
     home: https://kubezero.com
@@ -98,7 +98,7 @@ entries:
     - kubeadm-1.20.1.tgz
     version: 1.20.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.567368525+02:00"
+    created: "2021-08-31T17:53:18.988006191+02:00"
     description: KubeZero Kubeadm golden config
     digest: 7e4b85e937b2c0945abb019ac3e3d90388dfb888625c5f78cff7326f1175f75e
     home: https://kubezero.com
@@ -116,7 +116,7 @@ entries:
     version: 1.20.0
   kubezero:
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.580338323+02:00"
+    created: "2021-08-31T17:53:19.001600852+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -137,7 +137,7 @@ entries:
     - kubezero-1.20.8.tgz
     version: 1.20.8
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.578978388+02:00"
+    created: "2021-08-31T17:53:18.999089632+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -158,7 +158,7 @@ entries:
     - kubezero-1.20.8-6.tgz
     version: 1.20.8-6
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.577577715+02:00"
+    created: "2021-08-31T17:53:18.997569847+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -179,7 +179,7 @@ entries:
     - kubezero-1.20.8-5.tgz
     version: 1.20.8-5
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.576322678+02:00"
+    created: "2021-08-31T17:53:18.996157401+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -200,7 +200,7 @@ entries:
     - kubezero-1.20.8-4.tgz
     version: 1.20.8-4
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.574990861+02:00"
+    created: "2021-08-31T17:53:18.994741105+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -221,7 +221,7 @@ entries:
     - kubezero-1.20.8-3.tgz
     version: 1.20.8-3
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.573650335+02:00"
+    created: "2021-08-31T17:53:18.993433217+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -242,7 +242,7 @@ entries:
     - kubezero-1.20.8-2.tgz
     version: 1.20.8-2
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.572337841+02:00"
+    created: "2021-08-31T17:53:18.99201348+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -264,7 +264,7 @@ entries:
     version: 1.20.8-1
   kubezero-argocd:
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.634347708+02:00"
+    created: "2021-08-31T17:53:19.076973364+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -293,7 +293,7 @@ entries:
     - kubezero-argocd-0.8.2.tgz
     version: 0.8.2
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.61900367+02:00"
+    created: "2021-08-31T17:53:19.040749154+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -318,7 +318,7 @@ entries:
     - kubezero-argocd-0.8.1.tgz
     version: 0.8.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.609404285+02:00"
+    created: "2021-08-31T17:53:19.030037257+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -343,7 +343,7 @@ entries:
     - kubezero-argocd-0.8.0.tgz
     version: 0.8.0
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.597467808+02:00"
+    created: "2021-08-31T17:53:19.020077815+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -368,7 +368,7 @@ entries:
     - kubezero-argocd-0.7.1.tgz
     version: 0.7.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.589044019+02:00"
+    created: "2021-08-31T17:53:19.009732822+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -395,7 +395,7 @@ entries:
   kubezero-aws-ebs-csi-driver:
   - apiVersion: v2
     appVersion: 1.2.4
-    created: "2021-08-31T17:34:19.658323499+02:00"
+    created: "2021-08-31T17:53:19.142271842+02:00"
     dependencies:
     - name: aws-ebs-csi-driver
       repository: ""
@@ -425,7 +425,7 @@ entries:
     version: 0.6.4
   - apiVersion: v2
     appVersion: 1.2.4
-    created: "2021-08-31T17:34:19.655738963+02:00"
+    created: "2021-08-31T17:53:19.134590864+02:00"
     dependencies:
     - name: aws-ebs-csi-driver
       repository: ""
@@ -455,7 +455,7 @@ entries:
     version: 0.6.3
   - apiVersion: v2
     appVersion: 0.10.0
-    created: "2021-08-31T17:34:19.651927751+02:00"
+    created: "2021-08-31T17:53:19.12098738+02:00"
     dependencies:
     - name: aws-ebs-csi-driver
       repository: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
@@ -485,7 +485,7 @@ entries:
     version: 0.5.1
   - apiVersion: v2
     appVersion: 0.10.0
-    created: "2021-08-31T17:34:19.646145186+02:00"
+    created: "2021-08-31T17:53:19.109232986+02:00"
     dependencies:
     - name: aws-ebs-csi-driver
       repository: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
@@ -515,7 +515,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 0.9.0
-    created: "2021-08-31T17:34:19.641696324+02:00"
+    created: "2021-08-31T17:53:19.098763407+02:00"
     dependencies:
     - name: aws-ebs-csi-driver
       repository: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
@@ -545,7 +545,7 @@ entries:
     version: 0.4.4
   - apiVersion: v2
     appVersion: 0.8.0
-    created: "2021-08-31T17:34:19.637977489+02:00"
+    created: "2021-08-31T17:53:19.088666567+02:00"
     dependencies:
     - name: aws-ebs-csi-driver
       repository: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
@@ -575,7 +575,7 @@ entries:
     version: 0.3.4
   - apiVersion: v2
     appVersion: 0.7.1
-    created: "2021-08-31T17:34:19.636138959+02:00"
+    created: "2021-08-31T17:53:19.083983296+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -603,7 +603,7 @@ entries:
   kubezero-aws-efs-csi-driver:
   - apiVersion: v2
     appVersion: 1.3.2
-    created: "2021-08-31T17:34:19.665974151+02:00"
+    created: "2021-08-31T17:53:19.166252182+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -632,7 +632,7 @@ entries:
     version: 0.4.2
   - apiVersion: v2
     appVersion: 1.2.0
-    created: "2021-08-31T17:34:19.66423941+02:00"
+    created: "2021-08-31T17:53:19.160750005+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -661,7 +661,7 @@ entries:
     version: 0.3.5
   - apiVersion: v2
     appVersion: 1.2.0
-    created: "2021-08-31T17:34:19.662697173+02:00"
+    created: "2021-08-31T17:53:19.154790729+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -690,7 +690,7 @@ entries:
     version: 0.3.4
   - apiVersion: v2
     appVersion: 1.2.0
-    created: "2021-08-31T17:34:19.66111302+02:00"
+    created: "2021-08-31T17:53:19.150280163+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -719,7 +719,7 @@ entries:
     version: 0.3.2
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-08-31T17:34:19.659491718+02:00"
+    created: "2021-08-31T17:53:19.145947993+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -746,7 +746,7 @@ entries:
   kubezero-calico:
   - apiVersion: v2
     appVersion: v3.16.5
-    created: "2021-08-31T17:34:19.676650479+02:00"
+    created: "2021-08-31T17:53:19.182609791+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -768,7 +768,7 @@ entries:
     version: 0.2.2
   - apiVersion: v2
     appVersion: v3.16.5
-    created: "2021-08-31T17:34:19.672941062+02:00"
+    created: "2021-08-31T17:53:19.17916156+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -790,7 +790,7 @@ entries:
     version: 0.2.1
   - apiVersion: v2
     appVersion: v3.16.1
-    created: "2021-08-31T17:34:19.669024747+02:00"
+    created: "2021-08-31T17:53:19.17246381+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -812,7 +812,7 @@ entries:
     version: 0.2.0
   kubezero-cert-manager:
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.731523907+02:00"
+    created: "2021-08-31T17:53:19.247143521+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -835,7 +835,7 @@ entries:
     - kubezero-cert-manager-0.6.1.tgz
     version: 0.6.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.717795491+02:00"
+    created: "2021-08-31T17:53:19.222645348+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -860,7 +860,7 @@ entries:
     - kubezero-cert-manager-0.5.0.tgz
     version: 0.5.0
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.707804493+02:00"
+    created: "2021-08-31T17:53:19.212489954+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -885,7 +885,7 @@ entries:
     - kubezero-cert-manager-0.4.1.tgz
     version: 0.4.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:19.691306833+02:00"
+    created: "2021-08-31T17:53:19.196781911+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -911,7 +911,7 @@ entries:
   kubezero-istio:
   - apiVersion: v2
     appVersion: 1.11.1
-    created: "2021-08-31T17:34:19.967258053+02:00"
+    created: "2021-08-31T17:53:19.637138477+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -943,7 +943,7 @@ entries:
     version: 0.7.3
   - apiVersion: v2
     appVersion: 1.11.1
-    created: "2021-08-31T17:34:19.937125511+02:00"
+    created: "2021-08-31T17:53:19.611252623+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -975,7 +975,7 @@ entries:
     version: 0.7.2
   - apiVersion: v2
     appVersion: 1.11.0
-    created: "2021-08-31T17:34:19.915499039+02:00"
+    created: "2021-08-31T17:53:19.587057645+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1007,7 +1007,7 @@ entries:
     version: 0.7.1
   - apiVersion: v2
     appVersion: 1.10.3
-    created: "2021-08-31T17:34:19.869688098+02:00"
+    created: "2021-08-31T17:53:19.48029944+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1035,7 +1035,7 @@ entries:
     version: 0.6.1
   - apiVersion: v2
     appVersion: 1.9.3
-    created: "2021-08-31T17:34:19.839259048+02:00"
+    created: "2021-08-31T17:53:19.419833116+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1063,7 +1063,7 @@ entries:
     version: 0.5.6
   - apiVersion: v2
     appVersion: 1.9.3
-    created: "2021-08-31T17:34:19.770467809+02:00"
+    created: "2021-08-31T17:53:19.343707588+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1091,7 +1091,7 @@ entries:
     version: 0.5.3
   - apiVersion: v2
     appVersion: 1.9.2
-    created: "2021-08-31T17:34:19.762877765+02:00"
+    created: "2021-08-31T17:53:19.321343905+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1119,7 +1119,7 @@ entries:
     version: 0.5.1
   - apiVersion: v2
     appVersion: 1.9.1
-    created: "2021-08-31T17:34:19.757246928+02:00"
+    created: "2021-08-31T17:53:19.305537535+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1147,7 +1147,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 1.8.1
-    created: "2021-08-31T17:34:19.7492409+02:00"
+    created: "2021-08-31T17:53:19.286762917+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1175,7 +1175,7 @@ entries:
     version: 0.4.1
   - apiVersion: v2
     appVersion: 1.7.4
-    created: "2021-08-31T17:34:19.743507198+02:00"
+    created: "2021-08-31T17:53:19.270765647+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1203,7 +1203,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 1.7.3
-    created: "2021-08-31T17:34:19.735213837+02:00"
+    created: "2021-08-31T17:53:19.254831113+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1229,7 +1229,7 @@ entries:
   kubezero-istio-ingress:
   - apiVersion: v2
     appVersion: 1.11.1
-    created: "2021-08-31T17:34:20.081624025+02:00"
+    created: "2021-08-31T17:53:19.736190767+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1259,7 +1259,7 @@ entries:
     version: 0.7.2
   - apiVersion: v2
     appVersion: 1.11.0
-    created: "2021-08-31T17:34:20.06631701+02:00"
+    created: "2021-08-31T17:53:19.730672461+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1289,7 +1289,7 @@ entries:
     version: 0.7.1
   - apiVersion: v2
     appVersion: 1.10.3
-    created: "2021-08-31T17:34:20.053820211+02:00"
+    created: "2021-08-31T17:53:19.711550089+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1319,7 +1319,7 @@ entries:
     version: 0.6.1
   - apiVersion: v2
     appVersion: 1.9.3
-    created: "2021-08-31T17:34:20.041774809+02:00"
+    created: "2021-08-31T17:53:19.697921059+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1349,7 +1349,7 @@ entries:
     version: 0.5.6
   - apiVersion: v2
     appVersion: 1.9.3
-    created: "2021-08-31T17:34:20.029415136+02:00"
+    created: "2021-08-31T17:53:19.684013758+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1379,7 +1379,7 @@ entries:
     version: 0.5.2
   - apiVersion: v2
     appVersion: 1.9.2
-    created: "2021-08-31T17:34:20.020130739+02:00"
+    created: "2021-08-31T17:53:19.668409473+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1409,7 +1409,7 @@ entries:
     version: 0.5.1
   - apiVersion: v2
     appVersion: 1.9.1
-    created: "2021-08-31T17:34:20.007627075+02:00"
+    created: "2021-08-31T17:53:19.656262586+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1439,7 +1439,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 1.8.1
-    created: "2021-08-31T17:34:19.993589719+02:00"
+    created: "2021-08-31T17:53:19.651814026+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1469,7 +1469,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: 1.8.0
-    created: "2021-08-31T17:34:19.979885557+02:00"
+    created: "2021-08-31T17:53:19.64714479+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1500,7 +1500,7 @@ entries:
   kubezero-kiam:
   - apiVersion: v2
     appVersion: "4.0"
-    created: "2021-08-31T17:34:20.129220861+02:00"
+    created: "2021-08-31T17:53:19.766159194+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1526,7 +1526,7 @@ entries:
     version: 0.3.5
   - apiVersion: v2
     appVersion: "4.0"
-    created: "2021-08-31T17:34:20.113441615+02:00"
+    created: "2021-08-31T17:53:19.76073849+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1552,7 +1552,7 @@ entries:
     version: 0.3.4
   - apiVersion: v2
     appVersion: "4.0"
-    created: "2021-08-31T17:34:20.097232764+02:00"
+    created: "2021-08-31T17:53:19.754648506+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1578,7 +1578,7 @@ entries:
     version: 0.3.3
   - apiVersion: v2
     appVersion: "4.0"
-    created: "2021-08-31T17:34:20.092057876+02:00"
+    created: "2021-08-31T17:53:19.748137536+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1604,7 +1604,7 @@ entries:
     version: 0.3.2
   - apiVersion: v2
     appVersion: "3.6"
-    created: "2021-08-31T17:34:20.086909722+02:00"
+    created: "2021-08-31T17:53:19.742107809+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1630,7 +1630,7 @@ entries:
     version: 0.2.12
   kubezero-lib:
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.130714126+02:00"
+    created: "2021-08-31T17:53:19.766682766+02:00"
     description: KubeZero helm library - common helm functions and blocks
     digest: a662b93b2c1098e8903aea96e63e5e9181c22162f9682c6c6232616ad15eb085
     home: https://kubezero.com
@@ -1646,7 +1646,7 @@ entries:
     - kubezero-lib-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.130022221+02:00"
+    created: "2021-08-31T17:53:19.766434565+02:00"
     description: KubeZero helm library - common helm functions and blocks
     digest: 4c354eb8245309ee40e33673b17931189702a7c2af46612cc6348392a6645ae6
     home: https://kubezero.com
@@ -1664,7 +1664,44 @@ entries:
   kubezero-logging:
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2021-08-31T17:34:20.262567512+02:00"
+    created: "2021-08-31T17:53:19.817712329+02:00"
+    dependencies:
+    - name: kubezero-lib
+      repository: https://zero-down-time.github.io/kubezero/
+      version: '>= 0.1.3'
+    - condition: eck-operator.enabled
+      name: eck-operator
+      repository: ""
+      version: 1.6.0
+    - condition: fluentd.enabled
+      name: fluentd
+      repository: ""
+      version: 0.2.10
+    - condition: fluent-bit.enabled
+      name: fluent-bit
+      repository: ""
+      version: 0.16.3
+    description: KubeZero Umbrella Chart for complete EFK stack
+    digest: 30d37467a16049f267ddb2b584814e96a9f868aa231b6956ae5de3bb31c60269
+    home: https://kubezero.com
+    icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
+    keywords:
+    - kubezero
+    - elasticsearch
+    - kibana
+    - fluentd
+    - fluent-bit
+    kubeVersion: '>= 1.18.0'
+    maintainers:
+    - name: Quarky9
+    name: kubezero-logging
+    type: application
+    urls:
+    - kubezero-logging-0.7.10.tgz
+    version: 0.7.10
+  - apiVersion: v2
+    appVersion: 1.6.0
+    created: "2021-08-31T17:53:19.924985475+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1701,7 +1738,7 @@ entries:
     version: 0.7.9
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2021-08-31T17:34:20.253719436+02:00"
+    created: "2021-08-31T17:53:19.898958201+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1738,7 +1775,7 @@ entries:
     version: 0.7.8
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2021-08-31T17:34:20.241245918+02:00"
+    created: "2021-08-31T17:53:19.879835474+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1775,7 +1812,7 @@ entries:
     version: 0.7.7
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2021-08-31T17:34:20.229980531+02:00"
+    created: "2021-08-31T17:53:19.869317711+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1812,7 +1849,7 @@ entries:
     version: 0.7.6
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2021-08-31T17:34:20.218635317+02:00"
+    created: "2021-08-31T17:53:19.856193708+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1849,7 +1886,7 @@ entries:
     version: 0.7.5
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2021-08-31T17:34:20.209936383+02:00"
+    created: "2021-08-31T17:53:19.847362335+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1886,7 +1923,7 @@ entries:
     version: 0.7.4
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2021-08-31T17:34:20.198192376+02:00"
+    created: "2021-08-31T17:53:19.836518413+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1923,7 +1960,7 @@ entries:
     version: 0.7.3
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2021-08-31T17:34:20.189154002+02:00"
+    created: "2021-08-31T17:53:19.827964223+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1960,7 +1997,7 @@ entries:
     version: 0.7.2
   - apiVersion: v2
     appVersion: 1.5.0
-    created: "2021-08-31T17:34:20.176958409+02:00"
+    created: "2021-08-31T17:53:19.808840815+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -1997,7 +2034,7 @@ entries:
     version: 0.6.5
   - apiVersion: v2
     appVersion: 1.4.1
-    created: "2021-08-31T17:34:20.168278352+02:00"
+    created: "2021-08-31T17:53:19.798559025+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2034,7 +2071,7 @@ entries:
     version: 0.6.4
   - apiVersion: v2
     appVersion: 1.4.1
-    created: "2021-08-31T17:34:20.155605456+02:00"
+    created: "2021-08-31T17:53:19.789439851+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2071,7 +2108,7 @@ entries:
     version: 0.6.2
   - apiVersion: v2
     appVersion: 1.3.1
-    created: "2021-08-31T17:34:20.147342731+02:00"
+    created: "2021-08-31T17:53:19.781214954+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2108,7 +2145,7 @@ entries:
     version: 0.5.2
   - apiVersion: v2
     appVersion: 1.3.0
-    created: "2021-08-31T17:34:20.140738434+02:00"
+    created: "2021-08-31T17:53:19.774685281+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2145,7 +2182,7 @@ entries:
     version: 0.5.0
   kubezero-metrics:
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.911178482+02:00"
+    created: "2021-08-31T17:53:20.362909246+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2180,7 +2217,7 @@ entries:
     - kubezero-metrics-0.4.6.tgz
     version: 0.4.6
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.840892409+02:00"
+    created: "2021-08-31T17:53:20.309135684+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2215,7 +2252,7 @@ entries:
     - kubezero-metrics-0.4.4.tgz
     version: 0.4.4
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.754159226+02:00"
+    created: "2021-08-31T17:53:20.266654564+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2250,7 +2287,7 @@ entries:
     - kubezero-metrics-0.4.3.tgz
     version: 0.4.3
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.682690152+02:00"
+    created: "2021-08-31T17:53:20.230987734+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2279,7 +2316,7 @@ entries:
     - kubezero-metrics-0.4.2.tgz
     version: 0.4.2
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.595685229+02:00"
+    created: "2021-08-31T17:53:20.195899514+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2308,7 +2345,7 @@ entries:
     - kubezero-metrics-0.4.1.tgz
     version: 0.4.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.550838204+02:00"
+    created: "2021-08-31T17:53:20.153685698+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2337,7 +2374,7 @@ entries:
     - kubezero-metrics-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.488117767+02:00"
+    created: "2021-08-31T17:53:20.118154998+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2366,7 +2403,7 @@ entries:
     - kubezero-metrics-0.3.5.tgz
     version: 0.3.5
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.456436191+02:00"
+    created: "2021-08-31T17:53:20.084976066+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2395,7 +2432,7 @@ entries:
     - kubezero-metrics-0.3.4.tgz
     version: 0.3.4
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.38784461+02:00"
+    created: "2021-08-31T17:53:20.032645308+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2424,7 +2461,7 @@ entries:
     - kubezero-metrics-0.3.2.tgz
     version: 0.3.2
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.306835807+02:00"
+    created: "2021-08-31T17:53:19.975836536+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2454,7 +2491,7 @@ entries:
     version: 0.3.0
   kubezero-mq:
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.925370846+02:00"
+    created: "2021-08-31T17:53:20.408537445+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2484,7 +2521,7 @@ entries:
     - kubezero-mq-0.2.1.tgz
     version: 0.2.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.918068237+02:00"
+    created: "2021-08-31T17:53:20.384478488+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2515,7 +2552,7 @@ entries:
     version: 0.2.0
   kubezero-nats:
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.927324341+02:00"
+    created: "2021-08-31T17:53:20.410950856+02:00"
     dependencies:
     - name: nats
       repository: ""
@@ -2537,7 +2574,7 @@ entries:
     version: 0.1.0
   kubezero-redis:
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.040540154+02:00"
+    created: "2021-08-31T17:53:20.49267618+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2566,7 +2603,7 @@ entries:
     - kubezero-redis-0.3.1.tgz
     version: 0.3.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.024955253+02:00"
+    created: "2021-08-31T17:53:20.475602529+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2595,7 +2632,7 @@ entries:
     - kubezero-redis-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.006951457+02:00"
+    created: "2021-08-31T17:53:20.462731766+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2624,7 +2661,7 @@ entries:
     - kubezero-redis-0.2.2.tgz
     version: 0.2.2
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.974190927+02:00"
+    created: "2021-08-31T17:53:20.449015182+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2653,7 +2690,7 @@ entries:
     - kubezero-redis-0.2.1.tgz
     version: 0.2.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.947198426+02:00"
+    created: "2021-08-31T17:53:20.432351023+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2682,7 +2719,7 @@ entries:
     - kubezero-redis-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v2
-    created: "2021-08-31T17:34:20.934908909+02:00"
+    created: "2021-08-31T17:53:20.417802301+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2707,7 +2744,7 @@ entries:
     version: 0.1.0
   kubezero-sql:
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.05054464+02:00"
+    created: "2021-08-31T17:53:20.502645239+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2733,7 +2770,7 @@ entries:
     - kubezero-sql-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.045317928+02:00"
+    created: "2021-08-31T17:53:20.497470926+02:00"
     dependencies:
     - name: kubezero-lib
       repository: https://zero-down-time.github.io/kubezero/
@@ -2760,7 +2797,7 @@ entries:
     version: 0.1.1
   kubezero-storage:
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.113020852+02:00"
+    created: "2021-08-31T17:53:20.580088827+02:00"
     dependencies:
     - condition: lvm-localpv.enabled
       name: lvm-localpv
@@ -2789,7 +2826,7 @@ entries:
     - kubezero-storage-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.101535838+02:00"
+    created: "2021-08-31T17:53:20.576379982+02:00"
     dependencies:
     - condition: lvm-localpv.enabled
       name: lvm-localpv
@@ -2811,7 +2848,7 @@ entries:
     - kubezero-storage-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.093870668+02:00"
+    created: "2021-08-31T17:53:20.574136726+02:00"
     dependencies:
     - condition: openebs.enabled
       name: openebs
@@ -2833,7 +2870,7 @@ entries:
     - kubezero-storage-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.072171239+02:00"
+    created: "2021-08-31T17:53:20.552522911+02:00"
     dependencies:
     - condition: openebs.enabled
       name: openebs
@@ -2856,7 +2893,7 @@ entries:
     version: 0.1.0
   kubezero-timecapsule:
   - apiVersion: v2
-    created: "2021-08-31T17:34:21.118373657+02:00"
+    created: "2021-08-31T17:53:20.58524675+02:00"
     dependencies:
     - name: gemini
       repository: ""
@@ -2876,4 +2913,4 @@ entries:
     urls:
     - kubezero-timecapsule-0.1.0.tgz
     version: 0.1.0
-generated: "2021-08-31T17:34:19.564606323+02:00"
+generated: "2021-08-31T17:53:18.984638759+02:00"
