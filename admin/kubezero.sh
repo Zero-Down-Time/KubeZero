@@ -60,8 +60,7 @@ render_kubeadm() {
     cat ${WORKDIR}/kubeadm/templates/${f}Configuration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
   done
 
-  # skip InitConfig during upgrade
-  if [ "$phase" != "upgrade" ]; then
+  if [[ "$phase" =~ ^(bootstrap|restore)$ ]]; then
     cat ${WORKDIR}/kubeadm/templates/InitConfiguration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
   fi
 
@@ -166,8 +165,9 @@ kubeadm_upgrade() {
     # update argo app
     export kubezero_chart_version=$(yq .version $CHARTS/kubezero/Chart.yaml)
     kubectl get application kubezero -n argocd -o yaml | \
-      yq '.spec.source.helm.valuesObject |= load("/tmp/kubezero/new-kubezero-values.yaml") | .spec.source.targetRevision = strenv(kubezero_chart_version)' | \
-      kubectl apply --server-side --force-conflicts -f -
+      yq '.spec.source.helm.valuesObject |= load("/tmp/kubezero/new-kubezero-values.yaml") | .spec.source.targetRevision = strenv(kubezero_chart_version)' \
+      > $WORKDIR/new-argocd-app.yaml
+    kubectl apply --server-side --force-conflicts -f $WORKDIR/new-argocd-app.yaml
 
     # finally remove annotation to allow argo to sync again
     kubectl patch app kubezero -n argocd --type json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true
@@ -288,7 +288,8 @@ control_plane_node() {
     yq eval -i '.etcd.state = "existing"
       | .etcd.initialCluster = strenv(ETCD_INITIAL_CLUSTER)
       ' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml
-    render_kubeadm join
+
+    render_kubeadm $CMD
   fi
 
   # Generate our custom etcd yaml
@@ -315,9 +316,11 @@ control_plane_node() {
     fi
   fi
 
+  _kubeadm init phase upload-config all
+
   if [[ "$CMD" =~ ^(bootstrap|restore)$ ]]; then
-    _kubeadm init phase upload-config all
-    _kubeadm init phase upload-certs --skip-certificate-key-print
+    # we share certs via the control plane backup
+    #_kubeadm init phase upload-certs --skip-certificate-key-print
 
     # This sets up the ClusterRoleBindings to allow bootstrap nodes to create CSRs etc.
     _kubeadm init phase bootstrap-token --skip-token-print
