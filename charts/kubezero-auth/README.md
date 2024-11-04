@@ -1,6 +1,6 @@
 # kubezero-auth
 
-![Version: 0.5.1](https://img.shields.io/badge/Version-0.5.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 22.0.5](https://img.shields.io/badge/AppVersion-22.0.5-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.0.5](https://img.shields.io/badge/AppVersion-26.0.5-informational?style=flat-square)
 
 KubeZero umbrella chart for all things Authentication and Identity management
 
@@ -19,7 +19,7 @@ Kubernetes: `>= 1.26.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| oci://registry-1.docker.io/bitnamicharts | keycloak | 22.2.1 |
+| oci://registry-1.docker.io/bitnamicharts | keycloak | 24.0.4 |
 
 # Keycloak
    
@@ -55,6 +55,7 @@ https://github.com/keycloak/keycloak-benchmark/tree/main/provision/minikube/keyc
 | keycloak.postgresql.auth.database | string | `"keycloak"` |  |
 | keycloak.postgresql.auth.existingSecret | string | `"kubezero-auth"` |  |
 | keycloak.postgresql.auth.username | string | `"keycloak"` |  |
+| keycloak.postgresql.enabled | bool | `false` |  |
 | keycloak.postgresql.primary.persistence.size | string | `"1Gi"` |  |
 | keycloak.postgresql.primary.resources.limits.memory | string | `"128Mi"` |  |
 | keycloak.postgresql.primary.resources.requests.cpu | string | `"100m"` |  |

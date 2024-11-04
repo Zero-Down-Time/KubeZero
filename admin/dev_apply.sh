@@ -84,8 +84,13 @@ get_kubezero_values $ARGOCD
 # Always use embedded kubezero chart
 helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --kube-version $KUBE_VERSION --version ~$KUBE_VERSION --devel --output-dir $WORKDIR
 
-# Resolve all the all enabled artifacts
-if [ ${ARTIFACTS[0]} == "all" ]; then
+# Root KubeZero apply directly and exit
+if [ ${ARTIFACTS[0]} == "kubezero" ]; then
+  kubectl apply -f $WORKDIR/kubezero/templates
+  exit $?
+
+# "catch all" apply all enabled modules
+elif [ ${ARTIFACTS[0]} == "all" ]; then
   ARTIFACTS=($(ls $WORKDIR/kubezero/templates | sed -e 's/.yaml//g'))
 fi
 

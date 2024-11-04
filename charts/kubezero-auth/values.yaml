@@ -7,7 +7,7 @@ keycloak:
 
   auth:
     adminUser: admin
-    existingSecret: kubezero-auth
+    existingSecret: keycloak-auth
     passwordSecretKey: admin-password
 
   replicaCount: 1
@@ -29,26 +29,16 @@ keycloak:
     serviceMonitor:
       enabled: true
 
+  externalDatabase:
+    host: "keycloak-pg-rw"
+    port: 5432
+    user: keycloak
+    database: keycloak
+    existingSecret: keycloak-pg
+    existingSecretPasswordKey: "password"
+
   postgresql:
-    auth:
-      existingSecret: kubezero-auth
-      username: keycloak
-      database: keycloak
-
-    primary:
-      persistence:
-        size: 1Gi
-
-      resources:
-        limits:
-          #cpu: 750m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 64Mi
-
-    readReplicas:
-      replicaCount: 0
+    enabled: false
 
   istio:
     admin:

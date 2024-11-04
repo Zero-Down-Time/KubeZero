@@ -1,6 +1,6 @@
 apiVersion: v2
 name: kubezero-operators
-description: Various operators supported by KubeZero 
+description: Various operators supported by KubeZero
 type: application
 version: 0.1.5
 home: https://kubezero.com
@@ -9,6 +9,7 @@ keywords:
   - kubezero
   - operators
   - opensearch
+  - postgres
 maintainers:
   - name: Stefan Reimer
     email: stefan@zero-downtime.net
@@ -24,4 +25,8 @@ dependencies:
     version: 2.14.0
     repository: https://helm.elastic.co
     condition: eck-operator.enabled
+  - name: cloudnative-pg
+    version: 0.22.1
+    repository: https://cloudnative-pg.github.io/charts
+    condition: cloudnative-pg.enabled
 kubeVersion: ">= 1.26.0"

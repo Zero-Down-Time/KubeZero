@@ -21,8 +21,8 @@ gitea:
     capabilities:
       drop:
         - ALL
-      add:
-        - SYS_CHROOT
+    # add:
+    #   - SYS_CHROOT
 
   resources:
     requests:
@@ -71,6 +71,8 @@ gitea:
         DEFAULT_THEME: "gitea-dark"
       log:
         LEVEL: warn
+      ssh.minimum_key_sizes:
+        RSA: 2047
 
   redis-cluster:
     enabled: false

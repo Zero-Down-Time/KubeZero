@@ -10,6 +10,18 @@ eck-operator:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 
+{{- with index .Values "operators" "cloudnative-pg" }}
+cloudnative-pg:
+  {{- toYaml . | nindent 2 }}
+
+  {{- with $.Values.metrics }}
+  monitoring:
+    podMonitorEnabled: {{ .enabled }}
+    grafanaDashboard:
+      create: {{ .enabled }}
+  {{- end }}
+{{- end }}
+
 {{- end }}
 
 
