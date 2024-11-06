@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-addons
 description: KubeZero umbrella chart for various optional cluster addons
 type: application
-version: 0.8.9
+version: 0.8.10
 appVersion: v1.29
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
@@ -24,16 +24,16 @@ dependencies:
     repository: https://kubernetes-sigs.github.io/external-dns/
     condition: external-dns.enabled
   - name: cluster-autoscaler
-    version: 9.43.0
+    version: 9.43.2
     repository: https://kubernetes.github.io/autoscaler
     condition: cluster-autoscaler.enabled
   - name: nvidia-device-plugin
-    version: 0.16.2
+    version: 0.17.0
     # https://github.com/NVIDIA/k8s-device-plugin
     repository: https://nvidia.github.io/k8s-device-plugin
     condition: nvidia-device-plugin.enabled
   - name: sealed-secrets
-    version: 2.16.1
+    version: 2.16.2
     repository: https://bitnami-labs.github.io/sealed-secrets
     condition: sealed-secrets.enabled
   - name: aws-node-termination-handler
