@@ -29,7 +29,7 @@ read -r
 #[ "$ARGOCD" == "True" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
 
 ### v1.30
-#
+kubectl delete runtimeclass crio || true
 
 # upgrade modules
 #

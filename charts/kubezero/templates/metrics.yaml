@@ -44,13 +44,14 @@ prometheus:
         mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
         readOnly: true
     additionalScrapeConfigs:
-      - job_name: 'crio'
+      - job_name: 'cri'
+        metrics_path: '/v1/metrics'
         ec2_sd_configs:
           - port: 9090
             region: {{ .global.aws.region }}
             filters:
               - name: 'tag-key'
-                values: ['zdt:prometheus:crio']
+                values: ['zdt:prometheus:cri']
               {{- with .metrics.kubezero.prometheus.prometheusSpec.additionalScrapeConfigsEC2Filters }}
               {{- toYaml . | nindent 14 }}
               {{- end }}

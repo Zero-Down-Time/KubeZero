@@ -1,0 +1,10 @@
+{{- if index .Values "nvidia-device-plugin" "enabled" }}
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: nvidia
+handler: nvidia
+overhead:
+  podFixed:
+    memory: 16Mi
+{{- end }}

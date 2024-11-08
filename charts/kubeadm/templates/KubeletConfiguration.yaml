@@ -6,7 +6,7 @@ cgroupDriver: cgroupfs
 logging:
   format: json
 hairpinMode: hairpin-veth
-containerRuntimeEndpoint: "unix:///var/run/crio/crio.sock"
+containerRuntimeEndpoint: "unix:///run/containerd/containerd.sock"
 {{- if .Values.systemd }}
 resolvConf: /run/systemd/resolve/resolv.conf
 {{- end }}
@@ -21,7 +21,7 @@ featureGates:
 # Minimal unit is 40m per pod
 podsPerCore: 25
 # cpuCFSQuotaPeriod: 10ms
-# Basic OS incl. crio
+# Basic OS incl. cri
 systemReserved:
   memory: 96Mi
   #ephemeral-storage: "1Gi"

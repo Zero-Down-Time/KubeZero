@@ -164,6 +164,11 @@ awsNeuron:
 
 nvidia-device-plugin:
   enabled: false
+
+  cdi:
+    nvidiaHookPath: /usr/bin
+  deviceDiscoveryStrategy: tegra
+
   tolerations:
   - key: nvidia.com/gpu
     operator: Exists

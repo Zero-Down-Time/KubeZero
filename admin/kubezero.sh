@@ -1,4 +1,8 @@
-#!/bin/bash -e
+#!/bin/bash
+set -eu -o pipefail
+
+DEBUG=${DEBUG:-""}
+LOG=""
 
 if [ -n "$DEBUG" ]; then
   set -x
@@ -80,9 +84,6 @@ parse_kubezero() {
   export NODENAME=$(yq eval '.nodeName' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
   export PROVIDER_ID=$(yq eval '.providerID // ""' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
   export AWS_IAM_AUTH=$(yq eval '.api.awsIamAuth.enabled // "false"' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
-
-  # From here on bail out, allows debug_shell even in error cases
-  set -e
 }
 
 
@@ -188,8 +189,15 @@ kubeadm_upgrade() {
   # install re-certed kubectl config for root
   cp ${HOSTFS}/etc/kubernetes/super-admin.conf ${HOSTFS}/root/.kube/config
 
-  # post upgrade hook
-  [ -f /var/lib/kubezero/post-upgrade.sh ] && . /var/lib/kubezero/post-upgrade.sh
+  # post upgrade
+
+  # Update kubezero-values CM
+  kubectl get cm -n kube-system kubelet-config -o=yaml | \
+    yq e '.data.kubelet' | yq e '.containerRuntimeEndpoint = "unix:///run/containerd/containerd.sock"' > $WORKDIR/new-kubelet.cm
+
+  kubectl get cm -n kube-system kubelet-config -o=yaml | \
+    yq e '.data.kubelet |= load_str("/tmp/kubezero/new-kubelet.cm")' | \
+    kubectl apply --server-side --force-conflicts -f -
 
   # Cleanup after kubeadm on the host
   rm -rf ${HOSTFS}/etc/kubernetes/tmp
@@ -427,7 +435,7 @@ debug_shell() {
 
   printf "For manual etcdctl commands use:\n  # export ETCDCTL_ENDPOINTS=$ETCD_NODENAME:2379\n"
 
-  /bin/bash
+  bash
 }
 
 # First parse kubeadm-values.yaml

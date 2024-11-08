@@ -5,6 +5,8 @@ API_VERSIONS="-a monitoring.coreos.com/v1 -a snapshot.storage.k8s.io/v1 -a polic
 
 export HELM_SECRETS_BACKEND="vals"
 
+LOCAL_DEV=${LOCAL_DEV:-""}
+
 # Waits for max 300s and retries
 function wait_for() {
   local TRIES=0

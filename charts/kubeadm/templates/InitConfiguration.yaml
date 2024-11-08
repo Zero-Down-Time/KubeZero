@@ -8,7 +8,7 @@ patches:
   directory: {{ . }}
 {{- end }}
 nodeRegistration:
-  criSocket: "unix:///var/run/crio/crio.sock"
+  criSocket: "unix:///run/containerd/containerd.sock"
   ignorePreflightErrors:
   - DirAvailable--var-lib-etcd
   - DirAvailable--etc-kubernetes-manifests

@@ -4,10 +4,6 @@ folder: KubeZero
 dashboards:
 - name: home
   url: file://zdt/home.json
-- name: crio
-  url: file://zdt/crio.json
-  #url: https://raw.githubusercontent.com/cri-o/cri-o/refs/heads/main/contrib/metrics-exporter/dashboard.json
-  tags: ['kubernetes']
 - name: docker-registry
   url: file://zdt/docker-registry.json
   tags: ['kubernetes', 'registry', 'ec2']
