@@ -167,7 +167,8 @@ nvidia-device-plugin:
 
   cdi:
     nvidiaHookPath: /usr/bin
-  deviceDiscoveryStrategy: tegra
+  deviceDiscoveryStrategy: nvml
+  runtimeClassName: nvidia
 
   tolerations:
   - key: nvidia.com/gpu
