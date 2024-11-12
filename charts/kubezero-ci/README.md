@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.8.17](https://img.shields.io/badge/Version-0.8.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.8.18](https://img.shields.io/badge/Version-0.8.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -20,9 +20,9 @@ Kubernetes: `>= 1.25.0`
 |------------|------|---------|
 | https://aquasecurity.github.io/helm-charts/ | trivy | 0.8.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://charts.jenkins.io | jenkins | 5.7.6 |
-| https://dl.gitea.io/charts/ | gitea | 10.4.1 |
-| https://docs.renovatebot.com/helm-charts | renovate | 38.124.1 |
+| https://charts.jenkins.io | jenkins | 5.7.12 |
+| https://dl.gitea.io/charts/ | gitea | 10.6.0 |
+| https://docs.renovatebot.com/helm-charts | renovate | 38.142.6 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -56,6 +56,7 @@ Kubernetes: `>= 1.25.0`
 | gitea.extraVolumes[0].configMap.name | string | `"gitea-kubezero-ci-themes"` |  |
 | gitea.extraVolumes[0].name | string | `"gitea-themes"` |  |
 | gitea.gitea.admin.existingSecret | string | `"gitea-admin-secret"` |  |
+| gitea.gitea.config."ssh.minimum_key_sizes".RSA | int | `2047` |  |
 | gitea.gitea.config.cache.ADAPTER | string | `"memory"` |  |
 | gitea.gitea.config.database.DB_TYPE | string | `"sqlite3"` |  |
 | gitea.gitea.config.log.LEVEL | string | `"warn"` |  |
@@ -81,7 +82,6 @@ Kubernetes: `>= 1.25.0`
 | gitea.resources.requests.cpu | string | `"150m"` |  |
 | gitea.resources.requests.memory | string | `"320Mi"` |  |
 | gitea.securityContext.allowPrivilegeEscalation | bool | `false` |  |
-| gitea.securityContext.capabilities.add[0] | string | `"SYS_CHROOT"` |  |
 | gitea.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | gitea.strategy.type | string | `"Recreate"` |  |
 | gitea.test.enabled | bool | `false` |  |

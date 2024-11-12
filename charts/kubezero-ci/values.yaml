@@ -21,8 +21,6 @@ gitea:
     capabilities:
       drop:
         - ALL
-    # add:
-    #   - SYS_CHROOT
 
   resources:
     requests:
@@ -185,7 +183,7 @@ jenkins:
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.6.2
+      tag: v0.7.0
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false
@@ -279,7 +277,7 @@ jenkins:
 trivy:
   enabled: false
   image:
-   tag: 0.56.2
+   tag: 0.57.0
   persistence:
     enabled: true
     size: 1Gi

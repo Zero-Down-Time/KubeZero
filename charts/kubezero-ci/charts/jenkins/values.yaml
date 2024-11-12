@@ -399,10 +399,10 @@ controller:
   # Plugins will be installed during Jenkins controller start
   # -- List of Jenkins plugins to install. If you don't want to install plugins, set it to `false`
   installPlugins:
-    - kubernetes:4292.v11898cf8fa_66
+    - kubernetes:4295.v7fa_01b_309c95
     - workflow-aggregator:600.vb_57cdd26fdd7
-    - git:5.5.2
-    - configuration-as-code:1850.va_a_8c31d3158b_
+    - git:5.6.0
+    - configuration-as-code:1887.v9e47623cb_043
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
   # -- Download the minimum required version or latest version of all dependencies
@@ -951,7 +951,7 @@ agent:
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3261.v9c670a_4748a_9-1"
+    tag: "3273.v4cfe589b_fd83-1"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"

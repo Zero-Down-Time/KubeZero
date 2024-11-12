@@ -12,6 +12,30 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.7.12
+
+Update `configuration-as-code` to version `1887.v9e47623cb_043`
+
+## 5.7.11
+
+Update `git` to version `5.6.0`
+
+## 5.7.10
+
+Update `jenkins/jenkins` to version `2.479.1-jdk17`
+
+## 5.7.9
+
+Update `configuration-as-code` to version `1873.vea_5814ca_9c93`
+
+## 5.7.8
+
+Update `jenkins/inbound-agent` to version `3273.v4cfe589b_fd83-1`
+
+## 5.7.7
+
+Update `kubernetes` to version `4295.v7fa_01b_309c95`
+
 ## 5.7.5
 
 Fix helm release deployment with flux revision reconciliation

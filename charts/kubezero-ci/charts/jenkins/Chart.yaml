@@ -1,12 +1,14 @@
 annotations:
   artifacthub.io/category: integration-delivery
+  artifacthub.io/changes: |
+    - Update `configuration-as-code` to version `1887.v9e47623cb_043`
   artifacthub.io/images: |
     - name: jenkins
-      image: docker.io/jenkins/jenkins:2.462.3-jdk17
+      image: docker.io/jenkins/jenkins:2.479.1-jdk17
     - name: k8s-sidecar
       image: docker.io/kiwigrid/k8s-sidecar:1.28.0
     - name: inbound-agent
-      image: jenkins/inbound-agent:3261.v9c670a_4748a_9-1
+      image: jenkins/inbound-agent:3273.v4cfe589b_fd83-1
   artifacthub.io/license: Apache-2.0
   artifacthub.io/links: |
     - name: Chart Source
@@ -16,7 +18,7 @@ annotations:
     - name: support
       url: https://github.com/jenkinsci/helm-charts/issues
 apiVersion: v2
-appVersion: 2.462.3
+appVersion: 2.479.1
 description: 'Jenkins - Build great things at any scale! As the leading open source
   automation server, Jenkins provides over 1800 plugins to support building, deploying
   and automating any project. '
@@ -44,4 +46,4 @@ sources:
 - https://github.com/maorfr/kube-tasks
 - https://github.com/jenkinsci/configuration-as-code-plugin
 type: application
-version: 5.7.6
+version: 5.7.12

@@ -3,18 +3,18 @@ multus:
   enabled: true
   clusterNetwork: "cilium"
 
-  {{- if eq .Values.global.platform "aws" }}
-  image:
-    pullPolicy: Never
-  {{- end }}
+# {{- if eq .Values.global.platform "aws" }}
+# image:
+#   pullPolicy: Never
+# {{- end }}
 
 cilium:
   enabled: true
 
-  {{- if eq .Values.global.platform "aws" }}
-  image:
-    pullPolicy: Never
-  {{- end }}
+# {{- if eq .Values.global.platform "aws" }}
+# image:
+#   pullPolicy: Never
+# {{- end }}
 
   cluster:
     name: {{ .Values.global.clusterName }}
