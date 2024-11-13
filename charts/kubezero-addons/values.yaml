@@ -276,3 +276,33 @@ external-dns:
   #- istio-gateway
 
   provider: inmemory
+
+
+py-kube-downscaler:
+  enabled: false
+
+  tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    effect: NoSchedule
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+
+  resources:
+    limits:
+      cpu: null
+      memory: 512Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+  # By default no NOT scale down KubeZero modules
+  excludedNamespaces:
+  - kube-system
+  - operators
+  - monitoring
+  - logging
+  - telemetry
+  - istio-system
+  - istio-ingress
+  - cert-manager
+  - argocd

@@ -1,6 +1,6 @@
 # kubezero-addons
 
-![Version: 0.8.10](https://img.shields.io/badge/Version-0.8.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.30](https://img.shields.io/badge/AppVersion-v1.30-informational?style=flat-square)
+![Version: 0.8.11](https://img.shields.io/badge/Version-0.8.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.30](https://img.shields.io/badge/AppVersion-v1.30-informational?style=flat-square)
 
 KubeZero umbrella chart for various optional cluster addons
 
@@ -19,6 +19,7 @@ Kubernetes: `>= 1.26.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://bitnami-labs.github.io/sealed-secrets | sealed-secrets | 2.16.2 |
+| https://caas-team.github.io/helm-charts/ | py-kube-downscaler | 0.2.11 |
 | https://kubernetes-sigs.github.io/external-dns/ | external-dns | 1.15.0 |
 | https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.43.2 |
 | https://nvidia.github.io/k8s-device-plugin | nvidia-device-plugin | 0.17.0 |
@@ -156,7 +157,10 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[7] | string | `"g5.48xlarge"` |  |
 | nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[8] | string | `"g4dn.xlarge"` |  |
 | nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[9] | string | `"g4dn.2xlarge"` |  |
+| nvidia-device-plugin.cdi.nvidiaHookPath | string | `"/usr/bin"` |  |
+| nvidia-device-plugin.deviceDiscoveryStrategy | string | `"nvml"` |  |
 | nvidia-device-plugin.enabled | bool | `false` |  |
+| nvidia-device-plugin.runtimeClassName | string | `"nvidia"` |  |
 | nvidia-device-plugin.tolerations[0].effect | string | `"NoSchedule"` |  |
 | nvidia-device-plugin.tolerations[0].key | string | `"nvidia.com/gpu"` |  |
 | nvidia-device-plugin.tolerations[0].operator | string | `"Exists"` |  |

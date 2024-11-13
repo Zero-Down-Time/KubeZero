@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-addons
 description: KubeZero umbrella chart for various optional cluster addons
 type: application
-version: 0.8.10
+version: 0.8.11
 appVersion: v1.30
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
@@ -15,6 +15,7 @@ keywords:
   - sealed-secrets
   - external-dns
   - aws-node-termination-handler
+  - py-kube-downscaler
 maintainers:
   - name: Stefan Reimer
     email: stefan@zero-downtime.net
@@ -44,4 +45,8 @@ dependencies:
     version: 1.5.0
     repository: https://twin.github.io/helm-charts
     condition: aws-eks-asg-rolling-update-handler.enabled
+  - name: py-kube-downscaler
+    version: 0.2.11
+    repository: https://caas-team.github.io/helm-charts/
+    condition: py-kube-downscaler.enabled
 kubeVersion: ">= 1.26.0"

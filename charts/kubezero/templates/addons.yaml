@@ -109,11 +109,6 @@ fuseDevicePlugin:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 
-{{- with .Values.addons.awsNeuron }}
-awsNeuron:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-
 {{- with index .Values "addons" "nvidia-device-plugin" }}
 nvidia-device-plugin:
   {{- toYaml . | nindent 2 }}
@@ -130,8 +125,13 @@ sealed-secrets:
   {{- end }}
 {{- end }}
 
-{{- if .Values.global.aws.region }}
+{{- with index .Values "addons" "py-kube-downscaler" }}
+py-kube-downscaler:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+
 # AWS only
+{{- if eq .Values.global.platform "aws" }}
 aws-node-termination-handler:
   enabled: {{ default "true" (index .Values "addons" "aws-node-termination-handler" "enabled") }}
 
@@ -181,6 +181,12 @@ aws-eks-asg-rolling-update-handler:
       value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
     - name: AWS_STS_REGIONAL_ENDPOINTS
       value: "regional"
+
+{{- with .Values.addons.awsNeuron }}
+awsNeuron:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+
 {{- end }}
 
 {{- end }}
