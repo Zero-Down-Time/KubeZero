@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-operators
 description: Various operators supported by KubeZero
 type: application
-version: 0.1.5
+version: 0.1.6
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -18,11 +18,11 @@ dependencies:
     version: ">= 0.1.6"
     repository: https://cdn.zero-downtime.net/charts/
   - name: opensearch-operator
-    version: 2.6.1
+    version: 2.7.0
     repository: https://opensearch-project.github.io/opensearch-k8s-operator/
     condition: opensearch-operator.enabled
   - name: eck-operator
-    version: 2.14.0
+    version: 2.15.0
     repository: https://helm.elastic.co
     condition: eck-operator.enabled
   - name: cloudnative-pg
