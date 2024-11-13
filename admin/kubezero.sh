@@ -64,7 +64,7 @@ render_kubeadm() {
     cat ${WORKDIR}/kubeadm/templates/${f}Configuration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
   done
 
-  if [[ "$phase" =~ ^(bootstrap|restore)$ ]]; then
+  if [[ "$phase" =~ ^(bootstrap|join|restore)$ ]]; then
     cat ${WORKDIR}/kubeadm/templates/InitConfiguration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
   fi
 

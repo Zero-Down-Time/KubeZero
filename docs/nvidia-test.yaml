@@ -6,11 +6,12 @@ metadata:
 spec:
   runtimeClassName: nvidia
   containers:
+ #- image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.5.0
   - image: nvidia/cuda:12.5.1-base-ubuntu22.04
     command:
     - "bash"
     - "-c"
-    - "sleep 3600"
+    - "nvidia-smi; sleep 3600"
     imagePullPolicy: IfNotPresent
     name: nvidia-test
     resources:
@@ -18,3 +19,7 @@ spec:
         nvidia.com/gpu: 1
       requests:
         memory: 1024Mi
+  tolerations:
+  - effect: NoSchedule
+    key: kubezero-workergroup
+    operator: Exists

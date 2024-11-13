@@ -19,6 +19,11 @@ echo "Checking that all pods in kube-system are running ..."
 
 [ "$ARGOCD" == "True" ] && disable_argo
 
+# 1.30 fix for the missing kubeadm socket annotations
+for c in $(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" | grep v1.29 | awk {'print $1}'); do
+  kubectl annotate node $c 'kubeadm.alpha.kubernetes.io/cri-socket=unix:///var/run/crio/crio.sock'
+done
+
 control_plane_upgrade kubeadm_upgrade
 
 echo "Control plane upgraded, <Return> to continue"
@@ -33,13 +38,14 @@ kubectl delete runtimeclass crio || true
 
 # upgrade modules
 #
-# Preload cilium images to running nodes
-all_nodes_upgrade "chroot /host crictl pull quay.io/cilium/cilium:v1.16.3"
+# Preload cilium images to running nodes, disabled till 1.31
+# all_nodes_upgrade "chroot /host crictl pull quay.io/cilium/cilium:v1.16.3; chroot /host crictl pull ghcr.io/k8snetworkplumbingwg/multus-cni:v3.9.3"
 
 control_plane_upgrade "apply_network, apply_addons, apply_storage, apply_operators"
 
-echo "Checking that all pods in kube-system are running ..."
-waitSystemPodsRunning
+# Disabled during 1.30 due to nvidia runtime deadlock
+#echo "Checking that all pods in kube-system are running ..."
+#waitSystemPodsRunning
 
 echo "Applying remaining KubeZero modules..."
 
