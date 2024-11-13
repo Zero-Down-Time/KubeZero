@@ -17,8 +17,6 @@ cloudnative-pg:
   {{- with $.Values.metrics }}
   monitoring:
     podMonitorEnabled: {{ .enabled }}
-    grafanaDashboard:
-      create: {{ .enabled }}
   {{- end }}
 {{- end }}
 

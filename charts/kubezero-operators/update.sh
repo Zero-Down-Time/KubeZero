@@ -16,4 +16,7 @@ helm template charts/eck-operator/charts/eck-operator-crds --name-template loggi
 rm -rf charts/eck-operator/charts
 yq eval -Mi 'del(.dependencies)' charts/eck-operator/Chart.yaml
 
+# Create ZDT dashboard configmap
+../kubezero-metrics/sync_grafana_dashboards.py dashboards.yaml templates/cloudnative-pg/grafana-dashboards.yaml
+
 update_docs

@@ -1,6 +1,6 @@
 # kubezero-operators
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Various operators supported by KubeZero
 
@@ -20,13 +20,19 @@ Kubernetes: `>= 1.26.0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
 | https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.22.1 |
-| https://helm.elastic.co | eck-operator | 2.14.0 |
-| https://opensearch-project.github.io/opensearch-k8s-operator/ | opensearch-operator | 2.6.1 |
+| https://helm.elastic.co | eck-operator | 2.15.0 |
+| https://opensearch-project.github.io/opensearch-k8s-operator/ | opensearch-operator | 2.7.0 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| cloudnative-pg.enabled | bool | `false` |  |
+| cloudnative-pg.monitoring.grafanaDashboard.create | bool | `false` |  |
+| cloudnative-pg.monitoring.podMonitorEnabled | bool | `false` |  |
+| cloudnative-pg.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
+| cloudnative-pg.tolerations[0].effect | string | `"NoSchedule"` |  |
+| cloudnative-pg.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
 | eck-operator.enabled | bool | `false` |  |
 | eck-operator.installCRDs | bool | `false` |  |
 | eck-operator.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |

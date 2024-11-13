@@ -45,7 +45,7 @@ argo-cd:
       format: json
     image:
       repository: public.ecr.aws/zero-downtime/zdt-argocd
-      tag: v2.12.4
+      tag: v2.13.0
 
   configs:
     styles: |
@@ -102,6 +102,7 @@ argo-cd:
     params:
       controller.status.processors: "10"
       controller.operation.processors: "5"
+      controller.diff.server.side: "true"
 
       server.insecure: true
       server.enable.gzip: true

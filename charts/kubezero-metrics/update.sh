@@ -6,22 +6,6 @@ set -ex
 #login_ecr_public
 update_helm
 
-get_extract_chart kube-prometheus-stack
-
-# Add ArgoCD annotations due to size
-for f in charts/kube-prometheus-stack/charts/crds/crds/crd-alertmanagerconfigs.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-alertmanagers.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-podmonitors.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-probes.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-prometheusagents.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-prometheuses.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-prometheusrules.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-scrapeconfigs.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-servicemonitors.yaml \
-  charts/kube-prometheus-stack/charts/crds/crds/crd-thanosrulers.yaml; do
-  yq -i '.metadata.annotations += {"argocd.argoproj.io/sync-options":"ServerSideApply=true"}' $f
-done
-
 # Create ZDT dashboard, alerts etc configmaps
 cd jsonnet && make
 

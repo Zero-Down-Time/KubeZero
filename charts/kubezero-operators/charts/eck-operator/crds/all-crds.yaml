@@ -4,14 +4,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: agents.agent.k8s.elastic.co
 spec:
   group: agent.k8s.elastic.co
@@ -100,12 +100,8 @@ spec:
                       the update strategy for a DaemonSet.
                     properties:
                       rollingUpdate:
-                        description: |-
-                          Rolling update config params. Present only if type = "RollingUpdate".
-                          ---
-                          TODO: Update this to follow our convention for oneOf, whatever we decide it
-                          to be. Same as Deployment `strategy.rollingUpdate`.
-                          See https://github.com/kubernetes/kubernetes/issues/35345
+                        description: Rolling update config params. Present only if
+                          type = "RollingUpdate".
                         properties:
                           maxSurge:
                             anyOf:
@@ -179,9 +175,6 @@ spec:
                         description: |-
                           Rolling update config params. Present only if DeploymentStrategyType =
                           RollingUpdate.
-                          ---
-                          TODO: Update this to follow our convention for oneOf, whatever we decide it
-                          to be.
                         properties:
                           maxSurge:
                             anyOf:
@@ -375,7 +368,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -455,7 +447,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -526,16 +517,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -680,7 +668,6 @@ spec:
                         description: |-
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
-
 
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
@@ -1079,7 +1066,7 @@ spec:
                                 set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                 exists.
                                 More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                                (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+                                (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                               type: string
                             volumeMode:
                               description: |-
@@ -1150,14 +1137,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: apmservers.apm.k8s.elastic.co
 spec:
   group: apm.k8s.elastic.co
@@ -1332,7 +1319,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -1412,7 +1398,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -1483,16 +1468,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -1637,7 +1619,6 @@ spec:
                         description: |-
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
-
 
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
@@ -1966,7 +1947,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -2046,7 +2026,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -2117,16 +2096,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -2272,7 +2248,6 @@ spec:
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
 
-
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
                           - `tls.key`: The private key to the first certificate in the certificate chain.
@@ -2397,14 +2372,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: beats.beat.k8s.elastic.co
 spec:
   group: beat.k8s.elastic.co
@@ -2497,12 +2472,8 @@ spec:
                       the update strategy for a DaemonSet.
                     properties:
                       rollingUpdate:
-                        description: |-
-                          Rolling update config params. Present only if type = "RollingUpdate".
-                          ---
-                          TODO: Update this to follow our convention for oneOf, whatever we decide it
-                          to be. Same as Deployment `strategy.rollingUpdate`.
-                          See https://github.com/kubernetes/kubernetes/issues/35345
+                        description: Rolling update config params. Present only if
+                          type = "RollingUpdate".
                         properties:
                           maxSurge:
                             anyOf:
@@ -2576,9 +2547,6 @@ spec:
                         description: |-
                           Rolling update config params. Present only if DeploymentStrategyType =
                           RollingUpdate.
-                          ---
-                          TODO: Update this to follow our convention for oneOf, whatever we decide it
-                          to be.
                         properties:
                           maxSurge:
                             anyOf:
@@ -2886,14 +2854,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: elasticmapsservers.maps.k8s.elastic.co
 spec:
   group: maps.k8s.elastic.co
@@ -3080,7 +3048,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -3160,7 +3127,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -3231,16 +3197,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -3386,7 +3349,6 @@ spec:
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
 
-
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
                           - `tls.key`: The private key to the first certificate in the certificate chain.
@@ -3497,14 +3459,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: elasticsearchautoscalers.autoscaling.k8s.elastic.co
 spec:
   group: autoscaling.k8s.elastic.co
@@ -3731,6 +3693,7 @@ spec:
                   the Elasticsearch autoscaling API.
                 type: string
             required:
+            - elasticsearchRef
             - policies
             type: object
           status:
@@ -3855,14 +3818,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: elasticsearches.elasticsearch.k8s.elastic.co
 spec:
   group: elasticsearch.k8s.elastic.co
@@ -4034,7 +3997,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -4114,7 +4076,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -4185,16 +4146,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -4339,7 +4297,6 @@ spec:
                         description: |-
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
-
 
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
@@ -4735,7 +4692,7 @@ spec:
                                   set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                   exists.
                                   More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                                  (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+                                  (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                                 type: string
                               volumeMode:
                                 description: |-
@@ -4862,17 +4819,14 @@ spec:
                           should be considered for eviction. Current implementation considers healthy pods,
                           as pods that have status.conditions item with type="Ready",status="True".
 
-
                           Valid policies are IfHealthyBudget and AlwaysAllow.
                           If no policy is specified, the default behavior will be used,
                           which corresponds to the IfHealthyBudget policy.
-
 
                           IfHealthyBudget policy means that running pods (status.phase="Running"),
                           but not yet healthy can be evicted only if the guarded application is not
                           disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
                           Healthy pods will be subject to the PDB for eviction.
-
 
                           AlwaysAllow policy means that all running pods (status.phase="Running"),
                           but not yet healthy are considered disrupted and can be evicted regardless
@@ -4880,11 +4834,9 @@ spec:
                           pods of a disrupted application might not get a chance to become healthy.
                           Healthy pods will be subject to the PDB for eviction.
 
-
                           Additional policies may be added in the future.
                           Clients making eviction decisions should disallow eviction of unhealthy pods
                           if they encounter an unrecognized policy in this field.
-
 
                           This field is beta-level. The eviction API uses this field when
                           the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
@@ -5053,7 +5005,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -5133,7 +5084,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -5204,16 +5154,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -5360,7 +5307,6 @@ spec:
                           Certificate is a reference to a Kubernetes secret that contains the CA certificate
                           and private key for generating node certificates.
                           The referenced secret should contain the following:
-
 
                           - `ca.crt`: The CA certificate in PEM format.
                           - `ca.key`: The private key for the CA certificate in PEM format.
@@ -5763,7 +5709,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -5843,7 +5788,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -5914,16 +5858,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -6068,7 +6009,6 @@ spec:
                         description: |-
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
-
 
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
@@ -6371,7 +6311,7 @@ spec:
                                   set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                   exists.
                                   More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                                  (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+                                  (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                                 type: string
                               volumeMode:
                                 description: |-
@@ -6499,17 +6439,14 @@ spec:
                           should be considered for eviction. Current implementation considers healthy pods,
                           as pods that have status.conditions item with type="Ready",status="True".
 
-
                           Valid policies are IfHealthyBudget and AlwaysAllow.
                           If no policy is specified, the default behavior will be used,
                           which corresponds to the IfHealthyBudget policy.
-
 
                           IfHealthyBudget policy means that running pods (status.phase="Running"),
                           but not yet healthy can be evicted only if the guarded application is not
                           disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
                           Healthy pods will be subject to the PDB for eviction.
-
 
                           AlwaysAllow policy means that all running pods (status.phase="Running"),
                           but not yet healthy are considered disrupted and can be evicted regardless
@@ -6517,11 +6454,9 @@ spec:
                           pods of a disrupted application might not get a chance to become healthy.
                           Healthy pods will be subject to the PDB for eviction.
 
-
                           Additional policies may be added in the future.
                           Clients making eviction decisions should disallow eviction of unhealthy pods
                           if they encounter an unrecognized policy in this field.
-
 
                           This field is beta-level. The eviction API uses this field when
                           the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
@@ -6627,14 +6562,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: enterprisesearches.enterprisesearch.k8s.elastic.co
 spec:
   group: enterprisesearch.k8s.elastic.co
@@ -6820,7 +6755,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -6900,7 +6834,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -6971,16 +6904,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -7125,7 +7055,6 @@ spec:
                         description: |-
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
-
 
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
@@ -7405,7 +7334,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -7485,7 +7413,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -7556,16 +7483,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -7711,7 +7635,6 @@ spec:
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
 
-
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
                           - `tls.key`: The private key to the first certificate in the certificate chain.
@@ -7808,14 +7731,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: kibanas.kibana.k8s.elastic.co
 spec:
   group: kibana.k8s.elastic.co
@@ -8020,7 +7943,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -8100,7 +8022,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -8171,16 +8092,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -8325,7 +8243,6 @@ spec:
                         description: |-
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
-
 
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
@@ -8715,7 +8632,6 @@ spec:
                               clients must ensure that clusterIPs[0] and clusterIP have the same
                               value.
 
-
                               This field may hold a maximum of two entries (dual-stack IPs, in either order).
                               These IPs must correspond to the values of the ipFamilies field. Both
                               clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -8795,7 +8711,6 @@ spec:
                               NodePort, and LoadBalancer, and does apply to "headless" services.
                               This field will be wiped when updating a Service to type ExternalName.
 
-
                               This field may hold a maximum of two entries (dual-stack families, in
                               either order).  These families must correspond to the values of the
                               clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -8866,16 +8781,13 @@ spec:
                                     This field follows standard Kubernetes label syntax.
                                     Valid values are either:
 
-
                                     * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                     RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                     * Kubernetes-defined prefixed names:
                                       * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                       * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                       * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                     * Other protocols should use implementation-defined prefixed names such as
                                     mycompany.com/my-custom-protocol.
@@ -9021,7 +8933,6 @@ spec:
                           Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                           The referenced secret should contain the following:
 
-
                           - `ca.crt`: The certificate authority (optional).
                           - `tls.crt`: The certificate (or a chain).
                           - `tls.key`: The private key to the first certificate in the certificate chain.
@@ -9135,14 +9046,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: logstashes.logstash.k8s.elastic.co
 spec:
   group: logstash.k8s.elastic.co
@@ -9258,6 +9169,8 @@ spec:
                         object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of
                         the referenced resource is used.
                       type: string
+                  required:
+                  - clusterName
                   type: object
                 type: array
               image:
@@ -9509,7 +9422,6 @@ spec:
                                 clients must ensure that clusterIPs[0] and clusterIP have the same
                                 value.
 
-
                                 This field may hold a maximum of two entries (dual-stack IPs, in either order).
                                 These IPs must correspond to the values of the ipFamilies field. Both
                                 clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
@@ -9589,7 +9501,6 @@ spec:
                                 NodePort, and LoadBalancer, and does apply to "headless" services.
                                 This field will be wiped when updating a Service to type ExternalName.
 
-
                                 This field may hold a maximum of two entries (dual-stack families, in
                                 either order).  These families must correspond to the values of the
                                 clusterIPs field, if specified. Both clusterIPs and ipFamilies are
@@ -9660,16 +9571,13 @@ spec:
                                       This field follows standard Kubernetes label syntax.
                                       Valid values are either:
 
-
                                       * Un-prefixed protocol names - reserved for IANA standard service names (as per
                                       RFC-6335 and https://www.iana.org/assignments/service-names).
-
 
                                       * Kubernetes-defined prefixed names:
                                         * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
                                         * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
                                         * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-
 
                                       * Other protocols should use implementation-defined prefixed names such as
                                       mycompany.com/my-custom-protocol.
@@ -9814,7 +9722,6 @@ spec:
                           description: |-
                             Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
                             The referenced secret should contain the following:
-
 
                             - `ca.crt`: The certificate authority (optional).
                             - `tls.crt`: The certificate (or a chain).
@@ -10123,7 +10030,7 @@ spec:
                             set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                             exists.
                             More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                            (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+                            (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                           type: string
                         volumeMode:
                           description: |-
@@ -10163,7 +10070,7 @@ spec:
                             volume.\n\t* Custom resources must use implementation-defined
                             prefixed names such as \"example.com/my-custom-resource\"\nApart
                             from above values - keys that are unprefixed or have kubernetes.io
-                            prefix are considered\nreserved and hence may not be used.\n\n\nClaimResourceStatus
+                            prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus
                             can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState
                             set when resize controller starts resizing the volume
                             in control-plane.\n\t- ControllerResizeFailed:\n\t\tState
@@ -10183,12 +10090,12 @@ spec:
                             = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage']
                             = \"NodeResizeFailed\"\nWhen this field is not set, it
                             means that no resize operation is in progress for the
-                            given PVC.\n\n\nA controller that receives PVC update
-                            with previously unknown resourceName or ClaimResourceStatus\nshould
+                            given PVC.\n\nA controller that receives PVC update with
+                            previously unknown resourceName or ClaimResourceStatus\nshould
                             ignore the update for the purpose it was designed. For
                             example - a controller that\nonly is responsible for resizing
                             capacity of the volume, should ignore PVC updates that
-                            change other valid\nresources associated with PVC.\n\n\nThis
+                            change other valid\nresources associated with PVC.\n\nThis
                             is an alpha field and requires enabling RecoverVolumeExpansionFailure
                             feature."
                           type: object
@@ -10207,7 +10114,7 @@ spec:
                             volume.\n\t* Custom resources must use implementation-defined
                             prefixed names such as \"example.com/my-custom-resource\"\nApart
                             from above values - keys that are unprefixed or have kubernetes.io
-                            prefix are considered\nreserved and hence may not be used.\n\n\nCapacity
+                            prefix are considered\nreserved and hence may not be used.\n\nCapacity
                             reported here may be larger than the actual capacity when
                             a volume expansion operation\nis requested.\nFor storage
                             quota, the larger value from allocatedResources and PVC.spec.resources
@@ -10216,12 +10123,12 @@ spec:
                             capacity request is lowered, allocatedResources is only\nlowered
                             if there are no expansion operations in progress and if
                             the actual volume capacity\nis equal or lower than the
-                            requested capacity.\n\n\nA controller that receives PVC
+                            requested capacity.\n\nA controller that receives PVC
                             update with previously unknown resourceName\nshould ignore
                             the update for the purpose it was designed. For example
                             - a controller that\nonly is responsible for resizing
                             capacity of the volume, should ignore PVC updates that
-                            change other valid\nresources associated with PVC.\n\n\nThis
+                            change other valid\nresources associated with PVC.\n\nThis
                             is an alpha field and requires enabling RecoverVolumeExpansionFailure
                             feature."
                           type: object
@@ -10266,8 +10173,16 @@ spec:
                               status:
                                 type: string
                               type:
-                                description: PersistentVolumeClaimConditionType is
-                                  a valid value of PersistentVolumeClaimCondition.Type
+                                description: |-
+                                  PersistentVolumeClaimConditionType defines the condition of PV claim.
+                                  Valid values are:
+                                    - "Resizing", "FileSystemResizePending"
+
+                                  If RecoverVolumeExpansionFailure feature gate is enabled, then following additional values can be expected:
+                                    - "ControllerResizeError", "NodeResizeError"
+
+                                  If VolumeAttributesClass feature gate is enabled, then following additional values can be expected:
+                                    - "ModifyVolumeError", "ModifyingVolume"
                                 type: string
                             required:
                             - status
@@ -10281,13 +10196,13 @@ spec:
                           description: |-
                             currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
                             When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim
-                            This is an alpha field and requires enabling VolumeAttributesClass feature.
+                            This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
                           type: string
                         modifyVolumeStatus:
                           description: |-
                             ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
                             When this is unset, there is no ModifyVolume operation being attempted.
-                            This is an alpha field and requires enabling VolumeAttributesClass feature.
+                            This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
                           properties:
                             status:
                               description: "status is the status of the ControllerModifyVolume
@@ -10378,14 +10293,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.4
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.14.0'
-    helm.sh/chart: 'eck-operator-crds-2.14.0'
+    app.kubernetes.io/version: '2.15.0'
+    helm.sh/chart: 'eck-operator-crds-2.15.0'
   name: stackconfigpolicies.stackconfigpolicy.k8s.elastic.co
 spec:
   group: stackconfigpolicy.k8s.elastic.co

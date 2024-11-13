@@ -96,12 +96,12 @@ telemetry:
 operators:
   enabled: false
   namespace: operators
-  targetRevision: 0.1.5
+  targetRevision: 0.1.6
 
 metrics:
   enabled: false
   namespace: monitoring
-  targetRevision: 0.10.1
+  targetRevision: 0.10.2
   istio:
     grafana: {}
     prometheus: {}
@@ -119,7 +119,7 @@ logging:
 argo:
   enabled: false
   namespace: argocd
-  targetRevision: 0.2.5
+  targetRevision: 0.2.6
   argo-cd:
     enabled: false
     istio:

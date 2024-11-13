@@ -35,3 +35,9 @@ cloudnative-pg:
     effect: NoSchedule
   nodeSelector:
     node-role.kubernetes.io/control-plane: ""
+
+  monitoring:
+    podMonitorEnabled: false
+    # We pull in the dashboard via our pipeline !
+    grafanaDashboard:
+      create: false

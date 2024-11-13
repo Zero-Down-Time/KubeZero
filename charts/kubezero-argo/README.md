@@ -1,6 +1,6 @@
 # kubezero-argo
 
-![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square)
+![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square)
 
 KubeZero Argo - Events, Workflow, CD
 
@@ -18,10 +18,10 @@ Kubernetes: `>= 1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://argoproj.github.io/argo-helm | argo-cd | 7.6.10 |
+| https://argoproj.github.io/argo-helm | argo-cd | 7.7.2 |
 | https://argoproj.github.io/argo-helm | argo-events | 2.4.8 |
 | https://argoproj.github.io/argo-helm | argocd-apps | 2.0.2 |
-| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.11.0 |
+| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.11.2 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
 
 ## Values
@@ -30,17 +30,18 @@ Kubernetes: `>= 1.26.0-0`
 |-----|------|---------|-------------|
 | argo-cd.configs.cm."resource.customizations" | string | `"cert-manager.io/Certificate:\n  # Lua script for customizing the health status assessment\n  health.lua: |\n    hs = {}\n    if obj.status ~= nil then\n      if obj.status.conditions ~= nil then\n        for i, condition in ipairs(obj.status.conditions) do\n          if condition.type == \"Ready\" and condition.status == \"False\" then\n            hs.status = \"Degraded\"\n            hs.message = condition.message\n            return hs\n          end\n          if condition.type == \"Ready\" and condition.status == \"True\" then\n            hs.status = \"Healthy\"\n            hs.message = condition.message\n            return hs\n          end\n        end\n      end\n    end\n    hs.status = \"Progressing\"\n    hs.message = \"Waiting for certificate\"\n    return hs\n"` |  |
 | argo-cd.configs.cm."timeout.reconciliation" | string | `"300s"` |  |
-| argo-cd.configs.cm."ui.bannercontent" | string | `"KubeZero v1.29 - Release notes"` |  |
+| argo-cd.configs.cm."ui.bannercontent" | string | `"KubeZero v1.30 - Release notes"` |  |
 | argo-cd.configs.cm."ui.bannerpermanent" | string | `"true"` |  |
 | argo-cd.configs.cm."ui.bannerposition" | string | `"bottom"` |  |
-| argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.29"` |  |
+| argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.30"` |  |
 | argo-cd.configs.cm.url | string | `"https://argocd.example.com"` |  |
+| argo-cd.configs.params."controller.diff.server.side" | string | `"true"` |  |
 | argo-cd.configs.params."controller.operation.processors" | string | `"5"` |  |
 | argo-cd.configs.params."controller.status.processors" | string | `"10"` |  |
 | argo-cd.configs.params."server.enable.gzip" | bool | `true` |  |
 | argo-cd.configs.params."server.insecure" | bool | `true` |  |
 | argo-cd.configs.secret.createSecret | bool | `false` |  |
-| argo-cd.configs.ssh.extraHosts | string | `"git.zero-downtime.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC8YdJ4YcOK7A0K7qOWsRjCS+wHTStXRcwBe7gjG43HPSNijiCKoGf/c+tfNsRhyouawg7Law6M6ahmS/jKWBpznRIM+OdOFVSuhnK/nr6h6wG3/ZfdLicyAPvx1/STGY/Fc6/zXA88i/9PV+g84gSVmhf3fGY92wokiASiu9DU4T9dT1gIkdyOX6fbMi1/mMKLSrHnAQcjyasYDvw9ISCJ95EoSwbj7O4c+7jo9fxYvdCfZZZAEZGozTRLAAO0AnjVcRah7bZV/jfHJuhOipV/TB7UVAhlVv1dfGV7hoTp9UKtKZFJF4cjIrSGxqQA/mdhSdLgkepK7yc4Jp2xGnaarhY29DfqsQqop+ugFpTbj7Xy5Rco07mXc6XssbAZhI1xtCOX20N4PufBuYippCK5AE6AiAyVtJmvfGQk4HP+TjOyhFo7PZm3wc9Hym7IBBVC0Sl30K8ddufkAgHwNGvvu1ZmD9ZWaMOXJDHBCZGMMr16QREZwVtZTwMEQalc7/yqmuqMhmcJIfs/GA2Lt91y+pq9C8XyeUL0VFPch0vkcLSRe3ghMZpRFJ/ht307xPcLzgTJqN6oQtNNDzSQglSEjwhge2K4GyWcIh+oGsWxWz5dHyk1iJmw90Y976BZIl/mYVgbTtZAJ81oGe/0k5rAe+LDL+Yq6tG28QFOg0QmiQ=="` |  |
+| argo-cd.configs.ssh.extraHosts | string | `"git.zero-downtime.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7UgK7Z4dDcuIW1uMOsuwhrqdkJCvYG/ZjHtLM7WaKFxVRnzNnNkQJNncWIGNDUQ1xxrbsoSNRZDtk0NlOjNtx2aApSWl4iWghkpXELvsZtOZ7I9FSC/E6ImLC3KWfK7P0mhZaF6kHPfpu8Y6pjUyLBTpV1AaVwr0I8onyqGazJOVotTFaBFEi/sT0O2FUk7agwZYfj61w3JGOy3c+fmBcK3lXf/QM90tosOpJNuJ7n5Vk5FDDLkl9rO4XR/+mXHFvITiWb8F5C50YAwjYcy36yWSSryUAAHAuqpgotwh65vSG6fZvFhmEwO2BrCkOV5+k8iRfhy/yZODJzZ5V/5cbMbdZrY6lm/p5/S1wv8BEyPekBGdseqQjEO0IQiQHcMrfgTrrQ7ndbZzVZRByZI+wbGFkBCzNSJcNsoiHjs2EblxYyuW0qUvvrBxLnySvaxyPm4BOukSAZAOEaUrajpQlnHdnY1CGcgbwxw0LNv3euKQ3tDJSUlKO0Wd8d85PRv1THW4Ui9Lhsmv+BPA2vJZDOkx/n0oyPFAB0oyd5JNM38eFxLCmPC2OE63gDP+WmzVO61YCVTnvhpQjEOLawEWVFsk0y25R5z5BboDqJaOFnZF6i517O96cn17z3Ls4hxw3+0rlKczYRoyfUHs7KQENa4mY8YlJweNTBgld//RMUQ=="` |  |
 | argo-cd.configs.styles | string | `".sidebar__logo img { content: url(https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png); }\n.sidebar__logo__text-logo { height: 0em; }\n.sidebar { background: linear-gradient(to bottom, #6A4D79, #493558, #2D1B30, #0D0711); }\n"` |  |
 | argo-cd.controller.metrics.enabled | bool | `false` |  |
 | argo-cd.controller.metrics.serviceMonitor.enabled | bool | `true` |  |
@@ -50,7 +51,7 @@ Kubernetes: `>= 1.26.0-0`
 | argo-cd.dex.enabled | bool | `false` |  |
 | argo-cd.enabled | bool | `false` |  |
 | argo-cd.global.image.repository | string | `"public.ecr.aws/zero-downtime/zdt-argocd"` |  |
-| argo-cd.global.image.tag | string | `"v2.11.5"` |  |
+| argo-cd.global.image.tag | string | `"v2.12.4"` |  |
 | argo-cd.global.logging.format | string | `"json"` |  |
 | argo-cd.istio.enabled | bool | `false` |  |
 | argo-cd.istio.gateway | string | `"istio-ingress/ingressgateway"` |  |
