@@ -21,6 +21,7 @@ snapshotController:
   # install controller if any capable storage driver is enabled
   enabled: {{ or (index .Values "storage" "lvm-localpv" "enabled") (index .Values "storage" "aws-ebs-csi-driver" "enabled")}}
 
+{{- if eq .Values.global.platform "aws" }}
 aws-ebs-csi-driver:
   enabled: {{ default false (index .Values "storage" "aws-ebs-csi-driver" "enabled")}}
   controller:
@@ -89,6 +90,8 @@ aws-efs-csi-driver:
   PersistentVolumes:
   {{- toYaml . | nindent 4 }}
   {{- end }}
+
+{{- end }}
 
 {{- end }}
 
