@@ -34,6 +34,7 @@ spec:
 
   syncPolicy:
     syncOptions:
+      - ServerSideApply=true
       - CreateNamespace=true
     {{- with .Values.kubezero.syncPolicy }}
     {{- toYaml . | nindent 4 }}
