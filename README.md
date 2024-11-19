@@ -28,15 +28,15 @@ KubeZero is distributed as a collection of versioned Helm charts, allowing custo
 gantt
     title KubeZero Support Timeline
     dateFormat  YYYY-MM-DD
-    section 1.28
-    beta     :128b, 2024-03-01, 2024-04-30
-    release  :after 128b, 2024-08-31
     section 1.29
     beta     :129b, 2024-07-01, 2024-07-31
     release  :after 129b, 2024-11-30
     section 1.30
     beta     :130b, 2024-09-01, 2024-10-31
     release  :after 130b, 2025-02-28
+    section 1.31
+    beta     :131b, 2024-12-01, 2025-01-30
+    release  :after 131b, 2025-04-30
 ```
 
 [Upstream release policy](https://kubernetes.io/releases/)
@@ -47,9 +47,7 @@ gantt
 - all compute nodes are running on Alpine V3.20
 - 1 or 2 GB encrypted root file system
 - no external dependencies at boot time, apart from container registries
-- minimal attack surface
-- extremely small memory footprint / overhead
-- cri-o container runtime incl. AppArmor support
+- focused on security and minimal footprint
 
 ## GitOps
 - cli / cmd line install
