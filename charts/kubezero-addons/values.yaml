@@ -290,10 +290,10 @@ py-kube-downscaler:
   resources:
     limits:
       cpu: null
-      memory: 512Mi
+      memory: 256Mi
     requests:
-      cpu: 10m
-      memory: 64Mi
+      cpu: 20m
+      memory: 48Mi
 
   # By default no NOT scale down KubeZero modules
   excludedNamespaces:
