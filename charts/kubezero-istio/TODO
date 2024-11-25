@@ -1,0 +1,4 @@
+ {"time":"2024-11-21T10:32:42.652788Z","level":"warning","scope":"envoy main","msg":"Usage of the deprecated runtime key overload.global_downstream_max_connections, consider switching to `e │
+│ nvoy.resource_monitors.downstream_connections` instead.This runtime key will be removed in future.","caller":"external/envoy/source/server/server.cc:843","thread":"8"}                      │
+│ {"time":"2024-11-21T10:32:42.653492Z","level":"warning","scope":"envoy main","msg":"There is no configured limit to the number of allowed active downstream connections. Configure a limit i │
+│ n `envoy.resource_monitors.downstream_connections` resource monitor.","caller":"external/envoy/source/server/server.cc:936","thread":"8"}                                                    │

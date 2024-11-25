@@ -1,6 +1,6 @@
 # kubezero-auth
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.0.5](https://img.shields.io/badge/AppVersion-26.0.5-informational?style=flat-square)
+![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.0.5](https://img.shields.io/badge/AppVersion-26.0.5-informational?style=flat-square)
 
 KubeZero umbrella chart for all things Authentication and Identity management
 
@@ -19,7 +19,7 @@ Kubernetes: `>= 1.26.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| oci://registry-1.docker.io/bitnamicharts | keycloak | 24.0.4 |
+| oci://registry-1.docker.io/bitnamicharts | keycloak | 24.2.1 |
 
 # Keycloak
    
@@ -38,9 +38,15 @@ https://github.com/keycloak/keycloak-benchmark/tree/main/provision/minikube/keyc
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | keycloak.auth.adminUser | string | `"admin"` |  |
-| keycloak.auth.existingSecret | string | `"kubezero-auth"` |  |
+| keycloak.auth.existingSecret | string | `"keycloak-auth"` |  |
 | keycloak.auth.passwordSecretKey | string | `"admin-password"` |  |
 | keycloak.enabled | bool | `false` |  |
+| keycloak.externalDatabase.database | string | `"keycloak"` |  |
+| keycloak.externalDatabase.existingSecret | string | `"keycloak-pg"` |  |
+| keycloak.externalDatabase.existingSecretPasswordKey | string | `"password"` |  |
+| keycloak.externalDatabase.host | string | `"keycloak-pg-rw"` |  |
+| keycloak.externalDatabase.port | int | `5432` |  |
+| keycloak.externalDatabase.user | string | `"keycloak"` |  |
 | keycloak.hostnameStrict | bool | `false` |  |
 | keycloak.istio.admin.enabled | bool | `false` |  |
 | keycloak.istio.admin.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
@@ -52,15 +58,7 @@ https://github.com/keycloak/keycloak-benchmark/tree/main/provision/minikube/keyc
 | keycloak.metrics.serviceMonitor.enabled | bool | `true` |  |
 | keycloak.pdb.create | bool | `false` |  |
 | keycloak.pdb.minAvailable | int | `1` |  |
-| keycloak.postgresql.auth.database | string | `"keycloak"` |  |
-| keycloak.postgresql.auth.existingSecret | string | `"kubezero-auth"` |  |
-| keycloak.postgresql.auth.username | string | `"keycloak"` |  |
 | keycloak.postgresql.enabled | bool | `false` |  |
-| keycloak.postgresql.primary.persistence.size | string | `"1Gi"` |  |
-| keycloak.postgresql.primary.resources.limits.memory | string | `"128Mi"` |  |
-| keycloak.postgresql.primary.resources.requests.cpu | string | `"100m"` |  |
-| keycloak.postgresql.primary.resources.requests.memory | string | `"64Mi"` |  |
-| keycloak.postgresql.readReplicas.replicaCount | int | `0` |  |
 | keycloak.production | bool | `true` |  |
 | keycloak.proxyHeaders | string | `"xforwarded"` |  |
 | keycloak.replicaCount | int | `1` |  |

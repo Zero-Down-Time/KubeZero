@@ -1,9 +1,9 @@
 configmap: grafana-dashboards
 condition: '.Values.keycloak.metrics.enabled'
 gzip: true
-# folder: 
+folder: KubeZero
 dashboards:
 - name: keycloak
-  # url: https://grafana.com/api/dashboards/10441/revisions/2/download
-  url: https://grafana.com/api/dashboards/17878/revisions/1/download
+  url: https://grafana.com/api/dashboards/19659/revisions/1/download
+  # url: https://grafana.com/api/dashboards/17878/revisions/1/download
   tags: ['Keycloak', 'Auth']
