@@ -252,11 +252,6 @@ kube-prometheus-stack:
         - alertname = InfoInhibitor
         target_matchers:
         - severity = info
-      # Disable cluster overcommit alerts if we have cluster autoscaler available
-      - source_matchers:
-        - alertname = ClusterAutoscalerNodeGroupsEnabled
-        target_matchers:
-        - alertname =~ "KubeCPUOvercommit|KubeMemoryOvercommit"
     alertmanagerSpec:
       # externalUrl:
       logFormat: json
