@@ -1,8 +1,11 @@
+metrics:
+  enabled: false
+
 data-prepper:
   enabled: false
 
-  #image:
-  #  tag: 2.10.1
+  image:
+    tag: 2.10.1
 
   securityContext:
     capabilities:
@@ -82,6 +85,11 @@ data-prepper:
               bulk_size: 4
 
   config:
+    data-prepper-config.yaml: |
+      ssl: false
+      peer_forwarder:
+        ssl: false
+
     log4j2-rolling.properties: |
       status = error
       dest = err

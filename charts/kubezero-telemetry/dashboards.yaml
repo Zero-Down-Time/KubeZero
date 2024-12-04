@@ -1,7 +1,7 @@
 configmap: grafana-dashboards
 gzip: true
 folder: Telemetry
-#condition: '.Values.telemetry.metrics.enabled'
+condition: '.Values.metrics.enabled'
 dashboards:
 #- name: jaeger
 #  url: https://grafana.com/api/dashboards/10001/revisions/2/download
@@ -9,14 +9,19 @@ dashboards:
 #  - Jaeger
 #  - Telemetry
 - name: opensearch
-  url: https://grafana.com/api/dashboards/15178/revisions/2/download
+  url: "https://grafana.com/api/dashboards/15178/revisions/2/download"
   tags:
   - OpenSearch
   - Telemetry
 - name: fluent-logging
-  url: https://grafana.com/api/dashboards/7752/revisions/6/download
+  url: "https://grafana.com/api/dashboards/7752/revisions/6/download"
   #url: https://grafana.com/api/dashboards/13042/revisions/2/download
   tags:
   - fluentd
   - fluent-bit
   - Telemetry
+- name: kafka
+  url: "https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/refs/heads/main/examples/metrics/grafana-dashboards/strimzi-kraft.json"
+  tags:
+  - Telemetry
+  - Kafka
