@@ -2,7 +2,7 @@ gitea:
   enabled: false
 
   image:
-    tag: 1.22.3
+    tag: 1.22.4
     rootless: true
 
   repliaCount: 1
@@ -90,7 +90,7 @@ jenkins:
 
   controller:
     image:
-      tag: alpine-jdk21
+      tag: lts-alpine-jdk21
       #tagLabel: alpine
     disableRememberMe: true
     prometheus:
@@ -276,8 +276,8 @@ jenkins:
 
 trivy:
   enabled: false
-  image:
-   tag: 0.57.0
+  #image:
+  #tag: 0.57.0
   persistence:
     enabled: true
     size: 1Gi

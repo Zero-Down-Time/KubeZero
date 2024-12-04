@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.8.18](https://img.shields.io/badge/Version-0.8.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.8.19](https://img.shields.io/badge/Version-0.8.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -18,11 +18,11 @@ Kubernetes: `>= 1.25.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://aquasecurity.github.io/helm-charts/ | trivy | 0.8.0 |
+| https://aquasecurity.github.io/helm-charts/ | trivy | 0.9.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://charts.jenkins.io | jenkins | 5.7.12 |
+| https://charts.jenkins.io | jenkins | 5.7.15 |
 | https://dl.gitea.io/charts/ | gitea | 10.6.0 |
-| https://docs.renovatebot.com/helm-charts | renovate | 38.142.6 |
+| https://docs.renovatebot.com/helm-charts | renovate | 39.33.1 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -92,7 +92,7 @@ Kubernetes: `>= 1.25.0`
 | jenkins.agent.defaultsProviderTemplate | string | `"podman-aws"` |  |
 | jenkins.agent.idleMinutes | int | `30` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
-| jenkins.agent.image.tag | string | `"v0.6.2"` |  |
+| jenkins.agent.image.tag | string | `"v0.7.0"` |  |
 | jenkins.agent.inheritYamlMergeStrategy | bool | `true` |  |
 | jenkins.agent.podName | string | `"podman-aws"` |  |
 | jenkins.agent.podRetention | string | `"Default"` |  |
@@ -113,7 +113,7 @@ Kubernetes: `>= 1.25.0`
 | jenkins.controller.containerEnv[1].value | string | `"none"` |  |
 | jenkins.controller.disableRememberMe | bool | `true` |  |
 | jenkins.controller.enableRawHtmlMarkupFormatter | bool | `true` |  |
-| jenkins.controller.image.tag | string | `"alpine-jdk21"` |  |
+| jenkins.controller.image.tag | string | `"lts-alpine-jdk21"` |  |
 | jenkins.controller.initContainerResources.limits.memory | string | `"1024Mi"` |  |
 | jenkins.controller.initContainerResources.requests.cpu | string | `"50m"` |  |
 | jenkins.controller.initContainerResources.requests.memory | string | `"256Mi"` |  |
@@ -162,7 +162,6 @@ Kubernetes: `>= 1.25.0`
 | renovate.env.LOG_FORMAT | string | `"json"` |  |
 | renovate.securityContext.fsGroup | int | `1000` |  |
 | trivy.enabled | bool | `false` |  |
-| trivy.image.tag | string | `"0.56.2"` |  |
 | trivy.persistence.enabled | bool | `true` |  |
 | trivy.persistence.size | string | `"1Gi"` |  |
 | trivy.rbac.create | bool | `false` |  |
