@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-operators
 description: Various operators supported by KubeZero
 type: application
-version: 0.1.6
+version: 0.1.7
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -10,6 +10,7 @@ keywords:
   - operators
   - opensearch
   - postgres
+  - kafka
 maintainers:
   - name: Stefan Reimer
     email: stefan@zero-downtime.net
@@ -29,4 +30,8 @@ dependencies:
     version: 0.22.1
     repository: https://cloudnative-pg.github.io/charts
     condition: cloudnative-pg.enabled
+  - name: strimzi-kafka-operator
+    version: 0.44.0
+    repository: "oci://quay.io/strimzi-helm"
+    condition: strimzi-kafka-operator.enabled
 kubeVersion: ">= 1.26.0"

@@ -17,6 +17,7 @@ rm -rf charts/eck-operator/charts
 yq eval -Mi 'del(.dependencies)' charts/eck-operator/Chart.yaml
 
 # Create ZDT dashboard configmap
-../kubezero-metrics/sync_grafana_dashboards.py dashboards.yaml templates/cloudnative-pg/grafana-dashboards.yaml
+../kubezero-metrics/sync_grafana_dashboards.py dashboards-pg.yaml templates/cloudnative-pg/grafana-dashboards.yaml
+../kubezero-metrics/sync_grafana_dashboards.py dashboards-strimzi.yaml templates/strimzi/grafana-dashboards.yaml
 
 update_docs

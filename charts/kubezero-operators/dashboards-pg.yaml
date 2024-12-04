@@ -1,7 +1,7 @@
-configmap: grafana-dashboards
+configmap: grafana-dashboards-pg
 gzip: true
 condition: 'index .Values "cloudnative-pg" "monitoring" "podMonitorEnabled"'
-folder: KubeZero
+folder: Operators
 dashboards:
 - name: Cloudnative-pg
   url: https://raw.githubusercontent.com/cloudnative-pg/grafana-dashboards/refs/heads/main/charts/cluster/grafana-dashboard.json

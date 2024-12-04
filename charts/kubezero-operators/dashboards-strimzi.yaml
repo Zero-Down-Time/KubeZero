@@ -1,0 +1,10 @@
+configmap: grafana-dashboards-strimzi
+gzip: true
+condition: 'index .Values "strimzi-kafka-operator" "monitoring" "podMonitorEnabled"'
+folder: Operators
+dashboards:
+- name: strimzi-kafka-operator
+  url: https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/refs/heads/main/helm-charts/helm3/strimzi-kafka-operator/files/grafana-dashboards/strimzi-operators.json
+  tags:
+  - Kafka
+  - Strimzi

@@ -41,3 +41,28 @@ cloudnative-pg:
     # We pull in the dashboard via our pipeline !
     grafanaDashboard:
       create: false
+
+strimzi-kafka-operator:
+  enabled: false
+
+  revisionHistoryLimit: 3
+  watchAnyNamespace: true
+
+  leaderElection:
+    enable: false
+
+  tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    effect: NoSchedule
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+
+  resources:
+    requests:
+      cpu: 20m
+      memory: 256Mi
+    limits:
+      memory: 384Mi
+
+  monitoring:
+    podMonitorEnabled: false
