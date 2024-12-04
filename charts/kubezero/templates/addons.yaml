@@ -6,7 +6,7 @@ clusterBackup:
   {{- toYaml . | nindent 2 }}
   {{- end }}
 
-  {{- if .Values.global.aws.region }}
+  {{- if eq .Values.global.platform "aws" }}
   # AWS
   extraEnv:
     - name: AWS_DEFAULT_REGION
@@ -20,7 +20,7 @@ forseti:
   {{- toYaml . | nindent 2 }}
   {{- end }}
 
-  {{- if .Values.global.aws.region }}
+  {{- if eq .Values.global.platform "aws" }}
   # AWS
   aws:
     region: {{ $.Values.global.aws.region }}
@@ -34,7 +34,7 @@ external-dns:
   {{- toYaml . | nindent 2 }}
   {{- end }}
 
-  {{- if .Values.global.aws.region }}
+  {{- if eq .Values.global.platform "aws" }}
   # AWS
   txtOwnerId: {{ .Values.global.clusterName }}
   provider: aws
@@ -67,12 +67,17 @@ external-dns:
 cluster-autoscaler:
   enabled: {{ ternary "true" "false" (or (hasKey .Values.global.aws "region") (index .Values "addons" "cluster-autoscaler" "enabled")) }}
 
+  autoDiscovery:
+    clusterName: {{ .Values.global.clusterName }}
+
+  {{- if not .Values.global.highAvailable }}
+  extraArgs:
+    leader-elect: false
+  {{- end }}
+
   {{- with omit (index .Values "addons" "cluster-autoscaler") "enabled" }}
   {{- toYaml . | nindent 2 }}
   {{- end }}
-
-  autoDiscovery:
-    clusterName: {{ .Values.global.clusterName }}
 
   {{- with .Values.metrics }}
   serviceMonitor:
@@ -82,7 +87,7 @@ cluster-autoscaler:
   #  enabled: {{ .enabled }}
   {{- end }}
 
-  {{- if .Values.global.aws.region }}
+  {{- if eq .Values.global.platform "aws" }}
   # AWS
   awsRegion: {{ .Values.global.aws.region }}
 

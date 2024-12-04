@@ -1,5 +1,8 @@
 {{- define "telemetry-values" }}
 
+metrics:
+  enabled: {{ .Values.metrics.enabled }}
+
 {{- if index .Values "telemetry" "fluent-bit" }}
 fluent-bit:
   {{- with index .Values.telemetry "fluent-bit" }}

@@ -29,14 +29,43 @@ local etcdMixin = addMixin({
          },
 });
 
-local kp = (import 'kube-prometheus/main.libsonnet') +
-           {
-             values+:: {
-               common+: {
-                 namespace: 'monitoring',
-               },
-             },
-           };
+local kp = (import 'kube-prometheus/main.libsonnet') + {
+  values+:: {
+    common+: {
+      namespace: 'monitoring',
+    },
+  },
+  kubernetesControlPlane+: {
+    prometheusRule+: {
+      spec+: {
+        groups: [
+          (
+            if group.name == 'kubernetes-resources' then
+              group {
+                rules: [
+                  {
+                    alert: 'ClusterAutoscalerNodeGroupsEnabled',
+                    expr: 'cluster_autoscaler_node_groups_count{job="addons-aws-cluster-autoscaler",node_group_type="autoscaled"} > 0 or vector(1)',
+                    'for': '5m',
+                    labels: {
+                      severity: 'none',
+                    },
+                    annotations: {
+                      description: 'Inhibitor rule if the Cluster Autoscaler found at least one node group',
+                      summary: 'Cluster Autoscaler found at least one node group.',
+                    },
+                  },
+                ] + super.rules,
+              }
+            else
+              group
+          )
+          for group in super.groups
+        ],
+      },
+    },
+  },
+};
 
 // We just want the Prometheus Rules
 { 'prometheus-operator-prometheusRule': kp.prometheusOperator.prometheusRule } +

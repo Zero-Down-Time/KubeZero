@@ -223,8 +223,8 @@ kube-prometheus-stack:
       global:
         resolve_timeout: 5m
       route:
-        group_by: ['severity', 'clusterName']
-        group_wait: 10s
+        group_by: ['alertname', 'severity', 'status']
+        group_wait: 30s
         group_interval: 5m
         repeat_interval: 4h
         routes:
@@ -252,7 +252,7 @@ kube-prometheus-stack:
         - alertname = InfoInhibitor
         target_matchers:
         - severity = info
-      # Disable cluster overcommiy alerts if we have cluster autoscaler available
+      # Disable cluster overcommit alerts if we have cluster autoscaler available
       - source_matchers:
         - alertname = ClusterAutoscalerNodeGroupsEnabled
         target_matchers:

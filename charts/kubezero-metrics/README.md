@@ -92,10 +92,11 @@ Kubernetes: `>= 1.26.0`
 | kube-prometheus-stack.alertmanager.config.inhibit_rules[2].target_matchers[0] | string | `"severity = info"` |  |
 | kube-prometheus-stack.alertmanager.config.inhibit_rules[3].source_matchers[0] | string | `"alertname = ClusterAutoscalerNodeGroupsEnabled"` |  |
 | kube-prometheus-stack.alertmanager.config.inhibit_rules[3].target_matchers[0] | string | `"alertname =~ \"KubeCPUOvercommit|KubeMemoryOvercommit\""` |  |
-| kube-prometheus-stack.alertmanager.config.route.group_by[0] | string | `"severity"` |  |
-| kube-prometheus-stack.alertmanager.config.route.group_by[1] | string | `"clusterName"` |  |
+| kube-prometheus-stack.alertmanager.config.route.group_by[0] | string | `"alertname"` |  |
+| kube-prometheus-stack.alertmanager.config.route.group_by[1] | string | `"severity"` |  |
+| kube-prometheus-stack.alertmanager.config.route.group_by[2] | string | `"status"` |  |
 | kube-prometheus-stack.alertmanager.config.route.group_interval | string | `"5m"` |  |
-| kube-prometheus-stack.alertmanager.config.route.group_wait | string | `"10s"` |  |
+| kube-prometheus-stack.alertmanager.config.route.group_wait | string | `"15s"` |  |
 | kube-prometheus-stack.alertmanager.config.route.repeat_interval | string | `"4h"` |  |
 | kube-prometheus-stack.alertmanager.config.route.routes[0].matchers[0] | string | `"severity = none"` |  |
 | kube-prometheus-stack.alertmanager.config.route.routes[0].receiver | string | `"null"` |  |

@@ -227,7 +227,10 @@ cluster-autoscaler:
     scan-interval: 30s
     skip-nodes-with-local-storage: false
     balance-similar-node-groups: true
+    ignore-daemonsets-utilization: true
     ignore-taint: "node.cilium.io/agent-not-ready"
+    # Disable for non-clustered control-plane
+    # leader-elect: false
 
   #securityContext:
   #  runAsNonRoot: true
