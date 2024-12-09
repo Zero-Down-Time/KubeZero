@@ -57,11 +57,13 @@ aws-efs-csi-driver:
   enabled: {{ default false (index .Values "storage" "aws-efs-csi-driver" "enabled")}}
   replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
   controller:
+    {{- with index .Values "storage" "aws-efs-csi-driver" "IamArn" }}
     extraEnv:
     - name: AWS_ROLE_ARN
-      value: {{ index .Values "storage" "aws-efs-csi-driver" "IamArn" | quote }}
+      value: {{ . | quote }}
     - name: AWS_WEB_IDENTITY_TOKEN_FILE
       value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+    {{- end }}
 
     # The EFS controller steel needs hostnetwork and cannot update on single node control planes otherwise
     {{- if not .Values.global.highAvailable }}
