@@ -25,9 +25,9 @@ Common naming functions
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*
+{{- /*
 Selector labels
-*/}}
+*/ -}}
 {{- define "kubezero-lib.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "kubezero-lib.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
@@ -49,7 +49,7 @@ This takes an array of three values:
 - the top context
 - the template name of the overrides (destination)
 - the template name of the base (source)
-*/}}
+*/ -}}
 {{- define "kubezero-lib.util.merge" -}}
 {{- $top := first . -}}
 {{- $overrides := fromYaml (include (index . 1) $top) | default (dict ) -}}

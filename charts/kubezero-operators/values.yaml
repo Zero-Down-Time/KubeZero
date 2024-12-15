@@ -13,28 +13,12 @@ opensearch-operator:
       - name: SKIP_INIT_CONTAINER
         value: "true"
 
-  tolerations:
-  - key: node-role.kubernetes.io/control-plane
-    effect: NoSchedule
-  nodeSelector:
-    node-role.kubernetes.io/control-plane: ""
-
 eck-operator:
   enabled: false
   installCRDs: false
-  tolerations:
-  - key: node-role.kubernetes.io/control-plane
-    effect: NoSchedule
-  nodeSelector:
-    node-role.kubernetes.io/control-plane: ""
 
 cloudnative-pg:
   enabled: false
-  tolerations:
-  - key: node-role.kubernetes.io/control-plane
-    effect: NoSchedule
-  nodeSelector:
-    node-role.kubernetes.io/control-plane: ""
 
   monitoring:
     podMonitorEnabled: false
@@ -50,12 +34,6 @@ strimzi-kafka-operator:
 
   leaderElection:
     enable: false
-
-  tolerations:
-  - key: node-role.kubernetes.io/control-plane
-    effect: NoSchedule
-  nodeSelector:
-    node-role.kubernetes.io/control-plane: ""
 
   resources:
     requests:

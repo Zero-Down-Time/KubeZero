@@ -10,26 +10,13 @@ cert-manager:
   {{- end }}
 
   {{- if eq .Values.global.platform "aws" }}
-  # map everything to the control-plane
-  nodeSelector:
-    node-role.kubernetes.io/control-plane: ""
-  tolerations:
-  - key: node-role.kubernetes.io/control-plane
-    effect: NoSchedule
+  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
 
   webhook:
-    tolerations:
-    - key: node-role.kubernetes.io/control-plane
-      effect: NoSchedule
-    nodeSelector:
-      node-role.kubernetes.io/control-plane: ""
+    {{- include "kubezero-lib.control-plane" . | nindent 4 }}
 
   cainjector:
-    tolerations:
-    - key: node-role.kubernetes.io/control-plane
-      effect: NoSchedule
-    nodeSelector:
-      node-role.kubernetes.io/control-plane: ""
+    {{- include "kubezero-lib.control-plane" . | nindent 4 }}
 
   extraEnv:
   - name: AWS_REGION

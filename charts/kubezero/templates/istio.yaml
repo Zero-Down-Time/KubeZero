@@ -13,19 +13,15 @@ istiod:
   telemetry:
     enabled: {{ $.Values.metrics.enabled }}
   pilot:
-{{- if eq .Values.global.platform "aws" }}
-    nodeSelector:
-      node-role.kubernetes.io/control-plane: ""
-    tolerations:
-    - key: node-role.kubernetes.io/control-plane
-      effect: NoSchedule
-{{- end }}
-{{- if .Values.global.highAvailable }}
+    {{- if eq .Values.global.platform "aws" }}
+    {{- include "kubezero-lib.control-plane" . | nindent 4 }}
+    {{- end }}
+    {{- if .Values.global.highAvailable }}
     replicaCount: 2
-{{- else }}
+    {{- else }}
     extraContainerArgs:
     - --leader-elect=false
-{{- end }}
+    {{- end }}
 
 {{- with  index .Values "istio" "kiali-server" }}
 kiali-server:

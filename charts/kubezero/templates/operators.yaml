@@ -2,16 +2,28 @@
 
 {{- with index .Values "operators" "opensearch-operator" }}
 opensearch-operator:
+  {{- if eq $.Values.global.platform "aws" }}
+  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
+  {{- end }}
+
   {{- toYaml . | nindent 2 }}
 {{- end }}
 
 {{- with index .Values "operators" "eck-operator" }}
 eck-operator:
+  {{- if eq $.Values.global.platform "aws" }}
+  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
+  {{- end }}
+
   {{- toYaml . | nindent 2 }}
 {{- end }}
 
 {{- with index .Values "operators" "cloudnative-pg" }}
 cloudnative-pg:
+  {{- if eq $.Values.global.platform "aws" }}
+  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
+  {{- end }}
+
   {{- toYaml . | nindent 2 }}
 
   {{- with $.Values.metrics }}
@@ -22,6 +34,10 @@ cloudnative-pg:
 
 {{- with index .Values "operators" "strimzi-kafka-operator" }}
 strimzi-kafka-operator:
+  {{- if eq $.Values.global.platform "aws" }}
+  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
+  {{- end }}
+
   {{- toYaml . | nindent 2 }}
 
   {{- with $.Values.metrics }}
