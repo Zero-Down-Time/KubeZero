@@ -69,9 +69,9 @@ render_kubeadm() {
   fi
 
   # "uncloak" the json patches after they got processed by helm
-  for s in apiserver controller-manager scheduler; do
-    yq eval '.json' ${WORKDIR}/kubeadm/templates/patches/kube-${s}1\+json.yaml > /tmp/_tmp.yaml && \
-      mv /tmp/_tmp.yaml ${WORKDIR}/kubeadm/templates/patches/kube-${s}1\+json.yaml
+  for s in kube-apiserver kube-controller-manager kube-scheduler corednsdeployment; do
+    yq eval '.json' ${WORKDIR}/kubeadm/templates/patches/${s}1\+json.yaml > /tmp/_tmp.yaml && \
+      mv /tmp/_tmp.yaml ${WORKDIR}/kubeadm/templates/patches/${s}1\+json.yaml
   done
 }
 
@@ -117,39 +117,11 @@ post_kubeadm() {
   for f in ${WORKDIR}/kubeadm/templates/resources/*.yaml; do
     kubectl apply -f $f $LOG
   done
-
-  # Patch coreDNS addon, ideally we prevent kubeadm to reset coreDNS to its defaults
-  kubectl patch deployment coredns -n kube-system --patch-file ${WORKDIR}/kubeadm/templates/patches/coredns0.yaml $LOG
 }
 
 
 kubeadm_upgrade() {
   # pre upgrade hook
-
-  ### Remove with 1.31
-  # migrate kubezero CM to kubezero NS
-  # migrate ArgoCD app from values to valuesObject
-  create_ns kubezero
-
-  if [ "$ARGOCD" == "True" ]; then
-    kubectl get app kubezero -n argocd -o yaml > $WORKDIR/kubezero-argo-app.yaml
-    if [ "$(yq '(.spec.source.helm | has "values")' $WORKDIR/kubezero-argo-app.yaml)" == "true" ]; then
-      yq '.spec.source.helm.valuesObject = (.spec.source.helm.values | from_yaml)' \
-        $WORKDIR/kubezero-argo-app.yaml | kubectl apply --server-side --force-conflicts -f -
-
-      kubectl patch app kubezero -n argocd --type json -p='[{"op": "remove", "path": "/spec/source/helm/values"}]'
-      kubectl delete cm kubezero-values -n kube-system > /dev/null || true
-      kubectl create configmap -n kubezero kubezero-values || true
-    fi
-
-  else
-    kubectl get cm kubezero-values -n kubezero > /dev/null || \
-      { kubectl get cm kubezero-values -n kube-system -o yaml | \
-        sed 's/^  namespace: kube-system/  namespace: kubezero/' | \
-        kubectl create -f - && \
-        kubectl delete cm kubezero-values -n kube-system ; }
-  fi
-  ###
 
   # get current values, argo app over cm
   get_kubezero_values $ARGOCD
@@ -190,14 +162,6 @@ kubeadm_upgrade() {
   cp ${HOSTFS}/etc/kubernetes/super-admin.conf ${HOSTFS}/root/.kube/config
 
   # post upgrade
-
-  # Update kubezero-values CM
-  kubectl get cm -n kube-system kubelet-config -o=yaml | \
-    yq e '.data.kubelet' | yq e '.containerRuntimeEndpoint = "unix:///run/containerd/containerd.sock"' > $WORKDIR/new-kubelet.cm
-
-  kubectl get cm -n kube-system kubelet-config -o=yaml | \
-    yq e '.data.kubelet |= load_str("/tmp/kubezero/new-kubelet.cm")' | \
-    kubectl apply --server-side --force-conflicts -f -
 
   # Cleanup after kubeadm on the host
   rm -rf ${HOSTFS}/etc/kubernetes/tmp

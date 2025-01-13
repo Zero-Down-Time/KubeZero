@@ -66,6 +66,10 @@ argo-cd:
 
       timeout.reconciliation: 300s
 
+      application.resourceTrackingMethod: annotation
+      installationID: "KubeZero-ArgoCD"
+      application.instanceLabelKey: Null
+
       resource.customizations: |
         cert-manager.io/Certificate:
           # Lua script for customizing the health status assessment

@@ -46,6 +46,16 @@ function get_kubezero_values() {
 }
 
 
+# Update kubezero-values CM
+function update_kubezero_cm() {
+  kubectl get application kubezero -n argocd -o yaml | yq .spec.source.helm.valuesObject > ${WORKDIR}/kubezero-values.yaml
+
+  kubectl get cm -n kubezero kubezero-values -o=yaml | \
+    yq e '.data."values.yaml" |= load_str("/tmp/kubezero/kubezero-values.yaml")' | \
+    kubectl apply --server-side --force-conflicts -f -
+}
+
+
 function disable_argo() {
   cat > _argoapp_patch.yaml <<EOF
 spec:

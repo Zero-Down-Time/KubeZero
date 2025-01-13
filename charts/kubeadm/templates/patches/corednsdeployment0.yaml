@@ -1,5 +1,4 @@
 spec:
-  replicas: {{ ternary 3 1 .Values.global.highAvailable }}
   template:
     spec:
       containers:

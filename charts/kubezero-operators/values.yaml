@@ -29,18 +29,22 @@ cloudnative-pg:
 strimzi-kafka-operator:
   enabled: false
 
-  revisionHistoryLimit: 3
+  revisionHistoryLimit: 2
   watchAnyNamespace: true
 
   leaderElection:
     enable: false
 
-  resources:
-    requests:
-      cpu: 20m
-      memory: 256Mi
-    limits:
-      memory: 384Mi
+# extraEnvs:
+#   - name: JAVA_OPTS
+#     value: "-XX:MaxRAMPercentage=75 -XX:+UseParallelGC -XX:ActiveProcessorCount=2"
+
+# resources:
+#   requests:
+#     cpu: 10m
+#     memory: 256Mi
+#   limits:
+#     memory: 256Mi
 
   monitoring:
     podMonitorEnabled: false

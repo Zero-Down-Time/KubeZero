@@ -2,7 +2,7 @@
 set -eE
 set -o pipefail
 
-KUBE_VERSION=v1.30
+KUBE_VERSION=v1.31
 
 ARGO_APP=${1:-/tmp/new-kubezero-argoapp.yaml}
 
@@ -19,11 +19,6 @@ echo "Checking that all pods in kube-system are running ..."
 
 [ "$ARGOCD" == "True" ] && disable_argo
 
-# 1.30 fix for the missing kubeadm socket annotations
-for c in $(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" | grep v1.29 | awk {'print $1}'); do
-  kubectl annotate node $c 'kubeadm.alpha.kubernetes.io/cri-socket=unix:///var/run/crio/crio.sock'
-done
-
 control_plane_upgrade kubeadm_upgrade
 
 echo "Control plane upgraded, <Return> to continue"
@@ -33,8 +28,7 @@ read -r
 # shellcheck disable=SC2015
 #[ "$ARGOCD" == "True" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
 
-### v1.30
-kubectl delete runtimeclass crio || true
+### v1.31
 
 # upgrade modules
 #
@@ -43,9 +37,8 @@ kubectl delete runtimeclass crio || true
 
 control_plane_upgrade "apply_network, apply_addons, apply_storage, apply_operators"
 
-# Disabled during 1.30 due to nvidia runtime deadlock
-#echo "Checking that all pods in kube-system are running ..."
-#waitSystemPodsRunning
+echo "Checking that all pods in kube-system are running ..."
+waitSystemPodsRunning
 
 echo "Applying remaining KubeZero modules..."
 
