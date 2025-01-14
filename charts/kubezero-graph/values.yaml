@@ -1,0 +1,18 @@
+neo4j:
+  enabled: false
+
+  disableLookups: true
+
+  neo4j:
+    name: test-db
+
+  volumes:
+    data:
+      mode: defaultStorageClass
+
+  services:
+    neo4j:
+      enabled: false
+
+  serviceMonitor:
+    enabled: false

@@ -1,0 +1,23 @@
+apiVersion: v2
+name: kubezero-graph
+description: KubeZero GraphQL and GraphDB
+type: application
+version: 0.1.0
+home: https://kubezero.com
+icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
+keywords:
+  - kubezero
+  - neo4j
+maintainers:
+  - name: Stefan Reimer
+    email: stefan@zero-downtime.net
+dependencies:
+  - name: kubezero-lib
+    version: ">= 0.2.1"
+    repository: https://cdn.zero-downtime.net/charts/
+  - name: neo4j
+    version: 5.26.0
+    repository: https://helm.neo4j.com/neo4j
+    condition: neo4j.enabled
+
+kubeVersion: ">= 1.29.0-0"
