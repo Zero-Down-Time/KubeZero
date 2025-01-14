@@ -3,7 +3,7 @@
 {{- /* v1.28: PodAndContainerStatsFromCRI still not working */ -}}
 {{- /* v1.28: UnknownVersionInteroperabilityProxy requires StorageVersionAPI which is still alpha in 1.30 */ -}}
 {{- define "kubeadm.featuregates" }}
-{{- $gates := list "CustomCPUCFSQuotaPeriod" "AuthorizeWithSelectors" "AuthorizeNodeWithSelectors" "ConsistentListFromCache" "VolumeAttributesClass"}}
+{{- $gates := list "CustomCPUCFSQuotaPeriod" "AuthorizeWithSelectors" "AuthorizeNodeWithSelectors" "ConsistentListFromCache" "VolumeAttributesClass" "WatchList"}}
 {{- if eq .return "csv" }}
 {{- range $key := $gates }}
 {{- $key }}=true,

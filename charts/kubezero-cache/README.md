@@ -1,8 +1,8 @@
-# kubezero-keyvalue
+# kubezero-cache
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
-KubeZero KeyValue Module
+KubeZero Cache module
 
 **Homepage:** <https://kubezero.com>
 
@@ -14,11 +14,11 @@ KubeZero KeyValue Module
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0`
+Kubernetes: `>= 1.29.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.2.1 |
 | https://charts.bitnami.com/bitnami | redis | 20.0.3 |
 | https://charts.bitnami.com/bitnami | redis-cluster | 11.0.2 |
 
