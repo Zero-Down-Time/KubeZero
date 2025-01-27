@@ -155,12 +155,35 @@ fuseDevicePlugin:
     name: public.ecr.aws/zero-downtime/fuse-device-plugin
     tag: v1.2.0
 
-awsNeuron:
+neuron-helm-chart:
   enabled: false
 
-  image:
-    name: public.ecr.aws/neuron/neuron-device-plugin
-    tag: 2.22.4.0
+  npd:
+    enabled: false
+
+  devicePlugin:
+    tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - key: aws.amazon.com/neuron
+        operator: Exists
+        effect: NoSchedule
+      - key: kubezero-workergroup
+        effect: NoSchedule
+        operator: Exists
+
+    volumeMounts:
+      - name: device-plugin
+        mountPath: /var/lib/kubelet/device-plugins
+      - name: infa-map
+        mountPath: /run
+    volumes:
+      - name: device-plugin
+        hostPath:
+          path: /var/lib/kubelet/device-plugins
+      - name: infa-map
+        hostPath:
+          path: /run
 
 nvidia-device-plugin:
   enabled: false
@@ -177,29 +200,6 @@ nvidia-device-plugin:
   - key: kubezero-workergroup
     effect: NoSchedule
     operator: Exists
-
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: "node.kubernetes.io/instance-type"
-                operator: In
-                values:
-                  - g5.xlarge
-                  - g5.2xlarge
-                  - g5.4xlarge
-                  - g5.8xlarge
-                  - g5.12xlarge
-                  - g5.16xlarge
-                  - g5.24xlarge
-                  - g5.48xlarge
-                  - g4dn.xlarge
-                  - g4dn.2xlarge
-                  - g4dn.4xlarge
-                  - g4dn.8xlarge
-                  - g4dn.12xlarge
-                  - g4dn.16xlarge
 
 cluster-autoscaler:
   enabled: false

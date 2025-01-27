@@ -25,6 +25,7 @@ Kubernetes: `>= 1.26.0`
 | https://nvidia.github.io/k8s-device-plugin | nvidia-device-plugin | 0.17.0 |
 | https://twin.github.io/helm-charts | aws-eks-asg-rolling-update-handler | 1.5.0 |
 | oci://public.ecr.aws/aws-ec2/helm | aws-node-termination-handler | 0.24.1 |
+| oci://public.ecr.aws/neuron | neuron-helm-chart | 1.1.1 |
 
 # MetalLB   
    
@@ -100,13 +101,11 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | aws-node-termination-handler.tolerations[0].effect | string | `"NoSchedule"` |  |
 | aws-node-termination-handler.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
 | aws-node-termination-handler.useProviderId | bool | `true` |  |
-| awsNeuron.enabled | bool | `false` |  |
-| awsNeuron.image.name | string | `"public.ecr.aws/neuron/neuron-device-plugin"` |  |
-| awsNeuron.image.tag | string | `"2.22.4.0"` |  |
 | cluster-autoscaler.autoDiscovery.clusterName | string | `""` |  |
 | cluster-autoscaler.awsRegion | string | `"us-west-2"` |  |
 | cluster-autoscaler.enabled | bool | `false` |  |
 | cluster-autoscaler.extraArgs.balance-similar-node-groups | bool | `true` |  |
+| cluster-autoscaler.extraArgs.ignore-daemonsets-utilization | bool | `true` |  |
 | cluster-autoscaler.extraArgs.ignore-taint | string | `"node.cilium.io/agent-not-ready"` |  |
 | cluster-autoscaler.extraArgs.scan-interval | string | `"30s"` |  |
 | cluster-autoscaler.extraArgs.skip-nodes-with-local-storage | bool | `false` |  |
@@ -141,22 +140,24 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | fuseDevicePlugin.enabled | bool | `false` |  |
 | fuseDevicePlugin.image.name | string | `"public.ecr.aws/zero-downtime/fuse-device-plugin"` |  |
 | fuseDevicePlugin.image.tag | string | `"v1.2.0"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key | string | `"node.kubernetes.io/instance-type"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator | string | `"In"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0] | string | `"g5.xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[10] | string | `"g4dn.4xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[11] | string | `"g4dn.8xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[12] | string | `"g4dn.12xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[13] | string | `"g4dn.16xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[1] | string | `"g5.2xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[2] | string | `"g5.4xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[3] | string | `"g5.8xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[4] | string | `"g5.12xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[5] | string | `"g5.16xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[6] | string | `"g5.24xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[7] | string | `"g5.48xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[8] | string | `"g4dn.xlarge"` |  |
-| nvidia-device-plugin.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[9] | string | `"g4dn.2xlarge"` |  |
+| neuron-helm-chart.devicePlugin.tolerations[0].key | string | `"CriticalAddonsOnly"` |  |
+| neuron-helm-chart.devicePlugin.tolerations[0].operator | string | `"Exists"` |  |
+| neuron-helm-chart.devicePlugin.tolerations[1].effect | string | `"NoSchedule"` |  |
+| neuron-helm-chart.devicePlugin.tolerations[1].key | string | `"aws.amazon.com/neuron"` |  |
+| neuron-helm-chart.devicePlugin.tolerations[1].operator | string | `"Exists"` |  |
+| neuron-helm-chart.devicePlugin.tolerations[2].effect | string | `"NoSchedule"` |  |
+| neuron-helm-chart.devicePlugin.tolerations[2].key | string | `"kubezero-workergroup"` |  |
+| neuron-helm-chart.devicePlugin.tolerations[2].operator | string | `"Exists"` |  |
+| neuron-helm-chart.devicePlugin.volumeMounts[0].mountPath | string | `"/var/lib/kubelet/device-plugins"` |  |
+| neuron-helm-chart.devicePlugin.volumeMounts[0].name | string | `"device-plugin"` |  |
+| neuron-helm-chart.devicePlugin.volumeMounts[1].mountPath | string | `"/run"` |  |
+| neuron-helm-chart.devicePlugin.volumeMounts[1].name | string | `"infa-map"` |  |
+| neuron-helm-chart.devicePlugin.volumes[0].hostPath.path | string | `"/var/lib/kubelet/device-plugins"` |  |
+| neuron-helm-chart.devicePlugin.volumes[0].name | string | `"device-plugin"` |  |
+| neuron-helm-chart.devicePlugin.volumes[1].hostPath.path | string | `"/run"` |  |
+| neuron-helm-chart.devicePlugin.volumes[1].name | string | `"infa-map"` |  |
+| neuron-helm-chart.enabled | bool | `false` |  |
+| neuron-helm-chart.npd.enabled | bool | `false` |  |
 | nvidia-device-plugin.cdi.nvidiaHookPath | string | `"/usr/bin"` |  |
 | nvidia-device-plugin.deviceDiscoveryStrategy | string | `"nvml"` |  |
 | nvidia-device-plugin.enabled | bool | `false` |  |
@@ -167,6 +168,23 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | nvidia-device-plugin.tolerations[1].effect | string | `"NoSchedule"` |  |
 | nvidia-device-plugin.tolerations[1].key | string | `"kubezero-workergroup"` |  |
 | nvidia-device-plugin.tolerations[1].operator | string | `"Exists"` |  |
+| py-kube-downscaler.enabled | bool | `false` |  |
+| py-kube-downscaler.excludedNamespaces[0] | string | `"kube-system"` |  |
+| py-kube-downscaler.excludedNamespaces[1] | string | `"operators"` |  |
+| py-kube-downscaler.excludedNamespaces[2] | string | `"monitoring"` |  |
+| py-kube-downscaler.excludedNamespaces[3] | string | `"logging"` |  |
+| py-kube-downscaler.excludedNamespaces[4] | string | `"telemetry"` |  |
+| py-kube-downscaler.excludedNamespaces[5] | string | `"istio-system"` |  |
+| py-kube-downscaler.excludedNamespaces[6] | string | `"istio-ingress"` |  |
+| py-kube-downscaler.excludedNamespaces[7] | string | `"cert-manager"` |  |
+| py-kube-downscaler.excludedNamespaces[8] | string | `"argocd"` |  |
+| py-kube-downscaler.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
+| py-kube-downscaler.resources.limits.cpu | string | `nil` |  |
+| py-kube-downscaler.resources.limits.memory | string | `"256Mi"` |  |
+| py-kube-downscaler.resources.requests.cpu | string | `"20m"` |  |
+| py-kube-downscaler.resources.requests.memory | string | `"48Mi"` |  |
+| py-kube-downscaler.tolerations[0].effect | string | `"NoSchedule"` |  |
+| py-kube-downscaler.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
 | sealed-secrets.enabled | bool | `false` |  |
 | sealed-secrets.fullnameOverride | string | `"sealed-secrets-controller"` |  |
 | sealed-secrets.keyrenewperiod | string | `"0"` |  |
