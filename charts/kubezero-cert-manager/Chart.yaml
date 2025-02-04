@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-cert-manager
 description: KubeZero Umbrella Chart for cert-manager
 type: application
-version: 0.9.10
+version: 0.9.11
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -16,6 +16,6 @@ dependencies:
     version: ">= 0.1.6"
     repository: https://cdn.zero-downtime.net/charts/
   - name: cert-manager
-    version: v1.16.1
+    version: v1.17.0
     repository: https://charts.jetstack.io
 kubeVersion: ">= 1.26.0-0"
