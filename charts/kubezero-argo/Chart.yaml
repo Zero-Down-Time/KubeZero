@@ -1,7 +1,7 @@
 apiVersion: v2
 description: KubeZero Argo - Events, Workflow, CD
 name: kubezero-argo
-version: 0.2.7
+version: 0.2.8
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -18,11 +18,11 @@ dependencies:
     version: ">= 0.1.6"
     repository: https://cdn.zero-downtime.net/charts/
   - name: argo-events
-    version: 2.4.9
+    version: 2.4.13
     repository: https://argoproj.github.io/argo-helm
     condition: argo-events.enabled
   - name: argo-cd
-    version: 7.7.7
+    version: 7.8.2
     repository: https://argoproj.github.io/argo-helm
     condition: argo-cd.enabled
   - name: argocd-apps
@@ -30,7 +30,7 @@ dependencies:
     repository: https://argoproj.github.io/argo-helm
     condition: argo-cd.enabled
   - name: argocd-image-updater
-    version: 0.11.2
+    version: 0.12.0
     repository: https://argoproj.github.io/argo-helm
     condition: argocd-image-updater.enabled
 kubeVersion: ">= 1.26.0-0"
