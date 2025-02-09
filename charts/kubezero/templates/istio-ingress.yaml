@@ -15,7 +15,6 @@ gateway:
   {{- end }}
   {{- end }}
 
-  {{- if eq .Values.global.platform "aws" }}
   # Only nodes who are fronted with matching LB
   affinity:
     nodeAffinity:
@@ -24,7 +23,6 @@ gateway:
         - matchExpressions:
           - key: node.kubernetes.io/ingress.public
             operator: Exists
-  {{- end }}
 
   topologySpreadConstraints:
     - maxSkew: 1
