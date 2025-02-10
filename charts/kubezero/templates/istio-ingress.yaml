@@ -21,7 +21,11 @@ gateway:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: node.kubernetes.io/ingress.public
+          {{- if eq .Values.global.platform "gke" }}
+          - key: "kubezero.zero-downtime.net/ingress.public"
+          {{- else }}
+          - key: "node.kubernetes.io/ingress.public"
+          {{- end }}
             operator: Exists
 
   topologySpreadConstraints:
