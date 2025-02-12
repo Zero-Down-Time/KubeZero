@@ -114,10 +114,12 @@ post_kubeadm() {
 control_plane_upgrade() {
   CMD=$1
 
-  # get current values, argo app over cm
-  get_kubezero_values $ARGOCD
+  render_kubeadm upgrade
 
   if [[ "$CMD" =~ ^(cluster)$ ]]; then
+    # get current values, argo app over cm
+    get_kubezero_values $ARGOCD
+
     # tumble new config through migrate.py
     migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml
 
@@ -138,9 +140,6 @@ control_plane_upgrade() {
       kubectl patch app kubezero -n argocd --type json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true
     fi
 
-    # Local node upgrade
-    render_kubeadm upgrade
-
     pre_kubeadm
 
     _kubeadm init phase upload-config kubeadm
@@ -155,13 +154,11 @@ control_plane_upgrade() {
     echo "Successfully upgraded KubeZero control plane to $KUBE_VERSION using kubeadm."
 
   elif [[ "$CMD" =~ ^(final)$ ]]; then
-    render_kubeadm upgrade
-
     # Finally upgrade addons last, with 1.32 we can ONLY call addon phase
     #_kubeadm upgrade apply phase addon all $KUBE_VERSION
     _kubeadm upgrade apply $KUBE_VERSION
 
-    echo "Upgraded addons and applied final migrations"
+    echo "Upgraded kubeadm addons."
   fi
 
   # Cleanup after kubeadm on the host

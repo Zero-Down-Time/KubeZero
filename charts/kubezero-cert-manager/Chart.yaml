@@ -18,4 +18,4 @@ dependencies:
   - name: cert-manager
     version: v1.17.0
     repository: https://charts.jetstack.io
-kubeVersion: ">= 1.26.0-0"
+kubeVersion: ">= 1.30.0-0"

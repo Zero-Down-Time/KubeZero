@@ -1,6 +1,6 @@
 # kubezero-istio-gateway
 
-![Version: 0.23.2](https://img.shields.io/badge/Version-0.23.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.24.2](https://img.shields.io/badge/Version-0.24.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio gateways
 
@@ -16,12 +16,12 @@ Installs Istio Ingress Gateways, requires kubezero-istio to be installed !
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0-0`
+Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://istio-release.storage.googleapis.com/charts | gateway | 1.23.2 |
+| https://istio-release.storage.googleapis.com/charts | gateway | 1.24.2 |
 
 ## Values
 
@@ -32,6 +32,7 @@ Kubernetes: `>= 1.26.0-0`
 | gateway.autoscaling.maxReplicas | int | `4` |  |
 | gateway.autoscaling.minReplicas | int | `1` |  |
 | gateway.autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| gateway.minReadySeconds | int | `120` |  |
 | gateway.podAnnotations."proxy.istio.io/config" | string | `"{ \"terminationDrainDuration\": \"20s\" }"` |  |
 | gateway.replicaCount | int | `1` |  |
 | gateway.resources.limits.memory | string | `"512Mi"` |  |
@@ -47,5 +48,6 @@ Kubernetes: `>= 1.26.0-0`
 
 ## Resources
 
+### Envoy Listener Filter - TCP KeepAlive
 - https://github.com/cilium/cilium/blob/main/operator/pkg/model/translation/envoy_listener.go#L134
 

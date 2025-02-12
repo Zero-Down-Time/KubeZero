@@ -8,6 +8,7 @@ gateway:
   replicaCount: 1
 
   terminationGracePeriodSeconds: 120
+  minReadySeconds: 10
 
   resources:
     requests:
@@ -28,7 +29,7 @@ gateway:
     # gatewayProtocol: Loadbalancer protocol which is NOT the same as Container Procotol !
 
   podAnnotations:
-    proxy.istio.io/config: '{ "terminationDrainDuration": "20s" }'
+    proxy.istio.io/config: '{ "terminationDrainDuration": "90s" }'
 
 certificates: []
 #- name: ingress-cert

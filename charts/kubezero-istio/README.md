@@ -1,6 +1,6 @@
 # kubezero-istio
 
-![Version: 0.23.2](https://img.shields.io/badge/Version-0.23.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.24.2](https://img.shields.io/badge/Version-0.24.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio
 
@@ -16,13 +16,13 @@ Installs the Istio control plane
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0-0`
+Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://istio-release.storage.googleapis.com/charts | base | 1.23.2 |
-| https://istio-release.storage.googleapis.com/charts | istiod | 1.23.2 |
+| https://istio-release.storage.googleapis.com/charts | base | 1.24.2 |
+| https://istio-release.storage.googleapis.com/charts | istiod | 1.24.2 |
 | https://kiali.org/helm-charts | kiali-server | 1.89.7 |
 
 ## Values
@@ -64,12 +64,11 @@ Kubernetes: `>= 1.26.0-0`
 
 ## Resources
 
-- https://istio.io/latest/docs/reference/config/istio.operator.v1alpha1/#IstioOperatorSpec
 - https://github.com/istio/istio/blob/master/manifests/profiles/default.yaml
-- https://istio.io/latest/docs/setup/install/standalone-operator/
 
 ### Grafana
 - https://grafana.com/grafana/dashboards/7645
 - https://grafana.com/grafana/dashboards/7639
 - https://grafana.com/grafana/dashboards/7636
 - https://grafana.com/grafana/dashboards/7630
+- https://grafana.com/grafana/dashboards/11829

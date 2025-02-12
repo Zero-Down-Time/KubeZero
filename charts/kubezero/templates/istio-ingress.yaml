@@ -1,9 +1,5 @@
 {{- define "istio-ingress-values" }}
 
-{{- if eq .Values.global.platform "aws" }}
-{{- end }}
-{{- $ingressLabel := "node.kubernetes.io/ingress.public" }}
-
 gateway:
   name: istio-ingressgateway
 
