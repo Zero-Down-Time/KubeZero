@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-metrics
 description: KubeZero Umbrella Chart for Prometheus, Grafana and Alertmanager as well as all Kubernetes integrations.
 type: application
-version: 0.10.3
+version: 0.10.4
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -19,14 +19,14 @@ dependencies:
     version: ">= 0.1.6"
     repository: https://cdn.zero-downtime.net/charts/
   - name: kube-prometheus-stack
-    version: 66.7.1
+    version: 69.2.3
     repository: https://prometheus-community.github.io/helm-charts
   - name: prometheus-adapter
     version: 4.11.0
     repository: https://prometheus-community.github.io/helm-charts
     condition: prometheus-adapter.enabled
   - name: prometheus-pushgateway
-    version: 2.17.0
+    version: 3.0.0
     repository: https://prometheus-community.github.io/helm-charts
     condition: prometheus-pushgateway.enabled
 kubeVersion: ">= 1.26.0"
