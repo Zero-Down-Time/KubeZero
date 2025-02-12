@@ -1,0 +1,32 @@
+apiVersion: apiserver.config.k8s.io/v1beta1
+kind: AuthorizationConfiguration
+authorizers:
+  - type: Node
+    name: node
+  - type: RBAC
+    name: rbac
+# - type: Webhook
+#   name: Example
+#   webhook:
+#     authorizedTTL: 300s
+#     unauthorizedTTL: 30s
+#     timeout: 3s
+#     subjectAccessReviewVersion: v1
+#     matchConditionSubjectAccessReviewVersion: v1
+#     failurePolicy: NoOpinion
+#     connectionInfo:
+#       type: KubeConfigFile
+#       kubeConfigFile: /etc/kubernetes/apiserver/example.yaml
+#     matchConditions:
+#     # only send resource requests to the webhook
+#     - expression: has(request.resourceAttributes)
+#     # Don't intercept requests from kube-system service accounts
+#     - expression: "!('system:serviceaccounts:kube-system' in request.groups)"
+#     ## Below expressions avoid issues with kubeadm init and other system components that should be authorized by Node and RBAC
+#     # Don't process node and bootstrap token requests with the webhook
+#     - expression: "!('system:nodes' in request.groups)"
+#     - expression: "!('system:bootstrappers' in request.groups)"
+#     - expression: "!('system:bootstrappers:kubeadm:default-node-token' in request.groups)"
+#     # Don't process kubeadm requests with the webhook
+#     - expression: "!('kubeadm:cluster-admins' in request.groups)"
+#     - expression: "!('system:masters' in request.groups)"

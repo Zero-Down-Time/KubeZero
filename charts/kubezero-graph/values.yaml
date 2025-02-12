@@ -6,6 +6,9 @@ neo4j:
   neo4j:
     name: test-db
 
+    password: secret
+    passwordFromSecret: "neo4j-admin"
+
   volumes:
     data:
       mode: defaultStorageClass

@@ -134,7 +134,7 @@ aws-node-termination-handler:
     value: "regional"
 
   enablePrometheusServer: false
-  podMonitor:
+  serviceMonitor:
     create: false
 
   jsonLogging: true
@@ -145,9 +145,6 @@ aws-node-termination-handler:
     effect: NoSchedule
   nodeSelector:
     node-role.kubernetes.io/control-plane: ""
-
-  rbac:
-    pspEnabled: false
 
 fuseDevicePlugin:
   enabled: false
@@ -206,7 +203,7 @@ cluster-autoscaler:
 
   image:
     repository: registry.k8s.io/autoscaling/cluster-autoscaler
-    tag: v1.30.2
+    tag: v1.31.1
 
   autoDiscovery:
     clusterName: ""

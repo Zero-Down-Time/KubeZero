@@ -29,6 +29,9 @@ export ETCDCTL_KEY=${HOSTFS}/etc/kubernetes/pki/apiserver-etcd-client.key
 
 mkdir -p ${WORKDIR}
 
+# Import version specific hooks
+. /var/lib/kubezero/hooks-${KUBE_VERSION_MINOR##v}.sh
+
 # Generic retry utility
 retry() {
   local tries=$1
@@ -64,7 +67,9 @@ render_kubeadm() {
     cat ${WORKDIR}/kubeadm/templates/${f}Configuration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
   done
 
-  if [[ "$phase" =~ ^(bootstrap|join|restore)$ ]]; then
+  if [[ "$phase" == "upgrade" ]]; then
+    cat ${WORKDIR}/kubeadm/templates/UpgradeConfiguration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
+  elif [[ "$phase" =~ ^(bootstrap|join|restore)$ ]]; then
     cat ${WORKDIR}/kubeadm/templates/InitConfiguration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
   fi
 
@@ -83,7 +88,6 @@ parse_kubezero() {
   export ETCD_NODENAME=$(yq eval '.etcd.nodeName' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
   export NODENAME=$(yq eval '.nodeName' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
   export PROVIDER_ID=$(yq eval '.providerID // ""' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
-  export AWS_IAM_AUTH=$(yq eval '.api.awsIamAuth.enabled // "false"' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
 }
 
 
@@ -91,20 +95,6 @@ parse_kubezero() {
 pre_kubeadm() {
   # update all apiserver addons first
   cp -r ${WORKDIR}/kubeadm/templates/apiserver ${HOSTFS}/etc/kubernetes
-
-  # aws-iam-authenticator enabled ?
-  if [ "$AWS_IAM_AUTH" == "true" ]; then
-
-    # Initialize webhook
-    if [ ! -f ${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.crt ]; then
-      ${HOSTFS}/usr/bin/aws-iam-authenticator init -i ${CLUSTERNAME}
-      mv key.pem ${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.key
-      mv cert.pem ${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.crt
-    fi
-
-    # Patch the aws-iam-authenticator config with the actual cert.pem
-    yq eval -Mi ".clusters[0].cluster.certificate-authority-data = \"$(cat ${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.crt| base64 -w0)\"" ${HOSTFS}/etc/kubernetes/apiserver/aws-iam-authenticator.yaml
-  fi
 
   # copy patches to host to make --rootfs of kubeadm work
   cp -r ${WORKDIR}/kubeadm/templates/patches ${HOSTFS}/etc/kubernetes
@@ -120,60 +110,63 @@ post_kubeadm() {
 }
 
 
-kubeadm_upgrade() {
-  # pre upgrade hook
+# Control plane upgrade
+control_plane_upgrade() {
+  CMD=$1
 
   # get current values, argo app over cm
   get_kubezero_values $ARGOCD
 
-  # tumble new config through migrate.py
-  migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml
+  if [[ "$CMD" =~ ^(cluster)$ ]]; then
+    # tumble new config through migrate.py
+    migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml
 
-  # Update kubezero-values CM
-  kubectl get cm -n kubezero kubezero-values -o=yaml | \
-    yq e '.data."values.yaml" |= load_str("/tmp/kubezero/new-kubezero-values.yaml")' | \
-    kubectl apply --server-side --force-conflicts -f -
+    # Update kubezero-values CM
+    kubectl get cm -n kubezero kubezero-values -o=yaml | \
+      yq e '.data."values.yaml" |= load_str("/tmp/kubezero/new-kubezero-values.yaml")' | \
+      kubectl apply --server-side --force-conflicts -f -
 
-  if [ "$ARGOCD" == "True" ]; then
-    # update argo app
-    export kubezero_chart_version=$(yq .version $CHARTS/kubezero/Chart.yaml)
-    kubectl get application kubezero -n argocd -o yaml | \
-      yq '.spec.source.helm.valuesObject |= load("/tmp/kubezero/new-kubezero-values.yaml") | .spec.source.targetRevision = strenv(kubezero_chart_version)' \
-      > $WORKDIR/new-argocd-app.yaml
-    kubectl apply --server-side --force-conflicts -f $WORKDIR/new-argocd-app.yaml
+    if [ "$ARGOCD" == "True" ]; then
+      # update argo app
+      export kubezero_chart_version=$(yq .version $CHARTS/kubezero/Chart.yaml)
+      kubectl get application kubezero -n argocd -o yaml | \
+        yq '.spec.source.helm.valuesObject |= load("/tmp/kubezero/new-kubezero-values.yaml") | .spec.source.targetRevision = strenv(kubezero_chart_version)' \
+        > $WORKDIR/new-argocd-app.yaml
+      kubectl apply --server-side --force-conflicts -f $WORKDIR/new-argocd-app.yaml
 
-    # finally remove annotation to allow argo to sync again
-    kubectl patch app kubezero -n argocd --type json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true
+      # finally remove annotation to allow argo to sync again
+      kubectl patch app kubezero -n argocd --type json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true
+    fi
+
+    # Local node upgrade
+    render_kubeadm upgrade
+
+    pre_kubeadm
+
+    _kubeadm init phase upload-config kubeadm
+
+    _kubeadm upgrade apply $KUBE_VERSION
+
+    post_kubeadm
+
+    # install re-certed kubectl config for root
+    cp ${HOSTFS}/etc/kubernetes/super-admin.conf ${HOSTFS}/root/.kube/config
+
+    echo "Successfully upgraded KubeZero control plane to $KUBE_VERSION using kubeadm."
+
+  elif [[ "$CMD" =~ ^(final)$ ]]; then
+    render_kubeadm upgrade
+
+    # Finally upgrade addons last, with 1.32 we can ONLY call addon phase
+    #_kubeadm upgrade apply phase addon all $KUBE_VERSION
+    _kubeadm upgrade apply $KUBE_VERSION
+
+    echo "Upgraded addons and applied final migrations"
   fi
-
-  # Local node upgrade
-  render_kubeadm upgrade
-
-  pre_kubeadm
-
-  # Upgrade - we upload the new config first so we can use --patch during 1.30
-  _kubeadm init phase upload-config kubeadm
-
-  kubeadm upgrade apply --yes --patches /etc/kubernetes/patches $KUBE_VERSION --rootfs ${HOSTFS} $LOG
-
-  post_kubeadm
-
-  # install re-certed kubectl config for root
-  cp ${HOSTFS}/etc/kubernetes/super-admin.conf ${HOSTFS}/root/.kube/config
-
-  # post upgrade
 
   # Cleanup after kubeadm on the host
   rm -rf ${HOSTFS}/etc/kubernetes/tmp
 
-  echo "Successfully upgraded kubeadm control plane."
-
-  # TODO
-  # Send Notification currently done via CloudBender -> SNS -> Slack
-  # Better deploy https://github.com/opsgenie/kubernetes-event-exporter and set proper routes and labels on this Job
-
-  # Removed:
-  # - update oidc do we need that ?
 }
 
 
@@ -200,6 +193,10 @@ control_plane_node() {
     # Put PKI in place
     cp -r ${WORKDIR}/pki ${HOSTFS}/etc/kubernetes
 
+    ### 1.31 only to clean up previous aws-iam-auth certs
+    rm -f ${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.key ${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.crt
+    ###
+
     # Always use kubeadm kubectl config to never run into chicken egg with custom auth hooks
     cp ${WORKDIR}/super-admin.conf ${HOSTFS}/root/.kube/config
 
@@ -220,7 +217,7 @@ control_plane_node() {
   rm -f ${HOSTFS}/etc/kubernetes/pki/etcd/peer.* ${HOSTFS}/etc/kubernetes/pki/etcd/server.* ${HOSTFS}/etc/kubernetes/pki/etcd/healthcheck-client.* \
     ${HOSTFS}/etc/kubernetes/pki/apiserver* ${HOSTFS}/etc/kubernetes/pki/front-proxy-client.*
 
-  # Issue all certs first, needed for eg. aws-iam-authenticator setup
+  # Issue all certs first
   _kubeadm init phase certs all
 
   pre_kubeadm
@@ -286,6 +283,9 @@ control_plane_node() {
         -endpoint https://${ETCD_NODENAME}:2379 \
         change-provider-id ${NODENAME} $PROVIDER_ID
     fi
+
+    # update node label for single node control plane
+    kubectl label node $NODENAME "node.kubernetes.io/kubezero.version=$KUBE_VERSION" --overwrite=true
   fi
 
   _kubeadm init phase upload-config all
@@ -303,17 +303,6 @@ control_plane_node() {
 
   if [[ "$CMD" =~ ^(bootstrap|restore)$ ]]; then
     _kubeadm init phase addon all
-  fi
-
-  # Ensure aws-iam-authenticator secret is in place
-  if [ "$AWS_IAM_AUTH" == "true" ]; then
-    kubectl get secrets -n kube-system aws-iam-certs || \
-    kubectl create secret generic aws-iam-certs -n kube-system \
-      --from-file=key.pem=${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.key \
-      --from-file=cert.pem=${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.crt
-
-    # Store aws-iam-auth admin on SSM
-    yq eval -M ".clusters[0].cluster.certificate-authority-data = \"$(cat ${HOSTFS}/etc/kubernetes/pki/ca.crt | base64 -w0)\"" ${WORKDIR}/kubeadm/templates/admin-aws-iam.yaml > ${HOSTFS}/etc/kubernetes/admin-aws-iam.yaml
   fi
 
   post_kubeadm
@@ -413,7 +402,17 @@ for t in $@; do
     restore) control_plane_node restore;;
     kubeadm_upgrade)
       ARGOCD=$(argo_used)
-      kubeadm_upgrade;;
+      # call hooks
+      pre_control_plane_upgrade_cluster
+      control_plane_upgrade cluster
+      post_control_plane_upgrade_cluster
+      ;;
+    finalize_cluster_upgrade)
+      ARGOCD=$(argo_used)
+      pre_cluster_upgrade_final
+      control_plane_upgrade final
+      post_cluster_upgrade_final
+      ;;
     apply_*)
       ARGOCD=$(argo_used)
       apply_module "${t##apply_}";;

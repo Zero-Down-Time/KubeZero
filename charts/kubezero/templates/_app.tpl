@@ -25,6 +25,7 @@ spec:
     repoURL: {{ .Values.kubezero.repoURL }}
     targetRevision: {{ default .Values.kubezero.targetRevision ( index .Values $name "targetRevision" ) | quote }}
     helm:
+      skipTests: true
       valuesObject:
         {{- include (print $name "-values") $ | nindent 8 }}
 

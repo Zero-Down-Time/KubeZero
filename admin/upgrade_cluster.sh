@@ -19,22 +19,26 @@ echo "Checking that all pods in kube-system are running ..."
 
 [ "$ARGOCD" == "True" ] && disable_argo
 
-control_plane_upgrade kubeadm_upgrade
+# Check if we already have all controllers on the current version
+OLD_CONTROLLERS=$(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" --no-headers=true | grep -cv $KUBE_VERSION || true)
 
-echo "Control plane upgraded, <Return> to continue"
-read -r
+# All controllers already on current version
+if [ "$OLD_CONTROLLERS" == "0" ]; then
+  control_plane_upgrade finalize_cluster_upgrade
+  exit
+
+# Otherwise run control plane upgrade
+else
+  control_plane_upgrade kubeadm_upgrade
+  echo "<Return> to continue"
+  read -r
+fi
 
 #echo "Adjust kubezero values as needed:"
 # shellcheck disable=SC2015
 #[ "$ARGOCD" == "True" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
 
-### v1.31
-
 # upgrade modules
-#
-# Preload cilium images to running nodes, disabled till 1.31
-# all_nodes_upgrade "chroot /host crictl pull quay.io/cilium/cilium:v1.16.3; chroot /host crictl pull ghcr.io/k8snetworkplumbingwg/multus-cni:v3.9.3"
-
 control_plane_upgrade "apply_network, apply_addons, apply_storage, apply_operators"
 
 echo "Checking that all pods in kube-system are running ..."
@@ -45,8 +49,7 @@ echo "Applying remaining KubeZero modules..."
 control_plane_upgrade "apply_cert-manager, apply_istio, apply_istio-ingress, apply_istio-private-ingress, apply_logging, apply_metrics, apply_telemetry, apply_argo"
 
 # Final step is to commit the new argocd kubezero app
-# remove the del(.spec.source.helm.values) with 1.31
-kubectl get app kubezero -n argocd -o yaml | yq 'del(.spec.source.helm.values) | del(.status) | del(.metadata) | del(.operation) | .metadata.name="kubezero" | .metadata.namespace="argocd"' | yq 'sort_keys(..)' > $ARGO_APP
+kubectl get app kubezero -n argocd -o yaml | del(.status) | del(.metadata) | del(.operation) | .metadata.name="kubezero" | .metadata.namespace="argocd"' | yq 'sort_keys(..)' > $ARGO_APP
 
 # Trigger backup of upgraded cluster state
 kubectl create job --from=cronjob/kubezero-backup kubezero-backup-$KUBE_VERSION -n kube-system

@@ -54,4 +54,4 @@ dependencies:
     version: 0.2.12
     repository: https://caas-team.github.io/helm-charts/
     condition: py-kube-downscaler.enabled
-kubeVersion: ">= 1.26.0"
+kubeVersion: ">= 1.30.0-0"

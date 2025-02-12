@@ -1,4 +1,4 @@
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
 kubernetesVersion: {{ .Chart.Version }}
 clusterName: {{ .Values.global.clusterName }}
@@ -11,20 +11,33 @@ etcd:
   local:
     # imageTag: 3.5.12-0
     extraArgs:
+      - name: advertise-client-urls
+        value: https://{{ .Values.etcd.nodeName }}:2379
+      - name: initial-advertise-peer-urls
+        value: https://{{ .Values.etcd.nodeName }}:2380
+      - name: initial-cluster
+        value: {{ include "kubeadm.etcd.initialCluster" .Values.etcd | quote }}
+      - name: initial-cluster-state
+        value: {{ .Values.etcd.state }}
+      - name: initial-cluster-token
+        value: etcd-{{ .Values.global.clusterName }}
+      - name: name
+        value: {{ .Values.etcd.nodeName }}
+      - name: listen-peer-urls
+        value: https://{{ .Values.listenAddress }}:2380
+      - name: listen-client-urls
+        value: https://{{ .Values.listenAddress }}:2379
+      - name: listen-metrics-urls
+        value: http://0.0.0.0:2381
+      - name: logger
+        value: zap
+      - name: log-level
+        value: warn
       ### DNS discovery
-      #discovery-srv: {{ .Values.domain }}
-      #discovery-srv-name: {{ .Values.global.clusterName }}
-      advertise-client-urls: https://{{ .Values.etcd.nodeName }}:2379
-      initial-advertise-peer-urls: https://{{ .Values.etcd.nodeName }}:2380
-      initial-cluster: {{ include "kubeadm.etcd.initialCluster" .Values.etcd | quote }}
-      initial-cluster-state: {{ .Values.etcd.state }}
-      initial-cluster-token: etcd-{{ .Values.global.clusterName }}
-      name: {{ .Values.etcd.nodeName }}
-      listen-peer-urls: https://{{ .Values.listenAddress }}:2380
-      listen-client-urls: https://{{ .Values.listenAddress }}:2379
-      listen-metrics-urls: http://0.0.0.0:2381
-      logger: zap
-      # log-level: "warn"
+      #- name: discovery-srv
+      #  value: {{ .Values.domain }}
+      #- name: discovery-srv-name
+      #  value: {{ .Values.global.clusterName }}
       {{- with .Values.etcd.extraArgs }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
@@ -38,49 +51,82 @@ etcd:
     - "{{ .Values.domain }}"
 controllerManager:
   extraArgs:
-    profiling: "false"
-    terminated-pod-gc-threshold: "300"
-    leader-elect: {{ .Values.global.highAvailable | quote }}
-    logging-format: json
-    feature-gates: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
+    - name: profiling
+      value: "false"
+    - name: terminated-pod-gc-threshold
+      value: "300"
+    - name: leader-elect
+      value: {{ .Values.global.highAvailable | quote }}
+    - name: logging-format
+      value: json
+    - name: feature-gates
+      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
 scheduler:
   extraArgs:
-    profiling: "false"
-    leader-elect: {{ .Values.global.highAvailable | quote }}
-    logging-format: json
-    feature-gates: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
+    - name: feature-gates
+      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
+    - name: leader-elect
+      value: {{ .Values.global.highAvailable | quote }}
+    - name: logging-format
+      value: json
+    - name: profiling
+      value: "false"
 apiServer:
   certSANs:
   -  {{ regexSplit ":" .Values.api.endpoint -1 | first }}
   extraArgs:
-    etcd-servers: {{ .Values.api.etcdServers }}
-    profiling: "false"
-    audit-log-path: "/var/log/kubernetes/audit.log"
-    audit-policy-file: /etc/kubernetes/apiserver/audit-policy.yaml
-    audit-log-maxage: "7"
-    audit-log-maxsize: "100"
-    audit-log-maxbackup: "1"
-    audit-log-compress: "true"
+    - name: profiling
+      value: "false"
+    - name: etcd-servers
+      value: {{ .Values.api.etcdServers }}
+    - name: audit-log-path
+      value: /var/log/kubernetes/audit.log
+    - name: audit-policy-file
+      value: /etc/kubernetes/apiserver/audit-policy.yaml
+    - name: audit-log-maxage
+      value: "7"
+    - name: audit-log-maxsize
+      value: "100"
+    - name: audit-log-maxbackup
+      value: "1"
+    - name: audit-log-compress
+      value: "true"
     {{- if .Values.api.falco.enabled }}
-    audit-webhook-config-file: /etc/kubernetes/apiserver/audit-webhook.yaml
+    - name: audit-webhook-config-file
+      value: /etc/kubernetes/apiserver/audit-webhook.yaml
     {{- end }}
-    tls-cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
-    admission-control-config-file: /etc/kubernetes/apiserver/admission-configuration.yaml
-    api-audiences: {{ .Values.api.apiAudiences }}
+    - name: tls-cipher-suites
+      value: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+    - name: admission-control-config-file
+      value: /etc/kubernetes/apiserver/admission-configuration.yaml
+    - name: api-audiences
+      value: {{ .Values.api.apiAudiences }}
     {{- if .Values.api.serviceAccountIssuer }}
-    service-account-issuer: "{{ .Values.api.serviceAccountIssuer }}"
-    service-account-jwks-uri: "{{ .Values.api.serviceAccountIssuer }}/openid/v1/jwks"
+    - name: service-account-issuer
+      value: "{{ .Values.api.serviceAccountIssuer }}"
+    - name: service-account-jwks-uri
+      value: "{{ .Values.api.serviceAccountIssuer }}/openid/v1/jwks"
     {{- end }}
-    {{- if .Values.api.awsIamAuth.enabled }}
-    authentication-token-webhook-config-file: /etc/kubernetes/apiserver/aws-iam-authenticator.yaml
-    authentication-token-webhook-cache-ttl: 3600s
+    {{- if .Values.api.awsIamAuth }}
+    - name: authentication-token-webhook-config-file
+      value: /etc/kubernetes/apiserver/aws-iam-authenticator.yaml
+    - name: authentication-token-webhook-cache-ttl
+      value: 3600s
+    - name: authentication-token-webhook-version
+      value: v1
     {{- end }}
-    feature-gates: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
-    enable-admission-plugins: DenyServiceExternalIPs,NodeRestriction,EventRateLimit,ExtendedResourceToleration
+    - name: feature-gates
+      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
+    - name: authorization-config
+      value: /etc/kubernetes/apiserver/authz-config.yaml
+    - name: enable-admission-plugins
+      value: DenyServiceExternalIPs,NodeRestriction,EventRateLimit,ExtendedResourceToleration
     {{- if .Values.global.highAvailable }}
-    goaway-chance: ".001"
+    - name: goaway-chance
+      value: ".001"
     {{- end }}
-    logging-format: json
+    - name: logging-format
+      value: json
     {{- with .Values.api.extraArgs }}
     {{- toYaml . | nindent 4 }}
     {{- end }}

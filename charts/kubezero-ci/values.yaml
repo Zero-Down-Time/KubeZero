@@ -192,6 +192,8 @@ jenkins:
     annotations:
       container.apparmor.security.beta.kubernetes.io/jnlp: "unconfined"
       cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    garbageCollection:
+      enabled: true
     customJenkinsLabels:
     - podman-aws-trivy
     idleMinutes: 30

@@ -30,4 +30,4 @@ dependencies:
     version: 1.23.0
     repository: https://haproxytech.github.io/helm-charts
     condition: haproxy.enabled
-kubeVersion: ">= 1.26.0"
+kubeVersion: ">= 1.29.0-0"

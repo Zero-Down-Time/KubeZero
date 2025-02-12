@@ -29,8 +29,10 @@ Kubernetes: `>= 1.26.0`
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| data-prepper.config."data-prepper-config.yaml" | string | `"ssl: false\npeer_forwarder:\n  ssl: false\n"` |  |
 | data-prepper.config."log4j2-rolling.properties" | string | `"status = error\ndest = err\nname = PropertiesConfig\n\nappender.console.type = Console\nappender.console.name = STDOUT\nappender.console.layout.type = PatternLayout\nappender.console.layout.pattern = %d{ISO8601} [%t] %-5p %40C - %m%n\n\nrootLogger.level = warn\nrootLogger.appenderRef.stdout.ref = STDOUT\n\nlogger.pipeline.name = org.opensearch.dataprepper.pipeline\nlogger.pipeline.level = info\n\nlogger.parser.name = org.opensearch.dataprepper.parser\nlogger.parser.level = info\n\nlogger.plugins.name = org.opensearch.dataprepper.plugins\nlogger.plugins.level = info\n"` |  |
 | data-prepper.enabled | bool | `false` |  |
+| data-prepper.image.tag | string | `"2.10.1"` |  |
 | data-prepper.pipelineConfig.config.otel-service-map-pipeline.buffer.bounded_blocking | string | `nil` |  |
 | data-prepper.pipelineConfig.config.otel-service-map-pipeline.delay | int | `3000` |  |
 | data-prepper.pipelineConfig.config.otel-service-map-pipeline.processor[0].service_map.window_duration | int | `180` |  |
@@ -72,7 +74,7 @@ Kubernetes: `>= 1.26.0`
 | fluent-bit.config.inputs | string | `"[INPUT]\n    Name tail\n    Path /var/log/containers/*.log\n    # Exclude ourselves to current error spam, https://github.com/fluent/fluent-bit/issues/5769\n    # Todo: Rather limit / filter spam message than exclude all together -> ideally locally, next dataprepper\n    Exclude_Path *logging-fluent-bit*\n    multiline.parser cri\n    Tag cri.*\n    Skip_Long_Lines On\n    Skip_Empty_Lines On\n    DB /var/log/flb_kube.db\n    DB.Sync Normal\n    DB.locking true\n    # Buffer_Max_Size 1M\n    {{- with .Values.config.input }}\n    Mem_Buf_Limit {{ .memBufLimit }}\n    Refresh_Interval {{ .refreshInterval }}\n    {{- end }}\n\n[INPUT]\n    Name opentelemetry\n    Tag otel\n"` |  |
 | fluent-bit.config.logLevel | string | `"info"` |  |
 | fluent-bit.config.output.host | string | `"telemetry-fluentd"` |  |
-| fluent-bit.config.output.sharedKey | string | `"secretref+k8s://v1/Secret/kube-system/kubezero-secrets/telemetry.fluentd.source.sharedKey"` |  |
+| fluent-bit.config.output.sharedKey | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/telemetry.fluentd.source.sharedKey"` |  |
 | fluent-bit.config.output.tls | bool | `false` |  |
 | fluent-bit.config.output_otel.host | string | `"telemetry-opentelemetry-collector"` |  |
 | fluent-bit.config.outputs | string | `"[OUTPUT]\n    Match kube.*\n    Name forward\n    Host {{ .Values.config.output.host }}\n    Port 24224\n    Shared_Key {{ .Values.config.output.sharedKey }}\n    tls {{ ternary \"on\" \"off\" .Values.config.output.tls }}\n    Send_options true\n    Require_ack_response true\n\n[OUTPUT]\n    Name opentelemetry\n    Match otel\n    Host {{ .Values.config.output_otel.host }}\n    Port 4318\n    #Metrics_uri /v1/metrics\n    Traces_uri   /v1/traces\n    #Logs_uri    /v1/logs\n"` |  |
@@ -133,7 +135,7 @@ Kubernetes: `>= 1.26.0`
 | fluentd.service.ports[1].containerPort | int | `9880` |  |
 | fluentd.service.ports[1].name | string | `"http-fluentd"` |  |
 | fluentd.service.ports[1].protocol | string | `"TCP"` |  |
-| fluentd.source.sharedKey | string | `"secretref+k8s://v1/Secret/kube-system/kubezero-secrets/telemetry.fluentd.source.sharedKey"` |  |
+| fluentd.source.sharedKey | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/telemetry.fluentd.source.sharedKey"` |  |
 | fluentd.volumeMounts[0].mountPath | string | `"/run/pki"` |  |
 | fluentd.volumeMounts[0].name | string | `"trust-store"` |  |
 | fluentd.volumeMounts[0].readOnly | bool | `true` |  |
@@ -164,6 +166,7 @@ Kubernetes: `>= 1.26.0`
 | jaeger.storage.elasticsearch.scheme | string | `"https"` |  |
 | jaeger.storage.elasticsearch.user | string | `"admin"` |  |
 | jaeger.storage.type | string | `"elasticsearch"` |  |
+| metrics.enabled | bool | `false` |  |
 | opensearch.dashboard.enabled | bool | `false` |  |
 | opensearch.dashboard.istio.enabled | bool | `false` |  |
 | opensearch.dashboard.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
@@ -179,9 +182,6 @@ Kubernetes: `>= 1.26.0`
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.http.endpoint | string | `"${env:MY_POD_IP}:4318"` |  |
 | opentelemetry-collector.config.service.extensions[0] | string | `"health_check"` |  |
-| opentelemetry-collector.config.service.extensions[1] | string | `"memory_ballast"` |  |
-| opentelemetry-collector.config.service.pipelines.logs | string | `nil` |  |
-| opentelemetry-collector.config.service.pipelines.metrics | string | `nil` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"otlp/jaeger"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[1] | string | `"otlp/data-prepper"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"memory_limiter"` |  |

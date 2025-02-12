@@ -9,36 +9,3 @@ diff -rtuN charts/fluentd.orig/templates/fluentd-configurations-cm.yaml charts/f
 +    {{- (tpl $value $) | nindent 4 }}
  {{- end }}
  {{- end }}
- 
-diff -rtuN charts/fluentd.orig/templates/tests/test-connection.yaml charts/fluentd/templates/tests/test-connection.yaml
---- charts/fluentd.orig/templates/tests/test-connection.yaml	2024-04-08 11:00:03.030515998 +0000
-+++ charts/fluentd/templates/tests/test-connection.yaml	2024-04-08 11:03:16.254774985 +0000
-@@ -4,6 +4,7 @@
- If the fluentd config is overriden and the metrics server removed
- this will fail.
- */}}
-+{{- if .Values.testFramework.enabled }}
- {{ if empty .Values.service.ports }}
- apiVersion: v1
- kind: Pod
-@@ -26,4 +27,5 @@
-           while :; do nc -vz {{ include "fluentd.fullname" . }}:24231 && break; sleep 1; done
-           wget '{{ include "fluentd.fullname" . }}:24231/metrics'
-   restartPolicy: Never
--{{ end }}
-\ No newline at end of file
-+{{ end }}
-+{{- end }}
-diff -rtuN charts/fluentd.orig/values.yaml charts/fluentd/values.yaml
---- charts/fluentd.orig/values.yaml	2024-04-08 11:00:03.030515998 +0000
-+++ charts/fluentd/values.yaml	2024-04-08 11:00:03.040516045 +0000
-@@ -13,6 +13,9 @@
-   pullPolicy: "IfNotPresent"
-   tag: ""
- 
-+testFramework:
-+  enabled: false
-+
- ## Optional array of imagePullSecrets containing private registry credentials
- ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
- imagePullSecrets: []

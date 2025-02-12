@@ -148,7 +148,7 @@ for manifest in yaml.safe_load_all(sys.stdin):
 # helm template | kubectl apply -f -
 # confine to one namespace if possible
 function render() {
-  helm secrets --evaluate-templates template $(chart_location $chart) -n $namespace --name-template $module $targetRevision --skip-crds -f $WORKDIR/values.yaml $API_VERSIONS --kube-version $KUBE_VERSION $@ \
+  helm secrets --evaluate-templates template $(chart_location $chart) -n $namespace --name-template $module $targetRevision --skip-tests --skip-crds -f $WORKDIR/values.yaml $API_VERSIONS --kube-version $KUBE_VERSION $@ \
     | python3 -c '
 #!/usr/bin/python3
 import yaml

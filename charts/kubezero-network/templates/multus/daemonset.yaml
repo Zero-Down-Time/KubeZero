@@ -30,7 +30,8 @@ spec:
         image: {{ .Values.multus.image.repository }}:{{ .Values.multus.image.tag }}
         # Always used cached images
         imagePullPolicy: {{ .Values.multus.image.pullPolicy }}
-        command: ["/entrypoint.sh"]
+        #command: ["/entrypoint.sh"]
+        command: ["/thin_entrypoint"]
         args:
         - "--multus-conf-file=/tmp/multus-conf/00-multus.conf"
         - "--rename-conf-file=false"
@@ -39,10 +40,10 @@ spec:
         resources:
           requests:
             cpu: "10m"
-            # memory: "64Mi"
-          # limits:
+            memory: "32Mi"
+          limits:
             # cpu: "100m"
-            # memory: "256Mi"
+            memory: "64Mi"
         securityContext:
           privileged: true
           capabilities:

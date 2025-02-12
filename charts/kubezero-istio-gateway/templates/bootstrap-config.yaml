@@ -51,7 +51,7 @@ data:
           {
             "name": "static_layer_0",
             "staticLayer": {
-              "overload.global_downstream_max_connections": 50000
+              "envoy.resource_monitors.downstream_connections": 50000
             }
           }
         ]

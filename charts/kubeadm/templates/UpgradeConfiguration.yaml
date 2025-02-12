@@ -1,0 +1,16 @@
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: UpgradeConfiguration
+apply:
+  forceUpgrade: true
+  {{- with .Values.patches }}
+  patches:
+    directory: {{ . }}
+  {{- end }}
+  ignorePreflightErrors:
+  - DirAvailable--var-lib-etcd
+  - DirAvailable--etc-kubernetes-manifests
+  - FileAvailable--etc-kubernetes-pki-ca.crt
+  - FileAvailable--etc-kubernetes-manifests-etcd.yaml
+  - Swap
+  - KubeletVersion
+  skipPhases: []

@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubeadm
 description: KubeZero Kubeadm cluster config
 type: application
-version: 1.31.4
+version: 1.31.5
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:

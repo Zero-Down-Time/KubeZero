@@ -1,4 +1,4 @@
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: InitConfiguration
 localAPIEndpoint:
   advertiseAddress: {{ .Values.listenAddress }}
@@ -17,10 +17,13 @@ nodeRegistration:
   - Swap
   - KubeletVersion
   kubeletExtraArgs:
-    node-labels: {{ .Values.nodeLabels | quote }}
+    - name: node-labels
+      value: {{ .Values.nodeLabels | quote }}
     {{- with .Values.providerID }}
-    provider-id: {{ . }}
+    - name: provider-id
+      value: {{ . }}
     {{- end }}
     {{- if ne .Values.listenAddress "0.0.0.0" }}
-    node-ip: {{ .Values.listenAddress }}
+    - name: node-ip
+      value: {{ .Values.listenAddress }}
     {{- end }}

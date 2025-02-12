@@ -3,7 +3,7 @@ ARG ALPINE_VERSION=3.21
 FROM docker.io/alpine:${ALPINE_VERSION}
 
 ARG ALPINE_VERSION
-ARG KUBE_VERSION=1.31.4
+ARG KUBE_VERSION=1.31
 
 ARG SOPS_VERSION="3.9.1"
 ARG VALS_VERSION="0.37.6"
@@ -41,8 +41,8 @@ RUN mkdir -p $(helm env HELM_PLUGINS) && \
 # vals
 RUN wget -qO - https://github.com/helmfile/vals/releases/download/v${VALS_VERSION}/vals_${VALS_VERSION}_linux_amd64.tar.gz | tar -C /usr/local/bin -xzf- vals
 
-ADD admin/kubezero.sh admin/libhelm.sh admin/migrate_argo_values.py /usr/bin
-ADD admin/libhelm.sh /var/lib/kubezero
+ADD admin/kubezero.sh admin/migrate_argo_values.py /usr/bin
+ADD admin/libhelm.sh admin/hooks-$KUBE_VERSION.sh /var/lib/kubezero
 
 ADD charts/kubeadm /charts/kubeadm
 ADD charts/kubezero /charts/kubezero

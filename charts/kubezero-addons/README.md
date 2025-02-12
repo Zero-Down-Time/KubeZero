@@ -1,6 +1,6 @@
 # kubezero-addons
 
-![Version: 0.8.11](https://img.shields.io/badge/Version-0.8.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.30](https://img.shields.io/badge/AppVersion-v1.30-informational?style=flat-square)
+![Version: 0.8.13](https://img.shields.io/badge/Version-0.8.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.30](https://img.shields.io/badge/AppVersion-v1.30-informational?style=flat-square)
 
 KubeZero umbrella chart for various optional cluster addons
 
@@ -18,13 +18,13 @@ Kubernetes: `>= 1.26.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://bitnami-labs.github.io/sealed-secrets | sealed-secrets | 2.16.2 |
-| https://caas-team.github.io/helm-charts/ | py-kube-downscaler | 0.2.11 |
-| https://kubernetes-sigs.github.io/external-dns/ | external-dns | 1.15.0 |
-| https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.43.2 |
+| https://bitnami-labs.github.io/sealed-secrets | sealed-secrets | 2.17.1 |
+| https://caas-team.github.io/helm-charts/ | py-kube-downscaler | 0.2.12 |
+| https://kubernetes-sigs.github.io/external-dns/ | external-dns | 1.15.1 |
+| https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.46.0 |
 | https://nvidia.github.io/k8s-device-plugin | nvidia-device-plugin | 0.17.0 |
 | https://twin.github.io/helm-charts | aws-eks-asg-rolling-update-handler | 1.5.0 |
-| oci://public.ecr.aws/aws-ec2/helm | aws-node-termination-handler | 0.24.1 |
+| oci://public.ecr.aws/aws-ec2/helm | aws-node-termination-handler | 0.26.0 |
 | oci://public.ecr.aws/neuron | neuron-helm-chart | 1.1.1 |
 
 # MetalLB   

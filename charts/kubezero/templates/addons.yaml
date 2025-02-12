@@ -135,8 +135,8 @@ py-kube-downscaler:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 
-# AWS only
 {{- if eq .Values.global.platform "aws" }}
+# AWS only
 aws-node-termination-handler:
   enabled: {{ default "true" (index .Values "addons" "aws-node-termination-handler" "enabled") }}
 
@@ -146,6 +146,8 @@ aws-node-termination-handler:
 
   {{- with .Values.metrics }}
   enablePrometheusServer: {{ .enabled }}
+  serviceMonitor:
+    create: true
   {{- end }}
 
   queueURL: "https://sqs.{{ .Values.global.aws.region }}.amazonaws.com/{{ .Values.global.aws.accountId }}/{{ .Values.global.clusterName }}_Nth"
@@ -187,8 +189,8 @@ aws-eks-asg-rolling-update-handler:
     - name: AWS_STS_REGIONAL_ENDPOINTS
       value: "regional"
 
-{{- with .Values.addons.awsNeuron }}
-awsNeuron:
+{{- with (index .Values "addons" "neuron-helm-chart") }}
+neuron-helm-chart:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 

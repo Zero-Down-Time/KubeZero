@@ -4,7 +4,6 @@ fluentd is deployed with the default values
 If the fluentd config is overriden and the metrics server removed
 this will fail.
 */}}
-{{- if .Values.testFramework.enabled }}
 {{ if empty .Values.service.ports }}
 apiVersion: v1
 kind: Pod
@@ -28,4 +27,3 @@ spec:
           wget '{{ include "fluentd.fullname" . }}:24231/metrics'
   restartPolicy: Never
 {{ end }}
-{{- end }}
