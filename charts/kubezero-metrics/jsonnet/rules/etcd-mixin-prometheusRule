@@ -20,9 +20,9 @@
                      "summary": "etcd cluster members are down."
                   },
                   "expr": "max without (endpoint) (\n  sum without (instance, pod) (up{job=~\".*etcd.*\"} == bool 0)\nor\n  count without (To) (\n    sum without (instance, pod) (rate(etcd_network_peer_sent_failures_total{job=~\".*etcd.*\"}[120s])) > 0.01\n  )\n)\n> 0\n",
-                  "for": "10m",
+                  "for": "20m",
                   "labels": {
-                     "severity": "critical"
+                     "severity": "warning"
                   }
                },
                {

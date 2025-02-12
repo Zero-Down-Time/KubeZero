@@ -6,5 +6,5 @@ dashboards:
   url: https://grafana.com/api/dashboards/9578/revisions/4/download
   tags: []
 - name: Prometheus
-  url: https://grafana.com/api/dashboards/3662/revisions/2/download
+  url: https://grafana.com/api/dashboards/19105/revisions/7/download
   tags: []
