@@ -22,25 +22,6 @@ nats:
     # url: "mq.example.com"
     gateway: istio-ingress/private-ingressgateway
 
-# rabbitmq cluster operator
-rabbitmq-cluster-operator:
-  enabled: false
-  rabbitmqImage:
-    tag: 3.11.4-debian-11-r0
-
-  useCertManager: true
-
-  clusterOperator:
-    metrics:
-      enabled: false
-      serviceMonitor:
-        enabled: true
-
-  msgTopologyOperator:
-    metrics:
-      enabled: false
-      serviceMonitor:
-        enabled: true
 
 # rabbitmq
 rabbitmq:

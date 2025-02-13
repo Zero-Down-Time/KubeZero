@@ -86,7 +86,7 @@ helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --kube-version $
 
 # Root KubeZero apply directly and exit
 if [ ${ARTIFACTS[0]} == "kubezero" ]; then
-  kubectl apply -f $WORKDIR/kubezero/templates
+  kubectl apply --server-side --force-conflicts -f $WORKDIR/kubezero/templates
   exit $?
 
 # "catch all" apply all enabled modules

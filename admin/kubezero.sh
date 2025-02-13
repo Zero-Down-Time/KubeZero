@@ -121,18 +121,16 @@ control_plane_upgrade() {
     get_kubezero_values $ARGOCD
 
     # tumble new config through migrate.py
-    migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml
+    migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml \
+      && mv "$WORKDIR"/new-kubezero-values.yaml "$WORKDIR"/kubezero-values.yaml
 
-    # Update kubezero-values CM
-    kubectl get cm -n kubezero kubezero-values -o=yaml | \
-      yq e '.data."values.yaml" |= load_str("/tmp/kubezero/new-kubezero-values.yaml")' | \
-      kubectl apply --server-side --force-conflicts -f -
+    update_kubezero_cm
 
     if [ "$ARGOCD" == "True" ]; then
       # update argo app
       export kubezero_chart_version=$(yq .version $CHARTS/kubezero/Chart.yaml)
       kubectl get application kubezero -n argocd -o yaml | \
-        yq '.spec.source.helm.valuesObject |= load("/tmp/kubezero/new-kubezero-values.yaml") | .spec.source.targetRevision = strenv(kubezero_chart_version)' \
+        yq ".spec.source.helm.valuesObject |= load(\"$WORKDIR/kubezero-values.yaml\") | .spec.source.targetRevision = strenv(kubezero_chart_version)" \
         > $WORKDIR/new-argocd-app.yaml
       kubectl apply --server-side --force-conflicts -f $WORKDIR/new-argocd-app.yaml
 

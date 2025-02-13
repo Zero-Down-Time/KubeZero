@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 2.15.0
+appVersion: 2.16.1
 description: Elastic Cloud on Kubernetes (ECK) operator
 home: https://github.com/elastic/cloud-on-k8s
 icon: https://helm.elastic.co/icons/eck.png
@@ -18,4 +18,4 @@ maintainers:
     name: Elastic
 name: eck-operator
 type: application
-version: 2.15.0
+version: 2.16.1

@@ -46,13 +46,17 @@ function get_kubezero_values() {
 }
 
 
-# Update kubezero-values CM
+# Overwrite kubezero-values CM with file
 function update_kubezero_cm() {
-  kubectl get application kubezero -n argocd -o yaml | yq .spec.source.helm.valuesObject > ${WORKDIR}/kubezero-values.yaml
-
   kubectl get cm -n kubezero kubezero-values -o=yaml | \
-    yq e '.data."values.yaml" |= load_str("/tmp/kubezero/kubezero-values.yaml")' | \
+    yq e ".data.\"values.yaml\" |= load_str(\"$WORKDIR/kubezero-values.yaml\")" | \
     kubectl apply --server-side --force-conflicts -f -
+}
+
+# sync kubezero-values CM from ArgoCD app
+function sync_kubezero_cm_from_argo() {
+  get_kubezero_values True
+  update_kubezero_cm
 }
 
 
