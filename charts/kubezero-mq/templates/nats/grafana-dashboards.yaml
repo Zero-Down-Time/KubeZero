@@ -1,4 +1,4 @@
-{{- if .Values.nats.promExporter.podMonitor.enabled }}
+{{- if .Values.nats.exporter.serviceMonitor.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

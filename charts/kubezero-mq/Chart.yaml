@@ -8,7 +8,6 @@ icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
   - kubezero
   - rabbitmq
-  - rabbitmq-cluster-operator
   - nats
 maintainers:
   - name: Stefan Reimer
@@ -25,8 +24,4 @@ dependencies:
     version: 14.6.6
     repository: https://charts.bitnami.com/bitnami
     condition: rabbitmq.enabled
-  - name: rabbitmq-cluster-operator
-    version: 4.3.19
-    repository: https://charts.bitnami.com/bitnami
-    condition: rabbitmq-cluster-operator.enabled
 kubeVersion: ">= 1.26.0"

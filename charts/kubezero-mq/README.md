@@ -20,7 +20,6 @@ Kubernetes: `>= 1.26.0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
 | https://charts.bitnami.com/bitnami | rabbitmq | 14.6.6 |
-| https://charts.bitnami.com/bitnami | rabbitmq-cluster-operator | 4.3.19 |
 | https://nats-io.github.io/k8s/helm/charts/ | nats | 1.2.2 |
 
 ## Values
