@@ -104,6 +104,7 @@ aws-ebs-csi-driver:
     replicaCount: 1
 
     loggingFormat: json
+    revisionHistoryLimit: 3
 
     defaultFsType: xfs
 
@@ -116,10 +117,8 @@ aws-ebs-csi-driver:
     # k8sTagClusterId: <CLUSTER_NAME>
     # region: <AWS_DEFAULT_REGION>
 
-    # Enable once we have a customer needing it
-    # so far the default storageclass does just fine and we rather have different classes
     volumeModificationFeature:
-      enabled: false
+      enabled: true
 
     #env:
     #  ebsPlugin:
@@ -153,6 +152,8 @@ aws-ebs-csi-driver:
 
   node:
     loggingFormat: json
+    revisionHistoryLimit: 3
+
     tolerateAllTaints: false
     priorityClassName: system-node-critical
 
@@ -169,6 +170,8 @@ aws-ebs-csi-driver:
     - key: aws.amazon.com/neuron
       effect: NoSchedule
       operator: Exists
+
+    enableMetrics: false
 
     resources:
       requests:
@@ -202,14 +205,16 @@ aws-ebs-csi-driver:
 aws-efs-csi-driver:
   enabled: false
 
-  replicaCount: 1
+  useHelmHooksForCSIDriver: false
 
-  image:
-    tag: "v2.0.9"
+# image:
+#   tag: "v2.0.9"
 
   controller:
     create: true
     logLevel: 2
+
+    replicaCount: 1
 
     tolerations:
     - key: node-role.kubernetes.io/control-plane

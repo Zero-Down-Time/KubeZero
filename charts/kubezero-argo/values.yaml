@@ -45,7 +45,7 @@ argo-cd:
       format: json
     image:
       repository: public.ecr.aws/zero-downtime/zdt-argocd
-      tag: v2.13.1
+      tag: v2.14.2
     networkPolicy:
       create: true
 

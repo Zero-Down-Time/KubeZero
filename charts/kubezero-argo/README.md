@@ -1,6 +1,6 @@
 # kubezero-argo
 
-![Version: 0.2.7](https://img.shields.io/badge/Version-0.2.7-informational?style=flat-square)
+![Version: 0.2.8](https://img.shields.io/badge/Version-0.2.8-informational?style=flat-square)
 
 KubeZero Argo - Events, Workflow, CD
 
@@ -18,16 +18,17 @@ Kubernetes: `>= 1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://argoproj.github.io/argo-helm | argo-cd | 7.7.7 |
-| https://argoproj.github.io/argo-helm | argo-events | 2.4.9 |
+| https://argoproj.github.io/argo-helm | argo-cd | 7.8.2 |
+| https://argoproj.github.io/argo-helm | argo-events | 2.4.13 |
 | https://argoproj.github.io/argo-helm | argocd-apps | 2.0.2 |
-| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.11.2 |
+| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.12.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| argo-cd.configs.cm."application.instanceLabelKey" | string | `nil` |  |
 | argo-cd.configs.cm."application.resourceTrackingMethod" | string | `"annotation"` |  |
 | argo-cd.configs.cm."resource.customizations" | string | `"cert-manager.io/Certificate:\n  # Lua script for customizing the health status assessment\n  health.lua: |\n    hs = {}\n    if obj.status ~= nil then\n      if obj.status.conditions ~= nil then\n        for i, condition in ipairs(obj.status.conditions) do\n          if condition.type == \"Ready\" and condition.status == \"False\" then\n            hs.status = \"Degraded\"\n            hs.message = condition.message\n            return hs\n          end\n          if condition.type == \"Ready\" and condition.status == \"True\" then\n            hs.status = \"Healthy\"\n            hs.message = condition.message\n            return hs\n          end\n        end\n      end\n    end\n    hs.status = \"Progressing\"\n    hs.message = \"Waiting for certificate\"\n    return hs\n"` |  |
 | argo-cd.configs.cm."timeout.reconciliation" | string | `"300s"` |  |
@@ -35,6 +36,7 @@ Kubernetes: `>= 1.26.0-0`
 | argo-cd.configs.cm."ui.bannerpermanent" | string | `"true"` |  |
 | argo-cd.configs.cm."ui.bannerposition" | string | `"bottom"` |  |
 | argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.31"` |  |
+| argo-cd.configs.cm.installationID | string | `"KubeZero-ArgoCD"` |  |
 | argo-cd.configs.cm.url | string | `"https://argocd.example.com"` |  |
 | argo-cd.configs.params."controller.diff.server.side" | string | `"true"` |  |
 | argo-cd.configs.params."controller.operation.processors" | string | `"5"` |  |
@@ -94,7 +96,7 @@ Kubernetes: `>= 1.26.0-0`
 | argo-events.configs.jetstream.streamConfig.maxMsgs | int | `1000000` | Maximum number of messages before expiring oldest message |
 | argo-events.configs.jetstream.streamConfig.replicas | int | `1` | Number of replicas, defaults to 3 and requires minimal 3 |
 | argo-events.configs.jetstream.versions[0].configReloaderImage | string | `"natsio/nats-server-config-reloader:0.14.1"` |  |
-| argo-events.configs.jetstream.versions[0].metricsExporterImage | string | `"natsio/prometheus-nats-exporter:0.14.0"` |  |
+| argo-events.configs.jetstream.versions[0].metricsExporterImage | string | `"natsio/prometheus-nats-exporter:0.16.0"` |  |
 | argo-events.configs.jetstream.versions[0].natsImage | string | `"nats:2.10.11-scratch"` |  |
 | argo-events.configs.jetstream.versions[0].startCommand | string | `"/nats-server"` |  |
 | argo-events.configs.jetstream.versions[0].version | string | `"2.10.11"` |  |

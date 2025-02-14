@@ -49,7 +49,6 @@ function cert-manager-post() {
     wait_for "kubectl get deployment -n $namespace cert-manager-webhook"
     kubectl rollout status deployment -n $namespace cert-manager-webhook
     wait_for 'kubectl get validatingwebhookconfigurations -o yaml | grep "caBundle: LS0"'
-    apply
   fi
 
   wait_for "kubectl get ClusterIssuer -n $namespace kubezero-local-ca-issuer"
@@ -82,11 +81,11 @@ function metrics-pre() {
 get_kubezero_values $ARGOCD
 
 # Always use embedded kubezero chart
-helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --kube-version $KUBE_VERSION --version ~$KUBE_VERSION --devel --output-dir $WORKDIR
+helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --kube-version $KUBE_VERSION --name-template kubezero --version ~$KUBE_VERSION --devel --output-dir $WORKDIR
 
 # Root KubeZero apply directly and exit
 if [ ${ARTIFACTS[0]} == "kubezero" ]; then
-  kubectl apply --server-side --force-conflicts -f $WORKDIR/kubezero/templates
+  kubectl replace -f $WORKDIR/kubezero/templates
   exit $?
 
 # "catch all" apply all enabled modules

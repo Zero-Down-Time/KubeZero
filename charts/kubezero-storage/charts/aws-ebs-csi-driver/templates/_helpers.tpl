@@ -32,6 +32,13 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Determine image
+*/}}
+{{- define "aws-ebs-csi-driver.fullImagePath" -}}
+{{ printf "%s%s:%s%s" (default "" .Values.image.containerRegistry) .Values.image.repository (default (printf "v%s" .Chart.AppVersion) (.Values.image.tag | toString)) (.Values.fips | ternary "-fips" "") }}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "aws-ebs-csi-driver.labels" -}}
@@ -82,4 +89,22 @@ Handle http proxy env vars
   value: {{ .Values.proxy.http_proxy | quote }}
 - name: NO_PROXY
   value: {{ .Values.proxy.no_proxy | quote }}
+{{- end -}}
+
+{{/*
+Recommended daemonset tolerations
+*/}}
+{{- define "aws-ebs-csi-driver.daemonset-tolerations" -}}
+# Prevents stateful workloads from being scheduled to node before CSI Driver reports volume attachment limit
+- key: "ebs.csi.aws.com/agent-not-ready"
+  operator: "Exists"
+# Prevents undesired eviction by Cluster Autoscalar
+- key: "ToBeDeletedByClusterAutoscaler"
+  operator: Exists
+# Prevents undesired eviction by v1 Karpenter
+- key: "karpenter.sh/disrupted"
+  operator: Exists
+# Prevents undesired eviction by v1beta1 Karpenter
+- key: "karpenter.sh/disruption"
+  operator: Exists
 {{- end -}}

@@ -26,6 +26,10 @@ aws-ebs-csi-driver:
   enabled: {{ default false (index .Values "storage" "aws-ebs-csi-driver" "enabled")}}
   controller:
     replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
+    {{- if not .Values.global.highAvailable }}
+    podDisruptionBudget:
+      enabled: false
+    {{- end }}
     k8sTagClusterId: {{ .Values.global.clusterName }}
     enableMetrics: {{ .Values.metrics.enabled }}
     region: {{ .Values.global.aws.region }}
@@ -36,6 +40,9 @@ aws-ebs-csi-driver:
       value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
     - name: AWS_STS_REGIONAL_ENDPOINTS
       value: regional
+
+  node:
+    enableMetrics: {{ .Values.metrics.enabled }}
 
   {{- if not .Values.global.highAvailable }}
   sidecars:
@@ -55,8 +62,13 @@ aws-ebs-csi-driver:
 
 aws-efs-csi-driver:
   enabled: {{ default false (index .Values "storage" "aws-efs-csi-driver" "enabled")}}
-  replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
   controller:
+    replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
+    {{- if .Values.global.highAvailable }}
+    podDisruptionBudget:
+      enabled: true
+    {{- end }}
+
     {{- with index .Values "storage" "aws-efs-csi-driver" "IamArn" }}
     extraEnv:
     - name: AWS_ROLE_ARN

@@ -50,7 +50,7 @@ function get_kubezero_values() {
 function update_kubezero_cm() {
   kubectl get cm -n kubezero kubezero-values -o=yaml | \
     yq e ".data.\"values.yaml\" |= load_str(\"$WORKDIR/kubezero-values.yaml\")" | \
-    kubectl apply --server-side --force-conflicts -f -
+    kubectl replace -f -
 }
 
 # sync kubezero-values CM from ArgoCD app

@@ -23,7 +23,7 @@ Kubernetes: `>= 1.30.0-0`
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
 | https://istio-release.storage.googleapis.com/charts | base | 1.24.2 |
 | https://istio-release.storage.googleapis.com/charts | istiod | 1.24.2 |
-| https://kiali.org/helm-charts | kiali-server | 1.89.7 |
+| https://kiali.org/helm-charts | kiali-server | 2.5.0 |
 
 ## Values
 

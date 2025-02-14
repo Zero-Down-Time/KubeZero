@@ -49,6 +49,7 @@ spec:
         {{- with .Values.node.tolerations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- include "aws-ebs-csi-driver.daemonset-tolerations" . | nindent 8 }}
         {{- end }}
       {{- if .Values.node.windowsHostProcess }}
       securityContext:
@@ -56,10 +57,14 @@ spec:
           hostProcess: true
           runAsUserName: "NT AUTHORITY\\SYSTEM"
       hostNetwork: true
+      {{- with .Values.node.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- end }}
       containers:
         - name: ebs-plugin
-          image: {{ printf "%s%s:%s" (default "" .Values.image.containerRegistry) .Values.image.repository (default (printf "v%s" .Chart.AppVersion) (toString .Values.image.tag)) }}
+          image: {{ include "aws-ebs-csi-driver.fullImagePath" $ }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.node.windowsHostProcess }}
           command:
@@ -68,9 +73,15 @@ spec:
           args:
             - node
             - --endpoint=$(CSI_ENDPOINT)
+            {{- with .Values.node.reservedVolumeAttachments }}
+            - --reserved-volume-attachments={{ . }}
+            {{- end }}
             {{- with .Values.node.volumeAttachLimit }}
             - --volume-attach-limit={{ . }}
             {{- end }}
+            {{- if .Values.node.legacyXFS }}
+            - --legacy-xfs=true
+            {{- end}}
             {{- with .Values.node.loggingFormat }}
             - --logging-format={{ . }}
             {{- end }}
@@ -100,6 +111,10 @@ spec:
               value: {{ .otelServiceName }}
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: {{ .otelExporterEndpoint }}
+            {{- if .Values.fips }}
+            - name: AWS_USE_FIPS_ENDPOINT
+              value: "true"
+            {{- end }}
             {{- end }}
             {{- with .Values.node.env }}
             {{- . | toYaml | nindent 12 }}

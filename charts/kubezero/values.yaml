@@ -43,11 +43,11 @@ network:
 cert-manager:
   enabled: false
   namespace: cert-manager
-  targetRevision: 0.9.11
+  targetRevision: 0.9.12
 
 storage:
   enabled: false
-  targetRevision: 0.8.9
+  targetRevision: 0.8.10
   lvm-localpv:
     enabled: false
   aws-ebs-csi-driver:
@@ -119,7 +119,7 @@ logging:
 argo:
   enabled: false
   namespace: argocd
-  targetRevision: 0.2.7
+  targetRevision: 0.2.8
   argo-cd:
     enabled: false
     istio:
