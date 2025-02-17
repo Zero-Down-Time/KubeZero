@@ -109,6 +109,7 @@ argo-cd:
       controller.status.processors: "10"
       controller.operation.processors: "5"
       controller.diff.server.side: "true"
+      controller.sync.timeout.seconds: "1800"
 
       server.insecure: true
       server.enable.gzip: true

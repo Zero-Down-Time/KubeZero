@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubeadm
 description: KubeZero Kubeadm cluster config
 type: application
-version: 1.31.5
+version: 1.31.6
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -11,4 +11,4 @@ keywords:
 maintainers:
   - name: Stefan Reimer
     email: stefan@zero-downtime.net
-kubeVersion: ">= 1.26.0"
+kubeVersion: ">= 1.31.0-0"
