@@ -97,6 +97,7 @@ pre_kubeadm() {
   cp -r ${WORKDIR}/kubeadm/templates/apiserver ${HOSTFS}/etc/kubernetes
 
   # copy patches to host to make --rootfs of kubeadm work
+  rm -f ${HOSTFS}/etc/kubernetes/patches/*
   cp -r ${WORKDIR}/kubeadm/templates/patches ${HOSTFS}/etc/kubernetes
 }
 
@@ -132,7 +133,7 @@ control_plane_upgrade() {
       kubectl get application kubezero -n argocd -o yaml | \
         yq ".spec.source.helm.valuesObject |= load(\"$WORKDIR/kubezero-values.yaml\") | .spec.source.targetRevision = strenv(kubezero_chart_version)" \
         > $WORKDIR/new-argocd-app.yaml
-      kubectl apply --server-side --force-conflicts -f $WORKDIR/new-argocd-app.yaml
+      kubectl replace -f $WORKDIR/new-argocd-app.yaml
 
       # finally remove annotation to allow argo to sync again
       kubectl patch app kubezero -n argocd --type json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true

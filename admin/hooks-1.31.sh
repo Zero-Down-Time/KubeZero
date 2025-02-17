@@ -7,8 +7,8 @@ pre_control_plane_upgrade_cluster() {
     kubectl label node $n 'node.kubernetes.io/kubezero.version=v1.30.6' || true
   done
 
-  # patch aws-iam-authentiator DS to NOT run pods on 1.31 controllers
-  kubectl patch ds aws-iam-authentiator -p '{"spec": {"template": {"spec": {"nodeSelector": {"node.kubernetes.io/kubezero.version": "v1.30.6"}}}}}' || true
+  # patch aws-iam-authenticator DS to NOT run pods on 1.31 controllers
+  kubectl patch ds aws-iam-authenticator -n kube-system -p '{"spec": {"template": {"spec": {"nodeSelector": {"node.kubernetes.io/kubezero.version": "v1.30.6"}}}}}' || true
 }
 
 
@@ -22,12 +22,12 @@ post_control_plane_upgrade_cluster() {
 pre_cluster_upgrade_final() {
 
   if [ "$PLATFORM" == "aws" ];then
-    # cleanup aws-iam-authentiator
-    kubectl delete clusterrolebinding aws-iam-authentiator || true
-    kubectl delete clusterrole aws-iam-authentiator || true
-    kubectl delete serviceaccount aws-iam-authentiator -n kube-system || true
-    kubectl delete cm aws-iam-authentiator -n kube-system || true
-    kubectl delete ds aws-iam-authentiator -n kube-system || true
+    # cleanup aws-iam-authenticator
+    kubectl delete clusterrolebinding aws-iam-authenticator || true
+    kubectl delete clusterrole aws-iam-authenticator || true
+    kubectl delete serviceaccount aws-iam-authenticator -n kube-system || true
+    kubectl delete cm aws-iam-authenticator -n kube-system || true
+    kubectl delete ds aws-iam-authenticator -n kube-system || true
     kubectl delete IAMIdentityMapping kubezero-worker-nodes || true
     kubectl delete IAMIdentityMapping kubernetes-admin || true
     kubectl delete crd iamidentitymappings.iamauthenticator.k8s.aws || true
