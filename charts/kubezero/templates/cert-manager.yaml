@@ -49,7 +49,7 @@ cert-manager:
   {{- if eq .Values.global.platform "gke" }}
   serviceAccount:
     annotations:
-      iam.gke.io/gcp-service-account: "dns01-solver@{{ .Values.global.gcp.projectId }}.iam.gserviceaccount.com"
+      iam.gke.io/gcp-service-account: "dns01-solver-cert-manager@{{ .Values.global.gcp.projectId }}.iam.gserviceaccount.com"
   {{- end }}
 
   prometheus:

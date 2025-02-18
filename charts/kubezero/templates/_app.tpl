@@ -33,14 +33,14 @@ spec:
     server: {{ .Values.kubezero.server }}
     namespace: {{ default "kube-system" ( index .Values $name "namespace" ) }}
 
+  revisionHistoryLimit: 2
   syncPolicy:
+    automated:
+      prune: true
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
-    {{- with .Values.kubezero.syncPolicy }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-
+      - ApplyOutOfSyncOnly=true
 {{- include (print $name "-argo") $ }}
 {{- end }}
 

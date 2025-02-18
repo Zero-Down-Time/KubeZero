@@ -61,7 +61,8 @@ argocd-apps:
         namespace: argocd
 
       syncPolicy:
-        {{- toYaml (default dict .Values.kubezero.syncPolicy) | nindent 8 }}
+        automated:
+          prune: true
 
 argocd-image-updater:
   enabled: {{ default "false" (index .Values "argo" "argocd-image-updater" "enabled") }}

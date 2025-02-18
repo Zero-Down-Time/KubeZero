@@ -134,9 +134,6 @@ control_plane_upgrade() {
         yq ".spec.source.helm.valuesObject |= load(\"$WORKDIR/kubezero-values.yaml\") | .spec.source.targetRevision = strenv(kubezero_chart_version)" \
         > $WORKDIR/new-argocd-app.yaml
       kubectl replace -f $WORKDIR/new-argocd-app.yaml
-
-      # finally remove annotation to allow argo to sync again
-      kubectl patch app kubezero -n argocd --type json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true
     fi
 
     pre_kubeadm

@@ -8,6 +8,13 @@ import yaml
 def migrate(values):
     """Actual changes here"""
 
+    # remove syncOptions from root app
+    try:
+        if values["kubezero"]["syncPolicy"]:
+            values["kubezero"].pop("syncPolicy")
+    except KeyError:
+        pass
+
     return values
 
 
