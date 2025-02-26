@@ -20,20 +20,28 @@ post_control_plane_upgrade_cluster() {
 
 # All things AFTER all contollers are on the new version
 pre_cluster_upgrade_final() {
+  set +e
 
   if [ "$PLATFORM" == "aws" ];then
     # cleanup aws-iam-authenticator
-    kubectl delete clusterrolebinding aws-iam-authenticator || true
-    kubectl delete clusterrole aws-iam-authenticator || true
-    kubectl delete serviceaccount aws-iam-authenticator -n kube-system || true
-    kubectl delete cm aws-iam-authenticator -n kube-system || true
-    kubectl delete ds aws-iam-authenticator -n kube-system || true
-    kubectl delete IAMIdentityMapping kubezero-worker-nodes || true
-    kubectl delete IAMIdentityMapping kubernetes-admin || true
-    kubectl delete crd iamidentitymappings.iamauthenticator.k8s.aws || true
-
-    kubectl delete secret aws-iam-certs -n kube-system || true
+    kubectl delete clusterrolebinding aws-iam-authenticator
+    kubectl delete clusterrole aws-iam-authenticator
+    kubectl delete serviceaccount aws-iam-authenticator -n kube-system
+    kubectl delete cm aws-iam-authenticator -n kube-system
+    kubectl delete ds aws-iam-authenticator -n kube-system
+    kubectl delete IAMIdentityMapping kubezero-worker-nodes
+    kubectl delete IAMIdentityMapping kubernetes-admin
+    kubectl delete crd iamidentitymappings.iamauthenticator.k8s.aws
+    kubectl delete secret aws-iam-certs -n kube-system
   fi
+
+  # Remove any helm hook related resources
+  kubectl delete rolebinding argo-argocd-redis-secret-init -n argocd
+  kubectl delete sa argo-argocd-redis-secret-init -n argocd
+  kubectl delete role argo-argocd-redis-secret-init -n argocd
+  kubectl delete job argo-argocd-redis-secret-init -n argocd
+
+  set -e
 }
 
 

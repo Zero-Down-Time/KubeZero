@@ -1,4 +1,4 @@
-{{- if and .Values.istiod.telemetry.enabled .Values.rateLimiting.enabled }}
+{{- if and .Values.metrics.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

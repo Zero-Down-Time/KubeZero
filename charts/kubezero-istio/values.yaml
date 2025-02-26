@@ -56,7 +56,7 @@ kiali-server:
     #url: "kiali.example.com"
 
 
-rateLimiting:
+envoy-ratelimit:
   enabled: false
 
   log:

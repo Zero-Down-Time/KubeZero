@@ -1,4 +1,3 @@
-{{- if .Values.rateLimiting.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -27,7 +26,7 @@ spec:
           typed_config:
             "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
             domain: ingress
-            failure_mode_deny: {{ .Values.rateLimiting.failureModeDeny }}
+            failure_mode_deny: {{ .Values.failureModeDeny }}
             timeout: 0.5s
             rate_limit_service:
               grpc_service:
@@ -85,7 +84,7 @@ spec:
           typed_config:
             "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
             domain:  private-ingress
-            failure_mode_deny: {{ .Values.rateLimiting.failureModeDeny }}
+            failure_mode_deny: {{ .Values.failureModeDeny }}
             timeout: 0.5s
             rate_limit_service:
               grpc_service:
@@ -113,4 +112,3 @@ spec:
                      socket_address:
                       address: ratelimit.istio-system
                       port_value: 8081
-{{- end }}

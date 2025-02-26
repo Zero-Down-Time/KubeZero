@@ -1,71 +1,3 @@
-{{- if .Values.rateLimiting.enabled }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: ratelimit-redis
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app: ratelimit-redis
-spec:
-  ports:
-  - name: redis
-    port: 6379
-  selector:
-    app: ratelimit-redis
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ratelimit-redis
-  namespace: {{ .Release.Namespace }}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ratelimit-redis
-  template:
-    metadata:
-      labels:
-        app: ratelimit-redis
-    spec:
-      containers:
-      - image: redis:6-alpine
-        imagePullPolicy: IfNotPresent
-        name: redis
-        ports:
-        - name: redis
-          containerPort: 6379
-      restartPolicy: Always
-      serviceAccountName: ""
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ratelimit
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app: ratelimit
-spec:
-  ports:
-  #- name: http-port
-  #  port: 8080
-  #  targetPort: 8080
-  #  protocol: TCP
-  - name: grpc-port
-    port: 8081
-    targetPort: 8081
-    protocol: TCP
-  #- name: http-debug
-  #  port: 6070
-  #  targetPort: 6070
-  #  protocol: TCP
-  - name: http-monitoring
-    port: 9102
-    targetPort: 9102
-    protocol: TCP
-  selector:
-    app: ratelimit
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -90,9 +22,9 @@ spec:
         command: ["/bin/ratelimit"]
         env:
         - name: LOG_LEVEL
-          value: {{ default "WARN" .Values.rateLimiting.log.level }}
+          value: {{ default "WARN" .Values.log.level }}
         - name: LOG_FORMAT
-          value: {{ default "text" .Values.rateLimiting.log.format }}
+          value: {{ default "text" .Values.log.format }}
         - name: REDIS_SOCKET_TYPE
           value: tcp
         - name: REDIS_URL
@@ -112,7 +44,7 @@ spec:
         - name: RUNTIME_IGNOREDOTFILES
           value: "true"
         - name: LOCAL_CACHE_SIZE_IN_BYTES
-          value: "{{ default 0 .Values.rateLimiting.localCacheSize | int }}"
+          value: "{{ default 0 .Values.localCacheSize | int }}"
         ports:
         #- containerPort: 8080
         - containerPort: 8081
@@ -151,4 +83,3 @@ spec:
       - name: statsd-exporter-config
         configMap:
           name: ratelimit-statsd-exporter-config
-{{- end }}

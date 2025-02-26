@@ -1,0 +1,26 @@
+log:
+  level: warn
+  format: json
+
+# 1MB local cache for already reached limits to reduce calls to Redis
+localCacheSize: 1048576
+
+# Wether to block requests if ratelimiting is down
+failureModeDeny: false
+
+# rate limit descriptors for each domain, examples 10 req/s per sourceIP
+descriptors:
+  ingress:
+  - key: remote_address
+    rate_limit:
+      unit: second
+      requests_per_unit: 10
+
+  privateIngress:
+  - key: remote_address
+    rate_limit:
+      unit: second
+      requests_per_unit: 10
+
+metrics:
+  enabled: true

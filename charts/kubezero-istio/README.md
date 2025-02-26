@@ -1,6 +1,6 @@
 # kubezero-istio
 
-![Version: 0.24.2](https://img.shields.io/badge/Version-0.24.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.24.3](https://img.shields.io/badge/Version-0.24.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio
 
@@ -20,15 +20,27 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://istio-release.storage.googleapis.com/charts | base | 1.24.2 |
-| https://istio-release.storage.googleapis.com/charts | istiod | 1.24.2 |
-| https://kiali.org/helm-charts | kiali-server | 2.5.0 |
+| https://cdn.zero-downtime.net/charts/ | envoy-ratelimit | 0.1.0 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
+| https://istio-release.storage.googleapis.com/charts | base | 1.24.3 |
+| https://istio-release.storage.googleapis.com/charts | istiod | 1.24.3 |
+| https://kiali.org/helm-charts | kiali-server | 2.6.0 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| envoy-ratelimit.descriptors.ingress[0].key | string | `"remote_address"` |  |
+| envoy-ratelimit.descriptors.ingress[0].rate_limit.requests_per_unit | int | `10` |  |
+| envoy-ratelimit.descriptors.ingress[0].rate_limit.unit | string | `"second"` |  |
+| envoy-ratelimit.descriptors.privateIngress[0].key | string | `"remote_address"` |  |
+| envoy-ratelimit.descriptors.privateIngress[0].rate_limit.requests_per_unit | int | `10` |  |
+| envoy-ratelimit.descriptors.privateIngress[0].rate_limit.unit | string | `"second"` |  |
+| envoy-ratelimit.enabled | bool | `false` |  |
+| envoy-ratelimit.failureModeDeny | bool | `false` |  |
+| envoy-ratelimit.localCacheSize | int | `1048576` |  |
+| envoy-ratelimit.log.format | string | `"json"` |  |
+| envoy-ratelimit.log.level | string | `"warn"` |  |
 | global.defaultPodDisruptionBudget.enabled | bool | `false` |  |
 | global.logAsJson | bool | `true` |  |
 | global.variant | string | `"distroless"` |  |
@@ -50,17 +62,6 @@ Kubernetes: `>= 1.30.0-0`
 | kiali-server.istio.enabled | bool | `false` |  |
 | kiali-server.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
 | kiali-server.server.metrics_enabled | bool | `false` |  |
-| rateLimiting.descriptors.ingress[0].key | string | `"remote_address"` |  |
-| rateLimiting.descriptors.ingress[0].rate_limit.requests_per_unit | int | `10` |  |
-| rateLimiting.descriptors.ingress[0].rate_limit.unit | string | `"second"` |  |
-| rateLimiting.descriptors.privateIngress[0].key | string | `"remote_address"` |  |
-| rateLimiting.descriptors.privateIngress[0].rate_limit.requests_per_unit | int | `10` |  |
-| rateLimiting.descriptors.privateIngress[0].rate_limit.unit | string | `"second"` |  |
-| rateLimiting.enabled | bool | `false` |  |
-| rateLimiting.failureModeDeny | bool | `false` |  |
-| rateLimiting.localCacheSize | int | `1048576` |  |
-| rateLimiting.log.format | string | `"json"` |  |
-| rateLimiting.log.level | string | `"warn"` |  |
 
 ## Resources
 

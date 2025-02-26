@@ -1,4 +1,3 @@
-{{- if .Values.rateLimiting.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,10 +9,9 @@ data:
   ingress.yaml: |
     domain: ingress
     descriptors:
-    {{- toYaml .Values.rateLimiting.descriptors.ingress | nindent 4 }}
+    {{- toYaml .Values.descriptors.ingress | nindent 4 }}
 
   private-ingress.yaml: |
     domain: private-ingress
     descriptors:
-    {{- toYaml .Values.rateLimiting.descriptors.privateIngress | nindent 4 }}
-{{- end }}
+    {{- toYaml .Values.descriptors.privateIngress | nindent 4 }}
