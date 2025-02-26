@@ -16,7 +16,7 @@ maintainers:
 # https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 dependencies:
   - name: kubezero-lib
-    version: ">= 0.1.6"
+    version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: kube-prometheus-stack
     version: 69.2.3

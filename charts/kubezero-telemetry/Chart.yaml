@@ -16,7 +16,7 @@ maintainers:
     email: stefan@zero-downtime.net
 dependencies:
   - name: kubezero-lib
-    version: ">= 0.1.6"
+    version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: opentelemetry-collector
     version: 0.108.0

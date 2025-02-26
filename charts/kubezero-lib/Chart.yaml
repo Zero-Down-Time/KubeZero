@@ -10,4 +10,4 @@ keywords:
 maintainers:
   - name: Stefan Reimer
     email: stefan@zero-downtime.net
-kubeVersion: ">= 1.30.0"
+kubeVersion: ">= 1.30.0-0"

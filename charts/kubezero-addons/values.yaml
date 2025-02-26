@@ -185,6 +185,22 @@ neuron-helm-chart:
 nvidia-device-plugin:
   enabled: false
 
+  config:
+    default: "default"
+    map:
+      default: |-
+        version: v1
+        flags:
+          migStrategy: none
+      time-slice-4x: |-
+        version: v1
+        flags:
+          migStrategy: none
+        sharing:
+          timeSlicing:
+            resources:
+            - name: nvidia.com/gpu
+              replicas: 4
   cdi:
     nvidiaHookPath: /usr/bin
   deviceDiscoveryStrategy: nvml

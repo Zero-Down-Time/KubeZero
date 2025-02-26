@@ -14,7 +14,7 @@ KubeZero umbrella chart for various optional cluster addons
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0`
+Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
@@ -94,9 +94,8 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | aws-node-termination-handler.managedTag | string | `"zdt:kubezero:nth:${ClusterName}"` | "zdt:kubezero:nth:${ClusterName}" |
 | aws-node-termination-handler.metadataTries | int | `0` |  |
 | aws-node-termination-handler.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
-| aws-node-termination-handler.podMonitor.create | bool | `false` |  |
 | aws-node-termination-handler.queueURL | string | `""` | https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${ClusterName}_Nth |
-| aws-node-termination-handler.rbac.pspEnabled | bool | `false` |  |
+| aws-node-termination-handler.serviceMonitor.create | bool | `false` |  |
 | aws-node-termination-handler.taintNode | bool | `true` |  |
 | aws-node-termination-handler.tolerations[0].effect | string | `"NoSchedule"` |  |
 | aws-node-termination-handler.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
@@ -110,7 +109,7 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | cluster-autoscaler.extraArgs.scan-interval | string | `"30s"` |  |
 | cluster-autoscaler.extraArgs.skip-nodes-with-local-storage | bool | `false` |  |
 | cluster-autoscaler.image.repository | string | `"registry.k8s.io/autoscaling/cluster-autoscaler"` |  |
-| cluster-autoscaler.image.tag | string | `"v1.30.2"` |  |
+| cluster-autoscaler.image.tag | string | `"v1.31.1"` |  |
 | cluster-autoscaler.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | cluster-autoscaler.podDisruptionBudget | bool | `false` |  |
 | cluster-autoscaler.prometheusRule.enabled | bool | `false` |  |
@@ -159,6 +158,9 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | neuron-helm-chart.enabled | bool | `false` |  |
 | neuron-helm-chart.npd.enabled | bool | `false` |  |
 | nvidia-device-plugin.cdi.nvidiaHookPath | string | `"/usr/bin"` |  |
+| nvidia-device-plugin.config.default | string | `"default"` |  |
+| nvidia-device-plugin.config.map.default | string | `"version: v1\nflags:\n  migStrategy: none"` |  |
+| nvidia-device-plugin.config.map.time-slice-4x | string | `"version: v1\nflags:\n  migStrategy: none\nsharing:\n  timeSlicing:\n    resources:\n    - name: nvidia.com/gpu\n      replicas: 4"` |  |
 | nvidia-device-plugin.deviceDiscoveryStrategy | string | `"nvml"` |  |
 | nvidia-device-plugin.enabled | bool | `false` |  |
 | nvidia-device-plugin.runtimeClassName | string | `"nvidia"` |  |
