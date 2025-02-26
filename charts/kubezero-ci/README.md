@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.8.19](https://img.shields.io/badge/Version-0.8.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.8.20](https://img.shields.io/badge/Version-0.8.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -18,11 +18,11 @@ Kubernetes: `>= 1.25.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://aquasecurity.github.io/helm-charts/ | trivy | 0.9.0 |
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://charts.jenkins.io | jenkins | 5.7.15 |
+| https://aquasecurity.github.io/helm-charts/ | trivy | 0.11.1 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.1.6 |
+| https://charts.jenkins.io | jenkins | 5.8.16 |
 | https://dl.gitea.io/charts/ | gitea | 10.6.0 |
-| https://docs.renovatebot.com/helm-charts | renovate | 39.33.1 |
+| https://docs.renovatebot.com/helm-charts | renovate | 39.180.2 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -68,7 +68,7 @@ Kubernetes: `>= 1.25.0`
 | gitea.gitea.metrics.enabled | bool | `false` |  |
 | gitea.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | gitea.image.rootless | bool | `true` |  |
-| gitea.image.tag | string | `"1.22.3"` |  |
+| gitea.image.tag | string | `"1.23.4"` |  |
 | gitea.istio.enabled | bool | `false` |  |
 | gitea.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
 | gitea.istio.url | string | `"git.example.com"` |  |
@@ -90,6 +90,7 @@ Kubernetes: `>= 1.25.0`
 | jenkins.agent.containerCap | int | `2` |  |
 | jenkins.agent.customJenkinsLabels[0] | string | `"podman-aws-trivy"` |  |
 | jenkins.agent.defaultsProviderTemplate | string | `"podman-aws"` |  |
+| jenkins.agent.garbageCollection.enabled | bool | `true` |  |
 | jenkins.agent.idleMinutes | int | `30` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
 | jenkins.agent.image.tag | string | `"v0.7.0"` |  |
@@ -160,7 +161,8 @@ Kubernetes: `>= 1.25.0`
 | renovate.cronjob.successfulJobsHistoryLimit | int | `1` |  |
 | renovate.enabled | bool | `false` |  |
 | renovate.env.LOG_FORMAT | string | `"json"` |  |
-| renovate.securityContext.fsGroup | int | `1000` |  |
+| renovate.renovate.config | string | `"{\n}\n"` |  |
+| renovate.securityContext.fsGroupChangePolicy | string | `"OnRootMismatch"` |  |
 | trivy.enabled | bool | `false` |  |
 | trivy.persistence.enabled | bool | `true` |  |
 | trivy.persistence.size | string | `"1Gi"` |  |

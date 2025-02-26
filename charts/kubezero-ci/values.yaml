@@ -2,7 +2,7 @@ gitea:
   enabled: false
 
   image:
-    tag: 1.22.6
+    tag: 1.23.4
     rootless: true
 
   repliaCount: 1
@@ -289,6 +289,11 @@ trivy:
 renovate:
   enabled: false
 
+  renovate:
+    config: |
+      {
+      }
+
   env:
     LOG_FORMAT: json
   cronjob:
@@ -296,5 +301,6 @@ renovate:
     jobBackoffLimit: 3
     schedule:	"0 3 * * *"
     successfulJobsHistoryLimit: 1
+
   securityContext:
-    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch

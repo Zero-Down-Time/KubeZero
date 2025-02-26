@@ -12,6 +12,122 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.8.16
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `1.30.1`
+
+## 5.8.15
+
+Update `kubernetes` to version `4313.va_9b_4fe2a_0e34`
+
+## 5.8.14
+
+Update `jenkins/inbound-agent` to version `3283.v92c105e0f819-9`
+
+## 5.8.13
+
+Fix `agentListenerPort` not being updated in `config.xml` when set via Helm values.
+
+## 5.8.12
+
+Update plugin count.
+
+## 5.8.11
+
+Update `jenkins/inbound-agent` to version `3283.v92c105e0f819-8`
+
+## 5.8.10
+
+Update `jenkins/jenkins` to version `2.492.1-jdk17`
+
+## 5.8.9
+
+Update `configuration-as-code` to version `1932.v75cb_b_f1b_698d`
+
+## 5.8.8
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `1.30.0`
+
+## 5.8.7
+
+Update `configuration-as-code` to version `1929.v036b_5a_e1f123`
+
+## 5.8.6
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `1.29.1`
+
+## 5.8.5
+
+Update `jenkins/inbound-agent` to version `3283.v92c105e0f819-7`
+
+## 5.8.4
+
+Allow setting [automountServiceAccountToken](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#opt-out-of-api-credential-automounting)
+
+## 5.8.3
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `1.29.0`
+
+## 5.8.2
+
+Update `jenkins/jenkins` to version `2.479.3-jdk17`
+
+## 5.8.1
+
+Update `configuration-as-code` to version `1915.vcdd0a_d0d2625`
+
+## 5.8.0
+
+Add option to publish not-ready addresses in controller service.
+
+## 5.7.27
+
+Update `git` to version `5.7.0`
+
+## 5.7.26
+
+Update `configuration-as-code` to version `1909.vb_b_f59a_27d013`
+
+## 5.7.25
+
+Update `kubernetes` to version `4306.vc91e951ea_eb_d`
+
+## 5.7.24
+
+Update `kubernetes` to version `4304.v1b_39d4f98210`
+
+## 5.7.23
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `1.28.4`
+
+## 5.7.22
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `1.28.3`
+
+## 5.7.21
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `1.28.1`
+
+## 5.7.20
+
+Update `kubernetes` to version `4302.va_756e4b_67715`
+
+## 5.7.19
+
+Update `configuration-as-code` to version `1903.v004d55388f30`
+
+## 5.7.18
+
+Update `kubernetes` to version `4300.vd82c5692b_3a_e`
+
+## 5.7.17
+
+Update `docker.io/bats/bats` to version `1.11.1`
+
+## 5.7.16
+
+Add tpl support for persistence.storageClassName in home-pvc.yaml  and tpl support in controller.ingress parameters(ingressClassName, annotations, hostname) in jenkins-controller-ingress.yaml
+
 ## 5.7.15
 
 Update `jenkins/jenkins` to version `2.479.2-jdk17`

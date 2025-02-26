@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-ci
 description: KubeZero umbrella chart for all things CI
 type: application
-version: 0.8.21
+version: 0.8.20
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -15,7 +15,7 @@ maintainers:
     email: stefan@zero-downtime.net
 dependencies:
   - name: kubezero-lib
-    version: ">= 0.1.6"
+    version: 0.1.6
     repository: https://cdn.zero-downtime.net/charts/
   - name: gitea
     version: 10.6.0
