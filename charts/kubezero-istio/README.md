@@ -20,7 +20,7 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | envoy-ratelimit | 0.1.0 |
+| https://cdn.zero-downtime.net/charts/ | envoy-ratelimit | 0.1.2 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://istio-release.storage.googleapis.com/charts | base | 1.24.3 |
 | https://istio-release.storage.googleapis.com/charts | istiod | 1.24.3 |

@@ -1,3 +1,8 @@
+image:
+  repository: envoyproxy/ratelimit
+  # see: https://hub.docker.com/r/envoyproxy/ratelimit/tags
+  tag: 80b15778
+
 log:
   level: warn
   format: json
@@ -8,19 +13,26 @@ localCacheSize: 1048576
 # Wether to block requests if ratelimiting is down
 failureModeDeny: false
 
-# rate limit descriptors for each domain, examples 10 req/s per sourceIP
+# rate limit descriptors for each domain
+# - slow: 1 req/s over a minute per sourceIP
 descriptors:
   ingress:
-  - key: remote_address
-    rate_limit:
-      unit: second
-      requests_per_unit: 10
+  - key: speed
+    value: slow
+    descriptors:
+    - key: remote_address
+      rate_limit:
+        unit: minute
+        requests_per_unit: 60
 
   privateIngress:
-  - key: remote_address
-    rate_limit:
-      unit: second
-      requests_per_unit: 10
+  - key: speed
+    value: slow
+    descriptors:
+    - key: remote_address
+      rate_limit:
+        unit: minute
+        requests_per_unit: 60
 
 metrics:
-  enabled: true
+  enabled: false

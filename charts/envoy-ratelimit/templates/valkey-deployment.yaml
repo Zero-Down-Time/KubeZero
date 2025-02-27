@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ratelimit-redis
+  name: ratelimit-valkey
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ratelimit-redis
+      app: ratelimit-valkey
   template:
     metadata:
       labels:
-        app: ratelimit-redis
+        app: ratelimit-valkey
     spec:
       containers:
-      - image: redis:6-alpine
+      - image: valkey/valkey:8.1-alpine3.21
         imagePullPolicy: IfNotPresent
-        name: redis
+        name: valkey
         ports:
-        - name: redis
+        - name: valkey
           containerPort: 6379
       restartPolicy: Always
       serviceAccountName: ""

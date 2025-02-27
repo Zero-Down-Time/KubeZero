@@ -16,6 +16,10 @@ gitea:
     claimName: data-gitea-0
     size: 4Gi
 
+  service:
+    http:
+      port: 80
+
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -298,7 +302,7 @@ renovate:
     LOG_FORMAT: json
   cronjob:
     concurrencyPolicy: Forbid
-    jobBackoffLimit: 3
+    jobBackoffLimit: 2
     schedule:	"0 3 * * *"
     successfulJobsHistoryLimit: 1
 

@@ -28,8 +28,8 @@ kiali-server:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 
-{{- with .Values.istio.rateLimiting }}
-rateLimiting:
+{{- with index .Values "istio" "envoy-ratelimit" }}
+envoy-ratelimit:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 {{- end }}

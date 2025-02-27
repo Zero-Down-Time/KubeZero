@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ratelimit-redis
+  name: ratelimit-valkey
   namespace: {{ .Release.Namespace }}
   labels:
-    app: ratelimit-redis
+    app: ratelimit-valkey
 spec:
   ports:
-  - name: redis
+  - name: valkey
     port: 6379
   selector:
-    app: ratelimit-redis
+    app: ratelimit-valkey

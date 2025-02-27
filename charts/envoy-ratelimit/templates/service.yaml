@@ -20,8 +20,8 @@ spec:
   #  targetPort: 6070
   #  protocol: TCP
   - name: http-monitoring
-    port: 9102
-    targetPort: 9102
+    port: 9090
+    targetPort: 9090
     protocol: TCP
   selector:
     app: ratelimit

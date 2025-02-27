@@ -16,7 +16,7 @@ spec:
         app: ratelimit
     spec:
       containers:
-      - image: envoyproxy/ratelimit:b42701cb # 2021/08/12
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: IfNotPresent
         name: ratelimit
         command: ["/bin/ratelimit"]
@@ -28,13 +28,11 @@ spec:
         - name: REDIS_SOCKET_TYPE
           value: tcp
         - name: REDIS_URL
-          value: ratelimit-redis:6379
-        - name: USE_STATSD
+          value: ratelimit-valkey:6379
+        - name: USE_PROMETHEUS
           value: "true"
-        - name: STATSD_HOST
-          value: "localhost"
-        - name: STATSD_PORT
-          value: "9125"
+        - name: USE_STATSD
+          value: "false"
         - name: RUNTIME_ROOT
           value: /data
         - name: RUNTIME_SUBDIRECTORY
@@ -46,8 +44,8 @@ spec:
         - name: LOCAL_CACHE_SIZE_IN_BYTES
           value: "{{ default 0 .Values.localCacheSize | int }}"
         ports:
-        #- containerPort: 8080
         - containerPort: 8081
+        #- containerPort: 8080
         #- containerPort: 6070
         volumeMounts:
         - name: ratelimit-config
@@ -59,27 +57,7 @@ spec:
           limits:
             cpu: 1
             memory: 256Mi
-      - name: statsd-exporter
-        image: docker.io/prom/statsd-exporter:v0.21.0
-        imagePullPolicy: Always
-        args: ["--statsd.mapping-config=/etc/statsd-exporter/config.yaml"]
-        ports:
-          - containerPort: 9125
-        #  - containerPort: 9102
-        resources:
-          requests:
-            cpu: 50m
-            memory: 32Mi
-          limits:
-            cpu: 200m
-            memory: 64Mi
-        volumeMounts:
-          - name: statsd-exporter-config
-            mountPath: /etc/statsd-exporter
       volumes:
       - name: ratelimit-config
         configMap:
           name: ratelimit-config
-      - name: statsd-exporter-config
-        configMap:
-          name: ratelimit-statsd-exporter-config
