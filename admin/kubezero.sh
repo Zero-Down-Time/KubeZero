@@ -104,9 +104,9 @@ pre_kubeadm() {
 
 # Shared steps after calling kubeadm
 post_kubeadm() {
-  # KubeZero resources
+  # KubeZero resources - will never be applied by ArgoCD
   for f in ${WORKDIR}/kubeadm/templates/resources/*.yaml; do
-    kubectl apply -f $f $LOG
+    kubectl apply -f $f --server-side --force-conflicts $LOG
   done
 }
 
@@ -115,9 +115,13 @@ post_kubeadm() {
 control_plane_upgrade() {
   CMD=$1
 
+  ARGOCD=$(argo_used)
+
   render_kubeadm upgrade
 
   if [[ "$CMD" =~ ^(cluster)$ ]]; then
+    pre_control_plane_upgrade_cluster
+
     # get current values, argo app over cm
     get_kubezero_values $ARGOCD
 
@@ -133,7 +137,7 @@ control_plane_upgrade() {
       kubectl get application kubezero -n argocd -o yaml | \
         yq ".spec.source.helm.valuesObject |= load(\"$WORKDIR/kubezero-values.yaml\") | .spec.source.targetRevision = strenv(kubezero_chart_version)" \
         > $WORKDIR/new-argocd-app.yaml
-      kubectl replace -f $WORKDIR/new-argocd-app.yaml
+        kubectl replace -f $WORKDIR/new-argocd-app.yaml $(field_manager $ARGOCD)
     fi
 
     pre_kubeadm
@@ -147,12 +151,18 @@ control_plane_upgrade() {
     # install re-certed kubectl config for root
     cp ${HOSTFS}/etc/kubernetes/super-admin.conf ${HOSTFS}/root/.kube/config
 
+    post_control_plane_upgrade_cluster
+
     echo "Successfully upgraded KubeZero control plane to $KUBE_VERSION using kubeadm."
 
   elif [[ "$CMD" =~ ^(final)$ ]]; then
+    pre_cluster_upgrade_final
+
     # Finally upgrade addons last, with 1.32 we can ONLY call addon phase
     #_kubeadm upgrade apply phase addon all $KUBE_VERSION
     _kubeadm upgrade apply $KUBE_VERSION
+
+    post_cluster_upgrade_final
 
     echo "Upgraded kubeadm addons."
   fi
@@ -394,17 +404,10 @@ for t in $@; do
     join) control_plane_node join;;
     restore) control_plane_node restore;;
     kubeadm_upgrade)
-      ARGOCD=$(argo_used)
-      # call hooks
-      pre_control_plane_upgrade_cluster
       control_plane_upgrade cluster
-      post_control_plane_upgrade_cluster
       ;;
     finalize_cluster_upgrade)
-      ARGOCD=$(argo_used)
-      pre_cluster_upgrade_final
       control_plane_upgrade final
-      post_cluster_upgrade_final
       ;;
     apply_*)
       ARGOCD=$(argo_used)

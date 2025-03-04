@@ -2,8 +2,8 @@ apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
 kubernetesVersion: {{ .Chart.Version }}
 clusterName: {{ .Values.global.clusterName }}
-#featureGates:
-#  NonGracefulFailover: true
+featureGates:
+  ControlPlaneKubeletLocalMode: true
 controlPlaneEndpoint: {{ .Values.api.endpoint }}
 networking:
   podSubnet: 10.244.0.0/16

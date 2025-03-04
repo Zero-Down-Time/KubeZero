@@ -2,7 +2,7 @@
 # fullnameOverride: ""
 
 # Version for ElasticSearch and Kibana have to match so we define it at top-level
-version: 7.17.3
+version: 7.17.7
 
 elastic_password: "" # super_secret_elastic_password
 

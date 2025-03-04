@@ -34,6 +34,15 @@ function argo_used() {
 }
 
 
+function field_manager() {
+  if [ "$1" == "True" ]; then
+    echo "--field-manager argo-controller"
+  else
+    echo ""
+  fi
+}
+
+
 # get kubezero-values from ArgoCD if available or use in-cluster CM
 function get_kubezero_values() {
   local argo=${1:-"False"}
@@ -114,7 +123,7 @@ function argo_app_synced() {
 function create_ns() {
   local namespace=$1
   if [ "$namespace" != "kube-system" ]; then
-    kubectl get ns $namespace > /dev/null || kubectl create ns $namespace
+    kubectl get ns $namespace > /dev/null || kubectl create ns $namespace $(field_manager $ARGOCD)
   fi
 }
 
@@ -144,7 +153,7 @@ for manifest in yaml.safe_load_all(sys.stdin):
   # Only apply if there are actually any crds
   if [ -s $WORKDIR/crds.yaml ]; then
     [ -n "$DEBUG" ] && cat $WORKDIR/crds.yaml
-    kubectl apply -f $WORKDIR/crds.yaml --server-side --force-conflicts
+    kubectl apply -f $WORKDIR/crds.yaml --server-side --force-conflicts $(field_manager $ARGOCD)
   fi
 }
 
@@ -204,7 +213,7 @@ function _helm() {
     declare -F ${module}-pre && ${module}-pre
 
     render
-    kubectl $action -f $WORKDIR/helm.yaml --server-side --force-conflicts && rc=$? || rc=$?
+    kubectl $action -f $WORKDIR/helm.yaml --server-side --force-conflicts $(field_manager $ARGOCD) && rc=$? || rc=$?
 
     # Optional post hook
     declare -F ${module}-post && ${module}-post

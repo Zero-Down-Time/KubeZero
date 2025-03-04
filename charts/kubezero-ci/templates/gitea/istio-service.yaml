@@ -12,14 +12,12 @@ spec:
   hosts:
   - {{ .Values.gitea.istio.url }}
   http:
-  {{- if .Values.gitea.istio.authProvider }}
-  # https://github.com/go-gitea/gitea/issues/13606
+  {{- if .Values.gitea.istio.blockApi }}
   - match:
     - uri:
-        regex: ^/user/login.*
-    redirect:
-      uri: /user/oauth2/{{ .Values.gitea.istio.authProvider }}
-      redirectCode: 302
+        prefix: /api
+    directResponse:
+      status: 401
   {{- end }}
   - route:
     - destination:

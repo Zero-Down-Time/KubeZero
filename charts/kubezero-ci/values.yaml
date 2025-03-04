@@ -87,6 +87,7 @@ gitea:
     enabled: false
     gateway: istio-ingress/private-ingressgateway
     url: git.example.com
+    blockApi: false
 
 
 jenkins:

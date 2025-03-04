@@ -4,10 +4,10 @@
 set -x
 
 ARTIFACTS=($(echo $1 | tr "," "\n"))
-ACTION=$2
+ACTION="${2:-apply}"
+ARGOCD="${3:-False}"
 
 LOCAL_DEV=1
-ARGOCD="False"
 
 #VERSION="latest"
 KUBE_VERSION="$(kubectl version -o json | jq -r .serverVersion.gitVersion)"
@@ -85,7 +85,7 @@ helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --kube-version $
 
 # Root KubeZero apply directly and exit
 if [ ${ARTIFACTS[0]} == "kubezero" ]; then
-  kubectl replace -f $WORKDIR/kubezero/templates
+  kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD)
   exit $?
 
 # "catch all" apply all enabled modules
@@ -100,7 +100,7 @@ if [ "$ACTION" == "delete" ]; then
     _helm delete ${ARTIFACTS[idx]} || true
   done
 else
-  if [ "$ACTION" == "" -o "$ACTION" == "crds" ]; then
+  if [ "$ACTION" == "apply" -o "$ACTION" == "crds" ]; then
     for t in ${ARTIFACTS[@]}; do
       _helm crds $t || true
     done

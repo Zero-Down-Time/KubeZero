@@ -42,6 +42,8 @@ external-dns:
     - "--aws-zone-type=public"
     - "--aws-zones-cache-duration=1h"
   env:
+    - name: AWS_REGION
+      value: {{ .Values.global.aws.region }}
     - name: AWS_ROLE_ARN
       value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.externalDNS"
     - name: AWS_WEB_IDENTITY_TOKEN_FILE
