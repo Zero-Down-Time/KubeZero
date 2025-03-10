@@ -43,3 +43,4 @@ proxyProtocol: true
 hardening:
   rejectUnderscoresHeaders: true
   unescapeSlashes: true
+  preserveExternalRequestId: false

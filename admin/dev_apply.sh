@@ -106,6 +106,6 @@ else
     done
   fi
   for t in ${ARTIFACTS[@]}; do
-    _helm apply $t || true
+    _helm $ACTION $t || true
   done
 fi

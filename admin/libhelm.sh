@@ -5,8 +5,6 @@ API_VERSIONS="-a monitoring.coreos.com/v1 -a snapshot.storage.k8s.io/v1 -a polic
 
 export HELM_SECRETS_BACKEND="vals"
 
-LOCAL_DEV=${LOCAL_DEV:-""}
-
 # Waits for max 300s and retries
 function wait_for() {
   local TRIES=0
@@ -35,11 +33,28 @@ function argo_used() {
 
 
 function field_manager() {
-  if [ "$1" == "True" ]; then
+  local argo=${1:-"False"}
+
+  if [ "$argo" == "True" ]; then
     echo "--field-manager argo-controller"
   else
     echo ""
   fi
+}
+
+
+function get_kubezero_secret() {
+  export _key="$1"
+
+  kubectl get secrets -n kubezero kubezero-secrets -o yaml | yq '.data.[env(_key)]' | base64 -d -w0
+}
+
+
+function set_kubezero_secret() {
+  local key="$1"
+  local val="$2"
+
+  kubectl patch secret -n kubezero kubezero-secrets --patch="{\"data\": { \"$key\": \"$(echo -n $val |base64 -w0)\" }}"
 }
 
 
@@ -103,19 +118,6 @@ function waitSystemPodsRunning() {
     [ "$(cntFailedPods kube-system)" -eq 0 ] && break
     sleep 3
   done
-}
-
-function argo_app_synced() {
-  APP=$1
-
-  # Ensure we are synced otherwise bail out
-  status=$(kubectl get application $APP -n argocd -o yaml | yq .status.sync.status)
-  if [ "$status" != "Synced" ]; then
-    echo "ArgoCD Application $APP not 'Synced'!"
-    return 1
-  fi
-
-  return 0
 }
 
 
@@ -202,7 +204,7 @@ function _helm() {
     # Allow custom CRD handling
     declare -F ${module}-crds && ${module}-crds || _crds
 
-  elif [ $action == "apply" ]; then
+  elif [ $action == "apply" -o $action == "replace" ]; then
     echo "using values to $action of module $module: "
     cat $WORKDIR/values.yaml
 
@@ -213,7 +215,8 @@ function _helm() {
     declare -F ${module}-pre && ${module}-pre
 
     render
-    kubectl $action -f $WORKDIR/helm.yaml --server-side --force-conflicts $(field_manager $ARGOCD) && rc=$? || rc=$?
+    [ $action == "apply" ] && kubectl apply -f $WORKDIR/helm.yaml --server-side --force-conflicts $(field_manager $ARGOCD) && rc=$? || rc=$?
+    [ $action == "replace" ] && kubectl replace -f $WORKDIR/helm.yaml $(field_manager $ARGOCD) && rc=$? || rc=$?
 
     # Optional post hook
     declare -F ${module}-post && ${module}-post

@@ -32,6 +32,7 @@ spec:
           use_remote_address: true
           normalize_path: true
           merge_slashes: true
+          preserve_external_request_id: {{ .Values.hardening.preserveExternalRequestId }}
           {{- if .Values.hardening.unescapeSlashes }}
           path_with_escaped_slashes_action: UNESCAPE_AND_REDIRECT
           {{- end }}
