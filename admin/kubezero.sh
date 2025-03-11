@@ -328,7 +328,10 @@ apply_module() {
   done
 
   for t in $MODULES; do
-    _helm apply $t
+    #_helm apply $t
+
+    # During 1.31 we change the ArgoCD tracking so replace
+    _helm replace $t
   done
 
   echo "Applied KubeZero modules: $MODULES"
