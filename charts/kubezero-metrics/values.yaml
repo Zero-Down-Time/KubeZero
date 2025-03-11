@@ -62,12 +62,8 @@ kube-prometheus-stack:
         memory: 128Mi
 
     admissionWebhooks:
-      patch:
-        tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          effect: NoSchedule
-        nodeSelector:
-          node-role.kubernetes.io/control-plane: ""
+      certManager:
+        enabled: true
 
   nodeExporter:
     enabled: true

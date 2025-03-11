@@ -115,6 +115,8 @@ logging:
   enabled: false
   namespace: logging
   targetRevision: 0.8.14
+  annotations:
+    argocd.argoproj.io/compare-options: ServerSideDiff=false
 
 argo:
   enabled: false

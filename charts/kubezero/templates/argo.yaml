@@ -2,10 +2,22 @@
 
 argo-cd:
   enabled: {{ default "false" (index .Values "argo" "argo-cd" "enabled") }}
-  {{- with index .Values "argo" "argo-cd" "configs" }}
+
   configs:
+    {{- with index .Values "argo" "argo-cd" "configs" }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
+    params:
+    {{- if not $.Values.global.highAvailable }}
+      # Reduce load on API server on single node control plane
+      controller.status.processors: 2
+      controller.operation.processors: 1
+      controller.kubectl.parallelism.limit: 1
+    {{- else }}
+      controller.status.processors: 8
+      controller.operation.processors: 4
+      controller.kubectl.parallelism.limit: 4
+    {{- end }}
 
   controller:
     metrics:

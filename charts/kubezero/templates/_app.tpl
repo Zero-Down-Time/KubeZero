@@ -9,6 +9,10 @@ metadata:
   namespace: argocd
   labels:
     {{- include "kubezero-lib.labels" . | nindent 4 }}
+  {{- with ( index .Values $name "annotations" ) }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- if not ( index .Values $name "retain" ) }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
