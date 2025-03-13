@@ -18,7 +18,7 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: gitea
-    version: 10.6.0
+    version: 11.0.0
     repository: https://dl.gitea.io/charts/
     condition: gitea.enabled
   - name: jenkins
