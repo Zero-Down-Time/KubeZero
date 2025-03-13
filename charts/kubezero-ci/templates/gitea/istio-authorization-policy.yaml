@@ -1,4 +1,5 @@
-{{- if and .Values.gitea.enabled .Values.gitea.istio.enabled .Values.gitea.istio.ipBlocks }}
+{{- if and .Values.gitea.enabled .Values.gitea.istio.enabled .Values.gitea.istio.ipBlocks .Values.gitea.istio.blockApi }}
+# Limit access to /api
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -19,6 +20,7 @@ spec:
     to:
     - operation:
         hosts: ["{{ .Values.gitea.istio.url }}"]
+        paths: [ "/api/*" ]
     when:
     - key: connection.sni
       values:

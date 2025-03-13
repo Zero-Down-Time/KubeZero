@@ -41,6 +41,7 @@ Kubernetes: `>= 1.30.0-0`
 | gateway.service.externalTrafficPolicy | string | `"Local"` |  |
 | gateway.service.type | string | `"NodePort"` |  |
 | gateway.terminationGracePeriodSeconds | int | `120` |  |
+| hardening.preserveExternalRequestId | bool | `false` |  |
 | hardening.rejectUnderscoresHeaders | bool | `true` |  |
 | hardening.unescapeSlashes | bool | `true` |  |
 | proxyProtocol | bool | `true` |  |

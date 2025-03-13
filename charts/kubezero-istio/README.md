@@ -30,17 +30,7 @@ Kubernetes: `>= 1.30.0-0`
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| envoy-ratelimit.descriptors.ingress[0].key | string | `"remote_address"` |  |
-| envoy-ratelimit.descriptors.ingress[0].rate_limit.requests_per_unit | int | `10` |  |
-| envoy-ratelimit.descriptors.ingress[0].rate_limit.unit | string | `"second"` |  |
-| envoy-ratelimit.descriptors.privateIngress[0].key | string | `"remote_address"` |  |
-| envoy-ratelimit.descriptors.privateIngress[0].rate_limit.requests_per_unit | int | `10` |  |
-| envoy-ratelimit.descriptors.privateIngress[0].rate_limit.unit | string | `"second"` |  |
 | envoy-ratelimit.enabled | bool | `false` |  |
-| envoy-ratelimit.failureModeDeny | bool | `false` |  |
-| envoy-ratelimit.localCacheSize | int | `1048576` |  |
-| envoy-ratelimit.log.format | string | `"json"` |  |
-| envoy-ratelimit.log.level | string | `"warn"` |  |
 | global.defaultPodDisruptionBudget.enabled | bool | `false` |  |
 | global.logAsJson | bool | `true` |  |
 | global.variant | string | `"distroless"` |  |

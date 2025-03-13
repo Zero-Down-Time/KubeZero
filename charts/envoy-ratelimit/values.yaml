@@ -17,22 +17,36 @@ failureModeDeny: false
 # - slow: 1 req/s over a minute per sourceIP
 descriptors:
   ingress:
-  - key: speed
-    value: slow
+  - key: sourceIp
+    value: sixtyPerMinute
     descriptors:
     - key: remote_address
       rate_limit:
         unit: minute
         requests_per_unit: 60
+  - key: sourceIp
+    value: tenPerSecond
+    descriptors:
+    - key: remote_address
+      rate_limit:
+        unit: second
+        requests_per_unit: 10
 
   privateIngress:
-  - key: speed
-    value: slow
+  - key: sourceIp
+    value: sixtyPerMinute
     descriptors:
     - key: remote_address
       rate_limit:
         unit: minute
         requests_per_unit: 60
+  - key: sourceIp
+    value: tenPerSecond
+    descriptors:
+    - key: remote_address
+      rate_limit:
+        unit: second
+        requests_per_unit: 10
 
 metrics:
   enabled: false

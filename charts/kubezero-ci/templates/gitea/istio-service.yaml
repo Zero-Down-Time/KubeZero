@@ -12,14 +12,15 @@ spec:
   hosts:
   - {{ .Values.gitea.istio.url }}
   http:
-  {{- if .Values.gitea.istio.blockApi }}
-  - match:
+  - name: api
+    match:
     - uri:
-        prefix: /api
-    directResponse:
-      status: 401
-  {{- end }}
-  - route:
+       prefix: /api/
+    route:
+    - destination:
+        host: gitea-http
+  - name: notApi
+    route:
     - destination:
         host: gitea-http
   tcp:

@@ -2,7 +2,7 @@ gitea:
   enabled: false
 
   image:
-    tag: 1.23.4
+    tag: 1.23.5
     rootless: true
 
   repliaCount: 1

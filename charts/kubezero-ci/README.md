@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.8.20](https://img.shields.io/badge/Version-0.8.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.8.21](https://img.shields.io/badge/Version-0.8.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -18,11 +18,11 @@ Kubernetes: `>= 1.25.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://aquasecurity.github.io/helm-charts/ | trivy | 0.11.1 |
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.1.6 |
-| https://charts.jenkins.io | jenkins | 5.8.16 |
-| https://dl.gitea.io/charts/ | gitea | 10.6.0 |
-| https://docs.renovatebot.com/helm-charts | renovate | 39.180.2 |
+| https://aquasecurity.github.io/helm-charts/ | trivy | 0.12.0 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
+| https://charts.jenkins.io | jenkins | 5.8.18 |
+| https://dl.gitea.io/charts/ | gitea | 11.0.0 |
+| https://docs.renovatebot.com/helm-charts | renovate | 39.200.0 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -68,7 +68,8 @@ Kubernetes: `>= 1.25.0`
 | gitea.gitea.metrics.enabled | bool | `false` |  |
 | gitea.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | gitea.image.rootless | bool | `true` |  |
-| gitea.image.tag | string | `"1.23.4"` |  |
+| gitea.image.tag | string | `"1.23.5"` |  |
+| gitea.istio.blockApi | bool | `false` |  |
 | gitea.istio.enabled | bool | `false` |  |
 | gitea.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
 | gitea.istio.url | string | `"git.example.com"` |  |
@@ -83,6 +84,7 @@ Kubernetes: `>= 1.25.0`
 | gitea.resources.requests.memory | string | `"320Mi"` |  |
 | gitea.securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | gitea.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| gitea.service.http.port | int | `80` |  |
 | gitea.strategy.type | string | `"Recreate"` |  |
 | gitea.test.enabled | bool | `false` |  |
 | jenkins.agent.annotations."cluster-autoscaler.kubernetes.io/safe-to-evict" | string | `"false"` |  |
@@ -156,7 +158,7 @@ Kubernetes: `>= 1.25.0`
 | jenkins.serviceAccountAgent.create | bool | `true` |  |
 | jenkins.serviceAccountAgent.name | string | `"jenkins-podman-aws"` |  |
 | renovate.cronjob.concurrencyPolicy | string | `"Forbid"` |  |
-| renovate.cronjob.jobBackoffLimit | int | `3` |  |
+| renovate.cronjob.jobBackoffLimit | int | `2` |  |
 | renovate.cronjob.schedule | string | `"0 3 * * *"` |  |
 | renovate.cronjob.successfulJobsHistoryLimit | int | `1` |  |
 | renovate.enabled | bool | `false` |  |
