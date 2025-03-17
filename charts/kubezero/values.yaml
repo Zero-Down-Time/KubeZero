@@ -1,9 +1,3 @@
-kubezero:
-  server: https://kubernetes.default.svc
-  repoURL: https://cdn.zero-downtime.net/charts
-  defaultTargetRevision: '*'
-  gitSync: {}
-
 global:
   clusterName: zdt-trial-cluster
 
@@ -121,7 +115,7 @@ logging:
 argo:
   enabled: false
   namespace: argocd
-  targetRevision: 0.2.8
+  targetRevision: 0.3.0
   argo-cd:
     enabled: false
     istio:

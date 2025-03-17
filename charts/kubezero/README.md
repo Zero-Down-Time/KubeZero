@@ -1,6 +1,6 @@
 # kubezero
 
-![Version: 1.31.3](https://img.shields.io/badge/Version-1.31.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.31.6](https://img.shields.io/badge/Version-1.31.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero - Root App of Apps chart
 
@@ -14,11 +14,11 @@ KubeZero - Root App of Apps chart
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0-0`
+Kubernetes: `>= 1.31.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts | kubezero-lib | >= 0.2.1 |
+| https://cdn.zero-downtime.net/charts | kubezero-lib | 0.2.1 |
 
 ## Values
 
@@ -32,16 +32,17 @@ Kubernetes: `>= 1.26.0-0`
 | addons.external-dns.enabled | bool | `false` |  |
 | addons.forseti.enabled | bool | `false` |  |
 | addons.sealed-secrets.enabled | bool | `false` |  |
-| addons.targetRevision | string | `"0.8.11"` |  |
+| addons.targetRevision | string | `"0.8.13"` |  |
 | argo.argo-cd.enabled | bool | `false` |  |
 | argo.argo-cd.istio.enabled | bool | `false` |  |
+| argo.argocd-apps.enabled | bool | `false` |  |
 | argo.argocd-image-updater.enabled | bool | `false` |  |
 | argo.enabled | bool | `false` |  |
 | argo.namespace | string | `"argocd"` |  |
-| argo.targetRevision | string | `"0.2.6"` |  |
+| argo.targetRevision | string | `"0.2.9"` |  |
 | cert-manager.enabled | bool | `false` |  |
 | cert-manager.namespace | string | `"cert-manager"` |  |
-| cert-manager.targetRevision | string | `"0.9.10"` |  |
+| cert-manager.targetRevision | string | `"0.9.12"` |  |
 | falco.enabled | bool | `false` |  |
 | falco.k8saudit.enabled | bool | `false` |  |
 | falco.targetRevision | string | `"0.1.2"` |  |
@@ -54,35 +55,32 @@ Kubernetes: `>= 1.26.0-0`
 | istio-ingress.enabled | bool | `false` |  |
 | istio-ingress.gateway.service | object | `{}` |  |
 | istio-ingress.namespace | string | `"istio-ingress"` |  |
-| istio-ingress.targetRevision | string | `"0.23.2"` |  |
+| istio-ingress.targetRevision | string | `"0.24.3"` |  |
 | istio-private-ingress.chart | string | `"kubezero-istio-gateway"` |  |
 | istio-private-ingress.enabled | bool | `false` |  |
 | istio-private-ingress.gateway.service | object | `{}` |  |
 | istio-private-ingress.namespace | string | `"istio-ingress"` |  |
-| istio-private-ingress.targetRevision | string | `"0.23.2"` |  |
+| istio-private-ingress.targetRevision | string | `"0.24.3"` |  |
 | istio.enabled | bool | `false` |  |
 | istio.namespace | string | `"istio-system"` |  |
-| istio.targetRevision | string | `"0.23.2"` |  |
-| kubezero.defaultTargetRevision | string | `"*"` |  |
-| kubezero.gitSync | object | `{}` |  |
-| kubezero.repoURL | string | `"https://cdn.zero-downtime.net/charts"` |  |
-| kubezero.server | string | `"https://kubernetes.default.svc"` |  |
+| istio.targetRevision | string | `"0.24.3"` |  |
+| logging.annotations."argocd.argoproj.io/compare-options" | string | `"ServerSideDiff=false"` |  |
 | logging.enabled | bool | `false` |  |
 | logging.namespace | string | `"logging"` |  |
-| logging.targetRevision | string | `"0.8.13"` |  |
+| logging.targetRevision | string | `"0.8.14"` |  |
 | metrics.enabled | bool | `false` |  |
 | metrics.istio.grafana | object | `{}` |  |
 | metrics.istio.prometheus | object | `{}` |  |
 | metrics.kubezero.prometheus.prometheusSpec.additionalScrapeConfigs | list | `[]` |  |
 | metrics.namespace | string | `"monitoring"` |  |
-| metrics.targetRevision | string | `"0.10.2"` |  |
+| metrics.targetRevision | string | `"0.11.0"` |  |
 | network.cilium.cluster | object | `{}` |  |
 | network.enabled | bool | `true` |  |
 | network.retain | bool | `true` |  |
-| network.targetRevision | string | `"0.5.5"` |  |
+| network.targetRevision | string | `"0.5.7"` |  |
 | operators.enabled | bool | `false` |  |
 | operators.namespace | string | `"operators"` |  |
-| operators.targetRevision | string | `"0.1.6"` |  |
+| operators.targetRevision | string | `"0.2.0"` |  |
 | storage.aws-ebs-csi-driver.enabled | bool | `false` |  |
 | storage.aws-efs-csi-driver.enabled | bool | `false` |  |
 | storage.enabled | bool | `false` |  |
@@ -90,7 +88,7 @@ Kubernetes: `>= 1.26.0-0`
 | storage.k8up.enabled | bool | `false` |  |
 | storage.lvm-localpv.enabled | bool | `false` |  |
 | storage.snapshotController.enabled | bool | `false` |  |
-| storage.targetRevision | string | `"0.8.9"` |  |
+| storage.targetRevision | string | `"0.8.10"` |  |
 | telemetry.enabled | bool | `false` |  |
 | telemetry.namespace | string | `"telemetry"` |  |
 | telemetry.targetRevision | string | `"0.4.1"` |  |

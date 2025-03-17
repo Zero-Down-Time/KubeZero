@@ -30,13 +30,6 @@ argo-events:
           configReloaderImage: natsio/nats-server-config-reloader:0.14.1
           startCommand: /nats-server
 
-
-argocd-apps:
-  enabled: false
-  projects: {}
-  applications: {}
-
-
 argo-cd:
   enabled: false
 
@@ -45,7 +38,7 @@ argo-cd:
       format: json
     image:
       repository: public.ecr.aws/zero-downtime/zdt-argocd
-      tag: v2.14.2
+      tag: v2.14.5
     networkPolicy:
       create: true
 
@@ -71,28 +64,19 @@ argo-cd:
       application.instanceLabelKey: Null
 
       resource.customizations: |
-        cert-manager.io/Certificate:
-          # Lua script for customizing the health status assessment
+        argoproj.io/Application:
           health.lua: |
             hs = {}
+            hs.status = "Progressing"
+            hs.message = ""
             if obj.status ~= nil then
-              if obj.status.conditions ~= nil then
-                for i, condition in ipairs(obj.status.conditions) do
-                  if condition.type == "Ready" and condition.status == "False" then
-                    hs.status = "Degraded"
-                    hs.message = condition.message
-                    return hs
-                  end
-                  if condition.type == "Ready" and condition.status == "True" then
-                    hs.status = "Healthy"
-                    hs.message = condition.message
-                    return hs
-                  end
+              if obj.status.health ~= nil then
+                hs.status = obj.status.health.status
+                if obj.status.health.message ~= nil then
+                  hs.message = obj.status.health.message
                 end
               end
             end
-            hs.status = "Progressing"
-            hs.message = "Waiting for certificate"
             return hs
 
     secret:
@@ -148,26 +132,6 @@ argo-cd:
           resources: ["secrets"]
           verbs: ["get", "watch", "list"]
 
-    initContainers:
-      - name: create-kubeconfig
-        image: '{{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}'
-        imagePullPolicy: '{{ default .Values.global.image.imagePullPolicy .Values.repoServer.image.imagePullPolicy }}'
-        command:
-          - /usr/local/bin/sa2kubeconfig.sh
-          - /home/argocd/.kube/config
-        volumeMounts:
-        - mountPath: /home/argocd/.kube
-          name: kubeconfigs
-        securityContext:
-          runAsNonRoot: true
-          readOnlyRootFilesystem: true
-          allowPrivilegeEscalation: false
-          seccompProfile:
-            type: RuntimeDefault
-          capabilities:
-            drop:
-            - ALL
-
   server:
     # Rename former https port to grpc, works with istio + insecure
     service:
@@ -197,6 +161,14 @@ argo-cd:
     # istio.gateway -- Name of the Istio gateway to add the VirtualService to
     gateway: istio-ingress/ingressgateway
     ipBlocks: []
+
+  kubezero:
+    # only set this once initially to prevent the circular dependency
+    bootstrap: false
+
+    repoUrl: "https://git.my.org/thiscluster"
+    path: "/"
+    targetRevision: HEAD
 
 argocd-image-updater:
   enabled: false

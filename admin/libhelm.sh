@@ -29,14 +29,14 @@ function chart_location() {
 
 function argo_used() {
   kubectl get application kubezero -n argocd >/dev/null \
-    && echo "True" || echo "False"
+    && echo "true" || echo "false"
 }
 
 
 function field_manager() {
-  local argo=${1:-"False"}
+  local argo=${1:-"false"}
 
-  if [ "$argo" == "True" ]; then
+  if [ "$argo" == "true" ]; then
     echo "--field-manager argo-controller"
   else
     echo ""
@@ -61,9 +61,9 @@ function set_kubezero_secret() {
 
 # get kubezero-values from ArgoCD if available or use in-cluster CM
 function get_kubezero_values() {
-  local argo=${1:-"False"}
+  local argo=${1:-"false"}
 
-  if [ "$argo" == "True" ]; then
+  if [ "$argo" == "true" ]; then
     kubectl get application kubezero -n argocd -o yaml | yq .spec.source.helm.valuesObject > ${WORKDIR}/kubezero-values.yaml
   else
     kubectl get configmap kubezero-values -n kubezero -o yaml | yq '.data."values.yaml"' > ${WORKDIR}/kubezero-values.yaml
@@ -80,7 +80,7 @@ function update_kubezero_cm() {
 
 # sync kubezero-values CM from ArgoCD app
 function sync_kubezero_cm_from_argo() {
-  get_kubezero_values True
+  get_kubezero_values true
   update_kubezero_cm
 }
 
@@ -216,8 +216,10 @@ function _helm() {
     declare -F ${module}-pre && ${module}-pre
 
     render
-    [ $action == "apply" ] && kubectl apply -f $WORKDIR/helm.yaml --server-side --force-conflicts $(field_manager $ARGOCD) && rc=$? || rc=$?
     [ $action == "replace" ] && kubectl replace -f $WORKDIR/helm.yaml $(field_manager $ARGOCD) && rc=$? || rc=$?
+
+    # If replace failed try apply at least
+    [ $action == "apply" -o $rc -ne 0 ] && kubectl apply -f $WORKDIR/helm.yaml --server-side --force-conflicts $(field_manager $ARGOCD) && rc=$? || rc=$?
 
     # Optional post hook
     declare -F ${module}-post && ${module}-post

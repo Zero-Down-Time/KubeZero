@@ -21,20 +21,16 @@ spec:
   project: kubezero
 
   source:
-    {{- if index .Values $name "chart" }}
-    chart: {{ index .Values $name "chart" }}
-    {{- else }}
-    chart: kubezero-{{ $name }}
-    {{- end }}
-    repoURL: {{ .Values.kubezero.repoURL }}
-    targetRevision: {{ default .Values.kubezero.targetRevision ( index .Values $name "targetRevision" ) | quote }}
+    chart: {{ default (print "kubezero-" $name) (index .Values $name "chart") }}
+    repoURL: {{ default "https://cdn.zero-downtime.net/charts" (index .Values $name "repository") }}
+    targetRevision: {{ default "HEAD" ( index .Values $name "targetRevision" ) | quote }}
     helm:
       skipTests: true
       valuesObject:
         {{- include (print $name "-values") $ | nindent 8 }}
 
   destination:
-    server: {{ .Values.kubezero.server }}
+    server: "https://kubernetes.default.svc"
     namespace: {{ default "kube-system" ( index .Values $name "namespace" ) }}
 
   revisionHistoryLimit: 2

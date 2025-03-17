@@ -17,7 +17,7 @@ ARGOCD=$(argo_used)
 echo "Checking that all pods in kube-system are running ..."
 #waitSystemPodsRunning
 
-[ "$ARGOCD" == "True" ] && disable_argo
+[ "$ARGOCD" == "true" ] && disable_argo
 
 # Check if we already have all controllers on the current version
 OLD_CONTROLLERS=$(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" --no-headers=true | grep -cv $KUBE_VERSION || true)
@@ -35,7 +35,7 @@ read -r
 
 #echo "Adjust kubezero values as needed:"
 # shellcheck disable=SC2015
-#[ "$ARGOCD" == "True" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
+#[ "$ARGOCD" == "true" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
 
 # upgrade modules
 control_plane_upgrade "apply_network, apply_addons, apply_storage, apply_operators"
@@ -63,4 +63,4 @@ echo "Then head over to ArgoCD for this cluster and sync all KubeZero modules to
 echo "<Return> to continue and re-enable ArgoCD:"
 read -r
 
-[ "$ARGOCD" == "True" ] && enable_argo
+[ "$ARGOCD" == "true" ] && enable_argo

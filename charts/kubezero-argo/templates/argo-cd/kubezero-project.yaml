@@ -1,0 +1,18 @@
+{{- if index .Values "argo-cd" "kubezero" "bootstrap" }}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: kubezero
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  description: KubeZero - ZeroDownTime Kubernetes Platform
+  destinations:
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+  sourceRepos:
+  - https://cdn.zero-downtime.net/charts
+  - {{ index .Values "argo-cd" "kubezero" "repoUrl" }}
+{{- end }}

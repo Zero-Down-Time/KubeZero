@@ -274,7 +274,7 @@ fluentd:
   #- fluent-plugin-s3
 
   source:
-    sharedKey: secretref+k8s://v1/Secret/kubezero/kubezero-secrets/telemetry.fluentd.source.sharedKey # "cloudbender"
+    sharedKey: secretref+k8s://v1/Secret/kubezero/kubezero-secrets/telemetry.fluentd.source.sharedKey?inCluster # "cloudbender"
 
   output:
     # Defaults to OpenSearch in same namespace

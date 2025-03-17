@@ -131,7 +131,7 @@ control_plane_upgrade() {
 
     update_kubezero_cm
 
-    if [ "$ARGOCD" == "True" ]; then
+    if [ "$ARGOCD" == "true" ]; then
       # update argo app
       export kubezero_chart_version=$(yq .version $CHARTS/kubezero/Chart.yaml)
       kubectl get application kubezero -n argocd -o yaml | \

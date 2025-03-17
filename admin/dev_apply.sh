@@ -5,7 +5,7 @@ set -x
 
 ARTIFACTS=($(echo $1 | tr "," "\n"))
 ACTION="${2:-apply}"
-ARGOCD="${3:-False}"
+ARGOCD="${3:-false}"
 
 LOCAL_DEV=1
 

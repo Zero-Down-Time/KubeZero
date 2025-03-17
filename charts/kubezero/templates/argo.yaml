@@ -39,42 +39,10 @@ argo-cd:
     {{- end }}
   {{- end }}
 
-argocd-apps:
-  enabled: {{ default "false" (index .Values "argo" "argo-cd" "enabled") }}
-  projects:
-    kubezero:
-      namespace: argocd
-      description: KubeZero - ZeroDownTime Kubernetes Platform
-      sourceRepos:
-      - {{ .Values.kubezero.repoURL }}
-      {{- with .Values.kubezero.gitSync.repoURL }}
-      - {{ . }}
-      {{- end }}
-      destinations:
-      - namespace: '*'
-        server: https://kubernetes.default.svc
-      clusterResourceWhitelist:
-      - group: '*'
-        kind: '*'
-  applications:
-    kubezero-git-sync:
-      namespace: argocd
-      project: kubezero
-      source:
-        repoURL: {{ .Values.kubezero.gitSync.repoURL }}
-        targetRevision: {{ .Values.kubezero.gitSync.targetRevision }}
-        path: {{ .Values.kubezero.gitSync.path }}
-
-        directory:
-          recurse: true
-
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: argocd
-
-      syncPolicy:
-        automated:
-          prune: true
+  {{- with index .Values "argo" "argo-cd" "kubezero" }}
+  kubezero:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
 
 argocd-image-updater:
   enabled: {{ default "false" (index .Values "argo" "argocd-image-updater" "enabled") }}
