@@ -202,6 +202,8 @@ function _helm() {
   yq eval '.spec.source.helm.valuesObject' $WORKDIR/kubezero/templates/${module}.yaml > $WORKDIR/values.yaml
 
   # extract remote chart or copy local to access hooks
+  rm -rf $WORKDIR/$chart $WORKDIR/${chart}*.tgz
+
   if [ -z "$LOCAL_DEV" ]; then
     helm pull $(chart_location $chart) --untar -d $WORKDIR
   else
@@ -210,7 +212,7 @@ function _helm() {
 
   if [ $action == "crds" ]; then
     # Pre-crd hook
-    [ -x $WORKDIR/$chart/hooks.d/pre-crds.sh ] && (cd $WORKDIR; ./$chart/hooks.d/pre-crds.sh)
+    [ -f $WORKDIR/$chart/hooks.d/pre-crds.sh ] && (cd $WORKDIR; bash ./$chart/hooks.d/pre-crds.sh)
 
     crds
 
@@ -222,7 +224,7 @@ function _helm() {
     create_ns $namespace
 
     # Optional pre hook
-    [ -x $WORKDIR/$chart/hooks.d/pre-install.sh ] && (cd $WORKDIR; ./$chart/hooks.d/pre-install.sh)
+    [ -f $WORKDIR/$chart/hooks.d/pre-install.sh ] && (cd $WORKDIR; bash ./$chart/hooks.d/pre-install.sh)
 
     render
     [ $action == "replace" ] && kubectl replace -f $WORKDIR/helm.yaml $(field_manager $ARGOCD) && rc=$? || rc=$?
@@ -231,7 +233,7 @@ function _helm() {
     [ $action == "apply" -o $rc -ne 0 ] && kubectl apply -f $WORKDIR/helm.yaml --server-side --force-conflicts $(field_manager $ARGOCD) && rc=$? || rc=$?
 
     # Optional post hook
-    [ -x $WORKDIR/$chart/hooks.d/post-install.sh ] && (cd $WORKDIR; ./$chart/hooks.d/post-install.sh)
+    [ -f $WORKDIR/$chart/hooks.d/post-install.sh ] && (cd $WORKDIR; bash ./$chart/hooks.d/post-install.sh)
 
   elif [ $action == "delete" ]; then
     render

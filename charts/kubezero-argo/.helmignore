@@ -24,7 +24,4 @@
 
 README.md.gotmpl
 dashboards.yaml
-*.patch
-*.sh
-*.py
 jsonnet

@@ -328,10 +328,14 @@ apply_module() {
   done
 
   for t in $MODULES; do
-    #_helm apply $t
-
-    # During 1.31 we change the ArgoCD tracking so replace
-    _helm replace $t
+    # apply/replace app of apps directly
+    if [ $t == "kubezero" ]; then
+      kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD)
+    else
+      #_helm apply $t
+      # During 1.31 we change the ArgoCD tracking so replace
+      _helm replace $t
+    fi
   done
 
   echo "Applied KubeZero modules: $MODULES"
