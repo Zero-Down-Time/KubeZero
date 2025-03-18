@@ -5,7 +5,7 @@ set -x
 
 ARTIFACTS=($(echo $1 | tr "," "\n"))
 ACTION="${2:-apply}"
-ARGOCD="${3:-false}"
+ARGOCD="${3:-true}"
 
 LOCAL_DEV=1
 
@@ -35,46 +35,6 @@ parse_version() {
 }
 
 KUBE_VERSION=$(parse_version $KUBE_VERSION)
-
-### Various hooks for modules
-
-################
-# cert-manager #
-################
-function cert-manager-post() {
-  # If any error occurs, wait for initial webhook deployment and try again
-  # see: https://cert-manager.io/docs/concepts/webhook/#webhook-connection-problems-shortly-after-cert-manager-installation
-
-  if [ $rc -ne 0 ]; then
-    wait_for "kubectl get deployment -n $namespace cert-manager-webhook"
-    kubectl rollout status deployment -n $namespace cert-manager-webhook
-    wait_for 'kubectl get validatingwebhookconfigurations -o yaml | grep "caBundle: LS0"'
-  fi
-
-  wait_for "kubectl get ClusterIssuer -n $namespace kubezero-local-ca-issuer"
-  kubectl wait --timeout=180s --for=condition=Ready -n $namespace ClusterIssuer/kubezero-local-ca-issuer
-}
-
-
-###########
-# ArgoCD  #
-###########
-function argocd-pre() {
-  kubectl delete job argo-argocd-redis-secret-init -n argocd || true
-
-  for f in $CLUSTER/secrets/argocd-*.yaml; do
-    kubectl apply -f $f
-  done
-}
-
-
-###########
-# Metrics #
-###########
-# Cleanup patch jobs from previous runs , ArgoCD does this automatically
-function metrics-pre() {
-  kubectl delete jobs --field-selector status.successful=1 -n monitoring
-}
 
 
 ### Main

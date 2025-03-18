@@ -139,7 +139,7 @@ function delete_ns() {
 
 
 # Extract crds via helm calls
-function _crds() {
+function crds() {
   helm secrets --evaluate-templates template $(chart_location $chart) -n $namespace --name-template $module $targetRevision --include-crds -f $WORKDIR/values.yaml $API_VERSIONS --kube-version $KUBE_VERSION $@ | python3 -c '
 #!/usr/bin/python3
 import yaml
@@ -201,9 +201,18 @@ function _helm() {
 
   yq eval '.spec.source.helm.valuesObject' $WORKDIR/kubezero/templates/${module}.yaml > $WORKDIR/values.yaml
 
+  # extract remote chart or copy local to access hooks
+  if [ -z "$LOCAL_DEV" ]; then
+    helm pull $(chart_location $chart) --untar -d $WORKDIR
+  else
+    cp -r $(chart_location $chart) $WORKDIR
+  fi
+
   if [ $action == "crds" ]; then
-    # Allow custom CRD handling
-    declare -F ${module}-crds && ${module}-crds || _crds
+    # Pre-crd hook
+    [ -x $WORKDIR/$chart/hooks.d/pre-crds.sh ] && (cd $WORKDIR; ./$chart/hooks.d/pre-crds.sh)
+
+    crds
 
   elif [ $action == "apply" -o $action == "replace" ]; then
     echo "using values to $action of module $module: "
@@ -213,7 +222,7 @@ function _helm() {
     create_ns $namespace
 
     # Optional pre hook
-    declare -F ${module}-pre && ${module}-pre
+    [ -x $WORKDIR/$chart/hooks.d/pre-install.sh ] && (cd $WORKDIR; ./$chart/hooks.d/pre-install.sh)
 
     render
     [ $action == "replace" ] && kubectl replace -f $WORKDIR/helm.yaml $(field_manager $ARGOCD) && rc=$? || rc=$?
@@ -222,7 +231,7 @@ function _helm() {
     [ $action == "apply" -o $rc -ne 0 ] && kubectl apply -f $WORKDIR/helm.yaml --server-side --force-conflicts $(field_manager $ARGOCD) && rc=$? || rc=$?
 
     # Optional post hook
-    declare -F ${module}-post && ${module}-post
+    [ -x $WORKDIR/$chart/hooks.d/post-install.sh ] && (cd $WORKDIR; ./$chart/hooks.d/post-install.sh)
 
   elif [ $action == "delete" ]; then
     render
