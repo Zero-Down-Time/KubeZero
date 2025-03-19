@@ -14,7 +14,9 @@ pre_control_plane_upgrade_cluster() {
 
 # All things after the first controller / control plane upgrade
 post_control_plane_upgrade_cluster() {
-  echo
+  # delete previous root app controlled by kubezero module
+  kubectl delete application kubezero-git-sync -n argocd || true
+  kubectl delete appproject kubezero -n argocd || true
 }
 
 

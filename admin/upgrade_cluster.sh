@@ -38,7 +38,7 @@ read -r
 #[ "$ARGOCD" == "true" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
 
 # upgrade modules
-control_plane_upgrade "apply_network, apply_addons, apply_storage, apply_operators"
+control_plane_upgrade "apply_kubezero apply_network, apply_addons, apply_storage, apply_operators"
 
 echo "Checking that all pods in kube-system are running ..."
 waitSystemPodsRunning
