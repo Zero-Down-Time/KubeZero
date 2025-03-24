@@ -44,10 +44,21 @@ function field_manager() {
 }
 
 
-function get_kubezero_secret() {
-  export _key="$1"
+function get_secret_val() {
+  local ns=$1
+  local secret=$2
+  local val=$(kubectl get secret -n $ns $secret -o yaml | yq ".data.\"$3\"")
 
-  kubectl get secrets -n kubezero kubezero-secrets -o yaml | yq '.data.[env(_key)]' | base64 -d -w0
+  if [ "$val" != "null" ]; then
+    echo -n $val | base64 -d -w0
+  else
+    echo ""
+  fi
+}
+
+
+function get_kubezero_secret() {
+  get_secret_val kubezero kubezero-secrets "$1"
 }
 
 
@@ -55,7 +66,9 @@ function set_kubezero_secret() {
   local key="$1"
   local val="$2"
 
-  kubectl patch secret -n kubezero kubezero-secrets --patch="{\"data\": { \"$key\": \"$(echo -n $val |base64 -w0)\" }}"
+  if [ -n "$val" ]; then
+    kubectl patch secret -n kubezero kubezero-secrets --patch="{\"data\": { \"$key\": \"$(echo -n $val |base64 -w0)\" }}"
+  fi
 }
 
 
@@ -139,7 +152,7 @@ function delete_ns() {
 
 # Extract crds via helm calls
 function crds() {
-  helm secrets --evaluate-templates template $(chart_location $chart) -n $namespace --name-template $module $targetRevision --include-crds -f $WORKDIR/values.yaml $API_VERSIONS --kube-version $KUBE_VERSION $@ | python3 -c '
+  helm template $(chart_location $chart) -n $namespace --name-template $module $targetRevision --include-crds -f $WORKDIR/values.yaml $API_VERSIONS --kube-version $KUBE_VERSION $@ | python3 -c '
 #!/usr/bin/python3
 import yaml
 import sys

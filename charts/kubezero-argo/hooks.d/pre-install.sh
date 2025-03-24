@@ -6,16 +6,16 @@ kubectl get application kubezero-git-sync -n argocd || \
 PW=$(get_kubezero_secret argo-cd.adminPassword)
 if [ -z "$PW" ]; then
   # Check for existing password in actual secret
-  NEW_PW=$(kubectl get secret argocd-secret -n argocd -o yaml | yq '.data."admin.password"')
+  NEW_PW=$(get_secret_val argocd argocd-secret "admin.password")
 
-  if [ "$NEW_PW" == "null" ];then
+  if [ -z "$NEW_PW" ];then
     ARGO_PWD=$(date +%s | sha256sum | base64 | head -c 12 ; echo)
-    NEW_PW=$(htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/' | base64 -w0)
+    NEW_PW=$(htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/')
 
     set_kubezero_secret argo-cd.adminPasswordClear $ARGO_PWD
   fi
 
-  set_kubezero_secret argo-cd.adminPassword $NEW_PW
+  set_kubezero_secret argo-cd.adminPassword "$NEW_PW"
 fi
 
 # GitSync privateKey
