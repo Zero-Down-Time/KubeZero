@@ -18,7 +18,7 @@ update_jsonnet() {
 
 update_helm() {
   #helm repo update
-  helm dep update
+  helm dep build
 }
 
 # AWS public ECR

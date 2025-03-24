@@ -35,11 +35,10 @@ Kubernetes: `>= 1.31.0-0`
 | addons.targetRevision | string | `"0.8.13"` |  |
 | argo.argo-cd.enabled | bool | `false` |  |
 | argo.argo-cd.istio.enabled | bool | `false` |  |
-| argo.argocd-apps.enabled | bool | `false` |  |
 | argo.argocd-image-updater.enabled | bool | `false` |  |
 | argo.enabled | bool | `false` |  |
 | argo.namespace | string | `"argocd"` |  |
-| argo.targetRevision | string | `"0.2.9"` |  |
+| argo.targetRevision | string | `"0.3.1"` |  |
 | cert-manager.enabled | bool | `false` |  |
 | cert-manager.namespace | string | `"cert-manager"` |  |
 | cert-manager.targetRevision | string | `"0.9.12"` |  |

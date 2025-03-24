@@ -1,6 +1,6 @@
 # kubezero-argo
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square)
+![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square)
 
 KubeZero Argo - Events, Workflow, CD
 
@@ -18,8 +18,8 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://argoproj.github.io/argo-helm | argo-cd | 7.8.9 |
-| https://argoproj.github.io/argo-helm | argo-events | 2.4.13 |
+| https://argoproj.github.io/argo-helm | argo-cd | 7.8.13 |
+| https://argoproj.github.io/argo-helm | argo-events | 2.4.14 |
 | https://argoproj.github.io/argo-helm | argocd-image-updater | 0.12.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 
@@ -42,6 +42,7 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.configs.params."controller.sync.timeout.seconds" | int | `1800` |  |
 | argo-cd.configs.params."server.enable.gzip" | bool | `true` |  |
 | argo-cd.configs.params."server.insecure" | bool | `true` |  |
+| argo-cd.configs.secret.argocdServerAdminPassword | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/argo-cd.adminPassword"` |  |
 | argo-cd.configs.secret.createSecret | bool | `false` |  |
 | argo-cd.configs.ssh.extraHosts | string | `"git.zero-downtime.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7UgK7Z4dDcuIW1uMOsuwhrqdkJCvYG/ZjHtLM7WaKFxVRnzNnNkQJNncWIGNDUQ1xxrbsoSNRZDtk0NlOjNtx2aApSWl4iWghkpXELvsZtOZ7I9FSC/E6ImLC3KWfK7P0mhZaF6kHPfpu8Y6pjUyLBTpV1AaVwr0I8onyqGazJOVotTFaBFEi/sT0O2FUk7agwZYfj61w3JGOy3c+fmBcK3lXf/QM90tosOpJNuJ7n5Vk5FDDLkl9rO4XR/+mXHFvITiWb8F5C50YAwjYcy36yWSSryUAAHAuqpgotwh65vSG6fZvFhmEwO2BrCkOV5+k8iRfhy/yZODJzZ5V/5cbMbdZrY6lm/p5/S1wv8BEyPekBGdseqQjEO0IQiQHcMrfgTrrQ7ndbZzVZRByZI+wbGFkBCzNSJcNsoiHjs2EblxYyuW0qUvvrBxLnySvaxyPm4BOukSAZAOEaUrajpQlnHdnY1CGcgbwxw0LNv3euKQ3tDJSUlKO0Wd8d85PRv1THW4Ui9Lhsmv+BPA2vJZDOkx/n0oyPFAB0oyd5JNM38eFxLCmPC2OE63gDP+WmzVO61YCVTnvhpQjEOLawEWVFsk0y25R5z5BboDqJaOFnZF6i517O96cn17z3Ls4hxw3+0rlKczYRoyfUHs7KQENa4mY8YlJweNTBgld//RMUQ=="` |  |
 | argo-cd.configs.styles | string | `".sidebar__logo img { content: url(https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png); }\n.sidebar__logo__text-logo { height: 0em; }\n.sidebar { background: linear-gradient(to bottom, #6A4D79, #493558, #2D1B30, #0D0711); }\n"` |  |
@@ -53,24 +54,19 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.dex.enabled | bool | `false` |  |
 | argo-cd.enabled | bool | `false` |  |
 | argo-cd.global.image.repository | string | `"public.ecr.aws/zero-downtime/zdt-argocd"` |  |
-| argo-cd.global.image.tag | string | `"v2.14.5"` |  |
+| argo-cd.global.image.tag | string | `"v2.14.7"` |  |
 | argo-cd.global.logging.format | string | `"json"` |  |
 | argo-cd.global.networkPolicy.create | bool | `true` |  |
 | argo-cd.istio.enabled | bool | `false` |  |
 | argo-cd.istio.gateway | string | `"istio-ingress/ingressgateway"` |  |
 | argo-cd.istio.ipBlocks | list | `[]` |  |
-| argo-cd.kubezero.bootstrap | bool | `false` |  |
+| argo-cd.kubezero.bootstrap | bool | `false` | deploy the KubeZero Project and GitSync Root App |
 | argo-cd.kubezero.path | string | `"/"` |  |
-| argo-cd.kubezero.repoUrl | string | `"https://git.my.org/thiscluster"` |  |
+| argo-cd.kubezero.repoUrl | string | `""` |  |
+| argo-cd.kubezero.sshPrivateKey | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/argo-cd.kubezero.sshPrivateKey"` |  |
 | argo-cd.kubezero.targetRevision | string | `"HEAD"` |  |
 | argo-cd.notifications.enabled | bool | `false` |  |
 | argo-cd.redisSecretInit.enabled | bool | `false` |  |
-| argo-cd.repoServer.clusterRoleRules.enabled | bool | `true` |  |
-| argo-cd.repoServer.clusterRoleRules.rules[0].apiGroups[0] | string | `""` |  |
-| argo-cd.repoServer.clusterRoleRules.rules[0].resources[0] | string | `"secrets"` |  |
-| argo-cd.repoServer.clusterRoleRules.rules[0].verbs[0] | string | `"get"` |  |
-| argo-cd.repoServer.clusterRoleRules.rules[0].verbs[1] | string | `"watch"` |  |
-| argo-cd.repoServer.clusterRoleRules.rules[0].verbs[2] | string | `"list"` |  |
 | argo-cd.repoServer.metrics.enabled | bool | `false` |  |
 | argo-cd.repoServer.metrics.serviceMonitor.enabled | bool | `true` |  |
 | argo-cd.repoServer.volumeMounts[0].mountPath | string | `"/home/argocd/.kube"` |  |

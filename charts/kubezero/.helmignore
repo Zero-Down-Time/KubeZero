@@ -21,4 +21,8 @@
 .idea/
 *.tmproj
 .vscode/
-Chart.lock
+
+README.md.gotmpl
+dashboards.yaml
+jsonnet
+update.sh

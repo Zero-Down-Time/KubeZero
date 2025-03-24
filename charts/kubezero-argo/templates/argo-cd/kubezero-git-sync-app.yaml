@@ -1,9 +1,11 @@
-{{- if index .Values "argo-cd" "kubezero" "bootstrap" }}
+{{- if and (index .Values "argo-cd" "kubezero" "bootstrap") (index .Values "argo-cd" "kubezero" "repoUrl") }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kubezero-git-sync
   namespace: argocd
+  labels:
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
   annotations:
     argocd.argoproj.io/sync-wave: "-20"
 spec:

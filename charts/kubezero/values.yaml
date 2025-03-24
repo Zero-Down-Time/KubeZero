@@ -115,7 +115,7 @@ logging:
 argo:
   enabled: false
   namespace: argocd
-  targetRevision: 0.3.0
+  targetRevision: 0.3.1
   argo-cd:
     enabled: false
     istio:

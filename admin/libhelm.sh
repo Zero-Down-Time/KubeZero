@@ -70,7 +70,6 @@ function get_kubezero_values() {
   fi
 }
 
-
 # Overwrite kubezero-values CM with file
 function update_kubezero_cm() {
   kubectl get cm -n kubezero kubezero-values -o=yaml | \
@@ -212,7 +211,7 @@ function _helm() {
 
   if [ $action == "crds" ]; then
     # Pre-crd hook
-    [ -f $WORKDIR/$chart/hooks.d/pre-crds.sh ] && (cd $WORKDIR; bash ./$chart/hooks.d/pre-crds.sh)
+    [ -f $WORKDIR/$chart/hooks.d/pre-crds.sh ] && . $WORKDIR/$chart/hooks.d/pre-crds.sh
 
     crds
 
@@ -224,7 +223,7 @@ function _helm() {
     create_ns $namespace
 
     # Optional pre hook
-    [ -f $WORKDIR/$chart/hooks.d/pre-install.sh ] && (cd $WORKDIR; bash ./$chart/hooks.d/pre-install.sh)
+    [ -f $WORKDIR/$chart/hooks.d/pre-install.sh ] && . $WORKDIR/$chart/hooks.d/pre-install.sh
 
     render
     [ $action == "replace" ] && kubectl replace -f $WORKDIR/helm.yaml $(field_manager $ARGOCD) && rc=$? || rc=$?
@@ -233,7 +232,7 @@ function _helm() {
     [ $action == "apply" -o $rc -ne 0 ] && kubectl apply -f $WORKDIR/helm.yaml --server-side --force-conflicts $(field_manager $ARGOCD) && rc=$? || rc=$?
 
     # Optional post hook
-    [ -f $WORKDIR/$chart/hooks.d/post-install.sh ] && (cd $WORKDIR; bash ./$chart/hooks.d/post-install.sh)
+    [ -f $WORKDIR/$chart/hooks.d/post-install.sh ] && . $WORKDIR/$chart/hooks.d/post-install.sh
 
   elif [ $action == "delete" ]; then
     render

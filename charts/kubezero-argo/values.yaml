@@ -81,10 +81,9 @@ argo-cd:
 
     secret:
       createSecret: false
+
       # `htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/' | base64 -w0`
-      # argocdServerAdminPassword: "$2a$10$ivKzaXVxMqdeDSfS3nqi1Od3iDbnL7oXrixzDfZFRHlXHnAG6LydG"
-      # argocdServerAdminPassword: "ref+file://secrets.yaml#/test"
-      # argocdServerAdminPasswordMtime: "2020-04-24T15:33:09BST"
+      argocdServerAdminPassword: secretref+k8s://v1/Secret/kubezero/kubezero-secrets/argo-cd.adminPassword
 
     ssh:
       extraHosts: "git.zero-downtime.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7UgK7Z4dDcuIW1uMOsuwhrqdkJCvYG/ZjHtLM7WaKFxVRnzNnNkQJNncWIGNDUQ1xxrbsoSNRZDtk0NlOjNtx2aApSWl4iWghkpXELvsZtOZ7I9FSC/E6ImLC3KWfK7P0mhZaF6kHPfpu8Y6pjUyLBTpV1AaVwr0I8onyqGazJOVotTFaBFEi/sT0O2FUk7agwZYfj61w3JGOy3c+fmBcK3lXf/QM90tosOpJNuJ7n5Vk5FDDLkl9rO4XR/+mXHFvITiWb8F5C50YAwjYcy36yWSSryUAAHAuqpgotwh65vSG6fZvFhmEwO2BrCkOV5+k8iRfhy/yZODJzZ5V/5cbMbdZrY6lm/p5/S1wv8BEyPekBGdseqQjEO0IQiQHcMrfgTrrQ7ndbZzVZRByZI+wbGFkBCzNSJcNsoiHjs2EblxYyuW0qUvvrBxLnySvaxyPm4BOukSAZAOEaUrajpQlnHdnY1CGcgbwxw0LNv3euKQ3tDJSUlKO0Wd8d85PRv1THW4Ui9Lhsmv+BPA2vJZDOkx/n0oyPFAB0oyd5JNM38eFxLCmPC2OE63gDP+WmzVO61YCVTnvhpQjEOLawEWVFsk0y25R5z5BboDqJaOFnZF6i517O96cn17z3Ls4hxw3+0rlKczYRoyfUHs7KQENa4mY8YlJweNTBgld//RMUQ=="
@@ -125,12 +124,34 @@ argo-cd:
       name: kubeconfigs
 
     # Allow vals to read internal secrets across all namespaces
+    # @ignored
     clusterRoleRules:
       enabled: true
       rules:
         - apiGroups: [""]
           resources: ["secrets"]
           verbs: ["get", "watch", "list"]
+
+    # @ignored
+    initContainers:
+      - name: create-kubeconfig
+        image: '{{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}'
+        imagePullPolicy: '{{ default .Values.global.image.imagePullPolicy .Values.repoServer.image.imagePullPolicy }}'
+        command:
+          - /usr/local/bin/sa2kubeconfig.sh
+          - /home/argocd/.kube/config
+        volumeMounts:
+        - mountPath: /home/argocd/.kube
+          name: kubeconfigs
+        securityContext:
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+            - ALL
 
   server:
     # Rename former https port to grpc, works with istio + insecure
@@ -163,12 +184,14 @@ argo-cd:
     ipBlocks: []
 
   kubezero:
-    # only set this once initially to prevent the circular dependency
+    # -- deploy the KubeZero Project and GitSync Root App
     bootstrap: false
 
-    repoUrl: "https://git.my.org/thiscluster"
+    # valid git+ssh repository url
+    repoUrl: ""
     path: "/"
     targetRevision: HEAD
+    sshPrivateKey: secretref+k8s://v1/Secret/kubezero/kubezero-secrets/argo-cd.kubezero.sshPrivateKey
 
 argocd-image-updater:
   enabled: false

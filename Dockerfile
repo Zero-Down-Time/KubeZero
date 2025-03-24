@@ -6,8 +6,8 @@ ARG ALPINE_VERSION
 ARG KUBE_VERSION=1.31
 
 ARG SOPS_VERSION="3.9.4"
-ARG VALS_VERSION="0.39.1"
-ARG HELM_SECRETS_VERSION="4.6.2"
+ARG VALS_VERSION="0.39.4"
+ARG HELM_SECRETS_VERSION="4.6.3"
 
 RUN cd /etc/apk/keys && \
     wget "https://cdn.zero-downtime.net/alpine/stefan@zero-downtime.net-61bb6bfb.rsa.pub" && \
@@ -24,6 +24,7 @@ RUN cd /etc/apk/keys && \
       py3-yaml \
       restic \
       helm \
+      apache2-utils \
       ytt@testing \
       etcd-ctl@edge-community \
       cri-tools@kubezero \

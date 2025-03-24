@@ -1,9 +1,11 @@
-{{- if index .Values "argo-cd" "kubezero" "bootstrap" }}
+{{- if and (index .Values "argo-cd" "kubezero" "bootstrap") (index .Values "argo-cd" "kubezero" "repoUrl") }}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: kubezero
   namespace: argocd
+  labels:
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
 spec:
   clusterResourceWhitelist:
   - group: '*'
