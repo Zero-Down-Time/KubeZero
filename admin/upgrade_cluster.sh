@@ -20,13 +20,13 @@ echo "Checking that all pods in kube-system are running ..."
 [ "$ARGOCD" == "true" ] && disable_argo
 
 # Check if we already have all controllers on the current version
-OLD_CONTROLLERS=$(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" --no-headers=true | grep -cv $KUBE_VERSION || true)
+#OLD_CONTROLLERS=$(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" --no-headers=true | grep -cv $KUBE_VERSION || true)
 
-# All controllers already on current version
 if [ "$OLD_CONTROLLERS" == "0" ]; then
+  # All controllers already on current version
   control_plane_upgrade finalize_cluster_upgrade
-# Otherwise run control plane upgrade
 else
+  # Otherwise run control plane upgrade
   control_plane_upgrade kubeadm_upgrade
 fi
 
@@ -38,7 +38,7 @@ read -r
 #[ "$ARGOCD" == "true" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
 
 # upgrade modules
-control_plane_upgrade "apply_kubezero apply_network, apply_addons, apply_storage, apply_operators"
+control_plane_upgrade "apply_kubezero, apply_network, apply_addons, apply_storage, apply_operators"
 
 echo "Checking that all pods in kube-system are running ..."
 waitSystemPodsRunning

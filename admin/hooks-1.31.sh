@@ -16,7 +16,10 @@ pre_control_plane_upgrade_cluster() {
 post_control_plane_upgrade_cluster() {
   # delete previous root app controlled by kubezero module
   kubectl delete application kubezero-git-sync -n argocd || true
-  kubectl delete appproject kubezero -n argocd || true
+
+  # Patch appproject to keep SyncWindow in place
+  kubectl patch appproject kubezero -n argocd --type json -p='[{"op": "remove", "path": "/metadata/labels"}]' || true
+  kubectl patch appproject kubezero -n argocd --type json -p='[{"op": "remove", "path": "/metadata/annotations"}]' || true
 }
 
 
