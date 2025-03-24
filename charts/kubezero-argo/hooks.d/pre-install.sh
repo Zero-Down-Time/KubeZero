@@ -21,5 +21,5 @@ fi
 # GitSync privateKey
 GITKEY=$(get_kubezero_secret argo-cd.kubezero.sshPrivateKey)
 if [ -z "$GITKEY" ]; then
-  set_kubezero_secret argo-cd.sshPrivateKey "Insert ssh Private Key from your git server"
+  set_kubezero_secret argo-cd.kubezero.sshPrivateKey "Insert ssh Private Key from your git server"
 fi
