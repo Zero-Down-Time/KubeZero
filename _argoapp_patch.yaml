@@ -1,0 +1,7 @@
+spec:
+  syncWindows:
+    - kind: deny
+      schedule: '0 * * * *'
+      duration: 24h
+      namespaces:
+      - '*'

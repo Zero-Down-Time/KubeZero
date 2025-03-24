@@ -47,6 +47,9 @@ echo "Applying remaining KubeZero modules..."
 
 control_plane_upgrade "apply_cert-manager, apply_istio, apply_istio-ingress, apply_istio-private-ingress, apply_logging, apply_metrics, apply_telemetry, apply_argo"
 
+# we replace the project during v1.31 so disable again
+[ "$ARGOCD" == "true" ] && disable_argo
+
 # Final step is to commit the new argocd kubezero app
 kubectl get app kubezero -n argocd -o yaml | yq 'del(.status) | del(.metadata) | del(.operation) | .metadata.name="kubezero" | .metadata.namespace="argocd"' | yq 'sort_keys(..)' > $ARGO_APP
 

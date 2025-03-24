@@ -45,6 +45,7 @@ helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --kube-version $
 
 # Root KubeZero apply directly and exit
 if [ ${ARTIFACTS[0]} == "kubezero" ]; then
+  [ -f $CHARTS/kubezero/hooks.d/pre-install.sh ] && . $CHARTS/kubezero/hooks.d/pre-install.sh
   kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD)
   exit $?
 

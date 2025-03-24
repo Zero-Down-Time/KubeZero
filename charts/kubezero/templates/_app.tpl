@@ -25,7 +25,7 @@ spec:
     repoURL: {{ default "https://cdn.zero-downtime.net/charts" (index .Values $name "repository") }}
     targetRevision: {{ default "HEAD" ( index .Values $name "targetRevision" ) | quote }}
     helm:
-      skipTests: true
+      #skipTests: true
       valuesObject:
         {{- include (print $name "-values") $ | nindent 8 }}
 
