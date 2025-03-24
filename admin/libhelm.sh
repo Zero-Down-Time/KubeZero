@@ -67,7 +67,7 @@ function set_kubezero_secret() {
   local val="$2"
 
   if [ -n "$val" ]; then
-    kubectl patch secret -n kubezero kubezero-secrets --patch="{\"data\": { \"$key\": \"$(echo -n $val |base64 -w0)\" }}"
+    kubectl patch secret -n kubezero kubezero-secrets --patch="{\"data\": { \"$key\": \"$(echo -n "$val" |base64 -w0)\" }}"
   fi
 }
 
