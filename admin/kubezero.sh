@@ -330,6 +330,7 @@ apply_module() {
   for t in $MODULES; do
     # apply/replace app of apps directly
     if [ $t == "kubezero" ]; then
+      [ -f $CHARTS/kubezero/hooks.d/pre-install.sh ] && . $CHARTS/kubezero/hooks.d/pre-install.sh
       kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD)
     else
       #_helm apply $t
