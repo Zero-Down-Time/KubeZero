@@ -17,4 +17,10 @@ spec:
   sourceRepos:
   - https://cdn.zero-downtime.net/charts
   - {{ index .Values "argo-cd" "kubezero" "repoUrl" }}
+  syncWindows:
+    - kind: deny
+      schedule: '0 * * * *'
+      duration: 24h
+      namespaces:
+      - '*'
 {{- end }}
