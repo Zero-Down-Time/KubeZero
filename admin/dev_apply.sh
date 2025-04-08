@@ -9,33 +9,22 @@ ARGOCD="${3:-true}"
 
 LOCAL_DEV=1
 
-#VERSION="latest"
-KUBE_VERSION="$(kubectl version -o json | jq -r .serverVersion.gitVersion)"
-
 WORKDIR=$(mktemp -p /tmp -d kubezero.XXX)
 [ -z "$DEBUG" ] && trap 'rm -rf $WORKDIR' ERR EXIT
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR"/libhelm.sh
 CHARTS="$(dirname $SCRIPT_DIR)/charts"
 
-# Guess platform from current context
-_auth_cmd=$(kubectl config view | yq .users[0].user.exec.command)
-if [ "$_auth_cmd" == "gke-gcloud-auth-plugin" ]; then
-  PLATFORM=gke
-elif [ "$_auth_cmd" == "aws-iam-authenticator" ]; then
-  PLATFORM=aws
-else
-  PLATFORM=nocloud
+KUBE_VERSION="$(get_kube_version)"
+PLATFORM="$(get_kubezero_platform)"
+
+if [ -z "$KUBE_VERSION" ]; then
+  echo "Cannot contact cluster, cannot parse version!"
+  exit 1
 fi
-
-parse_version() {
-  echo $([[ $1 =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]] && echo "${BASH_REMATCH[0]//v/}")
-}
-
-KUBE_VERSION=$(parse_version $KUBE_VERSION)
-
 
 ### Main
 get_kubezero_values $ARGOCD

@@ -44,6 +44,25 @@ function field_manager() {
 }
 
 
+function get_kube_version() {
+  local git_version="$(kubectl version -o json | jq -r .serverVersion.gitVersion)"
+  echo $([[ $git_version =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]] && echo "${BASH_REMATCH[0]//v/}")
+}
+
+
+function get_kubezero_platform() {
+  _auth_cmd=$(kubectl config view | yq .users[0].user.exec.command)
+  if [ "$_auth_cmd" == "gke-gcloud-auth-plugin" ]; then
+    PLATFORM=gke
+  elif [ "$_auth_cmd" == "aws-iam-authenticator" ]; then
+    PLATFORM=aws
+  else
+    PLATFORM=nocloud
+  fi
+  echo $PLATFORM
+}
+
+
 function get_secret_val() {
   local ns=$1
   local secret=$2
@@ -83,12 +102,14 @@ function get_kubezero_values() {
   fi
 }
 
+
 # Overwrite kubezero-values CM with file
 function update_kubezero_cm() {
   kubectl get cm -n kubezero kubezero-values -o=yaml | \
     yq e ".data.\"values.yaml\" |= load_str(\"$WORKDIR/kubezero-values.yaml\")" | \
     kubectl replace -f -
 }
+
 
 # sync kubezero-values CM from ArgoCD app
 function sync_kubezero_cm_from_argo() {
@@ -257,6 +278,7 @@ function _helm() {
 
   return 0
 }
+
 
 function all_nodes_upgrade() {
   CMD="$1"

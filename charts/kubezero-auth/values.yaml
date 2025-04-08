@@ -19,7 +19,7 @@ keycloak:
   resources:
     limits:
       #cpu: 750m
-      memory: 768Mi
+      memory: 1024Mi
     requests:
       cpu: 100m
       memory: 512Mi

@@ -320,7 +320,7 @@ apply_module() {
   get_kubezero_values $ARGOCD
 
   # Always use embedded kubezero chart
-  helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --version ~$KUBE_VERSION --devel --output-dir $WORKDIR
+  helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --kube-version $KUBE_VERSION --name-template kubezero --version ~$KUBE_VERSION --devel --output-dir $WORKDIR
 
   # CRDs first
   for t in $MODULES; do
