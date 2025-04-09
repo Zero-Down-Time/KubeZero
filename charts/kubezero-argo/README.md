@@ -1,6 +1,6 @@
 # kubezero-argo
 
-![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square)
+![Version: 0.3.2](https://img.shields.io/badge/Version-0.3.2-informational?style=flat-square)
 
 KubeZero Argo - Events, Workflow, CD
 
@@ -18,9 +18,9 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://argoproj.github.io/argo-helm | argo-cd | 7.8.13 |
-| https://argoproj.github.io/argo-helm | argo-events | 2.4.14 |
-| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.12.0 |
+| https://argoproj.github.io/argo-helm | argo-cd | 7.8.23 |
+| https://argoproj.github.io/argo-helm | argo-events | 2.4.15 |
+| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.12.1 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 
 ## Values
@@ -54,7 +54,7 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.dex.enabled | bool | `false` |  |
 | argo-cd.enabled | bool | `false` |  |
 | argo-cd.global.image.repository | string | `"public.ecr.aws/zero-downtime/zdt-argocd"` |  |
-| argo-cd.global.image.tag | string | `"v2.14.7"` |  |
+| argo-cd.global.image.tag | string | `"v2.14.9"` |  |
 | argo-cd.global.logging.format | string | `"json"` |  |
 | argo-cd.global.networkPolicy.create | bool | `true` |  |
 | argo-cd.istio.enabled | bool | `false` |  |
@@ -69,10 +69,6 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.redisSecretInit.enabled | bool | `false` |  |
 | argo-cd.repoServer.metrics.enabled | bool | `false` |  |
 | argo-cd.repoServer.metrics.serviceMonitor.enabled | bool | `true` |  |
-| argo-cd.repoServer.volumeMounts[0].mountPath | string | `"/home/argocd/.kube"` |  |
-| argo-cd.repoServer.volumeMounts[0].name | string | `"kubeconfigs"` |  |
-| argo-cd.repoServer.volumes[0].emptyDir | object | `{}` |  |
-| argo-cd.repoServer.volumes[0].name | string | `"kubeconfigs"` |  |
 | argo-cd.server.metrics.enabled | bool | `false` |  |
 | argo-cd.server.metrics.serviceMonitor.enabled | bool | `true` |  |
 | argo-cd.server.service.servicePortHttpsName | string | `"grpc"` |  |

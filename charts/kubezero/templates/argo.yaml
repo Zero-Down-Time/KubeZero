@@ -25,6 +25,33 @@ argo-cd:
   repoServer:
     metrics:
       enabled: {{ .Values.metrics.enabled }}
+
+    {{- if eq .Values.global.platform "aws" }}
+    env:
+      - name: AWS_ROLE_ARN
+        value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.argocd-repo-server"
+      - name: AWS_WEB_IDENTITY_TOKEN_FILE
+        value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+      - name: AWS_STS_REGIONAL_ENDPOINTS
+        value: "regional"
+      - name: METADATA_TRIES
+        value: "0"
+      - name: AWS_REGION
+        value: {{ .Values.global.aws.region }}
+    volumes:
+    - name: aws-token
+      projected:
+        sources:
+        - serviceAccountToken:
+            path: token
+            expirationSeconds: 86400
+            audience: "sts.amazonaws.com"
+    volumeMounts:
+    - name: aws-token
+      mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
+      readOnly: true
+    {{- end }}
+
     {{- with index .Values "argo" "argo-cd" "repoServer" }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -51,7 +78,7 @@ argocd-image-updater:
   {{- toYaml . | nindent 2 }}
   {{- end }}
 
-  {{- if .Values.global.aws }}
+  {{- if eq .Values.global.platform "aws" }}
   extraEnv:
     - name: AWS_ROLE_ARN
       value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.argocd-image-updater"
