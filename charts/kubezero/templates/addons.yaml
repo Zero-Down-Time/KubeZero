@@ -42,28 +42,11 @@ external-dns:
     - "--aws-zone-type=public"
     - "--aws-zones-cache-duration=1h"
   env:
-    - name: AWS_REGION
-      value: {{ .Values.global.aws.region }}
-    - name: AWS_ROLE_ARN
-      value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.externalDNS"
-    - name: AWS_WEB_IDENTITY_TOKEN_FILE
-      value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-    - name: AWS_STS_REGIONAL_ENDPOINTS
-      value: "regional"
-    - name: METADATA_TRIES
-      value: "0"
+    {{- include "aws-iam-env" (merge (dict "roleName" "externalDNS") .) | nindent 4 }}
   extraVolumes:
-  - name: aws-token
-    projected:
-      sources:
-      - serviceAccountToken:
-          path: token
-          expirationSeconds: 86400
-          audience: "sts.amazonaws.com"
+    {{- include "aws-iam-volumes" . | nindent 4 }}
   extraVolumeMounts:
-  - name: aws-token
-    mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-    readOnly: true
+    {{- include "aws-iam-volumemounts" . | nindent 4 }}
   {{- end }}
 
 cluster-autoscaler:
@@ -98,17 +81,9 @@ cluster-autoscaler:
     AWS_WEB_IDENTITY_TOKEN_FILE: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
     AWS_STS_REGIONAL_ENDPOINTS: "regional"
   extraVolumes:
-  - name: aws-token
-    projected:
-      sources:
-      - serviceAccountToken:
-          path: token
-          expirationSeconds: 86400
-          audience: "sts.amazonaws.com"
+    {{- include "aws-iam-volumes" . | nindent 4 }}
   extraVolumeMounts:
-  - name: aws-token
-    mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-    readOnly: true
+    {{- include "aws-iam-volumemounts" . | nindent 4 }}
   {{- end }}
 
 {{- with .Values.addons.fuseDevicePlugin }}
@@ -155,14 +130,7 @@ aws-node-termination-handler:
   queueURL: "https://sqs.{{ .Values.global.aws.region }}.amazonaws.com/{{ .Values.global.aws.accountId }}/{{ .Values.global.clusterName }}_Nth"
   managedTag: "zdt:kubezero:nth:{{ .Values.global.clusterName }}"
   extraEnv:
-    - name: AWS_ROLE_ARN
-      value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.awsNth"
-    - name: AWS_WEB_IDENTITY_TOKEN_FILE
-      value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-    - name: AWS_STS_REGIONAL_ENDPOINTS
-      value: "regional"
-    - name: METADATA_TRIES
-      value: "0"
+    {{- include "aws-iam-env" (merge (dict "roleName" "awsNth") .) | nindent 4 }}
 
 aws-eks-asg-rolling-update-handler:
   enabled: {{ default "true" (index .Values "addons" "aws-eks-asg-rolling-update-handler" "enabled") }}
@@ -172,10 +140,9 @@ aws-eks-asg-rolling-update-handler:
   {{- end }}
 
   environmentVars:
+    {{- include "aws-iam-env" (merge (dict "roleName" "awsRuh") .) | nindent 4 }}
     - name: CLUSTER_NAME
       value: {{ .Values.global.clusterName }}
-    - name: AWS_REGION
-      value: {{ .Values.global.aws.region }}
     - name: EXECUTION_INTERVAL
       value: "60"
     - name: METRICS
@@ -184,12 +151,6 @@ aws-eks-asg-rolling-update-handler:
       value: "true"
     - name: SLOW_MODE
       value: "true"
-    - name: AWS_ROLE_ARN
-      value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.awsRuh"
-    - name: AWS_WEB_IDENTITY_TOKEN_FILE
-      value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-    - name: AWS_STS_REGIONAL_ENDPOINTS
-      value: "regional"
 
 {{- with (index .Values "addons" "neuron-helm-chart") }}
 neuron-helm-chart:

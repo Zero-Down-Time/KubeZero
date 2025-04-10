@@ -18,12 +18,6 @@ if [ -z "$PW" ]; then
   set_kubezero_secret argo-cd.adminPassword "$NEW_PW"
 fi
 
-# GitSync privateKey
-GITKEY=$(get_kubezero_secret argo-cd.kubezero.sshPrivateKey)
-if [ -z "$GITKEY" ]; then
-  set_kubezero_secret argo-cd.kubezero.sshPrivateKey "Insert ssh Private Key from your git server"
-fi
-
 # Redis secret
 kubectl get secret argocd-redis -n argocd || kubectl create secret generic argocd-redis -n argocd \
     --from-literal=auth=$(date +%s | sha256sum | base64 | head -c 16 ; echo)

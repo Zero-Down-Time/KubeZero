@@ -6,7 +6,9 @@ global:
 
   highAvailable: false
 
-  aws: {}
+  aws:
+    accountId: "123456789012"
+    region: the-moon
   gcp: {}
 
 addons:
