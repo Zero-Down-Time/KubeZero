@@ -1,6 +1,6 @@
 {{- define "addons-values" }}
 clusterBackup:
-  enabled: {{ ternary "true" "false" (or (hasKey .Values.global.aws "region") .Values.addons.clusterBackup.enabled) }}
+  enabled: {{ ternary "true" "false" (or (eq .Values.global.platform "aws") .Values.addons.clusterBackup.enabled) }}
 
   {{- with omit .Values.addons.clusterBackup "enabled" }}
   {{- toYaml . | nindent 2 }}
@@ -14,7 +14,7 @@ clusterBackup:
   {{- end }}
 
 forseti:
-  enabled: {{ ternary "true" "false" (or (hasKey .Values.global.aws "region") .Values.addons.forseti.enabled) }}
+  enabled: {{ ternary "true" "false" (or (eq .Values.global.platform "aws") .Values.addons.forseti.enabled) }}
 
   {{- with omit .Values.addons.forseti "enabled" }}
   {{- toYaml . | nindent 2 }}
@@ -28,7 +28,7 @@ forseti:
   {{- end }}
 
 external-dns:
-  enabled: {{ ternary "true" "false" (or (hasKey .Values.global.aws "region") (index .Values "addons" "external-dns" "enabled")) }}
+  enabled: {{ ternary "true" "false" (or (eq .Values.global.platform "aws") (index .Values "addons" "external-dns" "enabled")) }}
 
   {{- with omit (index .Values "addons" "external-dns") "enabled" }}
   {{- toYaml . | nindent 2 }}
@@ -50,7 +50,7 @@ external-dns:
   {{- end }}
 
 cluster-autoscaler:
-  enabled: {{ ternary "true" "false" (or (hasKey .Values.global.aws "region") (index .Values "addons" "cluster-autoscaler" "enabled")) }}
+  enabled: {{ ternary "true" "false" (or (eq .Values.global.platform "aws") (index .Values "addons" "cluster-autoscaler" "enabled")) }}
 
   autoDiscovery:
     clusterName: {{ .Values.global.clusterName }}

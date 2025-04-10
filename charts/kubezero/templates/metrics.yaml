@@ -1,6 +1,6 @@
 {{- define "_kube-prometheus-stack" }}
 
-{{- if .global.aws.region }}
+{{- if eq .global.platform "aws" }}
 alertmanager:
   alertmanagerSpec:
     podMetadata:
