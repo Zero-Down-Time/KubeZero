@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-cache
 description: KubeZero Cache module
 type: application
-version: 0.1.0
+version: 0.1.1
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -17,11 +17,11 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: redis
-    version: 20.0.3
+    version: 20.11.5
     repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
   - name: redis-cluster
-    version: 11.0.2
+    version: 11.5.0
     repository: https://charts.bitnami.com/bitnami
     condition: redis-cluster.enabled
 
