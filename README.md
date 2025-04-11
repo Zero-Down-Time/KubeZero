@@ -19,7 +19,7 @@ KubeZero is a Kubernetes distribution providing an integrated container platform
 
 # Version / Support Matrix
 KubeZero releases track the same *minor* version of Kubernetes.
-Any 1.30.X-Y release of Kubezero supports any Kubernetes cluster 1.30.X.
+Any 1.31.X-Y release of Kubezero supports any Kubernetes cluster 1.31.X.
 
 KubeZero is distributed as a collection of versioned Helm charts, allowing custom upgrade schedules and module versions as needed.
 
@@ -28,15 +28,15 @@ KubeZero is distributed as a collection of versioned Helm charts, allowing custo
 gantt
     title KubeZero Support Timeline
     dateFormat  YYYY-MM-DD
-    section 1.29
-    beta     :129b, 2024-07-01, 2024-07-31
-    release  :after 129b, 2024-11-30
     section 1.30
     beta     :130b, 2024-09-01, 2024-10-31
-    release  :after 130b, 2025-02-28
+    release  :after 130b, 2025-04-30
     section 1.31
-    beta     :131b, 2024-12-01, 2025-01-30
-    release  :after 131b, 2025-04-30
+    beta     :131b, 2024-12-01, 2025-02-28
+    release  :after 131b, 2025-06-30
+    section 1.32
+    beta     :132b, 2025-04-01, 2025-05-19
+    release  :after 132b, 2025-09-30
 ```
 
 [Upstream release policy](https://kubernetes.io/releases/)
@@ -44,7 +44,7 @@ gantt
 # Components
 
 ## OS
-- all compute nodes are running on Alpine V3.20
+- all compute nodes are running on Alpine V3.21
 - 1 or 2 GB encrypted root file system
 - no external dependencies at boot time, apart from container registries
 - focused on security and minimal footprint
