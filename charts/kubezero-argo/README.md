@@ -54,21 +54,25 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.dex.enabled | bool | `false` |  |
 | argo-cd.enabled | bool | `false` |  |
 | argo-cd.global.image.repository | string | `"public.ecr.aws/zero-downtime/zdt-argocd"` |  |
-| argo-cd.global.image.tag | string | `"v2.14.9"` |  |
+| argo-cd.global.image.tag | string | `"v2.14.9-1"` |  |
 | argo-cd.global.logging.format | string | `"json"` |  |
 | argo-cd.global.networkPolicy.create | bool | `true` |  |
 | argo-cd.istio.enabled | bool | `false` |  |
 | argo-cd.istio.gateway | string | `"istio-ingress/ingressgateway"` |  |
 | argo-cd.istio.ipBlocks | list | `[]` |  |
 | argo-cd.kubezero.bootstrap | bool | `false` | deploy the KubeZero Project and GitSync Root App |
+| argo-cd.kubezero.password | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/argo-cd.kubezero.password"` |  |
 | argo-cd.kubezero.path | string | `"/"` |  |
 | argo-cd.kubezero.repoUrl | string | `""` |  |
 | argo-cd.kubezero.sshPrivateKey | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/argo-cd.kubezero.sshPrivateKey"` |  |
 | argo-cd.kubezero.targetRevision | string | `"HEAD"` |  |
+| argo-cd.kubezero.username | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/argo-cd.kubezero.username"` |  |
 | argo-cd.notifications.enabled | bool | `false` |  |
 | argo-cd.redisSecretInit.enabled | bool | `false` |  |
 | argo-cd.repoServer.metrics.enabled | bool | `false` |  |
 | argo-cd.repoServer.metrics.serviceMonitor.enabled | bool | `true` |  |
+| argo-cd.repoServer.volumes[0].emptyDir | object | `{}` |  |
+| argo-cd.repoServer.volumes[0].name | string | `"cmp-tmp"` |  |
 | argo-cd.server.metrics.enabled | bool | `false` |  |
 | argo-cd.server.metrics.serviceMonitor.enabled | bool | `true` |  |
 | argo-cd.server.service.servicePortHttpsName | string | `"grpc"` |  |

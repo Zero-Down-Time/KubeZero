@@ -42,6 +42,9 @@ spec:
       - ServerSideApply=true
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
+  info:
+    - name: "Source:"
+      value: "https://git.zero-downtime.net/ZeroDownTime/KubeZero/src/branch/release/v1.31/charts/kubezero-{{ $name }}"
 {{- include (print $name "-argo") $ }}
 {{- end }}
 

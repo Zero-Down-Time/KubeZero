@@ -1,4 +1,4 @@
-{{- if and (index .Values "argo-cd" "kubezero" "bootstrap") (index .Values "argo-cd" "kubezero" "repoUrl") }}
+{{- if index .Values "argo-cd" "kubezero" "bootstrap" }}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
