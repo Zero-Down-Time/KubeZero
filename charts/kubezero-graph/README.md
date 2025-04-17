@@ -1,6 +1,6 @@
 # kubezero-graph
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero GraphQL and GraphDB
 
@@ -18,8 +18,8 @@ Kubernetes: `>= 1.29.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.2.1 |
-| https://helm.neo4j.com/neo4j | neo4j | 5.26.0 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
+| https://helm.neo4j.com/neo4j | neo4j | 2025.3.0 |
 
 ## Values
 
@@ -28,6 +28,8 @@ Kubernetes: `>= 1.29.0-0`
 | neo4j.disableLookups | bool | `true` |  |
 | neo4j.enabled | bool | `false` |  |
 | neo4j.neo4j.name | string | `"test-db"` |  |
+| neo4j.neo4j.password | string | `"secret"` |  |
+| neo4j.neo4j.passwordFromSecret | string | `"neo4j-admin"` |  |
 | neo4j.serviceMonitor.enabled | bool | `false` |  |
 | neo4j.services.neo4j.enabled | bool | `false` |  |
 | neo4j.volumes.data.mode | string | `"defaultStorageClass"` |  |
