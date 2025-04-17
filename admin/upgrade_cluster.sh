@@ -20,7 +20,7 @@ echo "Checking that all pods in kube-system are running ..."
 [ "$ARGOCD" == "true" ] && disable_argo
 
 # Check if we already have all controllers on the current version
-#OLD_CONTROLLERS=$(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" --no-headers=true | grep -cv $KUBE_VERSION || true)
+OLD_CONTROLLERS=$(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" --no-headers=true | grep -cv $KUBE_VERSION || true)
 
 if [ "$OLD_CONTROLLERS" == "0" ]; then
   # All controllers already on current version

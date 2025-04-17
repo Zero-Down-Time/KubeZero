@@ -22,4 +22,5 @@ fi
 kubectl get secret argocd-redis -n argocd || kubectl create secret generic argocd-redis -n argocd \
     --from-literal=auth=$(date +%s | sha256sum | base64 | head -c 16 ; echo)
 
+# required keys in kubezero-secrets, as --ignore-missing-values in helm-secrets doesnt work with vals ;-(
 ensure_kubezero_secret_key argo-cd.kubezero.username argo-cd.kubezero.password argo-cd.kubezero.sshPrivateKey

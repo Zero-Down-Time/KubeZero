@@ -93,6 +93,7 @@ function ensure_kubezero_secret_key() {
   done
 }
 
+
 function set_kubezero_secret() {
   local key="$1"
   local val="$2"
