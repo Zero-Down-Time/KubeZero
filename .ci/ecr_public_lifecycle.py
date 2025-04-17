@@ -41,7 +41,8 @@ for image in sorted(images, key=lambda d: d['imagePushedAt'], reverse=True):
         _delete = True
         for tag in image["imageTags"]:
             # Look for at least one tag NOT beign a SemVer dev tag
-            if "-" not in tag:
+            # untagged dev builds get tagged as <tag>-g<commit>
+            if "-g" not in tag and "dirty" not in tag:
                 _delete = False
         if _delete:
             print("Deleting development image {}".format(image["imageTags"]))
