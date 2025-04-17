@@ -14,7 +14,7 @@ include .ci/podman.mk
 
 Add subtree to your project:
 ```
-git subtree add --prefix .ci https://git.zero-downtime.net/ZeroDownTime/ci-tools-lib.git master --squash
+git subtree add --prefix .ci https://git.zero-downtime.net/ZeroDownTime/ci-tools-lib.git main --squash
 ```
 
 

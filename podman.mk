@@ -85,7 +85,7 @@ rm-image:
 
 ## some useful tasks during development
 ci-pull-upstream: ## pull latest shared .ci subtree
-	git subtree pull --prefix .ci ssh://git@git.zero-downtime.net/ZeroDownTime/ci-tools-lib.git master --squash -m "Merge latest ci-tools-lib"
+	git subtree pull --prefix .ci ssh://git@git.zero-downtime.net/ZeroDownTime/ci-tools-lib.git main --squash -m "Merge latest ci-tools-lib"
 
 create-repo: ## create new AWS ECR public repository
 	aws ecr-public create-repository --repository-name $(IMAGE) --region $(REGION)
