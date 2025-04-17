@@ -15,37 +15,28 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ARGOCD=$(argo_used)
 
 echo "Checking that all pods in kube-system are running ..."
-#waitSystemPodsRunning
+waitSystemPodsRunning
 
 [ "$ARGOCD" == "true" ] && disable_argo
 
-# Check if we already have all controllers on the current version
-OLD_CONTROLLERS=$(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" --no-headers=true | grep -cv $KUBE_VERSION || true)
-
-if [ "$OLD_CONTROLLERS" == "0" ]; then
-  # All controllers already on current version
-  control_plane_upgrade finalize_cluster_upgrade
-else
-  # Otherwise run control plane upgrade
-  control_plane_upgrade kubeadm_upgrade
-fi
-
-echo "<Return> to continue"
-read -r
+admin_job "upgrade_control_plane, upgrade_kubezero"
 
 #echo "Adjust kubezero values as needed:"
 # shellcheck disable=SC2015
 #[ "$ARGOCD" == "true" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
 
+#echo "<Return> to continue"
+#read -r
+
 # upgrade modules
-control_plane_upgrade "apply_kubezero, apply_network, apply_addons, apply_storage, apply_operators"
+admin_job "apply_kubezero, apply_network, apply_addons, apply_storage, apply_operators"
 
 echo "Checking that all pods in kube-system are running ..."
 waitSystemPodsRunning
 
 echo "Applying remaining KubeZero modules..."
 
-control_plane_upgrade "apply_cert-manager, apply_istio, apply_istio-ingress, apply_istio-private-ingress, apply_logging, apply_metrics, apply_telemetry, apply_argo"
+admin_job "apply_cert-manager, apply_istio, apply_istio-ingress, apply_istio-private-ingress, apply_logging, apply_metrics, apply_telemetry, apply_argo"
 
 # we replace the project during v1.31 so disable again
 [ "$ARGOCD" == "true" ] && disable_argo
@@ -59,6 +50,12 @@ while true; do
   kubectl wait --for=condition=complete job/kubezero-backup-$KUBE_VERSION -n kube-system 2>/dev/null && kubectl delete job kubezero-backup-$KUBE_VERSION -n kube-system && break
   sleep 1
 done
+
+echo "Once all controller nodes are running on $KUBE_VERSION, <return> to continue"
+read -r
+
+# Final control plane upgrades
+admin_job "upgrade_control_plane"
 
 echo "Please commit $ARGO_APP as the updated kubezero/application.yaml for your cluster."
 echo "Then head over to ArgoCD for this cluster and sync all KubeZero modules to apply remaining upgrades."

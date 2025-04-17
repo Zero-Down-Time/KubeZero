@@ -111,34 +111,41 @@ post_kubeadm() {
 }
 
 
-# Control plane upgrade
-control_plane_upgrade() {
-  CMD=$1
+# Migrate KubeZero Config to current version
+upgrade_kubezero_config() {
+  # get current values, argo app over cm
+  get_kubezero_values $ARGOCD
 
+  # tumble new config through migrate.py
+  migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml \
+    && mv "$WORKDIR"/new-kubezero-values.yaml "$WORKDIR"/kubezero-values.yaml
+
+  update_kubezero_cm
+
+  if [ "$ARGOCD" == "true" ]; then
+    # update argo app
+    export kubezero_chart_version=$(yq .version $CHARTS/kubezero/Chart.yaml)
+    kubectl get application kubezero -n argocd -o yaml | \
+      yq ".spec.source.helm.valuesObject |= load(\"$WORKDIR/kubezero-values.yaml\") | .spec.source.targetRevision = strenv(kubezero_chart_version)" \
+      > $WORKDIR/new-argocd-app.yaml
+      kubectl replace -f $WORKDIR/new-argocd-app.yaml $(field_manager $ARGOCD)
+  fi
+}
+
+
+# Control plane upgrade
+kubeadm_upgrade() {
   ARGOCD=$(argo_used)
 
   render_kubeadm upgrade
 
-  if [[ "$CMD" =~ ^(cluster)$ ]]; then
+  # Check if we already have all controllers on the current version
+  OLD_CONTROLLERS=$(kubectl get nodes -l "node-role.kubernetes.io/control-plane=" --no-headers=true | grep -cv $KUBE_VERSION || true)
+
+  # run control plane upgrade
+  if [ "$OLD_CONTROLLERS" != "0" ]; then
+
     pre_control_plane_upgrade_cluster
-
-    # get current values, argo app over cm
-    get_kubezero_values $ARGOCD
-
-    # tumble new config through migrate.py
-    migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml \
-      && mv "$WORKDIR"/new-kubezero-values.yaml "$WORKDIR"/kubezero-values.yaml
-
-    update_kubezero_cm
-
-    if [ "$ARGOCD" == "true" ]; then
-      # update argo app
-      export kubezero_chart_version=$(yq .version $CHARTS/kubezero/Chart.yaml)
-      kubectl get application kubezero -n argocd -o yaml | \
-        yq ".spec.source.helm.valuesObject |= load(\"$WORKDIR/kubezero-values.yaml\") | .spec.source.targetRevision = strenv(kubezero_chart_version)" \
-        > $WORKDIR/new-argocd-app.yaml
-        kubectl replace -f $WORKDIR/new-argocd-app.yaml $(field_manager $ARGOCD)
-    fi
 
     pre_kubeadm
 
@@ -155,7 +162,8 @@ control_plane_upgrade() {
 
     echo "Successfully upgraded KubeZero control plane to $KUBE_VERSION using kubeadm."
 
-  elif [[ "$CMD" =~ ^(final)$ ]]; then
+  # All controllers already on current version
+  else
     pre_cluster_upgrade_final
 
     # Finally upgrade addons last, with 1.32 we can ONLY call addon phase
@@ -411,12 +419,8 @@ for t in $@; do
     bootstrap) control_plane_node bootstrap;;
     join) control_plane_node join;;
     restore) control_plane_node restore;;
-    kubeadm_upgrade)
-      control_plane_upgrade cluster
-      ;;
-    finalize_cluster_upgrade)
-      control_plane_upgrade final
-      ;;
+    upgrade_control_plane) kubeadm_upgrade;;
+    upgrade_kubezero) upgrade_kubezero_config;;
     apply_*)
       ARGOCD=$(argo_used)
       apply_module "${t##apply_}";;

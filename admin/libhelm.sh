@@ -353,7 +353,7 @@ EOF
 }
 
 
-function control_plane_upgrade() {
+function admin_job() {
   TASKS="$1"
 
   [ -z "$KUBE_VERSION" ] && KUBE_VERSION="latest"
@@ -363,7 +363,7 @@ function control_plane_upgrade() {
 apiVersion: v1
 kind: Pod
 metadata:
-  name: kubezero-upgrade
+  name: kubezero-admin-job
   namespace: kube-system
   labels:
     app: kubezero-upgrade
@@ -408,10 +408,10 @@ spec:
   restartPolicy: Never
 EOF
 
-  kubectl wait pod kubezero-upgrade -n kube-system --timeout 120s --for=condition=initialized 2>/dev/null
+  kubectl wait pod kubezero-admin-job -n kube-system --timeout 120s --for=condition=initialized 2>/dev/null
   while true; do
-    kubectl logs kubezero-upgrade -n kube-system -f 2>/dev/null && break
+    kubectl logs kubezero-admin-job -n kube-system -f 2>/dev/null && break
     sleep 3
   done
-  kubectl delete pod kubezero-upgrade -n kube-system
+  kubectl delete pod kubezero-admin-job -n kube-system
 }
