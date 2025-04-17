@@ -6,6 +6,12 @@ nats:
     jetstream:
       enabled: true
 
+  podTemplate:
+    topologySpreadConstraints:
+      kubernetes.io/hostname:
+        maxSkew: 1
+        whenUnsatisfiable: DoNotSchedule
+
   natsBox:
     enabled: false
 

@@ -1,6 +1,6 @@
 # kubezero-mq
 
-![Version: 0.3.10](https://img.shields.io/badge/Version-0.3.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.11](https://img.shields.io/badge/Version-0.3.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for MQ systems like NATS, RabbitMQ
 
@@ -18,9 +18,9 @@ Kubernetes: `>= 1.26.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://charts.bitnami.com/bitnami | rabbitmq | 14.6.6 |
-| https://nats-io.github.io/k8s/helm/charts/ | nats | 1.2.2 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
+| https://charts.bitnami.com/bitnami | rabbitmq | 14.7.0 |
+| https://nats-io.github.io/k8s/helm/charts/ | nats | 1.3.3 |
 
 ## Values
 
@@ -34,13 +34,6 @@ Kubernetes: `>= 1.26.0`
 | nats.natsBox.enabled | bool | `false` |  |
 | nats.promExporter.enabled | bool | `false` |  |
 | nats.promExporter.podMonitor.enabled | bool | `false` |  |
-| rabbitmq-cluster-operator.clusterOperator.metrics.enabled | bool | `false` |  |
-| rabbitmq-cluster-operator.clusterOperator.metrics.serviceMonitor.enabled | bool | `true` |  |
-| rabbitmq-cluster-operator.enabled | bool | `false` |  |
-| rabbitmq-cluster-operator.msgTopologyOperator.metrics.enabled | bool | `false` |  |
-| rabbitmq-cluster-operator.msgTopologyOperator.metrics.serviceMonitor.enabled | bool | `true` |  |
-| rabbitmq-cluster-operator.rabbitmqImage.tag | string | `"3.11.4-debian-11-r0"` |  |
-| rabbitmq-cluster-operator.useCertManager | bool | `true` |  |
 | rabbitmq.auth.existingErlangSecret | string | `"rabbitmq"` |  |
 | rabbitmq.auth.existingPasswordSecret | string | `"rabbitmq"` |  |
 | rabbitmq.auth.tls.enabled | bool | `false` |  |
