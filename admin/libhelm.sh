@@ -80,6 +80,18 @@ function get_kubezero_secret() {
   get_secret_val kubezero kubezero-secrets "$1"
 }
 
+function ensure_kubezero_secret_key() {
+  local secret="$(kubectl get secret -n kubezero kubezero-secrets -o yaml)"
+  local key=""
+  local val=""
+
+  for key in $@; do
+    val=$(echo "$secret" | yq ".data.\"$key\"")
+    if [ "$val" == "null" ]; then
+      kubectl patch secret -n kubezero kubezero-secrets --patch="{\"data\": { \"$key\": \"\" }}"
+    fi
+  done
+}
 
 function set_kubezero_secret() {
   local key="$1"
