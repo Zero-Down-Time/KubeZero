@@ -8,8 +8,8 @@ SHELL := bash
 .PHONY: all # All targets are accessible for user
 .DEFAULT: help # Running Make will run the help target
 
-# Parse version from latest git semver tag
-GIT_TAG ?= $(shell git describe --tags --match v*.*.* 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
+# Parse version from latest git semver tag, use short commit otherwise
+GIT_TAG ?= $(shell git describe --tags --match v*.*.* --dirty 2>/dev/null || git describe --match="" --always --dirty 2>/dev/null)
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
 TAG ::= $(GIT_TAG)
