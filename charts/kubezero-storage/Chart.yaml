@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-storage
 description: KubeZero umbrella chart for all things storage incl. AWS EBS/EFS, openEBS-lvm, gemini
 type: application
-version: 0.8.10
+version: 0.8.11
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -24,11 +24,11 @@ dependencies:
     condition: lvm-localpv.enabled
     repository: https://openebs.github.io/lvm-localpv
   - name: aws-ebs-csi-driver
-    version: 2.39.3
+    version: 2.42.0
     condition: aws-ebs-csi-driver.enabled
     repository: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
   - name: aws-efs-csi-driver
-    version: 3.1.6
+    version: 3.1.8
     condition: aws-efs-csi-driver.enabled
     repository: https://kubernetes-sigs.github.io/aws-efs-csi-driver
   - name: gemini
@@ -36,7 +36,7 @@ dependencies:
     condition: gemini.enabled
     repository: https://charts.fairwinds.com/stable
   - name: k8up
-    version: 4.8.3
+    version: 4.8.4
     condition: k8up.enabled
     repository: https://k8up-io.github.io/k8up
 kubeVersion: ">= 1.26.0"
