@@ -18,7 +18,7 @@ multus:
   enabled: false
   image:
     repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-    tag: v4.1.4
+    tag: v4.2.0
 
   clusterNetwork: "cilium"
   defaultNetworks: []
