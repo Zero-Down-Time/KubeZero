@@ -8,3 +8,6 @@ json:
   - op: replace
     path: /spec/containers/0/startupProbe/httpGet/host
     value: {{ .Values.listenAddress }}
+  - op: replace
+    path: /spec/containers/0/readinessProbe/httpGet/host
+    value: {{ .Values.listenAddress }}

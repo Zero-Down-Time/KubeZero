@@ -1,6 +1,6 @@
 # kubeadm
 
-![Version: 1.25.8](https://img.shields.io/badge/Version-1.25.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.32.3](https://img.shields.io/badge/Version-1.32.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Kubeadm cluster config
 
@@ -14,19 +14,18 @@ KubeZero Kubeadm cluster config
 
 ## Requirements
 
-Kubernetes: `>= 1.25.0`
+Kubernetes: `>= 1.32.0-0`
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | api.apiAudiences | string | `"istio-ca"` |  |
-| api.awsIamAuth.enabled | bool | `false` |  |
-| api.awsIamAuth.kubeAdminRole | string | `"arn:aws:iam::000000000000:role/KubernetesNode"` |  |
-| api.awsIamAuth.workerNodeRole | string | `"arn:aws:iam::000000000000:role/KubernetesNode"` |  |
+| api.awsIamAuth | bool | `false` |  |
 | api.endpoint | string | `"kube-api.changeme.org:6443"` |  |
 | api.etcdServers | string | `"https://etcd:2379"` |  |
 | api.extraArgs | object | `{}` |  |
+| api.falco.enabled | bool | `false` |  |
 | api.listenPort | int | `6443` |  |
 | api.oidcEndpoint | string | `""` | s3://${CFN[ConfigBucket]}/k8s/$CLUSTERNAME |
 | api.serviceAccountIssuer | string | `""` | https://s3.${REGION}.amazonaws.com/${CFN[ConfigBucket]}/k8s/$CLUSTERNAME |

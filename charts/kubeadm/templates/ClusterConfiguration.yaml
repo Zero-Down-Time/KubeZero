@@ -4,6 +4,7 @@ kubernetesVersion: {{ .Chart.Version }}
 clusterName: {{ .Values.global.clusterName }}
 featureGates:
   ControlPlaneKubeletLocalMode: true
+  NodeLocalCRISocket: true
 controlPlaneEndpoint: {{ .Values.api.endpoint }}
 networking:
   podSubnet: 10.244.0.0/16
@@ -119,6 +120,8 @@ apiServer:
       value: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
     - name: authorization-config
       value: /etc/kubernetes/apiserver/authz-config.yaml
+    - name: authentication-config
+      value: /etc/kubernetes/apiserver/authn-config.yaml
     - name: enable-admission-plugins
       value: DenyServiceExternalIPs,NodeRestriction,EventRateLimit,ExtendedResourceToleration
     {{- if .Values.global.highAvailable }}
@@ -127,6 +130,11 @@ apiServer:
     {{- end }}
     - name: logging-format
       value: json
+    # Required for MutatingAdmissionPolicy
+    # Required for VolumeAttributesClass
+    # Required for CoordinatedLeaderElection - coordination.k8s.io/v1alpha1=true
+    - name: runtime-config
+      value: admissionregistration.k8s.io/v1alpha1=true,storage.k8s.io/v1beta1=true
     {{- with .Values.api.extraArgs }}
     {{- toYaml . | nindent 4 }}
     {{- end }}

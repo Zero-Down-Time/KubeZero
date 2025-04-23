@@ -219,7 +219,7 @@ cluster-autoscaler:
 
   image:
     repository: registry.k8s.io/autoscaling/cluster-autoscaler
-    tag: v1.31.1
+    tag: v1.32.1
 
   autoDiscovery:
     clusterName: ""

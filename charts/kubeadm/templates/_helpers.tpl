@@ -1,9 +1,9 @@
 {{- /* Feature gates for all control plane components */ -}}
 {{- /* Issues: MemoryQoS */ -}}
 {{- /* v1.28: PodAndContainerStatsFromCRI still not working */ -}}
-{{- /* v1.28: UnknownVersionInteroperabilityProxy requires StorageVersionAPI which is still alpha in 1.30 */ -}}
+{{- /* v1.32: not required? working ? "DisableNodeKubeProxyVersion" "CoordinatedLeaderElection" */ -}}
 {{- define "kubeadm.featuregates" }}
-{{- $gates := list "CustomCPUCFSQuotaPeriod" "AuthorizeWithSelectors" "AuthorizeNodeWithSelectors" "ConsistentListFromCache" "VolumeAttributesClass" "WatchList" }}
+{{- $gates := list "CustomCPUCFSQuotaPeriod" "VolumeAttributesClass" "MutatingAdmissionPolicy" }}
 {{- if eq .return "csv" }}
 {{- range $key := $gates }}
 {{- $key }}=true,

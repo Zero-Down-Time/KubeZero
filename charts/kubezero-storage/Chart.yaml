@@ -28,7 +28,7 @@ dependencies:
     condition: aws-ebs-csi-driver.enabled
     repository: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
   - name: aws-efs-csi-driver
-    version: 3.1.8
+    version: 2.5.7
     condition: aws-efs-csi-driver.enabled
     repository: https://kubernetes-sigs.github.io/aws-efs-csi-driver
   - name: gemini
@@ -39,4 +39,4 @@ dependencies:
     version: 4.8.4
     condition: k8up.enabled
     repository: https://k8up-io.github.io/k8up
-kubeVersion: ">= 1.26.0"
+kubeVersion: ">= 1.30.0-0"

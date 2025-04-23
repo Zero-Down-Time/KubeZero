@@ -356,7 +356,7 @@ EOF
 function admin_job() {
   TASKS="$1"
 
-  [ -z "$KUBE_VERSION" ] && KUBE_VERSION="latest"
+  ADMIN_TAG=${ADMIN_TAG:-$KUBE_VERSION}
 
   echo "Deploy cluster admin task: $TASKS"
   cat <<EOF | kubectl apply -f -
@@ -373,7 +373,7 @@ spec:
   hostPID: true
   containers:
   - name: kubezero-admin
-    image: public.ecr.aws/zero-downtime/kubezero-admin:${KUBE_VERSION}
+    image: public.ecr.aws/zero-downtime/kubezero-admin:${ADMIN_TAG}
     imagePullPolicy: Always
     command: ["kubezero.sh"]
     args: [$TASKS]

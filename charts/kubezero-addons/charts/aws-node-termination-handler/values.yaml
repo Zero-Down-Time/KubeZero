@@ -86,6 +86,9 @@ cordonOnly: false
 # Taint node upon spot interruption termination notice.
 taintNode: false
 
+# Add out-of-service taint to node after cordon/drain process which would forcefully evict pods without matching tolerations and detach persistent volumes.
+enableOutOfServiceTaint: false
+
 # Exclude node from load balancer before cordoning via the ServiceNodeExclusion feature gate.
 excludeFromLoadBalancers: false
 
@@ -284,6 +287,12 @@ enableRebalanceDraining: false
 
 # deleteSqsMsgIfNodeNotFound If true, delete the SQS Message from the SQS Queue if the targeted node(s) are not found. Only used in Queue Processor mode.
 deleteSqsMsgIfNodeNotFound: false
+
+# The time period in seconds between consecutive heartbeat signals. Valid range: 30-3600 seconds (30 seconds to 1 hour).
+heartbeatInterval: -1
+
+# The duration in seconds over which heartbeat signals are sent. Valid range: 60-172800 seconds (1 minute to 48 hours).
+heartbeatUntil: -1
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Testing

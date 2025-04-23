@@ -17,7 +17,7 @@ spec:
       app: {{ .NodeName }}
       {{- include "aws-ebs-csi-driver.selectorLabels" . | nindent 6 }}
   updateStrategy:
-    {{ toYaml .Values.node.updateStrategy | nindent 4 }}
+    {{- toYaml .Values.node.updateStrategy | nindent 4 }}
   template:
     metadata:
       labels:
@@ -111,10 +111,10 @@ spec:
               value: {{ .otelServiceName }}
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: {{ .otelExporterEndpoint }}
+            {{- end }}
             {{- if .Values.fips }}
             - name: AWS_USE_FIPS_ENDPOINT
               value: "true"
-            {{- end }}
             {{- end }}
             {{- with .Values.node.env }}
             {{- . | toYaml | nindent 12 }}

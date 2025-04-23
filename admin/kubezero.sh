@@ -57,6 +57,7 @@ render_kubeadm() {
   local phase=$1
 
   helm template $CHARTS/kubeadm --output-dir ${WORKDIR} \
+    --kube-version $KUBE_VERSION \
     -f ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml \
     --set patches=/etc/kubernetes/patches
 
@@ -113,6 +114,8 @@ post_kubeadm() {
 
 # Migrate KubeZero Config to current version
 upgrade_kubezero_config() {
+  ARGOCD=$(argo_used)
+
   # get current values, argo app over cm
   get_kubezero_values $ARGOCD
 
@@ -166,9 +169,7 @@ kubeadm_upgrade() {
   else
     pre_cluster_upgrade_final
 
-    # Finally upgrade addons last, with 1.32 we can ONLY call addon phase
-    #_kubeadm upgrade apply phase addon all $KUBE_VERSION
-    _kubeadm upgrade apply $KUBE_VERSION
+    _kubeadm upgrade apply phase addon all $KUBE_VERSION
 
     post_cluster_upgrade_final
 
@@ -203,10 +204,6 @@ control_plane_node() {
 
     # Put PKI in place
     cp -r ${WORKDIR}/pki ${HOSTFS}/etc/kubernetes
-
-    ### 1.31 only to clean up previous aws-iam-auth certs
-    rm -f ${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.key ${HOSTFS}/etc/kubernetes/pki/aws-iam-authenticator.crt
-    ###
 
     # Always use kubeadm kubectl config to never run into chicken egg with custom auth hooks
     cp ${WORKDIR}/super-admin.conf ${HOSTFS}/root/.kube/config
@@ -341,9 +338,7 @@ apply_module() {
       [ -f $CHARTS/kubezero/hooks.d/pre-install.sh ] && . $CHARTS/kubezero/hooks.d/pre-install.sh
       kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD)
     else
-      #_helm apply $t
-      # During 1.31 we change the ArgoCD tracking so replace
-      _helm replace $t
+      _helm apply $t
     fi
   done
 
@@ -357,7 +352,9 @@ delete_module() {
   get_kubezero_values $ARGOCD
 
   # Always use embedded kubezero chart
-  helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml --version ~$KUBE_VERSION --devel --output-dir $WORKDIR
+  helm template $CHARTS/kubezero -f $WORKDIR/kubezero-values.yaml \
+    --kube-version $KUBE_VERSION \
+    --version ~$KUBE_VERSION --devel --output-dir $WORKDIR
 
   for t in $MODULES; do
     _helm delete $t
