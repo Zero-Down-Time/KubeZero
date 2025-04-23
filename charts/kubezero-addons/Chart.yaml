@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-addons
 description: KubeZero umbrella chart for various optional cluster addons
 type: application
-version: 0.8.13
+version: 0.8.14
 appVersion: v1.31
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
@@ -21,15 +21,15 @@ maintainers:
     email: stefan@zero-downtime.net
 dependencies:
   - name: external-dns
-    version: 1.15.1
+    version: 1.16.1
     repository: https://kubernetes-sigs.github.io/external-dns/
     condition: external-dns.enabled
   - name: cluster-autoscaler
-    version: 9.46.0
+    version: 9.46.6
     repository: https://kubernetes.github.io/autoscaler
     condition: cluster-autoscaler.enabled
   - name: nvidia-device-plugin
-    version: 0.17.0
+    version: 0.17.1
     # https://github.com/NVIDIA/k8s-device-plugin
     repository: https://nvidia.github.io/k8s-device-plugin
     condition: nvidia-device-plugin.enabled
@@ -39,11 +39,11 @@ dependencies:
     repository: oci://public.ecr.aws/neuron #/neuron-helm-chart
     condition: neuron-helm-chart.enabled
   - name: sealed-secrets
-    version: 2.17.1
+    version: 2.17.2
     repository: https://bitnami-labs.github.io/sealed-secrets
     condition: sealed-secrets.enabled
   - name: aws-node-termination-handler
-    version: 0.26.0
+    version: 0.27.0
     repository: "oci://public.ecr.aws/aws-ec2/helm"
     condition: aws-node-termination-handler.enabled
   - name: aws-eks-asg-rolling-update-handler
@@ -51,7 +51,7 @@ dependencies:
     repository: https://twin.github.io/helm-charts
     condition: aws-eks-asg-rolling-update-handler.enabled
   - name: py-kube-downscaler
-    version: 0.2.12
+    version: 0.3.2
     repository: https://caas-team.github.io/helm-charts/
     condition: py-kube-downscaler.enabled
 kubeVersion: ">= 1.30.0-0"
