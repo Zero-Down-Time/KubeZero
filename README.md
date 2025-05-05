@@ -24,7 +24,7 @@ Any 1.31.X-Y release of Kubezero supports any Kubernetes cluster 1.31.X.
 KubeZero is distributed as a collection of versioned Helm charts, allowing custom upgrade schedules and module versions as needed.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
+%%{init: {'theme': 'dark', 'gantt': {'fontSize': '20','sectionFontSize':'20'}}}%%
 gantt
     title KubeZero Support Timeline
     dateFormat  YYYY-MM-DD
@@ -33,10 +33,10 @@ gantt
     release  :after 130b, 2025-04-30
     section 1.31
     beta     :131b, 2024-12-01, 2025-02-28
-    release  :after 131b, 2025-06-30
+    release  :after 131b, 2025-07-31
     section 1.32
-    beta     :132b, 2025-04-01, 2025-05-19
-    release  :after 132b, 2025-09-30
+    beta     :132b, 2025-05-01, 2025-06-01
+    release  :after 132b, 2025-10-31
 ```
 
 [Upstream release policy](https://kubernetes.io/releases/)
