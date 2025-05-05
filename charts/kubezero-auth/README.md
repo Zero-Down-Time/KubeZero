@@ -1,6 +1,6 @@
 # kubezero-auth
 
-![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.0.5](https://img.shields.io/badge/AppVersion-26.0.5-informational?style=flat-square)
+![Version: 0.6.2](https://img.shields.io/badge/Version-0.6.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.0.5](https://img.shields.io/badge/AppVersion-26.0.5-informational?style=flat-square)
 
 KubeZero umbrella chart for all things Authentication and Identity management
 
@@ -14,12 +14,12 @@ KubeZero umbrella chart for all things Authentication and Identity management
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0`
+Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| oci://registry-1.docker.io/bitnamicharts | keycloak | 24.2.1 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
+| oci://registry-1.docker.io/bitnamicharts | keycloak | 24.6.1 |
 
 # Keycloak
    
@@ -62,6 +62,6 @@ https://github.com/keycloak/keycloak-benchmark/tree/main/provision/minikube/keyc
 | keycloak.production | bool | `true` |  |
 | keycloak.proxyHeaders | string | `"xforwarded"` |  |
 | keycloak.replicaCount | int | `1` |  |
-| keycloak.resources.limits.memory | string | `"768Mi"` |  |
+| keycloak.resources.limits.memory | string | `"1024Mi"` |  |
 | keycloak.resources.requests.cpu | string | `"100m"` |  |
 | keycloak.resources.requests.memory | string | `"512Mi"` |  |

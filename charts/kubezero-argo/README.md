@@ -1,6 +1,6 @@
 # kubezero-argo
 
-![Version: 0.3.2](https://img.shields.io/badge/Version-0.3.2-informational?style=flat-square)
+![Version: 0.3.3](https://img.shields.io/badge/Version-0.3.3-informational?style=flat-square)
 
 KubeZero Argo - Events, Workflow, CD
 
@@ -18,7 +18,7 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://argoproj.github.io/argo-helm | argo-cd | 7.8.23 |
+| https://argoproj.github.io/argo-helm | argo-cd | 7.9.0 |
 | https://argoproj.github.io/argo-helm | argo-events | 2.4.15 |
 | https://argoproj.github.io/argo-helm | argocd-image-updater | 0.12.1 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
@@ -84,8 +84,8 @@ Kubernetes: `>= 1.30.0-0`
 | argo-events.configs.jetstream.streamConfig.maxMsgs | int | `1000000` | Maximum number of messages before expiring oldest message |
 | argo-events.configs.jetstream.streamConfig.replicas | int | `1` | Number of replicas, defaults to 3 and requires minimal 3 |
 | argo-events.configs.jetstream.versions[0].configReloaderImage | string | `"natsio/nats-server-config-reloader:0.14.1"` |  |
-| argo-events.configs.jetstream.versions[0].metricsExporterImage | string | `"natsio/prometheus-nats-exporter:0.16.0"` |  |
-| argo-events.configs.jetstream.versions[0].natsImage | string | `"nats:2.10.11-scratch"` |  |
+| argo-events.configs.jetstream.versions[0].metricsExporterImage | string | `"natsio/prometheus-nats-exporter:0.17.2"` |  |
+| argo-events.configs.jetstream.versions[0].natsImage | string | `"nats:2.11.1-scratch"` |  |
 | argo-events.configs.jetstream.versions[0].startCommand | string | `"/nats-server"` |  |
 | argo-events.configs.jetstream.versions[0].version | string | `"2.10.11"` |  |
 | argo-events.enabled | bool | `false` |  |

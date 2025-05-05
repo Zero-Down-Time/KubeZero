@@ -20,4 +20,4 @@ dependencies:
     repository: "oci://registry-1.docker.io/bitnamicharts"
     version: 24.6.1
     condition: keycloak.enabled
-kubeVersion: ">= 1.26.0"
+kubeVersion: ">= 1.30.0-0"
