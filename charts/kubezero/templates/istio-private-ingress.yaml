@@ -93,6 +93,10 @@ proxyProtocol: {{ default true (index .Values "istio-private-ingress" "proxyProt
 hardening:
   {{- toYaml . | nindent 2 }}
 {{- end }}
+{{- with (index .Values "istio-private-ingress" "httpFilter") }}
+httpFilter:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
 
 {{- end }}
 
