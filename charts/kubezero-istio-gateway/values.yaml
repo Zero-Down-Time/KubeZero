@@ -44,3 +44,6 @@ hardening:
   rejectUnderscoresHeaders: true
   unescapeSlashes: true
   preserveExternalRequestId: false
+
+httpFilter:
+  grpcWeb: false

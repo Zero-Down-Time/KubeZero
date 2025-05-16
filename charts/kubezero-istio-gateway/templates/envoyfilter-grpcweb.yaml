@@ -1,0 +1,30 @@
+{{- if .Values.httpFilter.grpcWeb }}
+# Inserts the grpcWeb filter into the http_connection mangager chain before the CORS filter
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ include "gatewayName" . | trimPrefix "istio-" }}-grpcweb
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  workloadSelector:
+    labels:
+      {{- include "gatewaySelectorLabels" . | nindent 6 }}
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: envoy.filters.network.http_connection_manager
+            subFilter:
+              name: envoy.filters.http.cors
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.grpc_web
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_web.v3.GrpcWeb
+{{- end }}
