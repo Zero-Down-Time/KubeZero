@@ -1,0 +1,27 @@
+{{- if .Values.proxyProtocol }}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ include "gatewayName" . | trimPrefix "istio-" }}-proxy-protocol
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  workloadSelector:
+    labels:
+      {{- include "gatewaySelectorLabels" . | nindent 6 }}
+  configPatches:
+  - applyTo: LISTENER_FILTER
+    match:
+      context: GATEWAY
+    patch:
+      operation: INSERT_FIRST
+      value:
+        name: envoy.filters.listener.proxy_protocol
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.listener.proxy_protocol.v3.ProxyProtocol
+        filter_disabled:
+          destination_port_range:
+            start: 1025
+            end: 1026
+{{- end }}

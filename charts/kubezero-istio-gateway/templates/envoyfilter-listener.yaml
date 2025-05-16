@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: {{ include "gatewayName" . | trimPrefix "istio-" }}-proxy-protocol
+  name: {{ include "gatewayName" . | trimPrefix "istio-" }}-listener
   namespace: {{ .Release.Namespace }}
   labels:
     {{ include "kubezero-lib.labels" . | nindent 4 }}
@@ -10,24 +10,20 @@ spec:
     labels:
       {{- include "gatewaySelectorLabels" . | nindent 6 }}
   configPatches:
-  - applyTo: LISTENER
+  - applyTo: LISTENER_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        portNumber: 8443
+        listenerFilter: "envoy.filters.listener.tls_inspector"
     patch:
-      operation: MERGE
+      operation: REPLACE
       value:
-        listener_filters:
-        {{- if .Values.proxyProtocol }}
-        - name: envoy.filters.listener.proxy_protocol
-          typed_config:
-            "@type": type.googleapis.com/envoy.extensions.filters.listener.proxy_protocol.v3.ProxyProtocol
-          filter_disabled:
-            destination_port_range:
-              start: 1025
-              end: 1026
-        {{- end }}
-        - name: envoy.filters.listener.tls_inspector
-          typed_config:
-            "@type": type.googleapis.com/envoy.extensions.filters.listener.tls_inspector.v3.TlsInspector
-          filter_disabled:
-            destination_port_range:
-              start: 1025
-              end: 1026
+         name: envoy.filters.listener.tls_inspector
+         typed_config:
+           "@type": type.googleapis.com/envoy.extensions.filters.listener.tls_inspector.v3.TlsInspector
+           "initialReadBufferSize": 512
+         filter_disabled:
+           destination_port_range:
+             start: 1025
+             end: 1026
