@@ -38,14 +38,15 @@ Kubernetes: `>= 1.31.0-0`
 | argo.argocd-image-updater.enabled | bool | `false` |  |
 | argo.enabled | bool | `false` |  |
 | argo.namespace | string | `"argocd"` |  |
-| argo.targetRevision | string | `"0.3.1"` |  |
+| argo.targetRevision | string | `"0.3.2"` |  |
 | cert-manager.enabled | bool | `false` |  |
 | cert-manager.namespace | string | `"cert-manager"` |  |
 | cert-manager.targetRevision | string | `"0.9.12"` |  |
 | falco.enabled | bool | `false` |  |
 | falco.k8saudit.enabled | bool | `false` |  |
 | falco.targetRevision | string | `"0.1.2"` |  |
-| global.aws | object | `{}` |  |
+| global.aws.accountId | string | `"123456789012"` |  |
+| global.aws.region | string | `"the-moon"` |  |
 | global.clusterName | string | `"zdt-trial-cluster"` |  |
 | global.gcp | object | `{}` |  |
 | global.highAvailable | bool | `false` |  |
