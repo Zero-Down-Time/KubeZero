@@ -8,7 +8,6 @@ icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
   - kubezero
   - operators
-  - opensearch
   - postgres
   - kafka
   - rabbitmq
@@ -19,10 +18,6 @@ dependencies:
   - name: kubezero-lib
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
-  - name: opensearch-operator
-    version: 2.7.0
-    repository: https://opensearch-project.github.io/opensearch-k8s-operator/
-    condition: opensearch-operator.enabled
   - name: eck-operator
     version: 3.0.0
     repository: https://helm.elastic.co

@@ -4,14 +4,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: agents.agent.k8s.elastic.co
 spec:
   group: agent.k8s.elastic.co
@@ -638,7 +638,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -1137,14 +1137,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: apmservers.apm.k8s.elastic.co
 spec:
   group: apm.k8s.elastic.co
@@ -1589,7 +1589,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -2217,7 +2217,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -2372,14 +2372,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: beats.beat.k8s.elastic.co
 spec:
   group: beat.k8s.elastic.co
@@ -2854,14 +2854,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: elasticmapsservers.maps.k8s.elastic.co
 spec:
   group: maps.k8s.elastic.co
@@ -3318,7 +3318,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -3459,14 +3459,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: elasticsearchautoscalers.autoscaling.k8s.elastic.co
 spec:
   group: autoscaling.k8s.elastic.co
@@ -3818,14 +3818,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: elasticsearches.elasticsearch.k8s.elastic.co
 spec:
   group: elasticsearch.k8s.elastic.co
@@ -4267,7 +4267,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -5332,7 +5332,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -6036,7 +6036,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -6619,14 +6619,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: enterprisesearches.enterprisesearch.k8s.elastic.co
 spec:
   group: enterprisesearch.k8s.elastic.co
@@ -7082,7 +7082,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -7661,7 +7661,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -7788,14 +7788,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: kibanas.kibana.k8s.elastic.co
 spec:
   group: kibana.k8s.elastic.co
@@ -8270,7 +8270,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -8959,7 +8959,7 @@ spec:
                               not set, the implementation will apply its default routing strategy. If set
                               to "PreferClose", implementations should prioritize endpoints that are
                               topologically close (e.g., same zone).
-                              This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
                             type: string
                           type:
                             description: |-
@@ -9103,14 +9103,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: logstashes.logstash.k8s.elastic.co
 spec:
   group: logstash.k8s.elastic.co
@@ -9749,7 +9749,7 @@ spec:
                                 not set, the implementation will apply its default routing strategy. If set
                                 to "PreferClose", implementations should prioritize endpoints that are
                                 topologically close (e.g., same zone).
-                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                                This is a beta field and requires enabling ServiceTrafficDistribution feature.
                               type: string
                             type:
                               description: |-
@@ -10228,18 +10228,15 @@ spec:
                                   persistent volume is being resized.
                                 type: string
                               status:
+                                description: |-
+                                  Status is the status of the condition.
+                                  Can be True, False, Unknown.
+                                  More info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required
                                 type: string
                               type:
                                 description: |-
-                                  PersistentVolumeClaimConditionType defines the condition of PV claim.
-                                  Valid values are:
-                                    - "Resizing", "FileSystemResizePending"
-
-                                  If RecoverVolumeExpansionFailure feature gate is enabled, then following additional values can be expected:
-                                    - "ControllerResizeError", "NodeResizeError"
-
-                                  If VolumeAttributesClass feature gate is enabled, then following additional values can be expected:
-                                    - "ModifyVolumeError", "ModifyingVolume"
+                                  Type is the type of the condition.
+                                  More info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about
                                 type: string
                             required:
                             - status
@@ -10350,14 +10347,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    controller-gen.kubebuilder.io/version: v0.17.2
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '2.16.1'
-    helm.sh/chart: 'eck-operator-crds-2.16.1'
+    app.kubernetes.io/version: '3.0.0'
+    helm.sh/chart: 'eck-operator-crds-3.0.0'
   name: stackconfigpolicies.stackconfigpolicy.k8s.elastic.co
 spec:
   group: stackconfigpolicy.k8s.elastic.co

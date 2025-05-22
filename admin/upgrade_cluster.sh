@@ -21,7 +21,6 @@ waitSystemPodsRunning
 
 admin_job "upgrade_control_plane, upgrade_kubezero"
 
-exit 0
 #echo "Adjust kubezero values as needed:"
 # shellcheck disable=SC2015
 #[ "$ARGOCD" == "true" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
