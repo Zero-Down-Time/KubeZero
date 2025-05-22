@@ -2,7 +2,7 @@ gitea:
   enabled: false
 
   image:
-    tag: 1.23.5
+    # tag: 1.23.5
     rootless: true
 
   repliaCount: 1
@@ -76,7 +76,9 @@ gitea:
       ssh.minimum_key_sizes:
         RSA: 2047
 
-  redis-cluster:
+  valkey:
+    enabled: false
+  valkey-cluster:
     enabled: false
   postgresql-ha:
     enabled: false
@@ -188,7 +190,7 @@ jenkins:
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.7.0
+      tag: v0.7.1
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false

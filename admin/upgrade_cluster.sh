@@ -2,7 +2,7 @@
 set -eE
 set -o pipefail
 
-KUBE_VERSION=v1.31
+KUBE_VERSION=v1.32
 
 ARGO_APP=${1:-/tmp/new-kubezero-argoapp.yaml}
 
@@ -21,6 +21,7 @@ waitSystemPodsRunning
 
 admin_job "upgrade_control_plane, upgrade_kubezero"
 
+exit 0
 #echo "Adjust kubezero values as needed:"
 # shellcheck disable=SC2015
 #[ "$ARGOCD" == "true" ] && kubectl edit app kubezero -n argocd || kubectl edit cm kubezero-values -n kubezero
@@ -37,9 +38,6 @@ waitSystemPodsRunning
 echo "Applying remaining KubeZero modules..."
 
 admin_job "apply_cert-manager, apply_istio, apply_istio-ingress, apply_istio-private-ingress, apply_logging, apply_metrics, apply_telemetry, apply_argo"
-
-# we replace the project during v1.31 so disable again
-[ "$ARGOCD" == "true" ] && disable_argo
 
 # Final step is to commit the new argocd kubezero app
 kubectl get app kubezero -n argocd -o yaml | yq 'del(.status) | del(.metadata) | del(.operation) | .metadata.name="kubezero" | .metadata.namespace="argocd"' | yq 'sort_keys(..)' > $ARGO_APP

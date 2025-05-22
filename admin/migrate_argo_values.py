@@ -8,18 +8,9 @@ import yaml
 def migrate(values):
     """Actual changes here"""
 
-    # migrate kubezero root app of apps to Argo chart
+    # 1.32
     try:
-        if values["kubezero"]:
-            try:
-                values["kubezero"].pop("syncPolicy")
-            except KeyError:
-                pass
-            values["kubezero"]["gitSync"]["repoUrl"] = values["kubezero"]["gitSync"].pop("repoURL")
-
-            values["argo"]["argo-cd"]["kubezero"] = values["kubezero"]["gitSync"]
-
-            values.pop("kubezero")
+        pass
     except KeyError:
         pass
 
