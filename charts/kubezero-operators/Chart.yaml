@@ -24,7 +24,7 @@ dependencies:
     repository: https://opensearch-project.github.io/opensearch-k8s-operator/
     condition: opensearch-operator.enabled
   - name: eck-operator
-    version: 2.16.1
+    version: 3.0.0
     repository: https://helm.elastic.co
     condition: eck-operator.enabled
   - name: cloudnative-pg
