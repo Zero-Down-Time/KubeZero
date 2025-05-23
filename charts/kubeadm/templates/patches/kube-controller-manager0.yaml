@@ -3,5 +3,5 @@ spec:
   - name: kube-controller-manager
     resources:
       requests:
-        cpu: 50m
-        memory: 192Mi
+        cpu: 30m
+        memory: 128Mi

@@ -3,5 +3,5 @@ spec:
   - name: kube-scheduler
     resources:
       requests:
-        cpu: 50m
-        memory: 96Mi
+        cpu: 30m
+        memory: 64Mi
