@@ -57,27 +57,22 @@ jaeger:
 
 {{- if .Values.telemetry.opensearch }}
 opensearch:
-  {{- if .Values.telemetry.opensearch.nodeSets }}
-  nodeSets:
-    {{- with .Values.telemetry.opensearch.nodeSets }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+  {{- with .Values.telemetry.opensearch }}
+  {{- toYaml . | nindent 2 }}
   {{- end }}
 
-  {{- if .Values.telemetry.opensearch.dashboard }}
-  dashboard:
-    {{- with .Values.telemetry.opensearch.dashboard }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+  serviceMonitor:
+    enabled: {{ .Values.metrics.enabled }}
+{{- end }}
+
+{{- if index .Values "telemetry" "opensearch-dashboards" }}
+opensearch-dashboards:
+  {{- with index .Values "telemetry" "opensearch-dashboards" }}
+  {{- toYaml . | nindent 2 }}
   {{- end }}
 
-  {{- with .Values.telemetry.opensearch.settings }}
-  settings:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-
-  prometheus: {{ .Values.metrics.enabled }}
-
+  serviceMonitor:
+    enabled: {{ .Values.metrics.enabled }}
 {{- end }}
 
 {{- end }}

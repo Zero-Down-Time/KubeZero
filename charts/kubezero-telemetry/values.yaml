@@ -227,38 +227,54 @@ jaeger:
     gateway: istio-ingress/private-ingressgateway
     url: jaeger.example.com
 
+
 opensearch:
   enabled: false
 
-  version: 2.17.0
-  prometheus: false
+  singleNode: true
+  maxUnavailable: 0
 
-  # custom cluster settings
-  #settings:
-  # index.number_of_shards: 1
+  config:
+    opensearch.yml: |
+      cluster.name: opensearch-cluster
+      network.host: 0.0.0.0
+      discovery.type: single-node
 
-  nodeSets: []
-  #- name: default-nodes
-  #  replicas: 2
-  #  storage:
-  #    size: 16Gi
-  #    class: my-fancy-SSDs
-  #  zone: us-west-2a
-  #  resources:
-  #    limits:
-  #      #cpu: 1
-  #      memory: 2Gi
-  #    requests:
-  #      cpu: 500m
-  #      memory: 2Gi
+  opensearchJavaOpts: "-Xmx1024M -Xms1024M"
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "2Gi"
+    limits:
+      memory: "2Gi"
+  persistence:
+    size: 8Gi
+
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+
 
 opensearch-dashboards:
     enabled: false
+
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "512M"
+      limits:
+        cpu: null
+        memory: "512M"
+
+    serviceMonitor:
+      enabled: false
+      interval: 30s
 
     istio:
       enabled: false
       gateway: istio-ingress/private-ingressgateway
       url: telemetry-dashboard.example.com
+
 
 # New logging pipeline
 fluentd:

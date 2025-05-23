@@ -14,7 +14,7 @@ KubeZero Umbrella Chart for OpenTelemetry, Jaeger etc.
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0`
+Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
@@ -173,10 +173,23 @@ Kubernetes: `>= 1.26.0`
 | opensearch-dashboards.istio.enabled | bool | `false` |  |
 | opensearch-dashboards.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
 | opensearch-dashboards.istio.url | string | `"telemetry-dashboard.example.com"` |  |
+| opensearch-dashboards.resources.limits.cpu | string | `nil` |  |
+| opensearch-dashboards.resources.limits.memory | string | `"512M"` |  |
+| opensearch-dashboards.resources.requests.cpu | string | `"100m"` |  |
+| opensearch-dashboards.resources.requests.memory | string | `"512M"` |  |
+| opensearch-dashboards.serviceMonitor.enabled | bool | `false` |  |
+| opensearch-dashboards.serviceMonitor.interval | string | `"30s"` |  |
+| opensearch.config."opensearch.yml" | string | `"cluster.name: opensearch-cluster\nnetwork.host: 0.0.0.0\ndiscovery.type: single-node\n"` |  |
 | opensearch.enabled | bool | `false` |  |
-| opensearch.nodeSets | list | `[]` |  |
-| opensearch.prometheus | bool | `false` |  |
-| opensearch.version | string | `"2.17.0"` |  |
+| opensearch.maxUnavailable | int | `0` |  |
+| opensearch.opensearchJavaOpts | string | `"-Xmx1024M -Xms1024M"` |  |
+| opensearch.persistence.size | string | `"8Gi"` |  |
+| opensearch.resources.limits.memory | string | `"2Gi"` |  |
+| opensearch.resources.requests.cpu | string | `"500m"` |  |
+| opensearch.resources.requests.memory | string | `"2Gi"` |  |
+| opensearch.serviceMonitor.enabled | bool | `false` |  |
+| opensearch.serviceMonitor.interval | string | `"30s"` |  |
+| opensearch.singleNode | bool | `true` |  |
 | opentelemetry-collector.config.exporters.otlp/data-prepper.endpoint | string | `"telemetry-data-prepper:21890"` |  |
 | opentelemetry-collector.config.exporters.otlp/data-prepper.tls.insecure | bool | `true` |  |
 | opentelemetry-collector.config.exporters.otlp/jaeger.endpoint | string | `"telemetry-jaeger-collector:4317"` |  |

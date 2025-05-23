@@ -1,20 +1,20 @@
-{{- if .Values.opensearch.dashboard.istio.enabled }}
+{{- if index .Values "opensearch-dashboards" "istio" "enabled" }}
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: {{ template "kubezero-lib.fullname" . }}-kibana
   namespace: {{ .Release.Namespace }}
   labels:
-{{ include "kubezero-lib.labels" . | indent 4 }} 
+{{ include "kubezero-lib.labels" . | indent 4 }}
 spec:
   hosts:
-  - {{ .Values.opensearch.dashboard.istio.url }}
+  - {{ index .Values "opensearch-dashboards" "istio" "url" }}
   gateways:
-  - {{ default "istio-system/ingressgateway" .Values.opensearch.dashboard.istio.gateway }}
+  - {{ default "istio-system/ingressgateway" ( index .Values "opensearch-dashboards" "istio" "gateway" ) }}
   http:
   - route:
     - destination:
-        host: telemetry-dashboards
+        host: telemetry-opensearch-dashboards
         port:
           number: 5601
 {{- end }}

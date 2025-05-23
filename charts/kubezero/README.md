@@ -32,7 +32,7 @@ Kubernetes: `>= 1.32.0-0`
 | addons.external-dns.enabled | bool | `false` |  |
 | addons.forseti.enabled | bool | `false` |  |
 | addons.sealed-secrets.enabled | bool | `false` |  |
-| addons.targetRevision | string | `"0.8.13"` |  |
+| addons.targetRevision | string | `"0.8.14"` |  |
 | argo.argo-cd.enabled | bool | `false` |  |
 | argo.argo-cd.istio.enabled | bool | `false` |  |
 | argo.argocd-image-updater.enabled | bool | `false` |  |
@@ -77,10 +77,10 @@ Kubernetes: `>= 1.32.0-0`
 | network.cilium.cluster | object | `{}` |  |
 | network.enabled | bool | `true` |  |
 | network.retain | bool | `true` |  |
-| network.targetRevision | string | `"0.5.7"` |  |
+| network.targetRevision | string | `"0.5.8"` |  |
 | operators.enabled | bool | `false` |  |
 | operators.namespace | string | `"operators"` |  |
-| operators.targetRevision | string | `"0.2.0"` |  |
+| operators.targetRevision | string | `"0.2.1"` |  |
 | storage.aws-ebs-csi-driver.enabled | bool | `false` |  |
 | storage.aws-efs-csi-driver.enabled | bool | `false` |  |
 | storage.enabled | bool | `false` |  |
@@ -88,7 +88,7 @@ Kubernetes: `>= 1.32.0-0`
 | storage.k8up.enabled | bool | `false` |  |
 | storage.lvm-localpv.enabled | bool | `false` |  |
 | storage.snapshotController.enabled | bool | `false` |  |
-| storage.targetRevision | string | `"0.8.10"` |  |
+| storage.targetRevision | string | `"0.8.11"` |  |
 | telemetry.enabled | bool | `false` |  |
 | telemetry.namespace | string | `"telemetry"` |  |
 | telemetry.targetRevision | string | `"0.4.1"` |  |

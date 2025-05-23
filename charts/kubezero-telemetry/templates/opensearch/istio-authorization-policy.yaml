@@ -1,5 +1,5 @@
-{{- if .Values.opensearch.dashboard.istio.enabled }}
-{{- if .Values.opensearch.dashboard.istio.ipBlocks }}
+{{- if index .Values "opensearch-dashboards" "istio" "enabled" }}
+{{- if index .Values "opensearch-dashboards" "istio" "ipBlocks" }}
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -16,10 +16,10 @@ spec:
   - from:
     - source:
         notIpBlocks:
-        {{- toYaml .Values.opensearch.dashboard.istio.ipBlocks | nindent 8 }}
+        {{- toYaml (index .Values "opensearch-dashboards" "istio" "ipBlocks") | nindent 8 }}
     to:
     - operation:
-        hosts: [{{ .Values.opensearch.dashboard.istio.url }}]
+        hosts: [{{ index .Values "opensearch-dashboards" "istio" "url" }}]
     when:
     - key: connection.sni
       values:
