@@ -1,6 +1,6 @@
 # kubezero-telemetry
 
-![Version: 0.4.1](https://img.shields.io/badge/Version-0.4.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.4.2](https://img.shields.io/badge/Version-0.4.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for OpenTelemetry, Jaeger etc.
 
@@ -18,12 +18,14 @@ Kubernetes: `>= 1.26.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://fluent.github.io/helm-charts | fluent-bit | 0.47.10 |
-| https://fluent.github.io/helm-charts | fluentd | 0.5.2 |
-| https://jaegertracing.github.io/helm-charts | jaeger | 3.3.1 |
-| https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.108.0 |
-| https://opensearch-project.github.io/helm-charts/ | data-prepper | 0.1.0 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
+| https://fluent.github.io/helm-charts | fluent-bit | 0.49.0 |
+| https://fluent.github.io/helm-charts | fluentd | 0.5.3 |
+| https://jaegertracing.github.io/helm-charts | jaeger | 3.4.1 |
+| https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.125.0 |
+| https://opensearch-project.github.io/helm-charts/ | data-prepper | 0.3.1 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch | 3.0.0 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.0.0 |
 
 ## Values
 
@@ -135,7 +137,7 @@ Kubernetes: `>= 1.26.0`
 | fluentd.service.ports[1].containerPort | int | `9880` |  |
 | fluentd.service.ports[1].name | string | `"http-fluentd"` |  |
 | fluentd.service.ports[1].protocol | string | `"TCP"` |  |
-| fluentd.source.sharedKey | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/telemetry.fluentd.source.sharedKey"` |  |
+| fluentd.source.sharedKey | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/telemetry.fluentd.source.sharedKey?inCluster"` |  |
 | fluentd.volumeMounts[0].mountPath | string | `"/run/pki"` |  |
 | fluentd.volumeMounts[0].name | string | `"trust-store"` |  |
 | fluentd.volumeMounts[0].readOnly | bool | `true` |  |
@@ -167,10 +169,11 @@ Kubernetes: `>= 1.26.0`
 | jaeger.storage.elasticsearch.user | string | `"admin"` |  |
 | jaeger.storage.type | string | `"elasticsearch"` |  |
 | metrics.enabled | bool | `false` |  |
-| opensearch.dashboard.enabled | bool | `false` |  |
-| opensearch.dashboard.istio.enabled | bool | `false` |  |
-| opensearch.dashboard.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
-| opensearch.dashboard.istio.url | string | `"telemetry-dashboard.example.com"` |  |
+| opensearch-dashboards.enabled | bool | `false` |  |
+| opensearch-dashboards.istio.enabled | bool | `false` |  |
+| opensearch-dashboards.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
+| opensearch-dashboards.istio.url | string | `"telemetry-dashboard.example.com"` |  |
+| opensearch.enabled | bool | `false` |  |
 | opensearch.nodeSets | list | `[]` |  |
 | opensearch.prometheus | bool | `false` |  |
 | opensearch.version | string | `"2.17.0"` |  |

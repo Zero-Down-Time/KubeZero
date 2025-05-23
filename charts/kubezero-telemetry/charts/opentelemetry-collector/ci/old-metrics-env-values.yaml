@@ -1,13 +1,15 @@
-mode: statefulset
+mode: deployment
 
 image:
   repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s"
 
-command:
-  name: "otelcol-k8s"
-
-replicaCount: 2
 resources:
   limits:
     cpu: 100m
     memory: 200M
+
+config:
+  service:
+    telemetry:
+      metrics:
+        address: ${env:MY_POD_IP}:8888

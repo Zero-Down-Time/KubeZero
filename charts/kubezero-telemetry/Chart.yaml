@@ -22,6 +22,14 @@ dependencies:
     version: 0.125.0
     repository: https://open-telemetry.github.io/opentelemetry-helm-charts
     condition: opentelemetry-collector.enabled
+  - name: opensearch
+    version: 3.0.0
+    repository: https://opensearch-project.github.io/helm-charts/
+    condition: opensearch.enabled
+  - name: opensearch-dashboards
+    version: 3.0.0
+    repository: https://opensearch-project.github.io/helm-charts/
+    condition: opensearch-dashboards.enabled
   - name: data-prepper
     version: 0.3.1
     repository: https://opensearch-project.github.io/helm-charts/

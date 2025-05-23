@@ -228,6 +228,8 @@ jaeger:
     url: jaeger.example.com
 
 opensearch:
+  enabled: false
+
   version: 2.17.0
   prometheus: false
 
@@ -250,8 +252,9 @@ opensearch:
   #      cpu: 500m
   #      memory: 2Gi
 
-  dashboard:
+opensearch-dashboards:
     enabled: false
+
     istio:
       enabled: false
       gateway: istio-ingress/private-ingressgateway

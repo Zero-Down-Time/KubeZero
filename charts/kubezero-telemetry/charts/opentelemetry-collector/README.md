@@ -19,7 +19,7 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 To install the chart with the release name my-opentelemetry-collector, run the following command:
 
 ```console
-helm install my-opentelemetry-collector open-telemetry/opentelemetry-collector --set mode=<value> --set image.repository="otel/opentelemetry-collector-k8s" --set command.name="otelcol-k8s"
+helm install my-opentelemetry-collector open-telemetry/opentelemetry-collector --set mode=<value> --set image.repository="ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s" --set command.name="otelcol-k8s"
 ```
 
 Where the `mode` value needs to be set to one of `daemonset`, `deployment` or `statefulset`.
@@ -35,7 +35,7 @@ See [UPGRADING.md](UPGRADING.md).
 OpenTelemetry Collector recommends to bind receivers' servers to addresses that limit connections to authorized users.
 For this reason, by default the chart binds all the Collector's endpoints to the pod's IP.
 
-More info is available in the [Security Best Practices docummentation](https://github.com/open-telemetry/opentelemetry-collector/blob/main/docs/security-best-practices.md#safeguards-against-denial-of-service-attacks)
+More info is available in the [Security Best Practices documentation](https://github.com/open-telemetry/opentelemetry-collector/blob/main/docs/security-best-practices.md#safeguards-against-denial-of-service-attacks)
 
 Some care must be taken when using `hostNetwork: true`, as then OpenTelemetry Collector will listen on all the addresses in the host network namespace.
 
@@ -106,6 +106,29 @@ to read the files where Kubernetes container runtime writes all containers' cons
 
 #### :warning: Warning: Risk of looping the exported logs back into the receiver, causing "log explosion"
 
+#### Log collection for a subset of pods or containers
+
+The `logsCollection` preset will by default ingest the logs of all kubernetes containers.
+This is achieved by using an include path of `/var/log/pods/*/*/*.log` for the `filelog`receiver.
+
+To limit the import to a certain subset of pods or containers, the `filelog`
+receivers `include` list can be overwritten by supplying explicit configuration.
+
+E.g. The following configuration would only import logs for pods within the namespace: `example-namespace`:
+
+```yaml
+mode: daemonset
+
+presets:
+  logsCollection:
+    enabled: true
+config:
+  receivers:
+    filelog:
+      include:
+        - /var/log/pods/example-namespace_*/*/*.log
+```
+
 The container logs pipeline uses the `debug` exporter by default.
 Paired with the default `filelog` receiver that receives all containers' console output,
 it is easy to accidentally feed the exported logs back into the receiver.
@@ -148,6 +171,10 @@ The collector can be configured to add Kubernetes metadata, such as pod name and
 This feature is disabled by default. It has the following requirements:
 
 - It requires the [Kubernetes Attributes processor](https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-attributes-processor) to be included in the collector, such as [k8s](https://github.com/open-telemetry/opentelemetry-collector-releases/tree/main/distributions/otelcol-k8s) version of the collector image.
+
+#### :memo: Note: Changing or supplementing `k8sattributes` scopes
+
+In order to minimize the collector's privileges, the [Kubernetes RBAC Rules](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) that are applied to the collector as part of this chart are the minimum required for the `presets.kubernetesAttributes` preset to work. If additional configuration scopes are desired outside of the preset you must apply the corresponding RBAC rules to grant the collector access.
 
 To enable this feature, set the  `presets.kubernetesAttributes.enabled` property to `true`.
 Here is an example `values.yaml`:
