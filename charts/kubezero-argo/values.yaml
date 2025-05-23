@@ -38,7 +38,7 @@ argo-cd:
       format: json
     image:
       repository: public.ecr.aws/zero-downtime/zdt-argocd
-      tag: v2.14.9-1
+      tag: v3.0.3
     networkPolicy:
       create: true
 
@@ -49,8 +49,8 @@ argo-cd:
       .sidebar { background: linear-gradient(to bottom, #6A4D79, #493558, #2D1B30, #0D0711); }
 
     cm:
-      ui.bannercontent: "KubeZero v1.31 - Release notes"
-      ui.bannerurl: "https://kubezero.com/releases/v1.31"
+      ui.bannercontent: "KubeZero v1.32 - Release notes"
+      ui.bannerurl: "https://kubezero.com/releases/v1.32"
       ui.bannerpermanent: "true"
       ui.bannerposition: "bottom"
 
@@ -59,9 +59,9 @@ argo-cd:
 
       timeout.reconciliation: 300s
 
-      application.resourceTrackingMethod: annotation
       installationID: "KubeZero-ArgoCD"
       application.instanceLabelKey: Null
+      server.rbac.log.enforce.enable: Null
 
       resource.customizations: |
         argoproj.io/Application:
@@ -89,7 +89,6 @@ argo-cd:
       extraHosts: "git.zero-downtime.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7UgK7Z4dDcuIW1uMOsuwhrqdkJCvYG/ZjHtLM7WaKFxVRnzNnNkQJNncWIGNDUQ1xxrbsoSNRZDtk0NlOjNtx2aApSWl4iWghkpXELvsZtOZ7I9FSC/E6ImLC3KWfK7P0mhZaF6kHPfpu8Y6pjUyLBTpV1AaVwr0I8onyqGazJOVotTFaBFEi/sT0O2FUk7agwZYfj61w3JGOy3c+fmBcK3lXf/QM90tosOpJNuJ7n5Vk5FDDLkl9rO4XR/+mXHFvITiWb8F5C50YAwjYcy36yWSSryUAAHAuqpgotwh65vSG6fZvFhmEwO2BrCkOV5+k8iRfhy/yZODJzZ5V/5cbMbdZrY6lm/p5/S1wv8BEyPekBGdseqQjEO0IQiQHcMrfgTrrQ7ndbZzVZRByZI+wbGFkBCzNSJcNsoiHjs2EblxYyuW0qUvvrBxLnySvaxyPm4BOukSAZAOEaUrajpQlnHdnY1CGcgbwxw0LNv3euKQ3tDJSUlKO0Wd8d85PRv1THW4Ui9Lhsmv+BPA2vJZDOkx/n0oyPFAB0oyd5JNM38eFxLCmPC2OE63gDP+WmzVO61YCVTnvhpQjEOLawEWVFsk0y25R5z5BboDqJaOFnZF6i517O96cn17z3Ls4hxw3+0rlKczYRoyfUHs7KQENa4mY8YlJweNTBgld//RMUQ=="
 
     params:
-      controller.resource.health.persist: "false"
       controller.diff.server.side: "true"
       controller.sync.timeout.seconds: 1800
 

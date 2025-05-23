@@ -1,6 +1,6 @@
 # kubezero-argo
 
-![Version: 0.3.3](https://img.shields.io/badge/Version-0.3.3-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square)
 
 KubeZero Argo - Events, Workflow, CD
 
@@ -18,7 +18,7 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://argoproj.github.io/argo-helm | argo-cd | 7.9.0 |
+| https://argoproj.github.io/argo-helm | argo-cd | 8.0.9 |
 | https://argoproj.github.io/argo-helm | argo-events | 2.4.15 |
 | https://argoproj.github.io/argo-helm | argocd-image-updater | 0.12.1 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
@@ -28,17 +28,16 @@ Kubernetes: `>= 1.30.0-0`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | argo-cd.configs.cm."application.instanceLabelKey" | string | `nil` |  |
-| argo-cd.configs.cm."application.resourceTrackingMethod" | string | `"annotation"` |  |
 | argo-cd.configs.cm."resource.customizations" | string | `"argoproj.io/Application:\n  health.lua: |\n    hs = {}\n    hs.status = \"Progressing\"\n    hs.message = \"\"\n    if obj.status ~= nil then\n      if obj.status.health ~= nil then\n        hs.status = obj.status.health.status\n        if obj.status.health.message ~= nil then\n          hs.message = obj.status.health.message\n        end\n      end\n    end\n    return hs\n"` |  |
+| argo-cd.configs.cm."server.rbac.log.enforce.enable" | string | `nil` |  |
 | argo-cd.configs.cm."timeout.reconciliation" | string | `"300s"` |  |
-| argo-cd.configs.cm."ui.bannercontent" | string | `"KubeZero v1.31 - Release notes"` |  |
+| argo-cd.configs.cm."ui.bannercontent" | string | `"KubeZero v1.32 - Release notes"` |  |
 | argo-cd.configs.cm."ui.bannerpermanent" | string | `"true"` |  |
 | argo-cd.configs.cm."ui.bannerposition" | string | `"bottom"` |  |
-| argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.31"` |  |
+| argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.32"` |  |
 | argo-cd.configs.cm.installationID | string | `"KubeZero-ArgoCD"` |  |
 | argo-cd.configs.cm.url | string | `"https://argocd.example.com"` |  |
 | argo-cd.configs.params."controller.diff.server.side" | string | `"true"` |  |
-| argo-cd.configs.params."controller.resource.health.persist" | string | `"false"` |  |
 | argo-cd.configs.params."controller.sync.timeout.seconds" | int | `1800` |  |
 | argo-cd.configs.params."server.enable.gzip" | bool | `true` |  |
 | argo-cd.configs.params."server.insecure" | bool | `true` |  |
@@ -54,7 +53,7 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.dex.enabled | bool | `false` |  |
 | argo-cd.enabled | bool | `false` |  |
 | argo-cd.global.image.repository | string | `"public.ecr.aws/zero-downtime/zdt-argocd"` |  |
-| argo-cd.global.image.tag | string | `"v2.14.9-1"` |  |
+| argo-cd.global.image.tag | string | `"v3.0.3"` |  |
 | argo-cd.global.logging.format | string | `"json"` |  |
 | argo-cd.global.networkPolicy.create | bool | `true` |  |
 | argo-cd.istio.enabled | bool | `false` |  |
