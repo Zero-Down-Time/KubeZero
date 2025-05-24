@@ -9,10 +9,11 @@ metadata:
   namespace: argocd
   labels:
     {{- include "kubezero-lib.labels" . | nindent 4 }}
-  {{- with ( index .Values $name "annotations" ) }}
   annotations:
+    argocd.argoproj.io/sync-options: Replace=true
+    {{- with ( index .Values $name "annotations" ) }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
   {{- if not ( index .Values $name "retain" ) }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -38,9 +39,8 @@ spec:
     automated:
       prune: true
     syncOptions:
-      - ServerSideApply=true
       - CreateNamespace=true
-    # - ApplyOutOfSyncOnly=true
+      - ApplyOutOfSyncOnly=true
   info:
     - name: "Source:"
       value: "https://git.zero-downtime.net/ZeroDownTime/KubeZero/src/branch/release/v1.31/charts/kubezero-{{ $name }}"
