@@ -1,6 +1,6 @@
 {{- define "network-values" }}
 multus:
-  enabled: true
+  enabled: false
   clusterNetwork: "cilium"
 
 # {{- if eq .Values.global.platform "aws" }}
