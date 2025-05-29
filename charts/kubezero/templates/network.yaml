@@ -15,6 +15,9 @@ cilium:
 # image:
 #   pullPolicy: Never
 # {{- end }}
+  k8sServiceHost: {{ .Values.global.apiServerUrl }}
+  k8s:
+    apiServerURLs: "https://{{ .Values.global.apiServerUrl }}"
 
   cluster:
     name: {{ .Values.global.clusterName }}

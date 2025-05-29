@@ -64,6 +64,14 @@ cilium:
     enabled: false
   #rollOutCiliumPods: true
 
+  k8sServiceHost: localhost
+  k8sServicePort: 6443
+  kubeProxyReplacement: true
+  k8s:
+    # This has to be set to the DNS name of all API servers
+    # For example "https://192.168.0.1:6443 https://192.168.0.2:6443"
+    apiServerURLs: ""
+
   cgroup:
     autoMount:
       enabled: false
