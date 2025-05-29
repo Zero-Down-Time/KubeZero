@@ -3,6 +3,7 @@
 # Simulate well-known CRDs being available
 API_VERSIONS="-a monitoring.coreos.com/v1 -a snapshot.storage.k8s.io/v1 -a policy/v1/PodDisruptionBudget -a apiregistration.k8s.io/v1"
 LOCAL_DEV=${LOCAL_DEV:-""}
+ENV_VALUES=""
 
 export HELM_SECRETS_BACKEND="vals"
 

@@ -61,8 +61,10 @@ opensearch:
   {{- toYaml . | nindent 2 }}
   {{- end }}
 
-  serviceMonitor:
-    enabled: {{ .Values.metrics.enabled }}
+# Disabled until upstream made up their mind
+# https://github.com/opensearch-project/technical-steering/issues/35
+# serviceMonitor:
+#   enabled: {{ .Values.metrics.enabled }}
 {{- end }}
 
 {{- if index .Values "telemetry" "opensearch-dashboards" }}
@@ -71,8 +73,10 @@ opensearch-dashboards:
   {{- toYaml . | nindent 2 }}
   {{- end }}
 
-  serviceMonitor:
-    enabled: {{ .Values.metrics.enabled }}
+# Disabled until upstream made up their mind
+# https://github.com/opensearch-project/technical-steering/issues/35
+# serviceMonitor:
+#   enabled: {{ .Values.metrics.enabled }}
 {{- end }}
 
 {{- end }}

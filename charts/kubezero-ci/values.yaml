@@ -289,7 +289,7 @@ trivy:
   #tag: 0.57.0
   persistence:
     enabled: true
-    size: 1Gi
+    size: 2Gi
   rbac:
     create: false
 
