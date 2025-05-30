@@ -5,6 +5,9 @@ pre_control_plane_upgrade_cluster() {
   if [ "$PLATFORM" != "gke" ];then
     # patch multus DS to ONLY run pods on 1.31 controllers
     kubectl patch ds kube-multus-ds -n kube-system -p '{"spec": {"template": {"spec": {"nodeSelector": {"node.kubernetes.io/kubezero.version": "v1.31.6"}}}}}' || true
+
+    # patch kube-proxy DS to ONLY run pods on 1.31 controllers
+    kubectl patch ds kube-proxy -n kube-system -p '{"spec": {"template": {"spec": {"nodeSelector": {"node.kubernetes.io/kubezero.version": "v1.31.6"}}}}}' || true
   fi
 }
 
@@ -28,6 +31,10 @@ pre_cluster_upgrade_final() {
     kubectl delete ds kube-multus-ds -n kube-system
     kubectl delete NetworkAttachmentDefinition cilium
     kubectl delete crd network-attachment-definitions.k8s.cni.cncf.io
+
+    # remove kube-proxy
+    kubectl -n kube-system delete ds kube-proxy
+    kubectl -n kube-system delete cm kube-proxy
   fi
 
   set -e
