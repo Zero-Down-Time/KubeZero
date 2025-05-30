@@ -43,7 +43,7 @@ cilium:
     binPath: "/usr/libexec/cni"
     logFile: /var/log/cilium-cni.log
     #-- Ensure this is false if multus is enabled
-    exclusive: false
+    exclusive: true
 
   cluster:
     # This should match the second octet of clusterPoolIPv4PodCIDRList
@@ -91,8 +91,10 @@ cilium:
     - key: node-role.kubernetes.io/control-plane
       effect: NoSchedule
     # the operator removes the taints,
-    # so we need to break chicken egg on single controller
+    # so we need to break chicken egg
     - key: node.cilium.io/agent-not-ready
+      effect: NoSchedule
+    - key: node.kubernetes.io/not-ready
       effect: NoSchedule
 
     nodeSelector:

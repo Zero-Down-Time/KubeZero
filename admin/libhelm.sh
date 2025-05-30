@@ -95,6 +95,20 @@ function ensure_kubezero_secret_key() {
 }
 
 
+function ensure_kubezero_secret_key() {
+  local secret="$(kubectl get secret -n $ns $secret -o yaml)"
+  local key
+  local val
+
+  for key in $1; do
+    val=$(echo $secret | yq ".data.\"$key\""
+    if [ "$val" == "null" ]; then
+      set_kubezero_secret $key ""
+    fi
+  done
+}
+
+
 function set_kubezero_secret() {
   local key="$1"
   local val="$2"
