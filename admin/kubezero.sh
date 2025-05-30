@@ -169,7 +169,7 @@ kubeadm_upgrade() {
   else
     pre_cluster_upgrade_final
 
-    _kubeadm upgrade apply phase addon all $KUBE_VERSION
+    _kubeadm upgrade apply phase addon coredns $KUBE_VERSION
 
     post_cluster_upgrade_final
 
