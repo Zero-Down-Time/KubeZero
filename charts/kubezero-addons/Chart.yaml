@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-addons
 description: KubeZero umbrella chart for various optional cluster addons
 type: application
-version: 0.8.14
+version: 0.8.15
 appVersion: v1.31
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
@@ -34,7 +34,7 @@ dependencies:
     repository: https://nvidia.github.io/k8s-device-plugin
     condition: nvidia-device-plugin.enabled
   - name: neuron-helm-chart
-    version: 1.1.1
+    version: 1.1.2
     # https://github.com/aws-neuron/neuron-helm-charts/tree/main/charts/neuron-helm-chart
     repository: oci://public.ecr.aws/neuron #/neuron-helm-chart
     condition: neuron-helm-chart.enabled
@@ -43,7 +43,7 @@ dependencies:
     repository: https://bitnami-labs.github.io/sealed-secrets
     condition: sealed-secrets.enabled
   - name: aws-node-termination-handler
-    version: 0.27.0
+    version: 0.27.1
     repository: "oci://public.ecr.aws/aws-ec2/helm"
     condition: aws-node-termination-handler.enabled
   - name: aws-eks-asg-rolling-update-handler
