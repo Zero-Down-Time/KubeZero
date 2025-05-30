@@ -88,7 +88,7 @@ function ensure_kubezero_secret_key() {
   local val
 
   for key in $1; do
-    val=$(echo $secret | yq ".data.\"$key\""
+    val=$(echo $secret | yq ".data.\"$key\"")
     if [ "$val" == "null" ]; then
       set_kubezero_secret $key ""
     fi

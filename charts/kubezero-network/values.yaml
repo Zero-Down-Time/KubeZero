@@ -44,6 +44,7 @@ cilium:
     logFile: /var/log/cilium-cni.log
     #-- Ensure this is false if multus is enabled
     exclusive: true
+    iptablesRemoveAWSRules: false
 
   cluster:
     # This should match the second octet of clusterPoolIPv4PodCIDRList

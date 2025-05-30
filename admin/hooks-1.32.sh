@@ -5,7 +5,7 @@ pre_control_plane_upgrade_cluster() {
   if [ "$PLATFORM" != "gke" ];then
     # patch multus DS to ONLY run pods on 1.31 controllers
     kubectl patch ds kube-multus-ds -n kube-system -p '{"spec": {"template": {"spec": {"nodeSelector": {"node.kubernetes.io/kubezero.version": "v1.31.6"}}}}}' || true
-  }
+  fi
 }
 
 
