@@ -63,7 +63,7 @@ render_kubeadm() {
 
   # Assemble kubeadm config
   cat /dev/null > ${HOSTFS}/etc/kubernetes/kubeadm.yaml
-  for f in Cluster KubeProxy Kubelet; do
+  for f in Cluster Kubelet; do
     # echo "---" >> /etc/kubernetes/kubeadm.yaml
     cat ${WORKDIR}/kubeadm/templates/${f}Configuration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
   done
@@ -169,7 +169,7 @@ kubeadm_upgrade() {
   else
     pre_cluster_upgrade_final
 
-    _kubeadm upgrade apply phase addon all $KUBE_VERSION
+    _kubeadm upgrade apply phase addon coredns $KUBE_VERSION
 
     post_cluster_upgrade_final
 
@@ -239,7 +239,7 @@ control_plane_node() {
   if [[ "$CMD" =~ ^(join)$ ]]; then
     # Delete any former self in case forseti did not delete yet
     kubectl delete node ${NODENAME} --wait=true || true
-    # Wait for all pods to be deleted otherwise we end up with stale pods eg. kube-proxy and all goes to ....
+    # Wait for all pods to be deleted otherwise we end up with stale pods
     kubectl delete pods -n kube-system --field-selector spec.nodeName=${NODENAME}
 
     # get current running etcd pods for etcdctl commands
@@ -309,8 +309,9 @@ control_plane_node() {
   _kubeadm init phase mark-control-plane
   _kubeadm init phase kubelet-finalize all
 
+  # we skip kube-proxy
   if [[ "$CMD" =~ ^(bootstrap|restore)$ ]]; then
-    _kubeadm init phase addon all
+    _kubeadm init phase addon coredns
   fi
 
   post_kubeadm

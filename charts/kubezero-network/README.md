@@ -1,6 +1,6 @@
 # kubezero-network
 
-![Version: 0.5.8](https://img.shields.io/badge/Version-0.5.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.5.9](https://img.shields.io/badge/Version-0.5.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things network
 
@@ -20,7 +20,7 @@ Kubernetes: `>= 1.30.0-0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://haproxytech.github.io/helm-charts | haproxy | 1.24.0 |
-| https://helm.cilium.io/ | cilium | 1.17.3 |
+| https://helm.cilium.io/ | cilium | 1.17.4 |
 | https://metallb.github.io/metallb | metallb | 0.14.9 |
 
 ## Values
@@ -45,6 +45,8 @@ Kubernetes: `>= 1.30.0-0`
 | cilium.hubble.ui.enabled | bool | `false` |  |
 | cilium.image.useDigest | bool | `false` |  |
 | cilium.ipam.operator.clusterPoolIPv4PodCIDRList[0] | string | `"10.240.0.0/16"` |  |
+| cilium.k8s.apiServerURLs | string | `""` |  |
+| cilium.kubeProxyReplacement | bool | `true` |  |
 | cilium.l7Proxy | bool | `false` |  |
 | cilium.operator.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | cilium.operator.prometheus.enabled | bool | `false` |  |

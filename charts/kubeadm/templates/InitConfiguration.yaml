@@ -7,6 +7,8 @@ localAPIEndpoint:
 patches:
   directory: {{ . }}
 {{- end }}
+skipPhases:
+  - addon/kube-proxy
 nodeRegistration:
   criSocket: "unix:///run/containerd/containerd.sock"
   ignorePreflightErrors:

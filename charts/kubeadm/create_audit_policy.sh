@@ -30,12 +30,6 @@ rules:
   # The following requests were manually identified as high-volume and low-risk,
   # so drop them.
   - level: None
-    users: ["system:kube-proxy"]
-    verbs: ["watch"]
-    resources:
-      - group: "" # core
-        resources: ["endpoints", "services", "services/status"]
-  - level: None
     # Ingress controller reads 'configmaps/ingress-uid' through the unsecured port.
     # TODO(#46983): Change this to the ingress controller service account.
     users: ["system:unsecured"]

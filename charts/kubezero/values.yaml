@@ -1,5 +1,6 @@
 global:
   clusterName: zdt-trial-cluster
+  apiServerUrl: localhost:6443
 
   # platform: aws (kubeadm, default), gke, or nocloud
   platform: "aws"

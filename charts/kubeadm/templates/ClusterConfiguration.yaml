@@ -6,6 +6,8 @@ featureGates:
   ControlPlaneKubeletLocalMode: true
   NodeLocalCRISocket: true
 controlPlaneEndpoint: {{ .Values.api.endpoint }}
+proxy:
+  disabled: true
 networking:
   podSubnet: 10.244.0.0/16
 etcd:
