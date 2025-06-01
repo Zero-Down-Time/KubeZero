@@ -9,25 +9,23 @@ multus:
 # {{- end }}
 
 cilium:
-  enabled: true
+  k8sServiceHost: {{ .Values.global.apiServerUrl }}
 
 # {{- if eq .Values.global.platform "aws" }}
 # image:
 #   pullPolicy: Never
 # {{- end }}
-  k8sServiceHost: {{ .Values.global.apiServerUrl }}
 # k8s:
 #   apiServerURLs: "https://{{ .Values.global.apiServerUrl }}"
 
   cluster:
     name: {{ .Values.global.clusterName }}
-    {{- with .Values.network.cilium.cluster.id }}
-    id: {{ . }}
+  {{- with .Values.network.cilium.cluster.id }}
   ipam:
     operator:
       clusterPoolIPv4PodCIDRList:
         - 10.{{ . }}.0.0/16
-    {{- end }}
+  {{- end }}
 
   prometheus:
     enabled: {{ .Values.metrics.enabled }}

@@ -83,6 +83,9 @@ function get_kubezero_secret() {
 
 
 function ensure_kubezero_secret_key() {
+  local ns=$1
+  local secret=$2
+
   local secret="$(kubectl get secret -n $ns $secret -o yaml)"
   local key
   local val
@@ -263,6 +266,11 @@ function _helm() {
     [ -f $WORKDIR/$chart/hooks.d/pre-crds.sh ] && . $WORKDIR/$chart/hooks.d/pre-crds.sh
 
     crds
+
+  elif [ $action == "dryrun" ]; then
+    cat $WORKDIR/values.yaml
+    render
+    cat $WORKDIR/helm.yaml
 
   elif [ $action == "apply" -o $action == "replace" ]; then
     echo "using values to $action of module $module: "

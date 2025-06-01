@@ -12,7 +12,7 @@ kube-prometheus-stack:
   kubeStateMetrics:
     enabled: true
   kubeProxy:
-    enabled: true
+    enabled: false
 
   kubeEtcd:
     enabled: true

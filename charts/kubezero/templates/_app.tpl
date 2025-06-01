@@ -28,7 +28,7 @@ spec:
     helm:
       skipTests: true
       valuesObject:
-        {{- include (print $name "-values") $ | nindent 8 }}
+        {{- toYaml (merge (omit (index .Values $name) "enabled" "namespace" "retain" "targetRevision") (fromYaml (include (print $name "-values") $ ))) | nindent 8 }}
 
   destination:
     server: "https://kubernetes.default.svc"

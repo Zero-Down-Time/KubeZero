@@ -33,11 +33,11 @@ cilium:
 
   resources:
     requests:
-      cpu: 10m
-      memory: 160Mi
-    limits:
-      memory: 1Gi
-      # cpu: 4000m
+      cpu: 50m
+      memory: 256Mi
+#   limits:
+#     memory: 1Gi
+#     cpu: 4000m
 
   cni:
     binPath: "/usr/libexec/cni"
@@ -68,6 +68,13 @@ cilium:
   dnsProxy:
     enableTransparentMode: true
 
+# For LB support via L2announcement or BGP - on-prem only
+# l2announcements:
+#   enabled: true
+# Not needed normally
+# externalIPs:
+#   enabled: true
+
   k8sServiceHost: ""
   k8sServicePort: 6443
 # k8s:
@@ -80,8 +87,9 @@ cilium:
       enabled: false
     hostRoot: "/sys/fs/cgroup"
 
+  bpf:
+    preallocateMaps: true
   # we need biDirectional so use helm init-container
-  #bpf:
   # autoMount:
   #   enabled: false
 

@@ -67,7 +67,7 @@ gateway:
       gatewayProtocol: HTTPS
       tls:
         mode: SIMPLE
-    {{- with index .Values "istio-ingress" "gateway" "service" "ports" }}
+    {{- with index .Values "istio-ingress" "gateway" "service" "extraPorts" }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 
@@ -93,7 +93,6 @@ certificates:
   {{- toYaml $cert.dnsNames | nindent 4 }}
 {{- end }}
 {{- end }}
-proxyProtocol: {{ default true (index .Values "istio-ingress" "proxyProtocol") }}
 {{- with (index .Values "istio-ingress" "hardening") }}
 hardening:
   {{- toYaml . | nindent 2 }}

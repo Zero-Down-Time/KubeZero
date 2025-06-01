@@ -10,7 +10,14 @@ def migrate(values):
 
     # 1.32
     try:
+        values["istio-ingress"]["gateway"]["service"]["extraPorts"] = values["istio-ingress"]["gateway"]["service"]["ports"]
+        values["istio-ingress"]["gateway"]["service"].pop("ports")
+    except KeyError:
         pass
+
+    try:
+        values["istio-private-ingress"]["gateway"]["service"]["extraPorts"] = values["istio-private-ingress"]["gateway"]["service"]["ports"]
+        values["istio-private-ingress"]["gateway"]["service"].pop("ports")
     except KeyError:
         pass
 
