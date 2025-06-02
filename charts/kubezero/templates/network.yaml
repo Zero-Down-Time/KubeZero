@@ -1,13 +1,4 @@
 {{- define "network-values" }}
-multus:
-  enabled: false
-  clusterNetwork: "cilium"
-
-# {{- if eq .Values.global.platform "aws" }}
-# image:
-#   pullPolicy: Never
-# {{- end }}
-
 cilium:
   k8sServiceHost: {{ .Values.global.apiServerUrl }}
 
@@ -20,7 +11,7 @@ cilium:
 
   cluster:
     name: {{ .Values.global.clusterName }}
-  {{- with .Values.network.cilium.cluster.id }}
+  {{- with ((.Values.network.cilium).cluster).id }}
   ipam:
     operator:
       clusterPoolIPv4PodCIDRList:

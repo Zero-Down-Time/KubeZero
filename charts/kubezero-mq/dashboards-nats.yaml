@@ -1,7 +1,7 @@
 configmap: grafana-dashboards-nats
-condition: '.Values.nats.exporter.serviceMonitor.enabled'
+condition: '.Values.nats.promExporter.podMonitor.enabled'
 gzip: true
-# folder: 
+# folder:
 dashboards:
 - name: nats
   url: https://grafana.com/api/dashboards/13707/revisions/1/download

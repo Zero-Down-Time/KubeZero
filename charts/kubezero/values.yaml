@@ -35,7 +35,7 @@ network:
   retain: true
   targetRevision: 0.5.9
   cilium:
-    cluster: {}
+    enabled: true
 
 cert-manager:
   enabled: false

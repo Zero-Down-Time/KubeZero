@@ -1,6 +1,6 @@
 # kubezero-mq
 
-![Version: 0.3.11](https://img.shields.io/badge/Version-0.3.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.12](https://img.shields.io/badge/Version-0.3.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for MQ systems like NATS, RabbitMQ
 
@@ -20,7 +20,7 @@ Kubernetes: `>= 1.26.0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.bitnami.com/bitnami | rabbitmq | 14.7.0 |
-| https://nats-io.github.io/k8s/helm/charts/ | nats | 1.3.3 |
+| https://nats-io.github.io/k8s/helm/charts/ | nats | 1.3.7 |
 
 ## Values
 
@@ -32,6 +32,8 @@ Kubernetes: `>= 1.26.0`
 | nats.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
 | nats.mqtt.enabled | bool | `false` |  |
 | nats.natsBox.enabled | bool | `false` |  |
+| nats.podTemplate.topologySpreadConstraints."kubernetes.io/hostname".maxSkew | int | `1` |  |
+| nats.podTemplate.topologySpreadConstraints."kubernetes.io/hostname".whenUnsatisfiable | string | `"DoNotSchedule"` |  |
 | nats.promExporter.enabled | bool | `false` |  |
 | nats.promExporter.podMonitor.enabled | bool | `false` |  |
 | rabbitmq.auth.existingErlangSecret | string | `"rabbitmq"` |  |
