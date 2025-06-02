@@ -251,7 +251,7 @@ control_plane_node() {
     done
 
     # see if we are a former member and remove our former self if so
-    MY_ID=$(etcdctl member list --endpoints=$etcd_endpoints | grep $ETCD_NODENAME | awk '{print $1}' | sed -e 's/,$//')
+    MY_ID=$(etcdctl member list --endpoints=$etcd_endpoints | grep $ETCD_NODENAME | awk '{print $1}' | sed -e 's/,$//' || true)
     [ -n "$MY_ID" ] && retry 12 5 5 etcdctl member remove $MY_ID --endpoints=$etcd_endpoints
 
     # flush etcd data directory as joining with previous storage seems flaky, especially during etcd version upgrades

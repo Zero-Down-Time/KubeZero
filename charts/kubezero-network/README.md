@@ -21,19 +21,21 @@ Kubernetes: `>= 1.30.0-0`
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://haproxytech.github.io/helm-charts | haproxy | 1.24.0 |
 | https://helm.cilium.io/ | cilium | 1.17.4 |
-| https://metallb.github.io/metallb | metallb | 0.14.9 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| cilium.bpf.preallocateMaps | bool | `true` |  |
 | cilium.cgroup.autoMount.enabled | bool | `false` |  |
 | cilium.cgroup.hostRoot | string | `"/sys/fs/cgroup"` |  |
 | cilium.cluster.id | int | `240` |  |
 | cilium.cluster.name | string | `"default"` |  |
 | cilium.cni.binPath | string | `"/usr/libexec/cni"` |  |
-| cilium.cni.exclusive | bool | `false` |  |
+| cilium.cni.exclusive | bool | `true` |  |
+| cilium.cni.iptablesRemoveAWSRules | bool | `false` |  |
 | cilium.cni.logFile | string | `"/var/log/cilium-cni.log"` |  |
+| cilium.dnsProxy.enableTransparentMode | bool | `true` |  |
 | cilium.enabled | bool | `false` |  |
 | cilium.envoy.enabled | bool | `false` |  |
 | cilium.hubble.enabled | bool | `false` |  |
@@ -45,7 +47,8 @@ Kubernetes: `>= 1.30.0-0`
 | cilium.hubble.ui.enabled | bool | `false` |  |
 | cilium.image.useDigest | bool | `false` |  |
 | cilium.ipam.operator.clusterPoolIPv4PodCIDRList[0] | string | `"10.240.0.0/16"` |  |
-| cilium.k8s.apiServerURLs | string | `""` |  |
+| cilium.k8sServiceHost | string | `""` |  |
+| cilium.k8sServicePort | int | `6443` |  |
 | cilium.kubeProxyReplacement | bool | `true` |  |
 | cilium.l7Proxy | bool | `false` |  |
 | cilium.operator.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
@@ -56,12 +59,13 @@ Kubernetes: `>= 1.30.0-0`
 | cilium.operator.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
 | cilium.operator.tolerations[1].effect | string | `"NoSchedule"` |  |
 | cilium.operator.tolerations[1].key | string | `"node.cilium.io/agent-not-ready"` |  |
+| cilium.operator.tolerations[2].effect | string | `"NoSchedule"` |  |
+| cilium.operator.tolerations[2].key | string | `"node.kubernetes.io/not-ready"` |  |
 | cilium.prometheus.enabled | bool | `false` |  |
 | cilium.prometheus.port | int | `9091` |  |
 | cilium.prometheus.serviceMonitor.enabled | bool | `false` |  |
-| cilium.resources.limits.memory | string | `"1Gi"` |  |
-| cilium.resources.requests.cpu | string | `"10m"` |  |
-| cilium.resources.requests.memory | string | `"160Mi"` |  |
+| cilium.resources.requests.cpu | string | `"50m"` |  |
+| cilium.resources.requests.memory | string | `"256Mi"` |  |
 | cilium.routingMode | string | `"tunnel"` |  |
 | cilium.sysctlfix.enabled | bool | `false` |  |
 | cilium.tunnelProtocol | string | `"geneve"` |  |
@@ -109,11 +113,6 @@ Kubernetes: `>= 1.30.0-0`
 | haproxy.serviceMonitor.endpoints[0].path | string | `"/metrics"` |  |
 | haproxy.serviceMonitor.endpoints[0].port | string | `"prometheus"` |  |
 | haproxy.serviceMonitor.endpoints[0].scheme | string | `"http"` |  |
-| metallb.controller.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
-| metallb.controller.tolerations[0].effect | string | `"NoSchedule"` |  |
-| metallb.controller.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
-| metallb.enabled | bool | `false` |  |
-| metallb.ipAddressPools | list | `[]` |  |
 | multus.clusterNetwork | string | `"cilium"` |  |
 | multus.defaultNetworks | list | `[]` |  |
 | multus.enabled | bool | `false` |  |
