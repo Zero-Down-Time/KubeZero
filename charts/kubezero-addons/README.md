@@ -1,6 +1,6 @@
 # kubezero-addons
 
-![Version: 0.8.14](https://img.shields.io/badge/Version-0.8.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31](https://img.shields.io/badge/AppVersion-v1.31-informational?style=flat-square)
+![Version: 0.8.15](https://img.shields.io/badge/Version-0.8.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.32](https://img.shields.io/badge/AppVersion-v1.32-informational?style=flat-square)
 
 KubeZero umbrella chart for various optional cluster addons
 
@@ -14,7 +14,7 @@ KubeZero umbrella chart for various optional cluster addons
 
 ## Requirements
 
-Kubernetes: `>= 1.30.0-0`
+Kubernetes: `>= 1.31.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
@@ -24,8 +24,8 @@ Kubernetes: `>= 1.30.0-0`
 | https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.46.6 |
 | https://nvidia.github.io/k8s-device-plugin | nvidia-device-plugin | 0.17.1 |
 | https://twin.github.io/helm-charts | aws-eks-asg-rolling-update-handler | 1.5.0 |
-| oci://public.ecr.aws/aws-ec2/helm | aws-node-termination-handler | 0.27.0 |
-| oci://public.ecr.aws/neuron | neuron-helm-chart | 1.1.1 |
+| oci://public.ecr.aws/aws-ec2/helm | aws-node-termination-handler | 0.27.1 |
+| oci://public.ecr.aws/neuron | neuron-helm-chart | 1.1.2 |
 
 # MetalLB   
    
