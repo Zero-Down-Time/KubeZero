@@ -1,0 +1,9 @@
+{{- define "policy-values" }}
+kyverno:
+  test: true
+{{- end }}
+
+{{- define "policy-argo" }}
+{{- end }}
+
+{{ include "kubezero-app.app" . }}

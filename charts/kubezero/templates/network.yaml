@@ -41,12 +41,6 @@ haproxy:
 
 
 {{- define "network-argo" }}
-  # Metallb
-  ignoreDifferences:
-  - group: apiextensions.k8s.io
-    kind: CustomResourceDefinition
-    jsonPointers:
-    - /spec/conversion/webhook/clientConfig/caBundle
 {{- end }}
 
 {{ include "kubezero-app.app" . }}

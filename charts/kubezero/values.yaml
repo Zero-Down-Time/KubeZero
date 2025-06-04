@@ -30,6 +30,10 @@ addons:
   aws-eks-asg-rolling-update-handler:
     enabled: false
 
+policy:
+  enabled: false
+  targetRevision: 0.1.0
+
 network:
   enabled: true
   retain: true
