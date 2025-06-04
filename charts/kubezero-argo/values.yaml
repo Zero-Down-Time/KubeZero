@@ -27,7 +27,7 @@ argo-events:
         - version: 2.10.11
           natsImage: nats:2.11.4-scratch
           metricsExporterImage: natsio/prometheus-nats-exporter:0.17.3
-          configReloaderImage: natsio/nats-server-config-reloader:0.14.1
+          configReloaderImage: natsio/nats-server-config-reloader:0.18.0
           startCommand: /nats-server
 
 argo-cd:
