@@ -10,7 +10,7 @@ metadata:
   labels:
     {{- include "kubezero-lib.labels" . | nindent 4 }}
   annotations:
-    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+    argocd.argoproj.io/compare-options: IncludeMutationWebhook=true
     # argocd.argoproj.io/sync-options: Replace=true
     {{- with ( index .Values $name "annotations" ) }}
     {{- toYaml . | nindent 4 }}
@@ -42,6 +42,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
+      - ServerSideApply=true
   info:
     - name: "Source:"
       value: "https://git.zero-downtime.net/ZeroDownTime/KubeZero/src/branch/release/v1.31/charts/kubezero-{{ $name }}"

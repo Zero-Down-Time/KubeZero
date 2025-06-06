@@ -1,6 +1,9 @@
 kyverno:
   enabled: false
 
+# templating:
+#   enabled: true
+
   admissionController:
     revisionHistoryLimit: 2
 
@@ -18,8 +21,8 @@ kyverno:
   backgroundController:
     enabled: false
 
-  cleanupController:
-    enabled: false
+# cleanupController:
+#   enabled: false
 
   reportsController:
     enabled: false
