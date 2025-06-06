@@ -1,0 +1,52 @@
+{{- if and false .Values.kyverno.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ template "kubezero-lib.fullname" . }}-admission-tls
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  secretName: {{ template "kubezero-lib.fullname" . }}-kyverno-svc.{{ .Release.Namespace }}.svc.kyverno-tls-pair
+  issuerRef:
+    name: kubezero-local-ca-issuer
+    kind: ClusterIssuer
+  duration: 8760h0m0s
+  privateKey:
+    encoding: PKCS8
+  usages:
+  - "client auth"
+  - "server auth"
+  commonName: {{ template "kubezero-lib.fullname" . }}-admission
+  dnsNames:
+  # <cluster-name>-<nodepool-component>-<index>
+    - 'kyverno-svc'
+    - 'kyverno-svc.{{ .Release.Namespace }}'
+    - 'kyverno-svc.{{ .Release.Namespace }}.svc'
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ template "kubezero-lib.fullname" . }}-cleanup-tls
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  secretName: {{ template "kubezero-lib.fullname" . }}-kyverno-cleanup-controller.{{ .Release.Namespace }}.svc.kyverno-tls-pair
+  issuerRef:
+    name: kubezero-local-ca-issuer
+    kind: ClusterIssuer
+  duration: 8760h0m0s
+  privateKey:
+    encoding: PKCS8
+  usages:
+  - "client auth"
+  - "server auth"
+  commonName: {{ template "kubezero-lib.fullname" . }}-cleanup-controller
+  dnsNames:
+  # <cluster-name>-<nodepool-component>-<index>
+    - 'kyverno-cleanup-controller'
+    - 'kyverno-cleanup-controller.{{ .Release.Namespace }}'
+    - 'kyverno-cleanup-controller.{{ .Release.Namespace }}.svc'
+{{- end }}
