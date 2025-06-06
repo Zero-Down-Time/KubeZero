@@ -63,6 +63,10 @@ argo-cd:
       application.instanceLabelKey: Null
       server.rbac.log.enforce.enable: Null
 
+      resource.compareoptions: |
+        # disables status field diffing in specified resource types
+        ignoreAggregatedRoles: true
+
       resource.customizations: |
         argoproj.io/Application:
           health.lua: |

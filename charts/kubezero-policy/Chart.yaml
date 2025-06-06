@@ -13,6 +13,9 @@ maintainers:
   - name: Stefan Reimer
     email: stefan@zero-downtime.net
 dependencies:
+  - name: kubezero-lib
+    version: 0.2.1
+    repository: https://cdn.zero-downtime.net/charts/
   - name: kyverno
     version: 3.4.2
     repository: https://kyverno.github.io/kyverno/

@@ -18,6 +18,7 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://kyverno.github.io/kyverno/ | kyverno | 3.4.2 |
 
 # Kyverno

@@ -10,7 +10,8 @@ metadata:
   labels:
     {{- include "kubezero-lib.labels" . | nindent 4 }}
   annotations:
-    argocd.argoproj.io/sync-options: Replace=true
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+    # argocd.argoproj.io/sync-options: Replace=true
     {{- with ( index .Values $name "annotations" ) }}
     {{- toYaml . | nindent 4 }}
     {{- end }}

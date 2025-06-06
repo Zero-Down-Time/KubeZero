@@ -1,6 +1,6 @@
 {{- define "policy-values" }}
 kyverno:
-  test: true
+  dummy: test
 {{- end }}
 
 {{- define "policy-argo" }}

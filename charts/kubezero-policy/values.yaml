@@ -1,2 +1,25 @@
 kyverno:
   enabled: false
+
+  admissionController:
+    revisionHistoryLimit: 2
+
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
+    tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+
+#   container:
+#     extraArgs:
+#       caSecretName: kubezero-policy-admission-tls
+#       tlsSecretName: kubezero-policy-admission-tls
+
+  backgroundController:
+    enabled: false
+
+  cleanupController:
+    enabled: false
+
+  reportsController:
+    enabled: false
