@@ -3,6 +3,10 @@ nats:
   enabled: false
 
   config:
+    cluster:
+      routeURLs:
+        useFQDN: true
+
     jetstream:
       enabled: true
 

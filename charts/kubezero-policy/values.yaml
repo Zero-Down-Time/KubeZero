@@ -1,28 +1,58 @@
 kyverno:
   enabled: false
 
+  # Disable hooks being triggered during each sync
+  policyReportsCleanup:
+    enabled: false
+  webhooksCleanup:
+    enabled: false
+    autoDeleteWebhooks:
+      enabled: true
+
+  crds:
+    migration:
+      enabled: false
+
 # templating:
 #   enabled: true
+
+  config:
+    preserve: false
+    webhookAnnotations:
+      argocd.argoproj.io/installation-id: KubeZero-ArgoCD
+      # Unfortunately Argo needs different values for Mutating and Validating hooks so disabled for now
+      # argocd.argoproj.io/tracking-id: policy:/ServiceAccount:kyverno/kyverno-admission-controller
+
+  features:
+    logging:
+      format: json
+
+  # Enabled via kubezero global metrics flag
+  grafana:
+    enabled: false
 
   admissionController:
     revisionHistoryLimit: 2
 
-    nodeSelector:
-      node-role.kubernetes.io/control-plane: ""
-    tolerations:
-    - key: node-role.kubernetes.io/control-plane
-      effect: NoSchedule
-
-#   container:
-#     extraArgs:
-#       caSecretName: kubezero-policy-admission-tls
-#       tlsSecretName: kubezero-policy-admission-tls
+  cleanupController:
+    revisionHistoryLimit: 2
+    rbac:
+      clusterRole:
+        extraResources:
+          # Allow to clean up postgreSQL backups
+          - apiGroups:
+              - postgresql.cnpg.io
+            resources:
+              - backups
+            verbs:
+              - delete
+              - list
+              - watch
 
   backgroundController:
+    revisionHistoryLimit: 2
     enabled: false
 
-# cleanupController:
-#   enabled: false
-
   reportsController:
+    revisionHistoryLimit: 2
     enabled: false

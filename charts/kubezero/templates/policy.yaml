@@ -1,6 +1,28 @@
 {{- define "policy-values" }}
 kyverno:
-  dummy: test
+  {{- if eq .Values.global.platform "aws" }}
+  global:
+    {{- include "kubezero-lib.control-plane" . | nindent 4 }}
+  {{- end }}
+
+  grafana:
+    enabled: {{ .Values.metrics.enabled }}
+
+  admissionController:
+    serviceMonitor:
+      enabled: {{ .Values.metrics.enabled }}
+
+  cleanupController:
+    serviceMonitor:
+      enabled: {{ .Values.metrics.enabled }}
+
+  backgroundController:
+    serviceMonitor:
+      enabled: {{ .Values.metrics.enabled }}
+
+  reportsController:
+    serviceMonitor:
+      enabled: {{ .Values.metrics.enabled }}
 {{- end }}
 
 {{- define "policy-argo" }}
