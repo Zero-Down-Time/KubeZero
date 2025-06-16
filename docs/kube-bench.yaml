@@ -1,4 +1,10 @@
----
+#apiVersion: v1
+#kind: ServiceAccount
+#metadata:
+#  name: kube-bench
+#  annotations:
+#    kubezero.com/aws-iam-role-arn: arn:aws:iam::123456789012:role/kube-bench
+#---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -9,6 +15,7 @@ spec:
       labels:
         app: kube-bench
     spec:
+#     serviceAccountName: kube-bench
       containers:
         - command: ["kube-bench"]
           #args:

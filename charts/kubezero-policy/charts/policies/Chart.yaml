@@ -1,9 +1,8 @@
 apiVersion: v2
-name: kubezero-policy
-description: KubeZero umbrella chart for Kyverno
+name: policies
+description: KubeZero collection of Kyverno policies
 type: application
 version: 0.1.0
-appVersion: v1.14
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -16,11 +15,4 @@ dependencies:
   - name: kubezero-lib
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
-  - name: kyverno
-    version: 3.4.2
-    repository: https://kyverno.github.io/kyverno/
-    condition: kyverno.enabled
-  - name: policies
-    version: 0.1.0
-    condition: policies.enabled
 kubeVersion: ">= 1.30.0-0"

@@ -1,0 +1,6 @@
+bestPractices:
+  enabled: false
+
+aws:
+  enabled: false
+  region: us-west-2

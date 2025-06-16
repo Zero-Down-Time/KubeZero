@@ -23,6 +23,14 @@ kyverno:
   reportsController:
     serviceMonitor:
       enabled: {{ .Values.metrics.enabled }}
+
+policies:
+  {{- if eq .Values.global.platform "aws" }}
+  aws:
+    enabled: true
+    region: {{ .global.aws.region }}
+  {{- end }}
+
 {{- end }}
 
 {{- define "policy-argo" }}

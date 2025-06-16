@@ -18,6 +18,7 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
+|  | policies | 0.1.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://kyverno.github.io/kyverno/ | kyverno | 3.4.2 |
 
@@ -27,4 +28,22 @@ Kubernetes: `>= 1.30.0-0`
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| kyverno.admissionController.revisionHistoryLimit | int | `2` |  |
+| kyverno.backgroundController.revisionHistoryLimit | int | `2` |  |
+| kyverno.cleanupController.rbac.clusterRole.extraResources[0].apiGroups[0] | string | `"postgresql.cnpg.io"` |  |
+| kyverno.cleanupController.rbac.clusterRole.extraResources[0].resources[0] | string | `"backups"` |  |
+| kyverno.cleanupController.rbac.clusterRole.extraResources[0].verbs[0] | string | `"delete"` |  |
+| kyverno.cleanupController.rbac.clusterRole.extraResources[0].verbs[1] | string | `"list"` |  |
+| kyverno.cleanupController.rbac.clusterRole.extraResources[0].verbs[2] | string | `"watch"` |  |
+| kyverno.cleanupController.revisionHistoryLimit | int | `2` |  |
+| kyverno.config.preserve | bool | `false` |  |
+| kyverno.config.webhookAnnotations."argocd.argoproj.io/installation-id" | string | `"KubeZero-ArgoCD"` |  |
+| kyverno.crds.migration.enabled | bool | `false` |  |
 | kyverno.enabled | bool | `false` |  |
+| kyverno.features.logging.format | string | `"json"` |  |
+| kyverno.grafana.enabled | bool | `false` |  |
+| kyverno.policyReportsCleanup.enabled | bool | `false` |  |
+| kyverno.reportsController.enabled | bool | `false` |  |
+| kyverno.reportsController.revisionHistoryLimit | int | `2` |  |
+| kyverno.webhooksCleanup.autoDeleteWebhooks.enabled | bool | `true` |  |
+| kyverno.webhooksCleanup.enabled | bool | `true` |  |

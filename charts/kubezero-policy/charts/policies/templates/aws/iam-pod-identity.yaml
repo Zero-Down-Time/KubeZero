@@ -1,0 +1,69 @@
+{{- if .Values.aws.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: add-aws-iam-oidc-mapping
+  annotations:
+    policies.kyverno.io/title: AWS Pod Identity
+    policies.kyverno.io/category: aws
+    kyverno.io/kyverno-version: 1.14.0
+    kyverno.io/kubernetes-version: "1.31"
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: >-
+      Pods having a service account annotated with \"kubezero.com/aws-iam-role-arn\"
+      will get the required environment variables as well as volumes injected
+      to make the SDKs automatically find and use the IAM role.
+spec:
+  useServerSideApply: true
+  background: false
+  rules:
+    - name: add-aws-iam-oidc-mapping
+      context:
+      - name: saAnnotations
+        apiCall:
+          urlPath: "/api/v1/namespaces/{{`{{request.namespace}}`}}/serviceaccounts/{{`{{request.object.spec.serviceAccountName}}`}}"
+          jmesPath: "metadata.annotations || ''"
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+            operations:
+            - CREATE
+      preconditions:
+        all:
+        - key: "{{`{{request.object.spec.serviceAccountName || '' }}`}}"
+          operator: NotEquals
+          value: ""
+        - key: "{{`{{ saAnnotations.\"kubezero.com/aws-iam-role-arn\" || '' }}`}}"
+          operator: NotEquals
+          value: ""
+      mutate:
+        foreach:
+        - list: "request.object.spec.containers"
+          patchStrategicMerge:
+            spec:
+              containers:
+              - (name): "{{`{{ element.name }}`}}"
+                env:
+                - name: AWS_REGION
+                  value: {{ .Values.aws.region }}
+                - name: AWS_ROLE_ARN
+                  value: "{{`{{ saAnnotations.\"kubezero.com/aws-iam-role-arn\" }}`}}"
+                - name: AWS_WEB_IDENTITY_TOKEN_FILE
+                  value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+                - name: AWS_STS_REGIONAL_ENDPOINTS
+                  value: regional
+                volumeMounts:
+                - name: aws-token
+                  mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
+                  readOnly: true
+              volumes:
+              - name: aws-token
+                projected:
+                  sources:
+                  - serviceAccountToken:
+                      path: token
+                      expirationSeconds: 86400
+                      audience: "sts.amazonaws.com"
+{{- end }}

@@ -5,7 +5,7 @@ kyverno:
   policyReportsCleanup:
     enabled: false
   webhooksCleanup:
-    enabled: false
+    enabled: true
     autoDeleteWebhooks:
       enabled: true
 
@@ -51,7 +51,6 @@ kyverno:
 
   backgroundController:
     revisionHistoryLimit: 2
-    enabled: false
 
   reportsController:
     revisionHistoryLimit: 2

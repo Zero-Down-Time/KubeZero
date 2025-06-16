@@ -30,17 +30,17 @@ addons:
   aws-eks-asg-rolling-update-handler:
     enabled: false
 
-policy:
-  enabled: false
-  namespace: kyverno
-  targetRevision: 0.1.0
-
 network:
   enabled: true
   retain: true
   targetRevision: 0.5.9
   cilium:
     enabled: true
+
+policy:
+  enabled: false
+  namespace: kyverno
+  targetRevision: 0.1.0
 
 cert-manager:
   enabled: false
