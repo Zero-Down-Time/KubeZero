@@ -2,7 +2,7 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: add-aws-iam-oidc-mapping
+  name: add-aws-iam-pod-identity
   annotations:
     policies.kyverno.io/title: AWS Pod Identity
     policies.kyverno.io/category: aws
@@ -10,6 +10,7 @@ metadata:
     kyverno.io/kubernetes-version: "1.31"
     policies.kyverno.io/subject: Pod
     policies.kyverno.io/description: >-
+      This provides the EKS Pod Identity Webhook functionality for KubeZero.
       Pods having a service account annotated with \"kubezero.com/aws-iam-role-arn\"
       will get the required environment variables as well as volumes injected
       to make the SDKs automatically find and use the IAM role.
