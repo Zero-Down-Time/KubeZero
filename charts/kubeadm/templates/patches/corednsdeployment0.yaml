@@ -5,8 +5,8 @@ spec:
       - name: coredns
         resources:
           requests:
-            cpu: 100m
-            memory: 32Mi
+            cpu: 50m
+            memory: 48Mi
           limits:
             memory: 128Mi
       nodeSelector:

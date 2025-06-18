@@ -9,6 +9,14 @@ def migrate(values):
     """Actual changes here"""
 
     # 1.32
+    values["network"]["enabled"] = True
+    values["addons"]["enabled"] = True
+
+    try:
+        values["policy"] = {"enabled": True}
+    except KeyError:
+        pass
+
     try:
         values["istio-ingress"]["gateway"]["service"]["extraPorts"] = values["istio-ingress"]["gateway"]["service"]["ports"]
         values["istio-ingress"]["gateway"]["service"].pop("ports")

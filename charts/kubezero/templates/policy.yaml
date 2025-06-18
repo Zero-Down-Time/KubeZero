@@ -1,5 +1,7 @@
 {{- define "policy-values" }}
 kyverno:
+  enabled: true
+
   {{- if eq .Values.global.platform "aws" }}
   global:
     {{- include "kubezero-lib.control-plane" . | nindent 4 }}
@@ -25,6 +27,11 @@ kyverno:
       enabled: {{ .Values.metrics.enabled }}
 
 policies:
+  enabled: true
+
+  bestPractices:
+    enabled: true
+
   {{- if eq .Values.global.platform "aws" }}
   aws:
     enabled: true

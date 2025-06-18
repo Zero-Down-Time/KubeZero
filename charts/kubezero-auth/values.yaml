@@ -22,7 +22,7 @@ keycloak:
       memory: 1024Mi
     requests:
       cpu: 100m
-      memory: 512Mi
+      memory: 640Mi
 
   metrics:
     enabled: false

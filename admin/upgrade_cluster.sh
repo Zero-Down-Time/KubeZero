@@ -29,14 +29,14 @@ admin_job "upgrade_control_plane, upgrade_kubezero"
 #read -r
 
 # upgrade modules
-admin_job "apply_kubezero, apply_network, apply_addons, apply_storage, apply_operators"
+admin_job "apply_kubezero, apply_network"
 
 echo "Checking that all pods in kube-system are running ..."
 waitSystemPodsRunning
 
 echo "Applying remaining KubeZero modules..."
 
-admin_job "apply_cert-manager, apply_istio, apply_istio-ingress, apply_istio-private-ingress, apply_logging, apply_metrics, apply_telemetry, apply_argo"
+admin_job "apply_policy, apply_addons, apply_storage, apply_operators, apply_cert-manager, apply_istio, apply_istio-ingress, apply_istio-private-ingress, apply_logging, apply_metrics, apply_telemetry, apply_argo"
 
 # Final step is to commit the new argocd kubezero app
 kubectl get app kubezero -n argocd -o yaml | yq 'del(.status) | del(.metadata) | del(.operation) | .metadata.name="kubezero" | .metadata.namespace="argocd"' | yq 'sort_keys(..)' > $ARGO_APP

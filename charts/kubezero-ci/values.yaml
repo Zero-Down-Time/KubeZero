@@ -28,8 +28,8 @@ gitea:
 
   resources:
     requests:
-      cpu: "150m"
-      memory: "320Mi"
+      cpu: "200m"
+      memory: "1024Mi"
     limits:
       memory: "2048Mi"
 

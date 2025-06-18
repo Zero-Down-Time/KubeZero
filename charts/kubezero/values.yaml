@@ -13,7 +13,7 @@ global:
   gcp: {}
 
 addons:
-  enabled: true
+  enabled: false
   targetRevision: 0.8.14
   external-dns:
     enabled: false
@@ -31,7 +31,7 @@ addons:
     enabled: false
 
 network:
-  enabled: true
+  enabled: false
   retain: true
   targetRevision: 0.5.9
   cilium:

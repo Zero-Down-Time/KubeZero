@@ -18,7 +18,7 @@ cilium:
   resources:
     requests:
       cpu: 50m
-      memory: 256Mi
+      memory: 384Mi
 #   limits:
 #     memory: 1Gi
 #     cpu: 4000m
