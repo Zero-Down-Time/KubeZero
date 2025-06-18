@@ -334,10 +334,11 @@ apply_module() {
   done
 
   for t in $MODULES; do
-    # apply/replace app of apps directly
+    # apply/replace app of apps directly, if fails eg. new module added try server-side apply
     if [ $t == "kubezero" ]; then
       [ -f $CHARTS/kubezero/hooks.d/pre-install.sh ] && . $CHARTS/kubezero/hooks.d/pre-install.sh
-      kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD)
+      kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD) || \
+        kubectl apply -f $WORKDIR/kubezero/templates --server-side --force-conflicts $(field_manager $ARGOCD)
     else
       _helm apply $t
     fi

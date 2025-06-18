@@ -35,7 +35,7 @@ policies:
   {{- if eq .Values.global.platform "aws" }}
   aws:
     enabled: true
-    region: {{ .global.aws.region }}
+    region: {{ .Values.global.aws.region }}
   {{- end }}
 
 {{- end }}
