@@ -5,22 +5,22 @@ folder: Istio
 condition: '.Values.istiod.telemetry.enabled'
 dashboards:
 - name: istio-control-plane
-  url: https://grafana.com/api/dashboards/7645/revisions/239/download
+  url: https://grafana.com/api/dashboards/7645/revisions/259/download
   tags:
   - Istio
 - name: istio-mesh
-  url: https://grafana.com/api/dashboards/7639/revisions/239/download
+  url: https://grafana.com/api/dashboards/7639/revisions/259/download
   tags:
   - Istio
 - name: istio-service
-  url: https://grafana.com/api/dashboards/7636/revisions/239/download
+  url: https://grafana.com/api/dashboards/7636/revisions/259/download
   tags:
   - Istio
 - name: istio-workload
-  url: https://grafana.com/api/dashboards/7630/revisions/239/download
+  url: https://grafana.com/api/dashboards/7630/revisions/259/download
   tags:
   - Istio
 - name: istio-performance
-  url: https://grafana.com/api/dashboards/11829/revisions/239/download
+  url: https://grafana.com/api/dashboards/11829/revisions/259/download
   tags:
   - Istio

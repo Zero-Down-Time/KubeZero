@@ -1,6 +1,6 @@
 # kubezero-metrics
 
-![Version: 0.10.4](https://img.shields.io/badge/Version-0.10.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.11.1](https://img.shields.io/badge/Version-0.11.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Prometheus, Grafana and Alertmanager as well as all Kubernetes integrations.
 
@@ -18,10 +18,10 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
-| https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 69.2.3 |
-| https://prometheus-community.github.io/helm-charts | prometheus-adapter | 4.11.0 |
-| https://prometheus-community.github.io/helm-charts | prometheus-pushgateway | 3.0.0 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
+| https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 75.2.1 |
+| https://prometheus-community.github.io/helm-charts | prometheus-adapter | 4.14.1 |
+| https://prometheus-community.github.io/helm-charts | prometheus-pushgateway | 3.4.0 |
 
 ## Values
 
@@ -141,7 +141,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.kubeEtcd.enabled | bool | `true` |  |
 | kube-prometheus-stack.kubeEtcd.service.port | int | `2381` |  |
 | kube-prometheus-stack.kubeEtcd.service.targetPort | int | `2381` |  |
-| kube-prometheus-stack.kubeProxy.enabled | bool | `true` |  |
+| kube-prometheus-stack.kubeProxy.enabled | bool | `false` |  |
 | kube-prometheus-stack.kubeScheduler.enabled | bool | `true` |  |
 | kube-prometheus-stack.kubeScheduler.service.port | int | `10259` |  |
 | kube-prometheus-stack.kubeScheduler.service.targetPort | int | `10259` |  |
@@ -159,7 +159,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.prometheus-node-exporter.prometheus.monitor.relabelings[0].sourceLabels[0] | string | `"__meta_kubernetes_pod_node_name"` |  |
 | kube-prometheus-stack.prometheus-node-exporter.prometheus.monitor.relabelings[0].targetLabel | string | `"instance"` |  |
 | kube-prometheus-stack.prometheus-node-exporter.resources.requests.cpu | string | `"20m"` |  |
-| kube-prometheus-stack.prometheus-node-exporter.resources.requests.memory | string | `"16Mi"` |  |
+| kube-prometheus-stack.prometheus-node-exporter.resources.requests.memory | string | `"24Mi"` |  |
 | kube-prometheus-stack.prometheus.enabled | bool | `true` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.logFormat | string | `"json"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues | bool | `false` |  |
@@ -174,9 +174,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues | bool | `false` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage | string | `"16Gi"` |  |
-| kube-prometheus-stack.prometheusOperator.admissionWebhooks.patch.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
-| kube-prometheus-stack.prometheusOperator.admissionWebhooks.patch.tolerations[0].effect | string | `"NoSchedule"` |  |
-| kube-prometheus-stack.prometheusOperator.admissionWebhooks.patch.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
+| kube-prometheus-stack.prometheusOperator.admissionWebhooks.certManager.enabled | bool | `true` |  |
 | kube-prometheus-stack.prometheusOperator.enabled | bool | `true` |  |
 | kube-prometheus-stack.prometheusOperator.logFormat | string | `"json"` |  |
 | kube-prometheus-stack.prometheusOperator.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |

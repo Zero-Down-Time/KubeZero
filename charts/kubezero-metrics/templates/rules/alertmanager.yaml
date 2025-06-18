@@ -38,7 +38,7 @@ spec:
         description: Alertmanager {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod{{`}}`}} failed to send {{`{{`}} $value | humanizePercentage {{`}}`}} of notifications to {{`{{`}} $labels.integration {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerfailedtosendalerts
         summary: An Alertmanager instance failed to send notifications.
-      expr: "(\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[5m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[5m])\n)\n> 0.01\n"
+      expr: "(\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[15m])\n)\n> 0.01\n"
       for: 5m
       labels:
         severity: warning
@@ -47,7 +47,7 @@ spec:
         description: The minimum notification failure rate to {{`{{`}} $labels.integration {{`}}`}} sent from any instance in the {{`{{`}}$labels.job{{`}}`}} cluster is {{`{{`}} $value | humanizePercentage {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerclusterfailedtosendalerts
         summary: All Alertmanager instances in a cluster failed to send notifications to a critical integration.
-      expr: "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[5m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[5m])\n)\n> 0.01\n"
+      expr: "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[15m])\n)\n> 0.01\n"
       for: 5m
       labels:
         severity: critical
@@ -56,7 +56,7 @@ spec:
         description: The minimum notification failure rate to {{`{{`}} $labels.integration {{`}}`}} sent from any instance in the {{`{{`}}$labels.job{{`}}`}} cluster is {{`{{`}} $value | humanizePercentage {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerclusterfailedtosendalerts
         summary: All Alertmanager instances in a cluster failed to send notifications to a non-critical integration.
-      expr: "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[5m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[5m])\n)\n> 0.01\n"
+      expr: "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[15m])\n)\n> 0.01\n"
       for: 5m
       labels:
         severity: warning

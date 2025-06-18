@@ -7,7 +7,7 @@
          "app.kubernetes.io/instance": "main",
          "app.kubernetes.io/name": "alertmanager",
          "app.kubernetes.io/part-of": "kube-prometheus",
-         "app.kubernetes.io/version": "0.28.0",
+         "app.kubernetes.io/version": "0.28.1",
          "prometheus": "k8s",
          "role": "alert-rules"
       },
@@ -52,7 +52,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerfailedtosendalerts",
                      "summary": "An Alertmanager instance failed to send notifications."
                   },
-                  "expr": "(\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[5m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[5m])\n)\n> 0.01\n",
+                  "expr": "(\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[15m])\n)\n> 0.01\n",
                   "for": "5m",
                   "labels": {
                      "severity": "warning"
@@ -65,7 +65,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerclusterfailedtosendalerts",
                      "summary": "All Alertmanager instances in a cluster failed to send notifications to a critical integration."
                   },
-                  "expr": "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[5m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[5m])\n)\n> 0.01\n",
+                  "expr": "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[15m])\n)\n> 0.01\n",
                   "for": "5m",
                   "labels": {
                      "severity": "critical"
@@ -78,7 +78,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerclusterfailedtosendalerts",
                      "summary": "All Alertmanager instances in a cluster failed to send notifications to a non-critical integration."
                   },
-                  "expr": "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[5m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[5m])\n)\n> 0.01\n",
+                  "expr": "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[15m])\n)\n> 0.01\n",
                   "for": "5m",
                   "labels": {
                      "severity": "warning"

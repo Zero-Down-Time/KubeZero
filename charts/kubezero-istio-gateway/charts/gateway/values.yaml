@@ -64,6 +64,8 @@ _internal_defaults_do_not_set:
     ipFamilies: []
     ## Whether to automatically allocate NodePorts (only for LoadBalancers).
     # allocateLoadBalancerNodePorts: false
+    ## Set LoadBalancer class (only for LoadBalancers).
+    # loadBalancerClass: ""
 
   resources:
     requests:
@@ -96,7 +98,9 @@ _internal_defaults_do_not_set:
   readinessProbe: {}
 
   # Labels to apply to all resources
-  labels: {}
+  labels:
+    # By default, don't enroll gateways into the ambient dataplane
+    "istio.io/dataplane-mode": none
 
   # Annotations to apply to all resources
   annotations: {}
