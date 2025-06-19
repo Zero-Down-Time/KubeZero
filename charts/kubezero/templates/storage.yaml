@@ -35,7 +35,7 @@ aws-ebs-csi-driver:
     region: {{ .Values.global.aws.region }}
     env:
     - name: AWS_ROLE_ARN
-      value: {{ index .Values "storage" "aws-ebs-csi-driver" "IamArn" | quote }}
+      value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.ebs-csi-controller-sa"
     - name: AWS_WEB_IDENTITY_TOKEN_FILE
       value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
     - name: AWS_STS_REGIONAL_ENDPOINTS
@@ -69,13 +69,11 @@ aws-efs-csi-driver:
       enabled: true
     {{- end }}
 
-    {{- with index .Values "storage" "aws-efs-csi-driver" "IamArn" }}
     extraEnv:
     - name: AWS_ROLE_ARN
-      value: {{ . | quote }}
+      value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.efs-csi-controller-sa"
     - name: AWS_WEB_IDENTITY_TOKEN_FILE
       value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-    {{- end }}
 
     # The EFS controller steel needs hostnetwork and cannot update on single node control planes otherwise
     {{- if not .Values.global.highAvailable }}

@@ -33,9 +33,14 @@ kyverno:
 
   admissionController:
     revisionHistoryLimit: 2
+    container:
+      extraArgs:
+        leaderElectionRetryPeriod: 30s
 
   cleanupController:
     revisionHistoryLimit: 2
+    extraArgs:
+      leaderElectionRetryPeriod: 30s
     rbac:
       clusterRole:
         extraResources:
@@ -51,6 +56,8 @@ kyverno:
 
   backgroundController:
     revisionHistoryLimit: 2
+    extraArgs:
+      leaderElectionRetryPeriod: 30s
 
   reportsController:
     revisionHistoryLimit: 2

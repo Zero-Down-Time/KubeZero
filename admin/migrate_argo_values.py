@@ -29,6 +29,13 @@ def migrate(values):
     except KeyError:
         pass
 
+    try:
+        values["storage"]["aws-ebs-csi-driver"].pop("IamArn")
+        values["storage"]["aws-efs-csi-driver"].pop("IamArn")
+    except KeyError:
+        pass
+
+
     return values
 
 
