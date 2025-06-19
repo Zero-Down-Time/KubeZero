@@ -48,7 +48,7 @@ while true; do
   sleep 1
 done
 
-echo "Once all controller nodes are running on $KUBE_VERSION, <return> to continue"
+echo "Once ALL nodes, incl. workers, ALL, are running on $KUBE_VERSION, <return> to continue"
 read -r
 
 # Final control plane upgrades
