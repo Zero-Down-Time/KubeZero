@@ -41,8 +41,6 @@ dashboards:
   tags: ['kubernetes', 'csi']
 - name: pod-total
   url: file://dashboards/pod-total.json
-- name: proxy
-  url: file://dashboards/proxy.json
 - name: scheduler
   url: file://dashboards/scheduler.json
 - name: workload-total
