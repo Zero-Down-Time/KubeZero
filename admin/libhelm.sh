@@ -191,18 +191,10 @@ function delete_ns() {
 
 # Extract crds via helm calls
 function crds() {
-  helm template $(chart_location $chart) -n $namespace --name-template $module $targetRevision --include-crds -f $WORKDIR/values.yaml $API_VERSIONS --kube-version $KUBE_VERSION $@ | python3 -c '
-#!/usr/bin/python3
-import yaml
-import sys
-
-yaml.add_multi_constructor("tag:yaml.org,2002:value", lambda loader, suffix, node: None, Loader=yaml.SafeLoader)
-
-for manifest in yaml.safe_load_all(sys.stdin):
-    if manifest:
-        if "kind" in manifest and manifest["kind"] == "CustomResourceDefinition":
-          print("---")
-          print(yaml.dump(manifest))' > $WORKDIR/crds.yaml
+  helm template $(chart_location $chart) -n $namespace --name-template $module \
+    $targetRevision --include-crds -f $WORKDIR/values.yaml $API_VERSIONS \
+    --kube-version $KUBE_VERSION $@ | \
+    yq eval 'select(.kind == "CustomResourceDefinition")' > $WORKDIR/crds.yaml
 
   # Only apply if there are actually any crds
   if [ -s $WORKDIR/crds.yaml ]; then
@@ -213,24 +205,14 @@ for manifest in yaml.safe_load_all(sys.stdin):
 
 
 # helm template | kubectl apply -f -
-# confine to one namespace if possible
+# - filter out any CRDs
+# - set manifest.namespace if not set on any resource
 function render() {
-  helm secrets --evaluate-templates template $(chart_location $chart) -n $namespace --name-template $module $targetRevision --skip-tests --skip-crds --no-hooks -f $WORKDIR/values.yaml $API_VERSIONS --kube-version $KUBE_VERSION $ENV_VALUES \
-    | python3 -c '
-#!/usr/bin/python3
-import yaml
-import sys
-
-yaml.add_multi_constructor("tag:yaml.org,2002:value", lambda loader, suffix, node: None, Loader=yaml.SafeLoader)
-
-for manifest in yaml.safe_load_all(sys.stdin):
-    if manifest:
-        if "kind" in manifest and manifest["kind"] == "CustomResourceDefinition":
-          continue
-        if "metadata" in manifest and "namespace" not in manifest["metadata"]:
-            manifest["metadata"]["namespace"] = sys.argv[1]
-        print("---")
-        print(yaml.dump(manifest))' $namespace > $WORKDIR/helm.yaml
+  helm secrets --evaluate-templates template $(chart_location $chart) \
+    -n $namespace --name-template $module $targetRevision --skip-tests \
+    --skip-crds --no-hooks -f $WORKDIR/values.yaml $API_VERSIONS \
+    --kube-version $KUBE_VERSION $ENV_VALUES | \
+    yq eval 'select(.kind != "CustomResourceDefinition") | .metadata.namespace = (.metadata.namespace // "'$namespace'")' > $WORKDIR/helm.yaml
 }
 
 
