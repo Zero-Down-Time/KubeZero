@@ -38,7 +38,7 @@ argo-cd:
       format: json
     image:
       repository: public.ecr.aws/zero-downtime/zdt-argocd
-      tag: v3.0.5
+      tag: v3.0.9
     networkPolicy:
       create: true
 
@@ -134,10 +134,8 @@ argo-cd:
       - name: cmp-kubezero-git-sync
         image: '{{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}'
         imagePullPolicy: '{{ default .Values.global.image.imagePullPolicy .Values.repoServer.image.imagePullPolicy }}'
-        command: ["/var/run/argocd/argocd-cmp-server"]
+        command: ["/usr/local/bin/argocd-cmp-server"]
         volumeMounts:
-          - mountPath: /var/run/argocd
-            name: var-files
           - mountPath: /home/argocd/cmp-server/plugins
             name: plugins
           - mountPath: /tmp

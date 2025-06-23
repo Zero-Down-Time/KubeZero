@@ -1,6 +1,6 @@
 # kubezero-argo
 
-![Version: 0.4.1](https://img.shields.io/badge/Version-0.4.1-informational?style=flat-square)
+![Version: 0.4.2](https://img.shields.io/badge/Version-0.4.2-informational?style=flat-square)
 
 KubeZero Argo - Events, Workflow, CD
 
@@ -18,9 +18,9 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://argoproj.github.io/argo-helm | argo-cd | 8.0.14 |
+| https://argoproj.github.io/argo-helm | argo-cd | 8.1.1 |
 | https://argoproj.github.io/argo-helm | argo-events | 2.4.15 |
-| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.12.2 |
+| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.12.3 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 
 ## Values
@@ -28,6 +28,7 @@ Kubernetes: `>= 1.30.0-0`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | argo-cd.configs.cm."application.instanceLabelKey" | string | `nil` |  |
+| argo-cd.configs.cm."resource.compareoptions" | string | `"# disables status field diffing in specified resource types\nignoreAggregatedRoles: true\n"` |  |
 | argo-cd.configs.cm."resource.customizations" | string | `"argoproj.io/Application:\n  health.lua: |\n    hs = {}\n    hs.status = \"Progressing\"\n    hs.message = \"\"\n    if obj.status ~= nil then\n      if obj.status.health ~= nil then\n        hs.status = obj.status.health.status\n        if obj.status.health.message ~= nil then\n          hs.message = obj.status.health.message\n        end\n      end\n    end\n    return hs\n"` |  |
 | argo-cd.configs.cm."server.rbac.log.enforce.enable" | string | `nil` |  |
 | argo-cd.configs.cm."timeout.reconciliation" | string | `"300s"` |  |
@@ -53,7 +54,7 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.dex.enabled | bool | `false` |  |
 | argo-cd.enabled | bool | `false` |  |
 | argo-cd.global.image.repository | string | `"public.ecr.aws/zero-downtime/zdt-argocd"` |  |
-| argo-cd.global.image.tag | string | `"v3.0.5"` |  |
+| argo-cd.global.image.tag | string | `"v3.0.9"` |  |
 | argo-cd.global.logging.format | string | `"json"` |  |
 | argo-cd.global.networkPolicy.create | bool | `true` |  |
 | argo-cd.istio.enabled | bool | `false` |  |
@@ -82,7 +83,7 @@ Kubernetes: `>= 1.30.0-0`
 | argo-events.configs.jetstream.streamConfig.maxBytes | string | `"1GB"` |  |
 | argo-events.configs.jetstream.streamConfig.maxMsgs | int | `1000000` | Maximum number of messages before expiring oldest message |
 | argo-events.configs.jetstream.streamConfig.replicas | int | `1` | Number of replicas, defaults to 3 and requires minimal 3 |
-| argo-events.configs.jetstream.versions[0].configReloaderImage | string | `"natsio/nats-server-config-reloader:0.14.1"` |  |
+| argo-events.configs.jetstream.versions[0].configReloaderImage | string | `"natsio/nats-server-config-reloader:0.18.0"` |  |
 | argo-events.configs.jetstream.versions[0].metricsExporterImage | string | `"natsio/prometheus-nats-exporter:0.17.3"` |  |
 | argo-events.configs.jetstream.versions[0].natsImage | string | `"nats:2.11.4-scratch"` |  |
 | argo-events.configs.jetstream.versions[0].startCommand | string | `"/nats-server"` |  |
