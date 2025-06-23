@@ -10,9 +10,9 @@ argo-cd:
     params:
     {{- if not $.Values.global.highAvailable }}
       # Reduce load on API server on single node control plane
-      controller.status.processors: 4
-      controller.operation.processors: 2
-      controller.kubectl.parallelism.limit: 2
+      controller.status.processors: 2
+      controller.operation.processors: 1
+      controller.kubectl.parallelism.limit: 1
     {{- else }}
       controller.status.processors: 8
       controller.operation.processors: 4
