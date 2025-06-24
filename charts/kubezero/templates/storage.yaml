@@ -62,6 +62,8 @@ aws-ebs-csi-driver:
 
 aws-efs-csi-driver:
   enabled: {{ default false (index .Values "storage" "aws-efs-csi-driver" "enabled")}}
+  # Temp for old 1.7 chart we use atm
+  replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
   controller:
     replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
     {{- if .Values.global.highAvailable }}

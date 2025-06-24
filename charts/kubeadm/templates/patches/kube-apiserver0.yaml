@@ -6,3 +6,10 @@ spec:
       requests:
         cpu: 200m
         memory: 1536Mi
+      limits:
+        memory: 3Gi
+    env:
+    - name: GOMEMLIMIT
+      valueFrom:
+        resourceFieldRef:
+          resource: limits.memory

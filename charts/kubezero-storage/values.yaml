@@ -208,6 +208,8 @@ aws-efs-csi-driver:
 
   useHelmHooksForCSIDriver: false
 
+  # we use the old 1.7 atm
+  replicaCount: 1
 # image:
 #   tag: "v2.0.9"
 
