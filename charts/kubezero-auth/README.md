@@ -1,6 +1,6 @@
 # kubezero-auth
 
-![Version: 0.6.3](https://img.shields.io/badge/Version-0.6.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.0.5](https://img.shields.io/badge/AppVersion-26.0.5-informational?style=flat-square)
+![Version: 0.6.4](https://img.shields.io/badge/Version-0.6.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.0.5](https://img.shields.io/badge/AppVersion-26.0.5-informational?style=flat-square)
 
 KubeZero umbrella chart for all things Authentication and Identity management
 
@@ -19,7 +19,7 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| oci://registry-1.docker.io/bitnamicharts | keycloak | 24.7.1 |
+| oci://registry-1.docker.io/bitnamicharts | keycloak | 24.7.4 |
 
 # Keycloak
    
@@ -64,4 +64,4 @@ https://github.com/keycloak/keycloak-benchmark/tree/main/provision/minikube/keyc
 | keycloak.replicaCount | int | `1` |  |
 | keycloak.resources.limits.memory | string | `"1024Mi"` |  |
 | keycloak.resources.requests.cpu | string | `"100m"` |  |
-| keycloak.resources.requests.memory | string | `"512Mi"` |  |
+| keycloak.resources.requests.memory | string | `"640Mi"` |  |

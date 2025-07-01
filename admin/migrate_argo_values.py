@@ -10,7 +10,12 @@ def migrate(values):
 
     # 1.32
     values["network"]["enabled"] = True
-    values["addons"]["enabled"] = True
+
+    try:
+        values["addons"]["enabled"] = True
+    except KeyError:
+        values["addons"] = {}
+        values["addons"]["enabled"] = True
 
     try:
         values["policy"] = {"enabled": True}
