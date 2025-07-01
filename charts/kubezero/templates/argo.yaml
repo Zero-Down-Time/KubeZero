@@ -45,7 +45,7 @@ argo-cd:
       - name: cmp-kubezero-git-sync
         image: '{{ "{{" }} default .Values.global.image.repository .Values.repoServer.image.repository {{ "}}" }}:{{ "{{" }} default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag {{ "}}" }}'
         imagePullPolicy: '{{ "{{" }} default .Values.global.image.imagePullPolicy .Values.repoServer.image.imagePullPolicy {{ "}}" }}'
-        command: ["/var/run/argocd/argocd-cmp-server"]
+        command: ["/usr/local/bin/argocd-cmp-server"]
         env:
           {{- include "aws-iam-env" (merge (dict "roleName" "argocd-repo-server") .) | nindent 10 }}
         volumeMounts:

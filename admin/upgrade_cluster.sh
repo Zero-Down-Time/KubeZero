@@ -27,9 +27,6 @@ control_plane_phase1() {
 
   # upgrade modules
   admin_job "apply_kubezero, apply_network"
-
-  echo "Checking that all pods in kube-system are running ..."
-  waitSystemPodsRunning
 }
 
 control_plane_phase2() {
@@ -55,20 +52,32 @@ backup() {
   done
 }
 
+
+control_plane_healthy() {
+  echo "Checking control-plane is healthy..."
+  kubectl rollout status ds cilium -n kube-system
+  waitSystemPodsRunning
+}
+
 #####
 
-echo "Checking that all pods in kube-system are running ..."
-waitSystemPodsRunning
+
+control_plane_healthy
 
 [ "$ARGOCD" == "true" ] && disable_argo
 
 control_plane_phase1
 
+control_plane_healthy
+
+echo "Replace controller nodes first to not stall out V1.31 controllers ... <return> to continue"
+read -r
+
 cluster_modules
 
 backup
 
-echo "Once ALL nodes, incl. workers, ALL, are running on $KUBE_VERSION, <return> to continue"
+echo "Once ALL nodes, incl. workers, ALL, are running on $KUBE_VERSION <return> to continue"
 read -r
 
 control_plane_phase2
