@@ -18,7 +18,7 @@ Kubernetes: `>= 1.26.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.bitnami.com/bitnami | mariadb-galera | 14.0.10 |
 
 ## Values
@@ -28,7 +28,6 @@ Kubernetes: `>= 1.26.0`
 | mariadb-galera.configurationConfigMap | string | `"{{ .Release.Name }}-mariadb-galera-configuration"` |  |
 | mariadb-galera.db.user | string | `"mariadb"` |  |
 | mariadb-galera.enabled | bool | `false` |  |
-| mariadb-galera.galera | string | `nil` |  |
 | mariadb-galera.istio.enabled | bool | `false` |  |
 | mariadb-galera.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
 | mariadb-galera.istio.url | string | `"mariadb.example.com"` |  |

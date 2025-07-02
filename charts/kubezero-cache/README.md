@@ -1,6 +1,6 @@
 # kubezero-cache
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Cache module
 
@@ -18,9 +18,9 @@ Kubernetes: `>= 1.29.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.2.1 |
-| https://charts.bitnami.com/bitnami | redis | 20.0.3 |
-| https://charts.bitnami.com/bitnami | redis-cluster | 11.0.2 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
+| https://charts.bitnami.com/bitnami | redis | 20.11.5 |
+| https://charts.bitnami.com/bitnami | redis-cluster | 11.5.0 |
 
 ## Values
 

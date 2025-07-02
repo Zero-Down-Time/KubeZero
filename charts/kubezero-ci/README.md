@@ -76,16 +76,17 @@ Kubernetes: `>= 1.25.0`
 | gitea.persistence.size | string | `"4Gi"` |  |
 | gitea.postgresql-ha.enabled | bool | `false` |  |
 | gitea.postgresql.enabled | bool | `false` |  |
-| gitea.redis-cluster.enabled | bool | `false` |  |
 | gitea.repliaCount | int | `1` |  |
 | gitea.resources.limits.memory | string | `"2048Mi"` |  |
-| gitea.resources.requests.cpu | string | `"150m"` |  |
-| gitea.resources.requests.memory | string | `"320Mi"` |  |
+| gitea.resources.requests.cpu | string | `"200m"` |  |
+| gitea.resources.requests.memory | string | `"1024Mi"` |  |
 | gitea.securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | gitea.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | gitea.service.http.port | int | `80` |  |
 | gitea.strategy.type | string | `"Recreate"` |  |
 | gitea.test.enabled | bool | `false` |  |
+| gitea.valkey-cluster.enabled | bool | `false` |  |
+| gitea.valkey.enabled | bool | `false` |  |
 | jenkins.agent.annotations."cluster-autoscaler.kubernetes.io/safe-to-evict" | string | `"false"` |  |
 | jenkins.agent.annotations."container.apparmor.security.beta.kubernetes.io/jnlp" | string | `"unconfined"` |  |
 | jenkins.agent.containerCap | int | `2` |  |
@@ -94,7 +95,7 @@ Kubernetes: `>= 1.25.0`
 | jenkins.agent.garbageCollection.enabled | bool | `true` |  |
 | jenkins.agent.idleMinutes | int | `30` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
-| jenkins.agent.image.tag | string | `"v0.7.0"` |  |
+| jenkins.agent.image.tag | string | `"v0.7.1"` |  |
 | jenkins.agent.inheritYamlMergeStrategy | bool | `true` |  |
 | jenkins.agent.podName | string | `"podman-aws"` |  |
 | jenkins.agent.podRetention | string | `"Default"` |  |
@@ -166,5 +167,5 @@ Kubernetes: `>= 1.25.0`
 | renovate.securityContext.fsGroupChangePolicy | string | `"OnRootMismatch"` |  |
 | trivy.enabled | bool | `false` |  |
 | trivy.persistence.enabled | bool | `true` |  |
-| trivy.persistence.size | string | `"1Gi"` |  |
+| trivy.persistence.size | string | `"2Gi"` |  |
 | trivy.rbac.create | bool | `false` |  |

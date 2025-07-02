@@ -26,6 +26,7 @@ Kubernetes: `>= 1.26.0`
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| nats.config.cluster.routeURLs.useFQDN | bool | `true` |  |
 | nats.config.jetstream.enabled | bool | `true` |  |
 | nats.enabled | bool | `false` |  |
 | nats.istio.enabled | bool | `false` |  |

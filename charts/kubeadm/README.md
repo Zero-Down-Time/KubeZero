@@ -1,6 +1,6 @@
 # kubeadm
 
-![Version: 1.32.3](https://img.shields.io/badge/Version-1.32.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.32.6](https://img.shields.io/badge/Version-1.32.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Kubeadm cluster config
 

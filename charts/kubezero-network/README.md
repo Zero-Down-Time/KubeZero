@@ -65,7 +65,7 @@ Kubernetes: `>= 1.30.0-0`
 | cilium.prometheus.port | int | `9091` |  |
 | cilium.prometheus.serviceMonitor.enabled | bool | `false` |  |
 | cilium.resources.requests.cpu | string | `"50m"` |  |
-| cilium.resources.requests.memory | string | `"256Mi"` |  |
+| cilium.resources.requests.memory | string | `"384Mi"` |  |
 | cilium.routingMode | string | `"tunnel"` |  |
 | cilium.sysctlfix.enabled | bool | `false` |  |
 | cilium.tunnelProtocol | string | `"geneve"` |  |

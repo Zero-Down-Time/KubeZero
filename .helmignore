@@ -21,3 +21,17 @@
 .idea/
 *.tmproj
 .vscode/
+
+ci/
+*.gotmpl
+/*.tgz
+output
+jsonnet
+/dashboards.yaml
+/prometheus-rules.yaml
+*.patch
+*.sh
+*.py
+*.md
+istioctl
+argocd

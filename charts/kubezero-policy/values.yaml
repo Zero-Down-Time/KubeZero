@@ -5,7 +5,7 @@ kyverno:
   policyReportsCleanup:
     enabled: false
   webhooksCleanup:
-    enabled: true
+    enabled: false
     autoDeleteWebhooks:
       enabled: true
 

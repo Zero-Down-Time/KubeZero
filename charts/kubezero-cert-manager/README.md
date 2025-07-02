@@ -18,7 +18,7 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cdn.zero-downtime.net/charts/ | kubezero-lib | >= 0.1.6 |
+| https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.jetstack.io | cert-manager | v1.17.1 |
 
 ## AWS - OIDC IAM roles
