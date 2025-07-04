@@ -15,7 +15,7 @@ spec:
   - match:
     - headers:
         user-agent:
-          regex: ".*(?:AI2Bot|anthropic-ai|Applebot-Extended|Bytespider|CCBot|Claude-Web|ClaudeBot|cohere-ai|cohere-training-data-crawler|Cotoyogi|Datenbank Crawler|Diffbot|FacebookBot|Factset_spyderbot|Google-Extended|GPTBot|ICC-Crawler|Kangaroo Bot|Meta-ExternalAgent|netEstate Imprint Crawler|omgili|PanguBot|PetalBot|SemrushBot-OCOB|Timpibot|Webzio-Extended).*"
+          regex: "(?i).*(?:AI2Bot|anthropic-ai|Applebot-Extended|Bytespider|CCBot|Claude-Web|ClaudeBot|cohere-ai|cohere-training-data-crawler|Cotoyogi|Datenbank Crawler|Diffbot|FacebookBot|Factset_spyderbot|Google-Extended|GPTBot|ICC-Crawler|Kangaroo Bot|Meta-ExternalAgent|netEstate Imprint Crawler|omgili|PanguBot|PetalBot|SemrushBot-OCOB|Timpibot|Webzio-Extended).*"
     directResponse:
       status: 418
   - match:
