@@ -12,6 +12,26 @@ spec:
   hosts:
   - {{ .Values.gitea.istio.url }}
   http:
+  - match:
+    - headers:
+        user-agent:
+          regex: ".*(?:AI2Bot|anthropic-ai|Applebot-Extended|Bytespider|CCBot|Claude-Web|ClaudeBot|cohere-ai|cohere-training-data-crawler|Cotoyogi|Datenbank Crawler|Diffbot|FacebookBot|Factset_spyderbot|Google-Extended|GPTBot|ICC-Crawler|Kangaroo Bot|Meta-ExternalAgent|netEstate Imprint Crawler|omgili|PanguBot|PetalBot|SemrushBot-OCOB|Timpibot|Webzio-Extended).*"
+    directResponse:
+      status: 418
+  - match:
+    - uri:
+        exact: /assets/img/logo.svg
+    - uri:
+        exact: /assets/img/favicon.svg
+    redirect:
+      authority: cdn.zero-downtime.net
+      uri: /assets/zdt/logo.svg
+  - match:
+    - uri:
+        exact: /assets/img/favicon.png
+    redirect:
+      authority: cdn.zero-downtime.net
+      uri: /assets/zdt/logo-small-64.png
   - name: api
     match:
     - uri:

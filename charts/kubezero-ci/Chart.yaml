@@ -30,7 +30,7 @@ dependencies:
     repository: https://aquasecurity.github.io/helm-charts/
     condition: trivy.enabled
   - name: renovate
-    version: 40.62.1
+    version: 41.18.1
     repository: https://docs.renovatebot.com/helm-charts
     condition: renovate.enabled
-kubeVersion: ">= 1.25.0"
+kubeVersion: ">= 1.30.0"

@@ -10,28 +10,26 @@
 .hg/
 .hgignore
 .svn/
+# Various IDEs
+.project
+.idea/
+*.tmproj
+.vscode/
 # Common backup files
 *.swp
 *.bak
 *.tmp
 *.orig
 *~
-# Various IDEs
-.project
-.idea/
-*.tmproj
-.vscode/
+*.patch
+*.gotmpl
 
 ci/
-*.gotmpl
 /*.tgz
 output
 jsonnet
-/dashboards.yaml
+/update.sh
+/dashboard*.yaml
 /prometheus-rules.yaml
-*.patch
-*.sh
-*.py
-*.md
 istioctl
 argocd

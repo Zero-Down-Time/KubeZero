@@ -213,6 +213,9 @@ controller:
     readOnlyRootFilesystem: true
     allowPrivilegeEscalation: false
 
+  # -- enable or disable the controller k8s service
+  serviceEnabled: true
+
   # For minikube, set this to NodePort, elsewhere uses LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
   # -- k8s service type
@@ -402,10 +405,10 @@ controller:
   # Plugins will be installed during Jenkins controller start
   # -- List of Jenkins plugins to install. If you don't want to install plugins, set it to `false`
   installPlugins:
-    - kubernetes:4340.v345364d31a_2a_
+    - kubernetes:4358.vcfd9c5a_0a_f51
     - workflow-aggregator:608.v67378e9d3db_1
     - git:5.7.0
-    - configuration-as-code:1967.va_968e15fd05b_
+    - configuration-as-code:1971.vf9280461ea_89
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
   # -- Download the minimum required version or latest version of all dependencies
@@ -954,10 +957,12 @@ agent:
   # -- Custom registry used to pull the agent jnlp image from
   jnlpregistry:
   image:
+    # -- Registry to pull the agent jnlp image from
+    registry: ""
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3309.v27b_9314fd1a_4-2"
+    tag: "3309.v27b_9314fd1a_4-7"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"

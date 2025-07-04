@@ -1,0 +1,8 @@
+{{- if .Values.gitea.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" (include "kubezero-lib.fullname" $) "public" | trunc 63 | trimSuffix "-" }}
+data:
+{{- (.Files.Glob "files/gitea/public/*").AsConfig | nindent 2 }}
+{{- end }}

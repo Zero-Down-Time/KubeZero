@@ -34,14 +34,14 @@ gitea:
       memory: "2048Mi"
 
   extraVolumes:
-    - name: gitea-themes
+    - name: gitea-public
       configMap:
-        name: gitea-kubezero-ci-themes
+        name: gitea-kubezero-ci-public
 
   extraVolumeMounts:
-    - name: gitea-themes
+    - name: gitea-public
       readOnly: true
-      mountPath: "/data/gitea/public/assets/css"
+      mountPath: "/data/gitea/public"
 
   checkDeprecation: false
   test:
@@ -69,7 +69,7 @@ gitea:
       queue:
         TYPE: level
       ui:
-        THEMES: "gitea-light,gitea-dark,github-dark"
+        THEMES: "gitea-light,gitea-dark"
         DEFAULT_THEME: "gitea-dark"
       log:
         LEVEL: warn
