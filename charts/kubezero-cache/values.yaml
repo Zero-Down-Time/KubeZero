@@ -44,6 +44,9 @@ redis-cluster:
   persistence:
     enabled: false
 
+  redis:
+    podAntiAffinityPreset: hard
+
 istio:
   enabled: false
 
