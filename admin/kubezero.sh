@@ -401,8 +401,12 @@ backup() {
   # Regular retention
   restic forget --keep-hourly 24 --keep-daily ${RESTIC_RETENTION:-7} --prune
 
-  # Defrag etcd backend
-  etcdctl --endpoints=https://${ETCD_NODENAME}:2379 --command-timeout=60s defrag
+  # Defrag etcd id dbSize > 100MB
+  etcd-defrag --endpoints=https://${ETCD_NODENAME}:2379 \
+    --cacert ${HOSTFS}/etc/kubernetes/pki/etcd/ca.crt \
+    --key ${HOSTFS}/etc/kubernetes/pki/apiserver-etcd-client.key \
+    --cert ${HOSTFS}/etc/kubernetes/pki/apiserver-etcd-client.crt \
+    --cluster --move-leader --defrag-rule="dbSize > 100*1024*1024"
 }
 
 

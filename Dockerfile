@@ -29,6 +29,7 @@ RUN cd /etc/apk/keys && \
       etcd-ctl@edge-community \
       cri-tools@kubezero \
       etcdhelper@kubezero \
+      etcd-defrag@kubezero \
       kubeadm@kubezero~=${KUBE_VERSION} \
       kubectl@kubezero~=${KUBE_VERSION}
 

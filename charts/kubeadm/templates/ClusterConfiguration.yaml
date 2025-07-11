@@ -36,10 +36,10 @@ etcd:
         value: zap
       - name: log-level
         value: warn
-      - name: heartbeat-interval
-        value: "1000"
-      - name: election-timeout
-        value: "10000"
+      - name: quota-backend-bytes
+        value: "671088640" # 640MB max size
+      - name: max-wals
+        value: "3"
       ### DNS discovery
       #- name: discovery-srv
       #  value: {{ .Values.domain }}
