@@ -7,18 +7,20 @@ global:
     enabled: false
 
 istiod:
-  pilot:
-    autoscaleEnabled: false
-    replicaCount: 1
+  autoscaleEnabled: false
+  replicaCount: 1
 
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-#   env:
-#     PILOT_ENABLE_MYSQL_FILTER: true
-#     PILOT_ENABLE_REDIS_FILTER: true
-#     PILOT_HTTP10: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+# env:
+#   PILOT_ENABLE_MYSQL_FILTER: true
+#   PILOT_ENABLE_REDIS_FILTER: true
+#   PILOT_HTTP10: true
 
   telemetry:
     enabled: false

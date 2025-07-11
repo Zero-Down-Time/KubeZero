@@ -25,8 +25,16 @@ snapshotController:
 aws-ebs-csi-driver:
   enabled: {{ default false (index .Values "storage" "aws-ebs-csi-driver" "enabled")}}
   controller:
-    replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
-    {{- if not .Values.global.highAvailable }}
+    {{- if .Values.global.highAvailable }}
+    replicaCount: 2
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app: ebs-csi-controller
+          topologyKey: "kubernetes.io/hostname"
+    {{- else }}
     podDisruptionBudget:
       enabled: false
     {{- end }}
@@ -65,12 +73,6 @@ aws-efs-csi-driver:
   # Temp for old 1.7 chart we use atm
   replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
   controller:
-    replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
-    {{- if .Values.global.highAvailable }}
-    podDisruptionBudget:
-      enabled: true
-    {{- end }}
-
     extraEnv:
     - name: AWS_ROLE_ARN
       value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.efs-csi-controller-sa"
@@ -82,15 +84,15 @@ aws-efs-csi-driver:
     updateStrategy:
       type: Recreate
     {{- else }}
+    replicaCount: 2
+    podDisruptionBudget:
+      enabled: true
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
         - labelSelector:
-            matchExpressions:
-            - key: app
-              operator: In
-              values:
-              - efs-csi-controller
+            matchLabels:
+              app: efs-csi-controller
           topologyKey: "kubernetes.io/hostname"
     {{- end }}
 

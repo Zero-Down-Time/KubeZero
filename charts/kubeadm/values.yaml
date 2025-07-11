@@ -28,7 +28,6 @@ api:
 etcd:
   nodeName: etcd
   state: new
-  extraArgs: {}
 
 # -- Set to false for openrc, eg. on Gentoo or Alpine
 systemd: false

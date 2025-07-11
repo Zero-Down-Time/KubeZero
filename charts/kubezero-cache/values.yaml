@@ -3,12 +3,12 @@ redis:
 
   architecture: standalone
 
-  # Stick to last OSS version for now
-  image:
-    tag: 7.2.5-debian-12-r4
+  #image:
+  # tag: 7.2.5-debian-12-r4
 
   replica:
     replicaCount: 0
+    podAntiAffinityPreset: hard
 
   auth:
     enabled: false
@@ -25,6 +25,12 @@ redis:
     enabled: false
     serviceMonitor:
       enabled: false
+    resources:
+      requests:
+        cpu: 20m
+        memory: 16Mi
+      limits:
+        memory: 64Mi
 
 
 redis-cluster:
@@ -40,6 +46,12 @@ redis-cluster:
     enabled: false
     serviceMonitor:
       enabled: false
+    resources:
+      requests:
+        cpu: 20m
+        memory: 16Mi
+      limits:
+        memory: 64Mi
 
   persistence:
     enabled: false

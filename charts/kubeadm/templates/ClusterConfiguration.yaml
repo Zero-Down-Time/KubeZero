@@ -36,6 +36,10 @@ etcd:
         value: zap
       - name: log-level
         value: warn
+      - name: heartbeat-interval
+        value: "1000"
+      - name: election-timeout
+        value: "10000"
       ### DNS discovery
       #- name: discovery-srv
       #  value: {{ .Values.domain }}

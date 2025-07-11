@@ -12,16 +12,25 @@ global:
 istiod:
   telemetry:
     enabled: {{ $.Values.metrics.enabled }}
-  pilot:
-    {{- if eq .Values.global.platform "aws" }}
-    {{- include "kubezero-lib.control-plane" . | nindent 4 }}
-    {{- end }}
-    {{- if .Values.global.highAvailable }}
-    replicaCount: 2
-    {{- else }}
-    extraContainerArgs:
-    - --leader-elect=false
-    {{- end }}
+
+  {{- if eq .Values.global.platform "aws" }}
+  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
+  {{- end }}
+
+  {{- if .Values.global.highAvailable }}
+  replicaCount: 2
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: istiod
+            istio: pilot
+        topologyKey: "kubernetes.io/hostname"
+  {{- else }}
+  extraContainerArgs:
+  - --leader-elect=false
+  {{- end }}
 
 {{- with  index .Values "istio" "kiali-server" }}
 kiali-server:

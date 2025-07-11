@@ -216,7 +216,6 @@ control_plane_node() {
     # Only restore etcd data during "restore" and none exists already
     if [[ "$CMD" =~ ^(restore)$ ]]; then
       if [ ! -d ${HOSTFS}/var/lib/etcd/member ]; then
-      # rm -rf ${HOSTFS}/var/lib/etcd/member
         etcdctl snapshot restore ${HOSTFS}/etc/kubernetes/etcd_snapshot \
           --name $ETCD_NODENAME \
           --data-dir="${HOSTFS}/var/lib/etcd" \

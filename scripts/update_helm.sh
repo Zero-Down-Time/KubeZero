@@ -12,6 +12,10 @@ do
     name=$(basename $dir)
     [[ $name =~ $CHARTS ]] || continue
 
+    # Sync all helmignores from toplevel
+    # symlinks cause chaos unfortunately
+    cp .helmignore $dir
+
     if [ -x $dir/update.sh ]; then
         { cd $dir && ./update.sh; }
     else
@@ -22,11 +26,11 @@ do
             rm -rf $dir/charts/*.tgz
             helm dependency update --skip-refresh $dir
         fi
+
+        echo "Updating README"
+        helm-docs -c $dir
     fi
 
-    echo "Processing $dir"
-    helm lint $dir && helm --debug package $dir
-
-    echo "Updating README"
-    helm-docs -c $dir 
+    #echo "Processing $dir"
+    #helm lint $dir && helm --debug package $dir
 done

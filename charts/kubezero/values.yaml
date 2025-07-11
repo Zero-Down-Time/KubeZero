@@ -14,7 +14,7 @@ global:
 
 addons:
   enabled: false
-  targetRevision: 0.8.14
+  targetRevision: 0.8.15
   external-dns:
     enabled: false
   forseti:
