@@ -27,6 +27,10 @@ gateway:
           - key: "node.kubernetes.io/ingress.public"
           {{- end }}
             operator: Exists
+
+    {{- with index .Values "istio-private-ingress" "gateway" "replicaCount" }}
+    replicaCount: {{ . }}
+    {{- if gt (int .) 1 }}
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
       - labelSelector:
@@ -34,6 +38,8 @@ gateway:
             app: istio-private-ingressgateway
             istio: private-ingressgateway
         topologyKey: "kubernetes.io/hostname"
+    {{- end }}
+    {{- end }}
 
   topologySpreadConstraints:
     - maxSkew: 1
