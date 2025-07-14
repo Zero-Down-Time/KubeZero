@@ -9,6 +9,9 @@ spec:
       limits:
         memory: 3Gi
     env:
+    env:
+    - name: GOMAXPROCS
+      value: "1"
     - name: GOMEMLIMIT
       valueFrom:
         resourceFieldRef:

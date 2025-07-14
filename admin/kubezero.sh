@@ -219,6 +219,8 @@ control_plane_node() {
         etcdctl snapshot restore ${HOSTFS}/etc/kubernetes/etcd_snapshot \
           --name $ETCD_NODENAME \
           --data-dir="${HOSTFS}/var/lib/etcd" \
+          --bump-revision=1000000 \
+          --mark-compacted \
           --initial-cluster-token etcd-${CLUSTERNAME} \
           --initial-advertise-peer-urls https://${ETCD_NODENAME}:2380 \
           --initial-cluster $ETCD_NODENAME=https://${ETCD_NODENAME}:2380
@@ -401,7 +403,7 @@ backup() {
   # Regular retention
   restic forget --keep-hourly 24 --keep-daily ${RESTIC_RETENTION:-7} --prune
 
-  # Defrag etcd id dbSize > 100MB
+  # Defrag etcd only if dbSize > 100MB
   etcd-defrag --endpoints=https://${ETCD_NODENAME}:2379 \
     --cacert ${HOSTFS}/etc/kubernetes/pki/etcd/ca.crt \
     --key ${HOSTFS}/etc/kubernetes/pki/apiserver-etcd-client.key \

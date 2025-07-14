@@ -13,10 +13,9 @@ gateway:
   resources:
     requests:
       cpu: 50m
-      memory: 64Mi
+      memory: 96Mi
     limits:
-      # cpu: 100m
-      memory: 512Mi
+      memory: 256Mi
 
   service:
     type: NodePort

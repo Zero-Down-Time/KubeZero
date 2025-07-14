@@ -29,7 +29,6 @@ gateway:
             operator: Exists
 
     {{- with index .Values "istio-private-ingress" "gateway" "replicaCount" }}
-    replicaCount: {{ . }}
     {{- if gt (int .) 1 }}
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

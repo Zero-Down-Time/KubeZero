@@ -18,10 +18,13 @@ cilium:
   resources:
     requests:
       cpu: 50m
+      memory: 256Mi
+    limits:
       memory: 384Mi
-#   limits:
-#     memory: 1Gi
 #     cpu: 4000m
+  extraEnv:
+    - name: GOMAXPROCS
+      value: "1"
 
   cni:
     binPath: "/usr/libexec/cni"
@@ -107,6 +110,14 @@ cilium:
       enabled: false
       serviceMonitor:
         enabled: false
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 48Mi
+      limits:
+        memory: 128Mi
+  #     cpu: 4000m
 
   hubble:
     enabled: false

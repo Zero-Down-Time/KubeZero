@@ -21,13 +21,16 @@ featureGates:
 # Minimal unit is 40m per pod
 podsPerCore: 25
 # cpuCFSQuotaPeriod: 10ms
-# Basic OS incl. cri
+# Basic OS incl. containerd
+# review with 1.33 might need to go a bit higher
 systemReserved:
   memory: 96Mi
   #ephemeral-storage: "1Gi"
 # kubelet memory should be static as runc,conmon are added to each pod's cgroup
 kubeReserved:
   cpu: 70m
+  # Set with 1.33
+  # memory: 128Mi
   memory: 96Mi
 # Lets use below to reserve memory for system processes as kubeReserved/sytemReserved doesnt go well with systemd it seems
 #evictionHard:
