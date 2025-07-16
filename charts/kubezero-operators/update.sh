@@ -17,7 +17,7 @@ rm -rf charts/eck-operator/charts
 yq eval -Mi 'del(.dependencies)' charts/eck-operator/Chart.yaml
 
 # get latest cloudnative-pg clusterimagecatalog
-wget -qO templates/cloudnative-pg/ClusterImageCatalog-bookworm.yaml https://raw.githubusercontent.com/cloudnative-pg/postgres-containers/refs/heads/main/Debian/ClusterImageCatalog-bookworm.yaml
+wget -qO files/cloudnative-pg/ClusterImageCatalog-bookworm.yaml https://raw.githubusercontent.com/cloudnative-pg/postgres-containers/refs/heads/main/Debian/ClusterImageCatalog-bookworm.yaml
 
 # Create ZDT dashboard configmap
 ../kubezero-metrics/sync_grafana_dashboards.py dashboards-pg.yaml templates/cloudnative-pg/grafana-dashboards.yaml

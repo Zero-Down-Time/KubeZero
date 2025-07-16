@@ -1,0 +1,3 @@
+{{- if index .Values "cloudnative-pg" "enabled" }}
+{{ .Files.Get "files/cloudnative-pg/ClusterImageCatalog-bookworm.yaml" }}
+{{- end }}

@@ -54,3 +54,7 @@ rabbitmq-cluster-operator:
       enabled: false
       serviceMonitor:
         enabled: true
+
+altinity-clickhouse-operator:
+  enabled: false
+

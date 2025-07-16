@@ -1,6 +1,6 @@
 # kubezero-operators
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Various operators supported by KubeZero
 
@@ -19,10 +19,11 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.bitnami.com/bitnami | rabbitmq-cluster-operator | 4.4.11 |
-| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.23.2 |
+| https://charts.bitnami.com/bitnami | rabbitmq-cluster-operator | 4.4.25 |
+| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.24.0 |
+| https://docs.altinity.com/clickhouse-operator | altinity-clickhouse-operator | 0.25.2 |
 | https://helm.elastic.co | eck-operator | 3.0.0 |
-| oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.46.0 |
+| oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.47.0 |
 
 ## Values
 
