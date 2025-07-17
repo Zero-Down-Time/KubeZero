@@ -11,6 +11,19 @@ cloudnative-pg:
     grafanaDashboard:
       create: false
 
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+
+  config:
+    data:
+      ENABLE_INSTANCE_MANAGER_INPLACE_UPDATES: 'true'
+      CLUSTERS_ROLLOUT_DELAY: '60'
+      INSTANCES_ROLLOUT_DELAY: '10'
+
 strimzi-kafka-operator:
   enabled: false
 
@@ -24,10 +37,10 @@ strimzi-kafka-operator:
 #   - name: JAVA_OPTS
 #     value: "-XX:MaxRAMPercentage=75 -XX:+UseParallelGC -XX:ActiveProcessorCount=2"
 
-# resources:
-#   requests:
-#     cpu: 10m
-#     memory: 256Mi
+  resources:
+    requests:
+      cpu: 20m
+      memory: 256Mi
 #   limits:
 #     memory: 256Mi
 
@@ -58,3 +71,19 @@ rabbitmq-cluster-operator:
 altinity-clickhouse-operator:
   enabled: false
 
+  operator:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 128Mi
+
+  metrics:
+    enabled: false
+  serviceMonitor:
+    enabled: false
+  dashboards:
+    enabled: false
+    additionalLabels:
+      grafana_dashboard: "1"

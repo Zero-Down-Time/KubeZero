@@ -1,0 +1,22 @@
+apiVersion: v2
+name: kubezero-analytics
+description: KubeZero Analytics module based on Plausible
+type: application
+version: 0.1.0
+home: https://kubezero.com
+icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
+keywords:
+  - kubezero
+  - plausible
+maintainers:
+  - name: Stefan Reimer
+    email: stefan@zero-downtime.net
+dependencies:
+  - name: kubezero-lib
+    version: 0.2.1
+    repository: https://cdn.zero-downtime.net/charts/
+  - name: plausible-analytics
+    version: 0.4.1
+    repository: https://imio.github.io/helm-charts
+    condition: plausible-analytics.enabled
+kubeVersion: ">= 1.30.0-0"

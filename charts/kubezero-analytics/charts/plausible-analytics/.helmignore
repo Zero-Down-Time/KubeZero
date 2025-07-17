@@ -1,0 +1,29 @@
+# Ignore lock files
+*.lock
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Common VCS dirs
+.git/
+.gitignore
+.bzr/
+.bzrignore
+.hg/
+.hgignore
+.svn/
+
+# Common backup files
+*.swp
+*.bak
+*.tmp
+*~
+
+# CI 
+.github/
+
+helmlint.sh 
+.envrc
+.direnv/
+flake.*

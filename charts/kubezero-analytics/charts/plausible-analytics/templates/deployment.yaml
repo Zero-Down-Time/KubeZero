@@ -1,0 +1,284 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "plausible-analytics.fullname" . }}
+  labels:
+    {{- include "plausible-analytics.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "plausible-analytics.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "plausible-analytics.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "plausible-analytics.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        {{- if .Values.plausibleInitContainers.enabled }}
+        - name: scripts-volume
+          configMap:
+            name: {{ include "plausible-analytics.fullname" . }}
+        {{- end }}
+        {{- if .Values.databaseCA }}
+        - name: database-ca
+          secret:
+            secretName: {{ include "plausible-analytics.secretName" . }}
+            items:
+              - key: DATABASE_CA
+                path: database-ca.pem
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if .Values.plausibleInitContainers.enabled }}
+      initContainers:
+        - name: wait-for-postgres
+          image: "{{ .Values.plausibleInitContainers.postgresql.image.repository }}:{{ .Values.plausibleInitContainers.postgresql.image.tag | default "latest" }}"
+          command: ['sh', '/scripts/wait-for-postgres.sh']
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: DATABASE_URL
+                  name: {{ include "plausible-analytics.secretName" . }}
+          volumeMounts:
+            - name: scripts-volume
+              mountPath: /scripts
+            {{- if .Values.databaseCA }}
+            - name: database-ca
+              mountPath: /etc/ssl/certs/plausible/
+              readOnly: true
+            {{- end }}
+        {{- if not .Values.plausibleInitContainers.curl.enabled }}
+        - name: wait-for-clickhouse
+          image: "{{ .Values.plausibleInitContainers.clickhouse.image.repository }}:{{ .Values.plausibleInitContainers.clickhouse.image.tag | default "latest" }}"
+          command: ['sh', '/scripts/wait-for-clickhouse.sh']
+          env:
+            - name: CLICKHOUSE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: CLICKHOUSE_DATABASE_URL
+                  name: {{ include "plausible-analytics.secretName" . }}
+        {{- end }}
+        {{- if .Values.plausibleInitContainers.curl.enabled }}
+        - name: wait-for-clickhouse
+          image: "{{ .Values.plausibleInitContainers.curl.image.repository }}:{{ .Values.plausibleInitContainers.curl.image.tag | default "latest" }}"
+          command: ['sh', '/scripts/wait-for-clickhouse-with-curl.sh']
+          env:
+            - name: CLICKHOUSE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: CLICKHOUSE_DATABASE_URL
+                  name: {{ include "plausible-analytics.secretName" . }}
+        {{- end }}
+          volumeMounts:
+            - name: scripts-volume
+              mountPath: /scripts
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -x
+            - -c
+            - /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run
+          volumeMounts:
+            {{- if .Values.databaseCA }}
+            - name: database-ca
+              mountPath: /etc/ssl/certs/plausible/
+              readOnly: true
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          env:
+            {{- if .Values.baseURL }}
+            - name: BASE_URL
+              value: {{ .Values.baseURL | toString | quote }}
+            {{- end }}
+            {{- if .Values.listenip }}
+            - name: LISTEN_IP
+              value: {{ .Values.listenip | toString | quote }}
+            {{- end }}
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  key: SECRET_KEY_BASE
+                  name: {{ include "plausible-analytics.secretName" . }}
+            - name: TOTP_VAULT_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: TOTP_VAULT_KEY
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- if .Values.disableRegistration }}
+            - name: DISABLE_REGISTRATION
+              value: {{ .Values.disableRegistration | toString | quote }}
+            {{- end }}
+            {{- if .Values.logFailedLoginAttempts }}
+            - name: LOG_FAILED_LOGIN_ATTEMPTS
+              value: {{ .Values.logFailedLoginAttempts | toString | quote }}
+            {{- end }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: DATABASE_URL
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- if .Values.databaseCA }}
+            - name: DATABASE_CACERTFILE
+              value: /etc/ssl/certs/plausible/database-ca.pem
+            {{- end }}
+            - name: CLICKHOUSE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: CLICKHOUSE_DATABASE_URL
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- if .Values.mailer.enabled }}
+            {{- if .Values.mailer.email }}
+            - name: MAILER_EMAIL
+              value: {{ .Values.mailer.email | toString | quote }}
+            {{- end }}
+            {{- if .Values.mailer.adapter }}
+            - name: MAILER_ADAPTER
+              value: {{ .Values.mailer.adapter | toString | quote }}
+            {{- end }}
+            {{- if eq .Values.mailer.adapter "Bamboo.Mua" }}
+            {{- if .Values.mailer.smtp.host }}
+            - name: SMTP_HOST_ADDR
+              value: {{ .Values.mailer.smtp.host | toString | quote }}
+            {{- end }}
+            {{- if .Values.mailer.smtp.port }}
+            - name: SMTP_HOST_PORT
+              value: {{ .Values.mailer.smtp.port | toString | quote }}
+            {{- end }}
+            {{- if .Values.mailer.smtp.auth }}
+            {{- if .Values.mailer.smtp.username }}
+            - name: SMTP_USER_NAME
+              value: {{ .Values.mailer.smtp.username | toString | quote }}
+            {{- end }}
+            - name: SMTP_USER_PWD
+              valueFrom:
+                secretKeyRef:
+                  key: SMTP_USER_PWD
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- end }}
+            {{- if .Values.mailer.smtp.ssl }}
+            - name: SMTP_HOST_SSL_ENABLED
+              value: {{ .Values.mailer.smtp.ssl | toString | quote }}
+            {{- end }}
+            {{- if .Values.mailer.smtp.retries }}
+            - name: SMTP_RETRIES
+              value: {{ .Values.mailer.smtp.retries | toString | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if eq .Values.mailer.adapter "Bamboo.PostmarkAdapter" }}
+            - name: POSTMARK_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: POSTMARK_API_KEY
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- end }}
+            {{- if eq .Values.mailer.adapter "Bamboo.MailgunAdapter" }}
+            - name: MAILGUN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: MAILGUN_API_KEY
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- if .Values.mailer.mailgun.domain }}
+            - name: MAILGUN_DOMAIN
+              value: {{ .Values.mailer.mailgun.domain | toString | quote }}
+            {{- end }}
+            {{- if .Values.mailer.mailgun.baseURI }}
+            - name: MAILGUN_BASE_URI
+              value: {{ .Values.mailer.mailgun.baseURI | toString | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if eq .Values.mailer.adapter "Bamboo.MandrillAdapter" }}
+            - name: MANDRILL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: MANDRILL_API_KEY
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- end }}
+            {{- if eq .Values.mailer.adapter "Bamboo.SendGridAdapter" }}
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: SENDGRID_API_KEY
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.extra_geolocation.enabled }}
+            - name: MAXMIND_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: MAXMIND_LICENSE_KEY
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- if .Values.extra_geolocation.maxmind.edition }}
+            - name: MAXMIND_EDITION
+              value: {{ .Values.extra_geolocation.maxmind.edition | toString | quote }}
+            {{- end }}
+            {{- if .Values.extra_geolocation.geolite2CountryDB }}
+            - name: GEOLITE2_COUNTRY_DB
+              value: {{ .Values.extra_geolocation.geolite2CountryDB | toString | quote }}
+            {{- end }}
+            {{- if .Values.extra_geolocation.geolite2CountryDB }}
+            - name: GEONAMES_SOURCE_FILE
+              value: {{ .Values.extra_geolocation.geonamesSourceFile | toString | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.google.enabled }}
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: GOOGLE_CLIENT_ID
+                  name: {{ include "plausible-analytics.secretName" . }}
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: GOOGLE_CLIENT_SECRET
+                  name: {{ include "plausible-analytics.secretName" . }}
+            {{- end }}
+            {{- if .Values.extraEnv }}
+            {{- toYaml .Values.extraEnv | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

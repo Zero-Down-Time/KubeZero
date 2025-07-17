@@ -1,0 +1,11 @@
+plausible-analytics:
+  enabled: false
+
+  plausibleInitContainers:
+    enabled: false
+
+  postgresql:
+    enabled: false
+
+  clickhouse:
+    enabled: false
