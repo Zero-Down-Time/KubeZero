@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kubezero-lib.fullname" . }}
+  labels:
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.plausible.service.type }}
+  ports:
+    - port: {{ .Values.plausible.service.port }}
+      targetPort: 8000
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "kubezero-lib.selectorLabels" . | nindent 4 }}
