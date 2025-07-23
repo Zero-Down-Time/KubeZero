@@ -1,7 +1,7 @@
 image:
   repository: envoyproxy/ratelimit
   # see: https://hub.docker.com/r/envoyproxy/ratelimit/tags
-  tag: 80b15778
+  tag: a90e0e5d
 
 log:
   level: warn
@@ -14,9 +14,22 @@ localCacheSize: 1048576
 failureModeDeny: false
 
 # rate limit descriptors for each domain
-# - slow: 1 req/s over a minute per sourceIP
 descriptors:
   ingress:
+  - key: sourceIp
+    value: tenPerSecond
+    descriptors:
+    - key: remote_address
+      value: "10.*"
+      rate_limit:
+        unlimited: true
+  - key: sourceIp
+    value: tenPerSecond
+    descriptors:
+    - key: remote_address
+      value: "172.16.*"
+      rate_limit:
+        unlimited: true
   - key: sourceIp
     value: sixtyPerMinute
     descriptors:
@@ -31,6 +44,13 @@ descriptors:
       rate_limit:
         unit: second
         requests_per_unit: 10
+  - key: headers
+    value: 180PerMinute
+    descriptors:
+    - key: userAgent
+      rate_limit:
+        unit: minute
+        requests_per_unit: 180
 
   privateIngress:
   - key: sourceIp
@@ -47,6 +67,13 @@ descriptors:
       rate_limit:
         unit: second
         requests_per_unit: 10
+  - key: headers
+    value: 180PerMinute
+    descriptors:
+    - key: userAgent
+      rate_limit:
+        unit: minute
+        requests_per_unit: 180
 
 metrics:
   enabled: false

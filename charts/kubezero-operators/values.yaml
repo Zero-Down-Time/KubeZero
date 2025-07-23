@@ -71,6 +71,18 @@ rabbitmq-cluster-operator:
 altinity-clickhouse-operator:
   enabled: false
 
+  configs:
+    files:
+      config.yaml:
+        watch:
+          namespaces: [".*"]
+        reconcile:
+          runtime:
+            reconcileCHIsThreadsNumber: 2
+            reconcileShardsThreadsNumber: 1
+          statefulSet:
+            revisionHistoryLimit: 2
+
   operator:
     resources:
       requests:

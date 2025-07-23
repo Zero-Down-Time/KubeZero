@@ -30,10 +30,10 @@ argo-cd:
     metrics:
       enabled: {{ .Values.metrics.enabled }}
 
+    {{- if eq .Values.global.platform "aws" }}
     volumes:
       - name: cmp-tmp
         emptyDir: {}
-    {{- if eq .Values.global.platform "aws" }}
       {{- include "aws-iam-volumes" . | nindent 6 }}
 
     env:
