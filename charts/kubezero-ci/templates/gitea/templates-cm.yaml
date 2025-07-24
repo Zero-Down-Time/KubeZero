@@ -1,0 +1,9 @@
+{{- if .Values.gitea.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" (include "kubezero-lib.fullname" $) "templates" | trunc 63 | trimSuffix "-" }}
+data:
+  header.tmpl: |
+    {{- tpl (.Files.Get "files/gitea/templates/header.tmpl") $ | nindent 4 }}
+{{- end }}

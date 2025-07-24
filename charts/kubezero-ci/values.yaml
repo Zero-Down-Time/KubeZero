@@ -37,11 +37,17 @@ gitea:
     - name: gitea-public
       configMap:
         name: gitea-kubezero-ci-public
+    - name: gitea-templates
+      configMap:
+        name: gitea-kubezero-ci-templates
 
   extraVolumeMounts:
     - name: gitea-public
       readOnly: true
       mountPath: "/data/gitea/public"
+    - name: gitea-templates
+      readOnly: true
+      mountPath: "/data/gitea/templates/custom"
 
   checkDeprecation: false
   test:
@@ -90,6 +96,9 @@ gitea:
     gateway: istio-ingress/private-ingressgateway
     url: git.example.com
     blockApi: false
+
+  analytics:
+    enabled: false
 
 
 jenkins:

@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.8.24](https://img.shields.io/badge/Version-0.8.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.8.25](https://img.shields.io/badge/Version-0.8.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -18,11 +18,11 @@ Kubernetes: `>= 1.30.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://aquasecurity.github.io/helm-charts/ | trivy | 0.16.0 |
+| https://aquasecurity.github.io/helm-charts/ | trivy | 0.16.1 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.8.66 |
-| https://dl.gitea.io/charts/ | gitea | 12.1.1 |
-| https://docs.renovatebot.com/helm-charts | renovate | 41.18.1 |
+| https://charts.jenkins.io | jenkins | 5.8.68 |
+| https://dl.gitea.io/charts/ | gitea | 12.1.2 |
+| https://docs.renovatebot.com/helm-charts | renovate | 41.43.0 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -30,9 +30,10 @@ Kubernetes: `>= 1.30.0`
 - dark theme
 - trivy scanner incl. HTML reporting and publisher
 
-# goCD
-
 # Gitea
+ - robots.txt from https://opendev.org/opendev/system-config/raw/branch/master/docker/gitea/custom/public/robots.txt
+ - integrated AI scraper blocking
+ - ZDT branding using the CDN
 
 # Verdaccio
 
@@ -48,13 +49,19 @@ Kubernetes: `>= 1.30.0`
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| gitea.analytics.enabled | bool | `false` |  |
 | gitea.checkDeprecation | bool | `false` |  |
 | gitea.enabled | bool | `false` |  |
-| gitea.extraVolumeMounts[0].mountPath | string | `"/data/gitea/public/assets/css"` |  |
-| gitea.extraVolumeMounts[0].name | string | `"gitea-themes"` |  |
+| gitea.extraVolumeMounts[0].mountPath | string | `"/data/gitea/public"` |  |
+| gitea.extraVolumeMounts[0].name | string | `"gitea-public"` |  |
 | gitea.extraVolumeMounts[0].readOnly | bool | `true` |  |
-| gitea.extraVolumes[0].configMap.name | string | `"gitea-kubezero-ci-themes"` |  |
-| gitea.extraVolumes[0].name | string | `"gitea-themes"` |  |
+| gitea.extraVolumeMounts[1].mountPath | string | `"/data/gitea/templates/custom"` |  |
+| gitea.extraVolumeMounts[1].name | string | `"gitea-templates"` |  |
+| gitea.extraVolumeMounts[1].readOnly | bool | `true` |  |
+| gitea.extraVolumes[0].configMap.name | string | `"gitea-kubezero-ci-public"` |  |
+| gitea.extraVolumes[0].name | string | `"gitea-public"` |  |
+| gitea.extraVolumes[1].configMap.name | string | `"gitea-kubezero-ci-templates"` |  |
+| gitea.extraVolumes[1].name | string | `"gitea-templates"` |  |
 | gitea.gitea.admin.existingSecret | string | `"gitea-admin-secret"` |  |
 | gitea.gitea.config."ssh.minimum_key_sizes".RSA | int | `2047` |  |
 | gitea.gitea.config.cache.ADAPTER | string | `"memory"` |  |
@@ -63,7 +70,7 @@ Kubernetes: `>= 1.30.0`
 | gitea.gitea.config.queue.TYPE | string | `"level"` |  |
 | gitea.gitea.config.session.PROVIDER | string | `"memory"` |  |
 | gitea.gitea.config.ui.DEFAULT_THEME | string | `"gitea-dark"` |  |
-| gitea.gitea.config.ui.THEMES | string | `"gitea-light,gitea-dark,github-dark"` |  |
+| gitea.gitea.config.ui.THEMES | string | `"gitea-light,gitea-dark"` |  |
 | gitea.gitea.demo | bool | `false` |  |
 | gitea.gitea.metrics.enabled | bool | `false` |  |
 | gitea.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
@@ -95,7 +102,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.garbageCollection.enabled | bool | `true` |  |
 | jenkins.agent.idleMinutes | int | `30` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
-| jenkins.agent.image.tag | string | `"v0.7.1"` |  |
+| jenkins.agent.image.tag | string | `"v0.7.2"` |  |
 | jenkins.agent.inheritYamlMergeStrategy | bool | `true` |  |
 | jenkins.agent.podName | string | `"podman-aws"` |  |
 | jenkins.agent.podRetention | string | `"Default"` |  |
