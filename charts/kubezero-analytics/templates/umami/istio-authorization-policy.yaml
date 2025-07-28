@@ -1,0 +1,28 @@
+{{- if and .Values.umami.enabled .Values.umami.istio.enabled .Values.umami.istio.ipBlocks .Values.umami.istio.blockApi }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .Release.Name }}-umami-deny-not-in-ipblocks
+  namespace: istio-system
+  labels:
+    {{- include "kubezero-lib.labels" $ | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  action: DENY
+  rules:
+  - from:
+    - source:
+        notIpBlocks:
+        {{- toYaml .Values.umami.istio.ipBlocks | nindent 8 }}
+    to:
+    - operation:
+        hosts: ["{{ .Values.umami.istio.url }}"]
+        notPaths:
+        - "/api/send"
+    when:
+    - key: connection.sni
+      values:
+      - '*'
+{{- end }}

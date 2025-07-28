@@ -1,0 +1,34 @@
+{{- if .Values.umami.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: umami-pg
+spec:
+  instances: 1
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql
+    major: 17
+  bootstrap:
+    initdb:
+      database: umami
+      owner: {{ .Values.umami.pg.auth.username }}
+      secret:
+        name: umami-pg
+  enablePDB: false
+  storage:
+    size: 1Gi
+  monitoring:
+    enablePodMonitor: true
+  postgresql:
+    parameters:
+      wal_keep_size: "32MB"
+      max_wal_size: "128MB"
+  {{- if .Values.umami.pg.backup.enabled }}
+  backup:
+    volumeSnapshot:
+      className: {{ .Values.umami.pg.backup.volumeSnapshotClassName }}
+      snapshotOwnerReference: backup
+  {{- end }}
+{{- end }}

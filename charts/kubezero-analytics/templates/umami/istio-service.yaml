@@ -1,0 +1,19 @@
+{{- if and .Values.umami.enabled .Values.umami.istio.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "kubezero-lib.fullname" . }}
+  labels:
+    {{- include "kubezero-lib.labels" $ | nindent 4 }}
+spec:
+  gateways:
+  - {{ .Values.umami.istio.gateway }}
+  hosts:
+  - {{ .Values.umami.istio.url }}
+  http:
+  - route:
+    - destination:
+        host: {{ include "kubezero-lib.fullname" . }}-umami
+        port:
+          number: 3000
+{{- end }}
