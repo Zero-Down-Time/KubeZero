@@ -32,7 +32,7 @@ Kubernetes: `>= 1.32.0-0`
 | addons.external-dns.enabled | bool | `false` |  |
 | addons.forseti.enabled | bool | `false` |  |
 | addons.sealed-secrets.enabled | bool | `false` |  |
-| addons.targetRevision | string | `"0.8.14"` |  |
+| addons.targetRevision | string | `"0.8.15"` |  |
 | argo.argo-cd.enabled | bool | `false` |  |
 | argo.argo-cd.istio.enabled | bool | `false` |  |
 | argo.argocd-image-updater.enabled | bool | `false` |  |

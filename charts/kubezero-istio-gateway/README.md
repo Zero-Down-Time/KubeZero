@@ -35,9 +35,9 @@ Kubernetes: `>= 1.30.0-0`
 | gateway.minReadySeconds | int | `10` |  |
 | gateway.podAnnotations."proxy.istio.io/config" | string | `"{ \"terminationDrainDuration\": \"90s\" }"` |  |
 | gateway.replicaCount | int | `1` |  |
-| gateway.resources.limits.memory | string | `"512Mi"` |  |
+| gateway.resources.limits.memory | string | `"256Mi"` |  |
 | gateway.resources.requests.cpu | string | `"50m"` |  |
-| gateway.resources.requests.memory | string | `"64Mi"` |  |
+| gateway.resources.requests.memory | string | `"96Mi"` |  |
 | gateway.service.externalTrafficPolicy | string | `"Local"` |  |
 | gateway.service.type | string | `"NodePort"` |  |
 | gateway.terminationGracePeriodSeconds | int | `120` |  |

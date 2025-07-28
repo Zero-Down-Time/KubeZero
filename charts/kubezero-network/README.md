@@ -38,6 +38,8 @@ Kubernetes: `>= 1.30.0-0`
 | cilium.dnsProxy.enableTransparentMode | bool | `true` |  |
 | cilium.enabled | bool | `false` |  |
 | cilium.envoy.enabled | bool | `false` |  |
+| cilium.extraEnv[0].name | string | `"GOMAXPROCS"` |  |
+| cilium.extraEnv[0].value | string | `"1"` |  |
 | cilium.hubble.enabled | bool | `false` |  |
 | cilium.hubble.relay.enabled | bool | `false` |  |
 | cilium.hubble.tls.auto.certManagerIssuerRef.group | string | `"cert-manager.io"` |  |
@@ -55,6 +57,9 @@ Kubernetes: `>= 1.30.0-0`
 | cilium.operator.prometheus.enabled | bool | `false` |  |
 | cilium.operator.prometheus.serviceMonitor.enabled | bool | `false` |  |
 | cilium.operator.replicas | int | `1` |  |
+| cilium.operator.resources.limits.memory | string | `"128Mi"` |  |
+| cilium.operator.resources.requests.cpu | string | `"10m"` |  |
+| cilium.operator.resources.requests.memory | string | `"48Mi"` |  |
 | cilium.operator.tolerations[0].effect | string | `"NoSchedule"` |  |
 | cilium.operator.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
 | cilium.operator.tolerations[1].effect | string | `"NoSchedule"` |  |
@@ -64,8 +69,9 @@ Kubernetes: `>= 1.30.0-0`
 | cilium.prometheus.enabled | bool | `false` |  |
 | cilium.prometheus.port | int | `9091` |  |
 | cilium.prometheus.serviceMonitor.enabled | bool | `false` |  |
+| cilium.resources.limits.memory | string | `"384Mi"` |  |
 | cilium.resources.requests.cpu | string | `"50m"` |  |
-| cilium.resources.requests.memory | string | `"384Mi"` |  |
+| cilium.resources.requests.memory | string | `"256Mi"` |  |
 | cilium.routingMode | string | `"tunnel"` |  |
 | cilium.sysctlfix.enabled | bool | `false` |  |
 | cilium.tunnelProtocol | string | `"geneve"` |  |

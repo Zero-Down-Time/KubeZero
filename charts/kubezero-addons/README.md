@@ -163,6 +163,9 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | nvidia-device-plugin.config.map.time-slice-4x | string | `"version: v1\nflags:\n  migStrategy: none\nsharing:\n  timeSlicing:\n    resources:\n    - name: nvidia.com/gpu\n      replicas: 4"` |  |
 | nvidia-device-plugin.deviceDiscoveryStrategy | string | `"nvml"` |  |
 | nvidia-device-plugin.enabled | bool | `false` |  |
+| nvidia-device-plugin.resources.limits.memory | string | `"128Mi"` |  |
+| nvidia-device-plugin.resources.requests.cpu | string | `"10m"` |  |
+| nvidia-device-plugin.resources.requests.memory | string | `"32Mi"` |  |
 | nvidia-device-plugin.runtimeClassName | string | `"nvidia"` |  |
 | nvidia-device-plugin.tolerations[0].effect | string | `"NoSchedule"` |  |
 | nvidia-device-plugin.tolerations[0].key | string | `"nvidia.com/gpu"` |  |

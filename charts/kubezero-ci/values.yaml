@@ -99,6 +99,7 @@ gitea:
 
   analytics:
     enabled: false
+    siteId: pleasesetasneeded
 
 
 jenkins:

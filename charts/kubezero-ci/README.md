@@ -20,7 +20,7 @@ Kubernetes: `>= 1.30.0`
 |------------|------|---------|
 | https://aquasecurity.github.io/helm-charts/ | trivy | 0.16.1 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.8.68 |
+| https://charts.jenkins.io | jenkins | 5.8.72 |
 | https://dl.gitea.io/charts/ | gitea | 12.1.2 |
 | https://docs.renovatebot.com/helm-charts | renovate | 41.43.0 |
 
@@ -50,6 +50,7 @@ Kubernetes: `>= 1.30.0`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | gitea.analytics.enabled | bool | `false` |  |
+| gitea.analytics.siteId | string | `"pleasesetasneeded"` |  |
 | gitea.checkDeprecation | bool | `false` |  |
 | gitea.enabled | bool | `false` |  |
 | gitea.extraVolumeMounts[0].mountPath | string | `"/data/gitea/public"` |  |

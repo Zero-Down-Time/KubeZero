@@ -112,9 +112,10 @@ function set_kubezero_secret() {
 # get kubezero-values from ArgoCD if available or use in-cluster CM
 function get_kubezero_values() {
   local argo=${1:-"false"}
+  local argoApp=${2:-"kubezero"}
 
   if [ "$argo" == "true" ]; then
-    kubectl get application kubezero -n argocd -o yaml | yq .spec.source.helm.valuesObject > ${WORKDIR}/kubezero-values.yaml
+    kubectl get application $argoApp -n argocd -o yaml | yq .spec.source.helm.valuesObject > ${WORKDIR}/kubezero-values.yaml
   else
     kubectl get configmap kubezero-values -n kubezero -o yaml | yq '.data."values.yaml"' > ${WORKDIR}/kubezero-values.yaml
   fi

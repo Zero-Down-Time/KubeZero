@@ -30,7 +30,6 @@ Kubernetes: `>= 1.32.0-0`
 | api.oidcEndpoint | string | `""` | s3://${CFN[ConfigBucket]}/k8s/$CLUSTERNAME |
 | api.serviceAccountIssuer | string | `""` | https://s3.${REGION}.amazonaws.com/${CFN[ConfigBucket]}/k8s/$CLUSTERNAME |
 | domain | string | `"changeme.org"` |  |
-| etcd.extraArgs | object | `{}` |  |
 | etcd.nodeName | string | `"etcd"` |  |
 | etcd.state | string | `"new"` |  |
 | global.clusterName | string | `"pleasechangeme"` |  |

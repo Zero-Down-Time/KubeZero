@@ -33,3 +33,4 @@ jsonnet
 /prometheus-rules.yaml
 istioctl
 argocd
+scripts
