@@ -34,7 +34,7 @@ umami:
   umami:
     appSecret:
       existingSecret: ""
-      secret: ""
+      secret: "Z9X1a1VOIh7YeQwc9vRc"
 
     # -- Allows you to send metrics to a location different than the default `/api/send`. This is to help you avoid some ad-blockers.
     collectApiEndpoint: ""

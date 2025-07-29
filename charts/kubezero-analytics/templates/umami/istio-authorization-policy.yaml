@@ -21,6 +21,7 @@ spec:
         hosts: ["{{ .Values.umami.istio.url }}"]
         notPaths:
         - "/api/send"
+        - "/script.js"
     when:
     - key: connection.sni
       values:
