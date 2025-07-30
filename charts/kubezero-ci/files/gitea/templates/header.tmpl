@@ -1,3 +1,3 @@
 {{- if .Values.gitea.analytics.enabled }}
-<script defer src="https://cdn.zero-downtime.net/js/umami.js" data-website-id="{{ .Values.gitea.analytics.siteId }}" data-host-url="https://umami.zero-downtime.net"></script>
+<script defer src="https://umami.zero-downtime.net/script.js" data-website-id="{{ .Values.gitea.analytics.siteId }}"></script>
 {{- end }}

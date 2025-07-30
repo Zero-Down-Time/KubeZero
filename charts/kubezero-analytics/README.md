@@ -37,10 +37,22 @@ Kubernetes: `>= 1.30.0-0`
 | umami.pg.backup.enabled | bool | `false` |  |
 | umami.pg.backup.volumeSnapshotClassName | string | `"openebs-lvm-snapshots"` |  |
 | umami.postgresql.enabled | bool | `false` |  |
+| umami.resources.requests.cpu | string | `"100m"` |  |
+| umami.resources.requests.memory | string | `"256Mi"` |  |
 | umami.revisionHistoryLimit | int | `2` |  |
+| umami.umami.appSecret.existingSecret | string | `""` |  |
+| umami.umami.appSecret.secret | string | `"examplereallysecretstring"` |  |
+| umami.umami.cloudMode | string | `"1"` |  |
+| umami.umami.collectApiEndpoint | string | `""` | Allows you to send metrics to a location different than the default `/api/send`. This is to help you avoid some ad-blockers. |
+| umami.umami.disableBotCheck | string | `"0"` |  |
+| umami.umami.disableLogin | string | `"1"` |  |
+| umami.umami.enableTestConsole | string | `"0"` |  |
+| umami.umami.logQuery | string | `"0"` |  |
+| umami.umami.removeDisableLoginEnv | bool | `false` |  |
+| umami.umami.removeTrailingSlash | string | `"0"` |  |
 
-# Plausible
-- https://plausible.io
+# Umami
+- https://umami.is
 
 ## Resources
-- https://github.com/IMIO/helm-plausible-analytics/tree/main
+- https://www.rybbit.io/
