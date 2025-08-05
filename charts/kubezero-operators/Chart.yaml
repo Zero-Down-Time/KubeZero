@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-operators
 description: Various operators supported by KubeZero
 type: application
-version: 0.2.2
+version: 0.2.3
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -19,11 +19,11 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: eck-operator
-    version: 3.0.0
+    version: 3.1.0
     repository: https://helm.elastic.co
     condition: eck-operator.enabled
   - name: cloudnative-pg
-    version: 0.24.0
+    version: 0.25.0
     repository: https://cloudnative-pg.github.io/charts
     condition: cloudnative-pg.enabled
   - name: strimzi-kafka-operator
@@ -31,7 +31,7 @@ dependencies:
     repository: "oci://quay.io/strimzi-helm"
     condition: strimzi-kafka-operator.enabled
   - name: rabbitmq-cluster-operator
-    version: 4.4.25
+    version: 4.4.27
     repository: https://charts.bitnami.com/bitnami
     condition: rabbitmq-cluster-operator.enabled
   - name: altinity-clickhouse-operator
