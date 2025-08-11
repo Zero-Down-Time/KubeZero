@@ -1,9 +1,0 @@
-{{- if index .Values "mariadb-galera" "enabled" }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-mariadb-galera-configuration
-  labels: {{- include "common.labels.standard" . | nindent 4 }}
-data:
-{{ (.Files.Glob "files/mariadb/my.cnf").AsConfig | indent 2 }}
-{{- end }}
