@@ -3,7 +3,6 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: istio-rate-limiting
-  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "kubezero-lib.labels" . | nindent 4 }}
 spec:
@@ -14,4 +13,22 @@ spec:
     - {key: app, operator: In, values: [ratelimit]}
   endpoints:
   - port: http-monitoring
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-rate-limiting-redis
+  labels:
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: ratelimit-redis
+      redis_setup_type: standalone
+  endpoints:
+  - port: redis-exporter
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
 {{- end }}

@@ -17,20 +17,6 @@ failureModeDeny: false
 descriptors:
   ingress:
   - key: sourceIp
-    value: tenPerSecond
-    descriptors:
-    - key: remote_address
-      value: "10.*"
-      rate_limit:
-        unlimited: true
-  - key: sourceIp
-    value: tenPerSecond
-    descriptors:
-    - key: remote_address
-      value: "172.16.*"
-      rate_limit:
-        unlimited: true
-  - key: sourceIp
     value: sixtyPerMinute
     descriptors:
     - key: remote_address
@@ -40,6 +26,14 @@ descriptors:
   - key: sourceIp
     value: tenPerSecond
     descriptors:
+    - key: remote_address
+      value: "10.*"
+      rate_limit:
+        unlimited: true
+    - key: remote_address
+      value: "172.16.*"
+      rate_limit:
+        unlimited: true
     - key: remote_address
       rate_limit:
         unit: second

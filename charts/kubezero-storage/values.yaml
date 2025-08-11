@@ -248,7 +248,7 @@ aws-efs-csi-driver:
   node:
     logLevel: 2
 
-    volMetricsOptIn: true
+    #volMetricsOptIn: true
 
     resources:
       requests:

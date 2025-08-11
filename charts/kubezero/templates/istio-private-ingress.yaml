@@ -22,9 +22,9 @@ gateway:
         nodeSelectorTerms:
         - matchExpressions:
           {{- if eq .Values.global.platform "gke" }}
-          - key: "kubezero.zero-downtime.net/ingress.public"
+          - key: "kubezero.zero-downtime.net/ingress.private"
           {{- else }}
-          - key: "node.kubernetes.io/ingress.public"
+          - key: "node.kubernetes.io/ingress.private"
           {{- end }}
             operator: Exists
 

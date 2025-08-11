@@ -46,6 +46,21 @@ strimzi-kafka-operator:
   {{- end }}
 {{- end }}
 
+{{- with index .Values "operators" "redis-operator" }}
+redis-operator:
+  {{- if eq $.Values.global.platform "aws" }}
+  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
+  {{- end }}
+
+  {{- toYaml . | nindent 2 }}
+
+  {{- with $.Values.metrics }}
+  redisOperator:
+    metrics:
+      enabled: {{ .enabled }}
+  {{- end }}
+{{- end }}
+
 {{- with index .Values "operators" "altinity-clickhouse-operator" }}
 altinity-clickhouse-operator:
   {{- if eq $.Values.global.platform "aws" }}

@@ -1,0 +1,13 @@
+configmap: redis-dashboards
+gzip: true
+condition: 'index .Values "redis-operator" "redisOperator" "metrics" "enabled"'
+folder: Operators
+dashboards:
+- name: redis
+  url: https://grafana.com/api/dashboards/763/revisions/6/download
+  tags:
+  - Redis
+- name: redis-cluster
+  url: https://grafana.com/api/dashboards/14615/revisions/1/download
+  tags:
+  - Redis

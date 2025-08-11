@@ -1,0 +1,14 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: Redis
+metadata:
+  name: ratelimit-redis
+spec:
+  kubernetesConfig:
+    image: quay.io/opstree/redis:v8.0.3
+    imagePullPolicy: IfNotPresent
+  redisExporter:
+    enabled: {{ .Values.metrics.enabled }}
+    image: quay.io/opstree/redis-exporter:v1.44.0
+  podSecurityContext:
+    runAsUser: 1000
+    fsGroup: 1000

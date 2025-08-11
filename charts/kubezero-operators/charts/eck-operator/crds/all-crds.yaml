@@ -4,14 +4,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: agents.agent.k8s.elastic.co
 spec:
   group: agent.k8s.elastic.co
@@ -632,13 +632,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -740,8 +739,10 @@ spec:
                 type: object
               mode:
                 description: |-
-                  Mode specifies the source of configuration for the Agent. The configuration can be specified locally through
-                  `config` or `configRef` (`standalone` mode), or come from Fleet during runtime (`fleet` mode).
+                  Mode specifies the runtime mode for the Agent. The configuration can be specified locally through
+                  `config` or `configRef` (`standalone` mode), or come from Fleet during runtime (`fleet` mode). Starting with
+                  version 8.13.0 Fleet-managed agents support advanced configuration via a local configuration file.
+                  See https://www.elastic.co/docs/reference/fleet/advanced-kubernetes-managed-by-fleet
                   Defaults to `standalone` mode.
                 enum:
                 - standalone
@@ -1137,14 +1138,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: apmservers.apm.k8s.elastic.co
 spec:
   group: apm.k8s.elastic.co
@@ -1583,13 +1584,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -2211,13 +2211,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -2372,14 +2371,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: beats.beat.k8s.elastic.co
 spec:
   group: beat.k8s.elastic.co
@@ -2854,14 +2853,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: elasticmapsservers.maps.k8s.elastic.co
 spec:
   group: maps.k8s.elastic.co
@@ -3312,13 +3311,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -3459,14 +3457,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: elasticsearchautoscalers.autoscaling.k8s.elastic.co
 spec:
   group: autoscaling.k8s.elastic.co
@@ -3818,14 +3816,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: elasticsearches.elasticsearch.k8s.elastic.co
 spec:
   group: elasticsearch.k8s.elastic.co
@@ -4261,13 +4259,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -4837,9 +4834,6 @@ spec:
                           Additional policies may be added in the future.
                           Clients making eviction decisions should disallow eviction of unhealthy pods
                           if they encounter an unrecognized policy in this field.
-
-                          This field is beta-level. The eviction API uses this field when
-                          the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
                         type: string
                     type: object
                 type: object
@@ -5326,13 +5320,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -6030,13 +6023,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -6514,9 +6506,6 @@ spec:
                           Additional policies may be added in the future.
                           Clients making eviction decisions should disallow eviction of unhealthy pods
                           if they encounter an unrecognized policy in this field.
-
-                          This field is beta-level. The eviction API uses this field when
-                          the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
                         type: string
                     type: object
                 type: object
@@ -6619,14 +6608,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: enterprisesearches.enterprisesearch.k8s.elastic.co
 spec:
   group: enterprisesearch.k8s.elastic.co
@@ -7076,13 +7065,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -7655,13 +7643,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -7788,14 +7775,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: kibanas.kibana.k8s.elastic.co
 spec:
   group: kibana.k8s.elastic.co
@@ -8264,13 +8251,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -8953,13 +8939,12 @@ spec:
                             type: object
                           trafficDistribution:
                             description: |-
-                              TrafficDistribution offers a way to express preferences for how traffic is
-                              distributed to Service endpoints. Implementations can use this field as a
-                              hint, but are not required to guarantee strict adherence. If the field is
-                              not set, the implementation will apply its default routing strategy. If set
-                              to "PreferClose", implementations should prioritize endpoints that are
-                              topologically close (e.g., same zone).
-                              This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                              TrafficDistribution offers a way to express preferences for how traffic
+                              is distributed to Service endpoints. Implementations can use this field
+                              as a hint, but are not required to guarantee strict adherence. If the
+                              field is not set, the implementation will apply its default routing
+                              strategy. If set to "PreferClose", implementations should prioritize
+                              endpoints that are in the same zone.
                             type: string
                           type:
                             description: |-
@@ -9103,14 +9088,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: logstashes.logstash.k8s.elastic.co
 spec:
   group: logstash.k8s.elastic.co
@@ -9743,13 +9728,12 @@ spec:
                               type: object
                             trafficDistribution:
                               description: |-
-                                TrafficDistribution offers a way to express preferences for how traffic is
-                                distributed to Service endpoints. Implementations can use this field as a
-                                hint, but are not required to guarantee strict adherence. If the field is
-                                not set, the implementation will apply its default routing strategy. If set
-                                to "PreferClose", implementations should prioritize endpoints that are
-                                topologically close (e.g., same zone).
-                                This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                                TrafficDistribution offers a way to express preferences for how traffic
+                                is distributed to Service endpoints. Implementations can use this field
+                                as a hint, but are not required to guarantee strict adherence. If the
+                                field is not set, the implementation will apply its default routing
+                                strategy. If set to "PreferClose", implementations should prioritize
+                                endpoints that are in the same zone.
                               type: string
                             type:
                               description: |-
@@ -10347,14 +10331,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.0.0'
-    helm.sh/chart: 'eck-operator-crds-3.0.0'
+    app.kubernetes.io/version: '3.1.0'
+    helm.sh/chart: 'eck-operator-crds-3.1.0'
   name: stackconfigpolicies.stackconfigpolicy.k8s.elastic.co
 spec:
   group: stackconfigpolicy.k8s.elastic.co

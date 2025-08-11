@@ -1,0 +1,20 @@
+{{- if index .Values "redis-operator" "redisOperator" "metrics" "enabled" }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ printf "%s-%s" (include "kubezero-lib.fullname" $) "redis-operator" | trunc 63 | trimSuffix "-" }}
+  labels:
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      name: redis-operator
+  podTargetLabels:
+    - name
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+{{- end }}

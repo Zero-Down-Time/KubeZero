@@ -22,5 +22,6 @@ wget -qO files/cloudnative-pg/ClusterImageCatalog-bookworm.yaml https://raw.gith
 # Create ZDT dashboard configmap
 ../kubezero-metrics/sync_grafana_dashboards.py dashboards-pg.yaml templates/cloudnative-pg/grafana-dashboards.yaml
 ../kubezero-metrics/sync_grafana_dashboards.py dashboards-strimzi.yaml templates/strimzi/grafana-dashboards.yaml
+../kubezero-metrics/sync_grafana_dashboards.py dashboards-redis.yaml templates/redis/grafana-dashboards.yaml
 
 update_docs

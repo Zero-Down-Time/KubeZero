@@ -68,6 +68,41 @@ rabbitmq-cluster-operator:
       serviceMonitor:
         enabled: true
 
+redis-operator:
+  enabled: false
+
+  redisOperator:
+    webhook: true
+    metrics:
+      enabled: false
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 500m
+      memory: 128Mi
+  issuer:
+    create: false
+    kind: ClusterIssuer
+    name: kubezero-local-ca-issuer
+
+  service:
+    namespace: operators
+
+  certmanager:
+    enabled: true
+
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+
 altinity-clickhouse-operator:
   enabled: false
 
