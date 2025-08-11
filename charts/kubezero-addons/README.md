@@ -18,7 +18,6 @@ Kubernetes: `>= 1.31.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://bitnami-labs.github.io/sealed-secrets | sealed-secrets | 2.17.2 |
 | https://caas-team.github.io/helm-charts/ | py-kube-downscaler | 0.3.2 |
 | https://kubernetes-sigs.github.io/external-dns/ | external-dns | 1.16.1 |
 | https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.46.6 |
@@ -190,13 +189,3 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | py-kube-downscaler.resources.requests.memory | string | `"48Mi"` |  |
 | py-kube-downscaler.tolerations[0].effect | string | `"NoSchedule"` |  |
 | py-kube-downscaler.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
-| sealed-secrets.enabled | bool | `false` |  |
-| sealed-secrets.fullnameOverride | string | `"sealed-secrets-controller"` |  |
-| sealed-secrets.keyrenewperiod | string | `"0"` |  |
-| sealed-secrets.metrics.serviceMonitor.enabled | bool | `false` |  |
-| sealed-secrets.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
-| sealed-secrets.resources.limits.memory | string | `"128Mi"` |  |
-| sealed-secrets.resources.requests.cpu | string | `"10m"` |  |
-| sealed-secrets.resources.requests.memory | string | `"24Mi"` |  |
-| sealed-secrets.tolerations[0].effect | string | `"NoSchedule"` |  |
-| sealed-secrets.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |

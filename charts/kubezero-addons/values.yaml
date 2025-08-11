@@ -24,32 +24,6 @@ forseti:
     # -- "arn:aws:iam::${AWS::AccountId}:role/${AWS::Region}.${ClusterName}.kubezeroForseti"
     iamRoleArn: ""
 
-sealed-secrets:
-  enabled: false
-
-  # ensure kubeseal default values match
-  fullnameOverride: sealed-secrets-controller
-
-  # Disable auto keyrotation for now
-  keyrenewperiod: "0"
-
-  resources:
-    requests:
-      cpu: 10m
-      memory: 24Mi
-    limits:
-      memory: 128Mi
-
-  metrics:
-    serviceMonitor:
-      enabled: false
-
-  nodeSelector:
-    node-role.kubernetes.io/control-plane: ""
-  tolerations:
-  - key: node-role.kubernetes.io/control-plane
-    effect: NoSchedule
-
 aws-eks-asg-rolling-update-handler:
   enabled: false
   image:
