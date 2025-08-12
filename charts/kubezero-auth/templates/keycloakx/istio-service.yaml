@@ -1,4 +1,4 @@
-{{- if and .Values.keycloak.enabled .Values.keycloak.istio.admin.enabled .Values.keycloak.istio.admin.url }}
+{{- if and .Values.keycloakx.enabled .Values.keycloakx.istio.admin.enabled .Values.keycloakx.istio.admin.url }}
 # Admin endpoint / all URLs allowed
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -9,20 +9,20 @@ metadata:
     {{- include "kubezero-lib.labels" $ | nindent 4 }}
 spec:
   gateways:
-  - {{ .Values.keycloak.istio.admin.gateway }}
+  - {{ .Values.keycloakx.istio.admin.gateway }}
   hosts:
-  - {{ .Values.keycloak.istio.admin.url }}
+  - {{ .Values.keycloakx.istio.admin.url }}
   http:
   - route:
     - destination:
-        host: {{ template "kubezero-lib.fullname" $ }}-keycloak
+        host: {{ template "kubezero-lib.fullname" $ }}-keycloakx-http
         port:
           number: 80
 {{- end }}
 
 ---
 
-{{- if and .Values.keycloak.enabled .Values.keycloak.istio.auth.enabled .Values.keycloak.istio.auth.url }}
+{{- if and .Values.keycloakx.enabled .Values.keycloakx.istio.auth.enabled .Values.keycloakx.istio.auth.url }}
 # auth endpoint - only expose minimal URls
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -33,16 +33,16 @@ metadata:
     {{- include "kubezero-lib.labels" $ | nindent 4 }}
 spec:
   gateways:
-  - {{ .Values.keycloak.istio.auth.gateway }}
+  - {{ .Values.keycloakx.istio.auth.gateway }}
   hosts:
-  - {{ .Values.keycloak.istio.auth.url }}
+  - {{ .Values.keycloakx.istio.auth.url }}
   http:
   - match:
     - uri:
         regex: ^/(js/|realms/|resources/|robots.txt).*
     route:
     - destination:
-        host: {{ template "kubezero-lib.fullname" $ }}-keycloak
+        host: {{ template "kubezero-lib.fullname" $ }}-keycloakx-http
         port:
           number: 80
 {{- end }}

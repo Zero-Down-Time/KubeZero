@@ -5,13 +5,13 @@
 - shell into running postgres-auth pod
 ```
 export PGPASSWORD="$POSTGRES_POSTGRES_PASSWORD"
-cd /bitnami/postgresql
-pg_dumpall -U postgres > /bitnami/postgresql/backup
+cd /tmp
+pg_dumpall -U postgres > /tmp/backup
 ```
 
 - store backup off-site
 ```
-kubectl cp keycloak/kubezero-auth-postgresql-0:/bitnami/postgresql/backup postgres-backup
+kubectl cp keycloak/kubezero-auth-postgresql-0:/tmp/backup postgres-backup
 ```
 
 ## upgrade
@@ -26,13 +26,13 @@ kubectl cp keycloak/kubezero-auth-postgresql-0:/bitnami/postgresql/backup postgr
 - restore replica of postgres-auth statefulSet
 - copy backup to new PVC
 ```
-kubectl cp postgres-backup keycloak/kubezero-auth-postgresql-0:/bitnami/postgresql/backup
+kubectl cp postgres-backup keycloak/kubezero-auth-postgresql-0:/tmp/backup
 ```
 
 - shell into running postgres-auth pod
 ```
 export PGPASSWORD="$POSTGRES_POSTGRES_PASSWORD"
-cd /bitnami/postgresql
+cd /tmp
 psql -U postgres
 ```
 

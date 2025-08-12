@@ -1,4 +1,4 @@
-{{- if and .Values.keycloak.enabled .Values.keycloak.istio.admin.enabled }}
+{{- if and .Values.keycloakx.enabled .Values.keycloakx.istio.admin.enabled }}
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -15,20 +15,20 @@ spec:
   # block access to metrics via Ingress
   - to:
     - operation:
-        hosts: ["{{ .Values.keycloak.istio.admin.url }}"]
+        hosts: ["{{ .Values.keycloakx.istio.admin.url }}"]
         paths: ["/metrics", "/realms/*/metrics"]
     when:
     - key: connection.sni
       values:
       - '*'
-  {{- if .Values.keycloak.istio.admin.ipBlocks }}
+  {{- if .Values.keycloakx.istio.admin.ipBlocks }}
   - from:
     - source:
         notIpBlocks:
-        {{- toYaml .Values.keycloak.istio.admin.ipBlocks | nindent 8 }}
+        {{- toYaml .Values.keycloakx.istio.admin.ipBlocks | nindent 8 }}
     to:
     - operation:
-        hosts: ["{{ .Values.keycloak.istio.admin.url }}"]
+        hosts: ["{{ .Values.keycloakx.istio.admin.url }}"]
     when:
     - key: connection.sni
       values:

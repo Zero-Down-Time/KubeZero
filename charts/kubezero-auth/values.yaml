@@ -1,20 +1,25 @@
-keycloak:
+keycloakx:
   enabled: false
 
-  production: true
-  hostnameStrict: false
-  proxyHeaders: xforwarded
+  command:
+    - "/opt/keycloak/bin/kc.sh"
+    - "--verbose"
+    - "start"
+    - "--http-port=8080"
+    - "--spi-events-listener-jboss-logging-success-level=info"
+    - "--spi-events-listener-jboss-logging-error-level=warn"
 
-  auth:
-    adminUser: admin
-    existingSecret: keycloak-auth
-    passwordSecretKey: admin-password
+  http:
+    relativePath: "/"
 
-  replicaCount: 1
-
-  pdb:
-    create: false
-    minAvailable: 1
+  database:
+    vendor: postgres
+    hostname: "keycloak-pg-rw"
+    port: 5432
+    database: keycloak
+    username: keycloak
+    existingSecret: keycloak-pg
+    existingSecretKey: password
 
   resources:
     limits:
@@ -24,21 +29,19 @@ keycloak:
       cpu: 100m
       memory: 640Mi
 
+  podDisruptionBudget: {}
+  #  maxUnavailable: 1
+  #  minAvailable: 1
+
   metrics:
     enabled: false
-    serviceMonitor:
-      enabled: true
-
-  externalDatabase:
-    host: "keycloak-pg-rw"
-    port: 5432
-    user: keycloak
-    database: keycloak
-    existingSecret: keycloak-pg
-    existingSecretPasswordKey: "password"
-
-  postgresql:
+  serviceMonitor:
     enabled: false
+    interval: 30s
+
+
+  proxy:
+    mode: xforwarded
 
   istio:
     admin:
