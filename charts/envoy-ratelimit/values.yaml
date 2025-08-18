@@ -1,7 +1,7 @@
 image:
   repository: envoyproxy/ratelimit
   # see: https://hub.docker.com/r/envoyproxy/ratelimit/tags
-  tag: a90e0e5d
+  tag: 38f01982
 
 log:
   level: warn
@@ -13,61 +13,61 @@ localCacheSize: 1048576
 # Wether to block requests if ratelimiting is down
 failureModeDeny: false
 
-# rate limit descriptors for each domain
+# rate limit descriptors for each domain aka. ingress class
 descriptors:
-  ingress:
-  - key: sourceIp
-    value: sixtyPerMinute
-    descriptors:
-    - key: remote_address
-      rate_limit:
-        unit: minute
-        requests_per_unit: 60
-  - key: sourceIp
-    value: tenPerSecond
-    descriptors:
-    - key: remote_address
-      value: "10.*"
-      rate_limit:
-        unlimited: true
-    - key: remote_address
-      value: "172.16.*"
-      rate_limit:
-        unlimited: true
-    - key: remote_address
-      rate_limit:
-        unit: second
-        requests_per_unit: 10
-  - key: headers
-    value: 180PerMinute
-    descriptors:
-    - key: userAgent
-      rate_limit:
-        unit: minute
-        requests_per_unit: 180
+  ingress: []
+# - key: sourceIp
+#   value: sixtyPerMinute
+#   descriptors:
+#   - key: remote_address
+#     rate_limit:
+#       unit: minute
+#       requests_per_unit: 60
+# - key: sourceIp
+#   value: tenPerSecond
+#   descriptors:
+#   - key: remote_address
+#     value: "10.*"
+#     rate_limit:
+#       unlimited: true
+#   - key: remote_address
+#     value: "172.16.*"
+#     rate_limit:
+#       unlimited: true
+#   - key: remote_address
+#     rate_limit:
+#       unit: second
+#       requests_per_unit: 10
+# - key: headers
+#   value: 180PerMinute
+#   descriptors:
+#   - key: userAgent
+#     rate_limit:
+#       unit: minute
+#       requests_per_unit: 180
 
-  privateIngress:
-  - key: sourceIp
-    value: sixtyPerMinute
-    descriptors:
-    - key: remote_address
-      rate_limit:
-        unit: minute
-        requests_per_unit: 60
-  - key: sourceIp
-    value: tenPerSecond
-    descriptors:
-    - key: remote_address
-      rate_limit:
-        unit: second
-        requests_per_unit: 10
-  - key: headers
-    value: 180PerMinute
-    descriptors:
-    - key: userAgent
-      rate_limit:
-        unit: minute
-        requests_per_unit: 180
+  privateIngress: []
+# - key: sourceIp
+#   value: sixtyPerMinute
+#   descriptors:
+#   - key: remote_address
+#     rate_limit:
+#       unit: minute
+#       requests_per_unit: 60
+# - key: sourceIp
+#   value: tenPerSecond
+#   descriptors:
+#   - key: remote_address
+#     rate_limit:
+#       unit: second
+#       requests_per_unit: 10
+# - key: headers
+#   value: 180PerMinute
+#   descriptors:
+#   - key: userAgent
+#     rate_limit:
+#       unit: minute
+#       requests_per_unit: 180
 
 metrics:
   enabled: false

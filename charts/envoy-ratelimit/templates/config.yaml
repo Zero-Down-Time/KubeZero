@@ -9,9 +9,9 @@ data:
   ingress.yaml: |
     domain: ingress
     descriptors:
-    {{- toYaml .Values.descriptors.ingress | nindent 4 }}
+    {{- toYaml .Values.descriptors.ingress | nindent 6 }}
 
   private-ingress.yaml: |
     domain: private-ingress
     descriptors:
-    {{- toYaml .Values.descriptors.privateIngress | nindent 4 }}
+    {{- toYaml .Values.descriptors.privateIngress | nindent 6 }}
