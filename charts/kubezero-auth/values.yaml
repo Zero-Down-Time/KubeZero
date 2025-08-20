@@ -39,6 +39,8 @@ keycloakx:
     enabled: false
     interval: 30s
 
+  service:
+    httpPort: 8080
 
   proxy:
     mode: xforwarded

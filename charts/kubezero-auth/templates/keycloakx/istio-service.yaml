@@ -17,7 +17,7 @@ spec:
     - destination:
         host: {{ template "kubezero-lib.fullname" $ }}-keycloakx-http
         port:
-          number: 80
+          number: 8080
 {{- end }}
 
 ---
@@ -44,5 +44,5 @@ spec:
     - destination:
         host: {{ template "kubezero-lib.fullname" $ }}-keycloakx-http
         port:
-          number: 80
+          number: 8080
 {{- end }}
