@@ -12,6 +12,55 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.8.83
+
+Revert `defaultConfig=false` changes, see [#1470](https://github.com/jenkinsci/helm-charts/issues/1470).
+
+## 5.8.82
+
+Update `jenkins/jenkins` to version `2.516.2-jdk21`
+
+## 5.8.81
+
+Update `jenkins/inbound-agent` to version `3327.v868139a_d00e0-6`
+
+## 5.8.80
+
+- Fix [#1435](https://github.com/jenkinsci/helm-charts/issues/1435): Ensure `controller.JCasC.defaultConfig=false` properly prevents generation of all JCasC ConfigMaps
+- Changed the conditional logic in jcasc-config.yaml to only generate ConfigMaps when defaultConfig is true
+- Moved securityRealm and authorizationStrategy configuration into configScripts for better maintainability
+
+## 5.8.79
+
+Update `jenkins/inbound-agent` to version `3327.v868139a_d00e0-5`
+
+## 5.8.78
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `1.30.7`
+
+## 5.8.77
+
+Update `configuration-as-code` to version `1985.vdda_32d0c4ea_b_`
+
+## 5.8.76
+
+Fix non-deterministic checksum calculation in unit tests by adding `renderHelmLabels: false` to "render pod annotations" test. This resolves Renovate PR failures when chart version changes.
+
+## 5.8.75
+
+Minor documentation improvements
+
+## 5.8.74
+
+unittest fix - allow helm version label to be dynamic in tests
+
+## 5.8.73
+
+Standardize labels and add extraLabels support across chart:
+
+- Standardize label application patterns throughout all template files
+- Add extraLabels configuration option for custom user-defined labels
+
 ## 5.8.72
 
 Render securityRealm and authorizationStrategy as JCasC ConfigMaps when set outside configScripts (Fixes #1391)
@@ -2145,7 +2194,7 @@ Fixed a bug in the configuration as code reload URL, where it wouldn't work with
 
 ## 1.9.22
 
-Add `master.jenkinsHome` and `master.jenkinsRef` options to use docker images derivates from Jenkins
+Add `master.jenkinsHome` and `master.jenkinsRef` options to use Docker images derivates from Jenkins
 
 ## 1.9.21
 
@@ -2219,7 +2268,7 @@ Make `agent.slaveConnectTimeout` configurable: by increasing this value Jenkins 
 
 ## 1.9.6
 
-Enables jenkins to use keystore inorder to have native ssl support #17790 <https://wiki.jenkins.io/pages/viewpage.action?pageId=135468777>
+Enables jenkins to use keystore inorder to have native SSL support #17790 <https://wiki.jenkins.io/pages/viewpage.action?pageId=135468777>
 
 ## 1.9.5 Enable remoting security
 
@@ -2470,7 +2519,7 @@ commit: 7cc9b54c7
 
 ## 1.4.0
 
-Change the value name for docker image tags - standartise to helm preferred value name - tag; this also allows auto-deployments using weaveworks flux (#15565)
+Change the value name for Docker image tags - standartise to helm preferred value name - tag; this also allows auto-deployments using weaveworks flux (#15565)
 commit: 5c3d920e7
 
 ## 1.3.6
@@ -2901,7 +2950,7 @@ commit: 0d51a4187
 
 ## 0.28.3
 
-fix parsing java options (#10140)
+fix parsing Java options (#10140)
 commit: 9448d0293
 
 ## 0.28.2

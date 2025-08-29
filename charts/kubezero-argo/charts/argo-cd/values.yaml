@@ -35,7 +35,7 @@ crds:
   keep: true
   # -- Annotations to be added to all CRDs
   annotations: {}
-  # -- Addtional labels to be added to all CRDs
+  # -- Additional labels to be added to all CRDs
   additionalLabels: {}
 
 ## Globally shared configuration
@@ -1090,6 +1090,12 @@ controller:
     # -- List of custom rules for the application controller's ClusterRole resource
     rules: []
 
+  # Default application controller's network policy
+  networkPolicy:
+    # -- Default network policy rules used by application controller
+    # @default -- `false` (defaults to global.networkPolicy.create)
+    create: false
+
 ## Dex
 dex:
   # -- Enable dex
@@ -1389,6 +1395,12 @@ dex:
     #   maxSurge: 25%
     #   maxUnavailable: 25%
 
+  # Default Dex server's network policy
+  networkPolicy:
+    # -- Default network policy rules used by Dex server
+    # @default -- `false` (defaults to global.networkPolicy.create)
+    create: false
+
   # DEPRECATED - Use configs.params to override
   # -- Dex log format. Either `text` or `json`
   # @default -- `""` (defaults to global.logging.format)
@@ -1446,7 +1458,7 @@ redis:
       # -- Repository to use for the redis-exporter
       repository: ghcr.io/oliver006/redis_exporter
       # -- Tag to use for the redis-exporter
-      tag: v1.74.0
+      tag: v1.75.0
       # -- Image pull policy for the redis-exporter
       # @default -- `""` (defaults to global.image.imagePullPolicy)
       imagePullPolicy: ""
@@ -1709,6 +1721,12 @@ redis:
       # -- Prometheus ServiceMonitor annotations
       annotations: {}
 
+  # Default redis's network policy
+  networkPolicy:
+    # -- Default network policy rules used by redis
+    # @default -- `false` (defaults to global.networkPolicy.create)
+    create: false
+
 ## Redis-HA subchart replaces custom redis deployment when `redis-ha.enabled=true`
 # Ref: https://github.com/DandyDeveloper/charts/blob/master/charts/redis-ha/values.yaml
 redis-ha:
@@ -1728,7 +1746,7 @@ redis-ha:
     # -- Repository to use for the redis-exporter
     image: ghcr.io/oliver006/redis_exporter
     # -- Tag to use for the redis-exporter
-    tag: v1.69.0
+    tag: v1.75.0
   persistentVolume:
     # -- Configures persistence on Redis nodes
     enabled: false
@@ -2575,6 +2593,12 @@ server:
     # -- List of custom rules for the server's ClusterRole resource
     rules: []
 
+  # Default ArgoCD Server's network policy
+  networkPolicy:
+    # -- Default network policy rules used by ArgoCD Server
+    # @default -- `false` (defaults to global.networkPolicy.create)
+    create: false
+
 ## Repo Server
 repoServer:
   # -- Repo server name
@@ -2974,6 +2998,12 @@ repoServer:
   #     - list
   #     - watch
 
+  # Default repo server's network policy
+  networkPolicy:
+    # -- Default network policy rules used by repo server
+    # @default -- `false` (defaults to global.networkPolicy.create)
+    create: false
+
 ## ApplicationSet controller
 applicationSet:
   # -- ApplicationSet controller name string
@@ -3346,6 +3376,13 @@ applicationSet:
       #     - argocd-applicationset.example.com
   # -- Enable ApplicationSet in any namespace feature
   allowAnyNamespace: false
+
+  # Default ApplicationSet controller's network policy
+  networkPolicy:
+    # -- Default network policy rules used by ApplicationSet controller
+    # @default -- `false` (defaults to global.networkPolicy.create)
+    create: false
+
 ## Notifications controller
 notifications:
   # -- Enable notifications controller
@@ -3915,6 +3952,12 @@ notifications:
     # defaultTriggers: |
     #   - on-sync-status-unknown
 
+  # Default notifications controller's network policy
+  networkPolicy:
+    # -- Default network policy rules used by notifications controller
+    # @default -- `false` (defaults to global.networkPolicy.create)
+    create: false
+
 commitServer:
   # -- Enable commit server
   enabled: false
@@ -3983,6 +4026,10 @@ commitServer:
     annotations: {}
     # -- commit server service labels
     labels: {}
+    # -- commit server service port
+    port: 8086
+    # -- commit server service port name
+    portName: server
 
   # -- Automount API credentials for the Service Account into the pod.
   automountServiceAccountToken: false
@@ -4097,3 +4144,9 @@ commitServer:
   # -- Priority class for the commit server pods
   # @default -- `""` (defaults to global.priorityClassName)
   priorityClassName: ""
+
+  # Default commit server's network policy
+  networkPolicy:
+    # -- Default network policy rules used by commit server
+    # @default -- `false` (defaults to global.networkPolicy.create)
+    create: false
