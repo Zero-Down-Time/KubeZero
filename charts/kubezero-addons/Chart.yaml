@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-addons
 description: KubeZero umbrella chart for various optional cluster addons
 type: application
-version: 0.8.16
+version: 0.8.17
 appVersion: v1.32
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
@@ -24,7 +24,7 @@ dependencies:
     repository: https://kubernetes-sigs.github.io/external-dns/
     condition: external-dns.enabled
   - name: cluster-autoscaler
-    version: 9.49.0
+    version: 9.50.1
     repository: https://kubernetes.github.io/autoscaler
     condition: cluster-autoscaler.enabled
   - name: nvidia-device-plugin
@@ -46,7 +46,7 @@ dependencies:
     repository: https://twin.github.io/helm-charts
     condition: aws-eks-asg-rolling-update-handler.enabled
   - name: py-kube-downscaler
-    version: 0.3.5
+    version: 0.3.7
     repository: https://caas-team.github.io/helm-charts/
     condition: py-kube-downscaler.enabled
 kubeVersion: ">= 1.31.0-0"
