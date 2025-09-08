@@ -1,0 +1,62 @@
+{{- if and .Values.neo4j.enabled .Values.neo4j.backup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "neo4j.fullname" . }}-backup
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: neo4j-backup
+    {{- with .Values.neo4j.backup.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  schedule: {{ .Values.neo4j.backup.schedule | quote }}
+  concurrencyPolicy: {{ .Values.neo4j.backup.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.neo4j.backup.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.neo4j.backup.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.neo4j.backup.backoffLimit }}
+      template:
+        {{- if or .Values.neo4j.backup.podAnnotations .Values.neo4j.backup.podLabels }}
+        metadata:
+          {{- with .Values.neo4j.backup.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.neo4j.backup.podLabels }}
+          labels:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        spec:
+          {{- if .Values.neo4j.backup.serviceAccount.name }}
+          serviceAccountName: {{ .Values.neo4j.backup.serviceAccount.name }}
+          automountServiceAccountToken: true
+          {{- end }}
+          restartPolicy: {{ .Values.neo4j.backup.restartPolicy }}
+          securityContext:
+            {{- toYaml .Values.neo4j.backup.securityContext | nindent 12 }}
+          containers:
+            - name: {{ .Values.neo4j.backup.name }}
+              image: {{ .Values.neo4j.backup.image.repository }}:{{ .Values.neo4j.backup.image.tag }}
+              {{- with .Values.neo4j.backup.image.pullPolicy }}
+              imagePullPolicy: {{ . }}
+              {{- end }}
+              {{- with .Values.neo4j.backup.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              env:
+                {{- range $key, $value := .Values.neo4j.backup.env }}
+                - name: {{ $key }}
+                  value: {{ $value | quote }}
+                {{- end }}
+              volumeMounts:
+                {{- toYaml .Values.neo4j.backup.volumeMounts | nindent 16 }}
+              securityContext:
+                {{- toYaml .Values.neo4j.backup.containerSecurityContext | nindent 16 }}
+          volumes:
+            {{- toYaml .Values.neo4j.backup.volumes | nindent 12 }}
+{{- end }}

@@ -1,0 +1,11 @@
+{{- if and .Values.neo4j.enabled .Values.neo4j.backup.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+automountServiceAccountToken: true
+metadata:
+  name: {{ include "neo4j.fullname" . }}-backup
+  {{- with .Values.neo4j.backup.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

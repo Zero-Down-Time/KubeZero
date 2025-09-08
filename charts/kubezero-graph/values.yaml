@@ -19,3 +19,101 @@ neo4j:
 
   serviceMonitor:
     enabled: false
+
+  backup:
+    enabled: false
+
+    # CronJob metadata
+    labels: {}
+    podAnnotations: {}
+    podLabels: {}
+
+    # CronJob spec
+    schedule: "0 * * * *"
+    concurrencyPolicy: "Forbid"
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+    backoffLimit: 1
+    restartPolicy: "Never"
+
+    serviceAccount:
+      name: ""
+      annotations: {}
+
+    # Pod security context
+    securityContext:
+      fsGroup: 7474
+      fsGroupChangePolicy: "Always"
+      runAsGroup: 7474
+      runAsNonRoot: true
+      runAsUser: 7474
+
+    # Container configuration
+    name: "graph-backup"
+    image:
+      repository: "neo4j/helm-charts-backup"
+      tag: "2025.07.1"
+
+    resources: {}
+    #  requests:
+    #   ephemeral-storage: "4Gi"
+    # limits:
+    #   ephemeral-storage: "5Gi"
+
+    # Container security context
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - "ALL"
+      readOnlyRootFilesystem: false
+
+    # Environment variables
+    env:
+      DATABASE_SERVICE_NAME: ""
+      DATABASE_SERVICE_IP: ""
+      DATABASE_NAMESPACE: ""
+      DATABASE_BACKUP_PORT: "6362"
+      DATABASE_CLUSTER_DOMAIN: "cluster.local"
+      DATABASE: "neo4j,system"
+      CLOUD_PROVIDER: ""
+      BUCKET_NAME: ""
+      KEEP_BACKUP_FILES: "false"
+      PAGE_CACHE: ""
+      HEAP_SIZE: ""
+      INCLUDE_METADATA: "all"
+      PARALLEL_RECOVERY: "false"
+      TYPE: "AUTO"
+      KEEP_FAILED: "false"
+      PREFER_DIFF_AS_PARENT: "true"
+      CREDENTIAL_PATH: "/credentials/"
+      VERBOSE: "true"
+      COMPRESS: "true"
+      BACKUP_TEMP_DIR: ""
+      S3_CA_CERT_PATH: ""
+      S3_SKIP_VERIFY: "false"
+      S3_FORCE_PATH_STYLE: "true"
+      AWS_REGION: ""
+      AWS_DEFAULT_REGION: ""
+      S3_SIGNATURE_VERSION: ""
+      CONSISTENCY_CHECK_ENABLE: "false"
+      CONSISTENCY_CHECK_INDEXES: "true"
+      CONSISTENCY_CHECK_DATABASE: ""
+      CONSISTENCY_CHECK_GRAPH: "true"
+      CONSISTENCY_CHECK_COUNTS: "true"
+      CONSISTENCY_CHECK_PROPERTYOWNERS: "true"
+      CONSISTENCY_CHECK_MAXOFFHEAPMEMORY: ""
+      CONSISTENCY_CHECK_THREADS: ""
+      CONSISTENCY_CHECK_VERBOSE: "true"
+      CONSISTENCY_CHECK_TEMP_DIR: ""
+      DATABASE_BACKUP_ENDPOINTS: ""
+
+    # Volume mounts
+    volumeMounts:
+      - name: "backup"
+        mountPath: "/backups"
+
+    # Volumes
+    volumes:
+      - name: "backup"
+        emptyDir: {}

@@ -19,5 +19,9 @@ dependencies:
     version: 2025.7.2
     repository: https://helm.neo4j.com/neo4j
     condition: neo4j.enabled
+# - name: neo4j-admin
+#   version: 2025.7.2
+#   repository: https://helm.neo4j.com/neo4j
+#   condition: neo4j-admin.enabled
 
-kubeVersion: ">= 1.29.0-0"
+kubeVersion: ">= 1.30.0-0"

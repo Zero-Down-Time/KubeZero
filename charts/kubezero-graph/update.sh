@@ -6,4 +6,6 @@ set -ex
 #login_ecr_public
 update_helm
 
+# patch_chart neo4j
+
 update_docs
