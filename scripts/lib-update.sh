@@ -50,11 +50,11 @@ get_extract_chart() {
 
 patch_chart() {
   local CHART=$1
-  local KEEP_ORIG=${2:-""}
+  local KEEP_ORIG=$2
 
   get_extract_chart $CHART
 
-  [ -n $KEEP_ORIG ] && cp -r charts/$CHART charts/${CHART}.orig
+  [ -n "$KEEP_ORIG" ] && cp -r charts/$CHART charts/${CHART}.orig
 
   [ -r $CHART.patch ] && patch -p0 -i $CHART.patch --no-backup-if-mismatch || true
 }

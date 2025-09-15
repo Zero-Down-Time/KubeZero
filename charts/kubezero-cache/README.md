@@ -32,14 +32,10 @@ Kubernetes: `>= 1.30.0-0`
 | redis-cluster.enabled | bool | `false` |  |
 | redis-replication.enabled | bool | `false` |  |
 | redis-replication.pdb.enabled | bool | `true` |  |
-| redis-replication.pdb.maxUnavailable | int | `1` |  |
-| redis-replication.pdb.minAvailable | string | `""` |  |
 | redis-replication.redisReplication.service.additional.enabled | bool | `false` |  |
 | redis-replication.redisReplication.tag | string | `"v8.0.3"` |  |
 | redis-sentinel.enabled | bool | `false` |  |
 | redis-sentinel.pdb.enabled | bool | `true` |  |
-| redis-sentinel.pdb.maxUnavailable | int | `1` |  |
-| redis-sentinel.pdb.minAvailable | string | `""` |  |
 | redis-sentinel.redisSentinel.service.additional.enabled | bool | `false` |  |
 | redis-sentinel.redisSentinel.tag | string | `"v8.0.3"` |  |
 | redis.enabled | bool | `false` |  |
