@@ -40,8 +40,6 @@ redis-replication:
   # Add pdb by default
   pdb:
     enabled: true
-    maxUnavailable: 1
-    minAvailable: null
 
 
 redis-sentinel:
@@ -57,8 +55,6 @@ redis-sentinel:
   # Add pdb by default
   pdb:
     enabled: true
-    maxUnavailable: 1
-    minAvailable: null
 
 
 redis-cluster:

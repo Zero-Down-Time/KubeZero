@@ -1,8 +1,8 @@
 ---
-redisSentinel:
+redisReplication:
   name: ""
   clusterSize: 3
-  image: quay.io/opstree/redis-sentinel
+  image: quay.io/opstree/redis
   tag: v7.0.15
   imagePullPolicy: IfNotPresent
   imagePullSecrets: []
@@ -32,18 +32,6 @@ labels: {}
 #   foo: bar
 #   test: echo
 
-redisSentinelConfig:
-  # redisReplicationName: "redis-replication"
-  redisReplicationPassword:
-    secretName: ""
-    secretKey: ""
-  masterGroupName: ""
-  redisPort: ""
-  quorum: ""
-  parallelSyncs: ""
-  failoverTimeout: ""
-  downAfterMilliseconds: ""
-
 externalConfig:
   enabled: false
   data: |
@@ -56,13 +44,13 @@ externalService:
   # annotations:
   #   foo: bar
   serviceType: NodePort
-  port: 26379
+  port: 6379
 
 serviceMonitor:
   enabled: false
   interval: 30s
   scrapeTimeout: 10s
-  namespace: ""
+  namespace: monitoring
   # -- extraLabels are added to the servicemonitor when enabled set to true
   extraLabels: {}
     # foo: bar
@@ -83,6 +71,7 @@ redisExporter:
   env: []
     # - name: VAR_NAME
     #   value: "value1"
+  securityContext: {}
 
 initContainer:
   enabled: false
@@ -119,6 +108,16 @@ priorityClassName: ""
 nodeSelector: {}
   # memory: medium
 
+storageSpec:
+  volumeClaimTemplate:
+    spec:
+      # storageClassName: standard
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  #   selector: {}
+
 podSecurityContext:
   runAsUser: 1000
   fsGroup: 1000
@@ -150,24 +149,15 @@ TLS:
   secret:
     secretName: ""
 
-pdb:
-  enabled: false
-  maxUnavailable: 1
-
-livenessProbe:
-  failureThreshold: 3
-  initialDelaySeconds: 1
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 1
-
-readinessProbe:
-  failureThreshold: 3
-  initialDelaySeconds: 1
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 1
+acl:
+  secret:
+    secretName: ""
 
 env: []
   # - name: VAR_NAME
   #   value: "value1"
+
+pdb:
+  enabled: false
+  minAvailable: 1
+  maxUnavailable: null

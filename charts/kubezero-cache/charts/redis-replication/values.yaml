@@ -159,5 +159,4 @@ env: []
 
 pdb:
   enabled: false
-  minAvailable: 1
-  maxUnavailable: null
+  maxUnavailable: 1

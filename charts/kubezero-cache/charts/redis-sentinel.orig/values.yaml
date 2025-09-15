@@ -33,7 +33,7 @@ labels: {}
 #   test: echo
 
 redisSentinelConfig:
-  # redisReplicationName: "redis-replication"
+  redisReplicationName: "redis-replication"
   redisReplicationPassword:
     secretName: ""
     secretKey: ""
@@ -62,7 +62,7 @@ serviceMonitor:
   enabled: false
   interval: 30s
   scrapeTimeout: 10s
-  namespace: ""
+  namespace: monitoring
   # -- extraLabels are added to the servicemonitor when enabled set to true
   extraLabels: {}
     # foo: bar
@@ -152,7 +152,8 @@ TLS:
 
 pdb:
   enabled: false
-  maxUnavailable: 1
+  minAvailable: 1
+  maxUnavailable: null
 
 livenessProbe:
   failureThreshold: 3

@@ -1,6 +1,6 @@
 diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.yaml charts/redis-sentinel/templates/redis-sentinel.yaml
---- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-09-15 14:47:23.622780004 +0000
-+++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-09-15 15:25:37.965167137 +0000
+--- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-09-15 18:37:20.043278241 +0000
++++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-09-15 18:37:20.043278241 +0000
 @@ -12,7 +12,7 @@
    clusterSize: {{ .Values.redisSentinel.clusterSize }}
    # Sentinel Config
@@ -45,8 +45,8 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.ya
    {{- if .Values.tolerations }}
    tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
 diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/servicemonitor.yaml charts/redis-sentinel/templates/servicemonitor.yaml
---- charts/redis-sentinel.orig/templates/servicemonitor.yaml	2025-09-15 14:47:23.622780004 +0000
-+++ charts/redis-sentinel/templates/servicemonitor.yaml	2025-09-15 14:57:39.300331848 +0000
+--- charts/redis-sentinel.orig/templates/servicemonitor.yaml	2025-09-15 18:37:20.043278241 +0000
++++ charts/redis-sentinel/templates/servicemonitor.yaml	2025-09-15 18:37:20.043278241 +0000
 @@ -26,5 +26,5 @@
      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
    namespaceSelector:
@@ -55,8 +55,8 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/servicemonitor.ya
 +    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
  {{- end }}
 diff '--color=auto' -tuNr charts/redis-sentinel.orig/values.yaml charts/redis-sentinel/values.yaml
---- charts/redis-sentinel.orig/values.yaml	2025-09-15 14:47:23.622780004 +0000
-+++ charts/redis-sentinel/values.yaml	2025-09-15 15:25:52.141930940 +0000
+--- charts/redis-sentinel.orig/values.yaml	2025-09-15 18:37:20.043278241 +0000
++++ charts/redis-sentinel/values.yaml	2025-09-15 18:38:18.347011060 +0000
 @@ -33,7 +33,7 @@
  #   test: echo
  
@@ -75,3 +75,13 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/values.yaml charts/redis-se
    # -- extraLabels are added to the servicemonitor when enabled set to true
    extraLabels: {}
      # foo: bar
+@@ -152,8 +152,7 @@
+ 
+ pdb:
+   enabled: false
+-  minAvailable: 1
+-  maxUnavailable: null
++  maxUnavailable: 1
+ 
+ livenessProbe:
+   failureThreshold: 3

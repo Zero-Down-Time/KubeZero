@@ -1,6 +1,6 @@
 diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replication.yaml charts/redis-replication/templates/redis-replication.yaml
---- charts/redis-replication.orig/templates/redis-replication.yaml	2025-09-15 14:47:15.489390941 +0000
-+++ charts/redis-replication/templates/redis-replication.yaml	2025-09-15 15:15:17.524249299 +0000
+--- charts/redis-replication.orig/templates/redis-replication.yaml	2025-09-15 18:37:20.026611459 +0000
++++ charts/redis-replication/templates/redis-replication.yaml	2025-09-15 18:37:20.026611459 +0000
 @@ -9,7 +9,7 @@
      redis.opstreelabs.in/recreate-statefulset: "true"
      {{ end }}
@@ -67,8 +67,8 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
 -  
 +
 diff '--color=auto' -tuNr charts/redis-replication.orig/templates/servicemonitor.yaml charts/redis-replication/templates/servicemonitor.yaml
---- charts/redis-replication.orig/templates/servicemonitor.yaml	2025-09-15 14:47:15.489390941 +0000
-+++ charts/redis-replication/templates/servicemonitor.yaml	2025-09-15 14:48:46.160012199 +0000
+--- charts/redis-replication.orig/templates/servicemonitor.yaml	2025-09-15 18:37:20.026611459 +0000
++++ charts/redis-replication/templates/servicemonitor.yaml	2025-09-15 18:37:20.026611459 +0000
 @@ -26,5 +26,5 @@
      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
    namespaceSelector:
@@ -77,8 +77,8 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/servicemonitor
 +    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
  {{- end }}
 diff '--color=auto' -tuNr charts/redis-replication.orig/values.yaml charts/redis-replication/values.yaml
---- charts/redis-replication.orig/values.yaml	2025-09-15 14:47:15.489390941 +0000
-+++ charts/redis-replication/values.yaml	2025-09-15 14:47:41.729570734 +0000
+--- charts/redis-replication.orig/values.yaml	2025-09-15 18:37:20.026611459 +0000
++++ charts/redis-replication/values.yaml	2025-09-15 18:38:34.933791376 +0000
 @@ -50,7 +50,7 @@
    enabled: false
    interval: 30s
@@ -88,10 +88,11 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/values.yaml charts/redis
    # -- extraLabels are added to the servicemonitor when enabled set to true
    extraLabels: {}
      # foo: bar
-@@ -160,4 +160,4 @@
+@@ -159,5 +159,4 @@
+ 
  pdb:
    enabled: false
-   minAvailable: 1
+-  minAvailable: 1
 -  maxUnavailable: null
 \ No newline at end of file
-+  maxUnavailable: null
++  maxUnavailable: 1
