@@ -1,0 +1,97 @@
+diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replication.yaml charts/redis-replication/templates/redis-replication.yaml
+--- charts/redis-replication.orig/templates/redis-replication.yaml	2025-09-15 14:47:15.489390941 +0000
++++ charts/redis-replication/templates/redis-replication.yaml	2025-09-15 15:15:17.524249299 +0000
+@@ -9,7 +9,7 @@
+     redis.opstreelabs.in/recreate-statefulset: "true"
+     {{ end }}
+ spec:
+-  clusterSize: {{ .Values.redisReplication.clusterSize }}  
++  clusterSize: {{ .Values.redisReplication.clusterSize }}
+   kubernetesConfig:
+     image: "{{ .Values.redisReplication.image }}:{{ .Values.redisReplication.tag }}"
+     imagePullPolicy: "{{ .Values.redisReplication.imagePullPolicy }}"
+@@ -30,6 +30,10 @@
+     {{- if .Values.redisReplication.minReadySeconds }}
+     minReadySeconds: {{ .Values.redisReplication.minReadySeconds}}
+     {{- end }}
++    {{- with .Values.redisReplication.service }}
++    service:
++      {{- . | toYaml | nindent 6 }}
++    {{- end }}
+ 
+   redisExporter:
+     enabled: {{ .Values.redisExporter.enabled }}
+@@ -37,14 +41,14 @@
+     imagePullPolicy: "{{ .Values.redisExporter.imagePullPolicy }}"
+     {{- if .Values.redisExporter.resources}}
+     resources: {{ toYaml .Values.redisExporter.resources | nindent 6 }}
+-    {{- end }}  
++    {{- end }}
+     {{- if .Values.redisExporter.env }}
+     env: {{ toYaml .Values.redisExporter.env | nindent 6 }}
+     {{- end }}
+     {{- if .Values.redisExporter.securityContext}}
+     securityContext: {{ toYaml .Values.redisExporter.securityContext | nindent 6 }}
+     {{- end }}
+-  
++
+   {{- if .Values.externalConfig.enabled }}
+   redisConfig:
+     additionalRedisConfig: "{{ .Values.redisReplication.name | default .Release.Name }}-ext-config"
+@@ -66,6 +70,21 @@
+   {{- end }}
+   {{- if .Values.affinity }}
+   affinity: {{ toYaml .Values.affinity | nindent 4 }}
++  {{- else }}
++  affinity:
++    podAntiAffinity:
++      requiredDuringSchedulingIgnoredDuringExecution:
++        - labelSelector:
++            matchExpressions:
++              - key: app
++                operator: In
++                values:
++                  - {{ .Values.redisReplication.name | default .Release.Name }}
++              - key: role
++                operator: In
++                values:
++                  - replication
++          topologyKey: "kubernetes.io/hostname"
+   {{- end }}
+   {{- if .Values.tolerations }}
+   tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
+@@ -101,4 +120,4 @@
+     minAvailable: {{ .Values.pdb.minAvailable }}
+     maxUnavailable: {{ .Values.pdb.maxUnavailable }}
+   {{- end }}
+-  
++
+diff '--color=auto' -tuNr charts/redis-replication.orig/templates/servicemonitor.yaml charts/redis-replication/templates/servicemonitor.yaml
+--- charts/redis-replication.orig/templates/servicemonitor.yaml	2025-09-15 14:47:15.489390941 +0000
++++ charts/redis-replication/templates/servicemonitor.yaml	2025-09-15 14:48:46.160012199 +0000
+@@ -26,5 +26,5 @@
+     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+   namespaceSelector:
+     matchNames:
+-    - {{ .Values.serviceMonitor.namespace }}
++    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
+ {{- end }}
+diff '--color=auto' -tuNr charts/redis-replication.orig/values.yaml charts/redis-replication/values.yaml
+--- charts/redis-replication.orig/values.yaml	2025-09-15 14:47:15.489390941 +0000
++++ charts/redis-replication/values.yaml	2025-09-15 14:47:41.729570734 +0000
+@@ -50,7 +50,7 @@
+   enabled: false
+   interval: 30s
+   scrapeTimeout: 10s
+-  namespace: monitoring
++  namespace: ""
+   # -- extraLabels are added to the servicemonitor when enabled set to true
+   extraLabels: {}
+     # foo: bar
+@@ -160,4 +160,4 @@
+ pdb:
+   enabled: false
+   minAvailable: 1
+-  maxUnavailable: null
+\ No newline at end of file
++  maxUnavailable: null

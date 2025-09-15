@@ -1,0 +1,77 @@
+diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.yaml charts/redis-sentinel/templates/redis-sentinel.yaml
+--- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-09-15 14:47:23.622780004 +0000
++++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-09-15 15:25:37.965167137 +0000
+@@ -12,7 +12,7 @@
+   clusterSize: {{ .Values.redisSentinel.clusterSize }}
+   # Sentinel Config
+   redisSentinelConfig:
+-    redisReplicationName: {{ .Values.redisSentinelConfig.redisReplicationName}}
++    redisReplicationName: {{ .Values.redisSentinelConfig.redisReplicationName | default .Release.Name }}
+     {{- if and .Values.redisSentinelConfig.redisReplicationPassword.secretName .Values.redisSentinelConfig.redisReplicationPassword.secretKey }}
+     redisReplicationPassword:
+       secretKeyRef:
+@@ -49,6 +49,11 @@
+     {{- if .Values.redisSentinel.minReadySeconds }}
+     minReadySeconds: {{ .Values.redisSentinel.minReadySeconds }}
+     {{- end }}
++    {{- with .Values.redisSentinel.service }}
++    service:
++      {{- . | toYaml | nindent 6 }}
++    {{- end }}
++
+ 
+   redisExporter:
+     enabled: {{ .Values.redisExporter.enabled }}
+@@ -75,6 +80,21 @@
+   {{- end }}
+   {{- if .Values.affinity }}
+   affinity: {{ toYaml .Values.affinity | nindent 4 }}
++  {{- else }}
++  affinity:
++    podAntiAffinity:
++      requiredDuringSchedulingIgnoredDuringExecution:
++        - labelSelector:
++            matchExpressions:
++              - key: app
++                operator: In
++                values:
++                  - {{ .Values.redisSentinel.name | default .Release.Name }}-sentinel
++              - key: role
++                operator: In
++                values:
++                  - sentinel
++          topologyKey: "kubernetes.io/hostname"
+   {{- end }}
+   {{- if .Values.tolerations }}
+   tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
+diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/servicemonitor.yaml charts/redis-sentinel/templates/servicemonitor.yaml
+--- charts/redis-sentinel.orig/templates/servicemonitor.yaml	2025-09-15 14:47:23.622780004 +0000
++++ charts/redis-sentinel/templates/servicemonitor.yaml	2025-09-15 14:57:39.300331848 +0000
+@@ -26,5 +26,5 @@
+     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+   namespaceSelector:
+     matchNames:
+-    - {{ .Values.serviceMonitor.namespace }}
++    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
+ {{- end }}
+diff '--color=auto' -tuNr charts/redis-sentinel.orig/values.yaml charts/redis-sentinel/values.yaml
+--- charts/redis-sentinel.orig/values.yaml	2025-09-15 14:47:23.622780004 +0000
++++ charts/redis-sentinel/values.yaml	2025-09-15 15:25:52.141930940 +0000
+@@ -33,7 +33,7 @@
+ #   test: echo
+ 
+ redisSentinelConfig:
+-  redisReplicationName: "redis-replication"
++  # redisReplicationName: "redis-replication"
+   redisReplicationPassword:
+     secretName: ""
+     secretKey: ""
+@@ -62,7 +62,7 @@
+   enabled: false
+   interval: 30s
+   scrapeTimeout: 10s
+-  namespace: monitoring
++  namespace: ""
+   # -- extraLabels are added to the servicemonitor when enabled set to true
+   extraLabels: {}
+     # foo: bar

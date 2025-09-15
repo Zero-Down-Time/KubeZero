@@ -1,6 +1,6 @@
 # kubezero-cache
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Cache module
 
@@ -14,35 +14,41 @@ KubeZero Cache module
 
 ## Requirements
 
-Kubernetes: `>= 1.29.0-0`
+Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.bitnami.com/bitnami | redis | 21.2.7 |
-| https://charts.bitnami.com/bitnami | redis-cluster | 12.0.11 |
+| https://ot-container-kit.github.io/helm-charts | redis | 0.16.5 |
+| https://ot-container-kit.github.io/helm-charts | redis-cluster | 0.17.0 |
+| https://ot-container-kit.github.io/helm-charts | redis-replication | 0.16.8 |
+| https://ot-container-kit.github.io/helm-charts | redis-sentinel | 0.16.9 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | istio.enabled | bool | `false` |  |
-| redis-cluster.cluster.nodes | int | `2` |  |
-| redis-cluster.cluster.replicas | int | `1` |  |
 | redis-cluster.enabled | bool | `false` |  |
-| redis-cluster.metrics.enabled | bool | `false` |  |
-| redis-cluster.metrics.serviceMonitor.enabled | bool | `false` |  |
-| redis-cluster.persistence.enabled | bool | `false` |  |
-| redis-cluster.redis.podAntiAffinityPreset | string | `"hard"` |  |
-| redis-cluster.usePassword | bool | `false` |  |
-| redis.architecture | string | `"standalone"` |  |
-| redis.auth.enabled | bool | `false` |  |
+| redis-replication.enabled | bool | `false` |  |
+| redis-replication.pdb.enabled | bool | `true` |  |
+| redis-replication.pdb.maxUnavailable | int | `1` |  |
+| redis-replication.pdb.minAvailable | string | `nil` |  |
+| redis-replication.redisReplication.service.additional.enabled | bool | `false` |  |
+| redis-replication.redisReplication.tag | string | `"v8.0.3"` |  |
+| redis-sentinel.enabled | bool | `false` |  |
+| redis-sentinel.pdb.enabled | bool | `true` |  |
+| redis-sentinel.pdb.maxUnavailable | int | `1` |  |
+| redis-sentinel.pdb.minAvailable | string | `nil` |  |
+| redis-sentinel.redisSentinel.service.additional.enabled | bool | `false` |  |
+| redis-sentinel.redisSentinel.tag | string | `"v8.0.3"` |  |
 | redis.enabled | bool | `false` |  |
-| redis.image.tag | string | `"7.2.5-debian-12-r4"` |  |
-| redis.master.persistence.enabled | bool | `false` |  |
-| redis.metrics.enabled | bool | `false` |  |
-| redis.metrics.serviceMonitor.enabled | bool | `false` |  |
-| redis.replica.replicaCount | int | `0` |  |
+| redis.redisExporter.enabled | bool | `false` |  |
+| redis.redisStandalone.service.additional.enabled | bool | `false` |  |
+| redis.redisStandalone.service.headless.enabled | bool | `false` |  |
+| redis.redisStandalone.tag | string | `"v8.0.3"` |  |
+| redis.serviceMonitor.enabled | bool | `false` |  |
+| redis.storageSpec | string | `nil` |  |
 | snapshotgroups | object | `{}` |  |
 
 # Dashboards

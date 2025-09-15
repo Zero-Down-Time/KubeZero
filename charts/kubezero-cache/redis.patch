@@ -1,0 +1,36 @@
+diff '--color=auto' -tuNr charts/redis.orig/templates/redis-standalone.yaml charts/redis/templates/redis-standalone.yaml
+--- charts/redis.orig/templates/redis-standalone.yaml	2025-09-15 11:46:17.166165940 +0000
++++ charts/redis/templates/redis-standalone.yaml	2025-09-15 12:36:00.776609200 +0000
+@@ -29,6 +29,10 @@
+     {{- if .Values.redisStandalone.minReadySeconds }}
+     minReadySeconds: {{ .Values.redisStandalone.minReadySeconds }}
+     {{- end }}
++    {{- with .Values.redisStandalone.service }}
++    service:
++      {{ . | toYaml | nindent 6 }}
++    {{- end }}
+ 
+   redisExporter:
+     enabled: {{ .Values.redisExporter.enabled }}
+diff '--color=auto' -tuNr charts/redis.orig/templates/servicemonitor.yaml charts/redis/templates/servicemonitor.yaml
+--- charts/redis.orig/templates/servicemonitor.yaml	2025-09-15 11:46:17.166165940 +0000
++++ charts/redis/templates/servicemonitor.yaml	2025-09-15 11:58:53.558015295 +0000
+@@ -26,5 +26,5 @@
+     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+   namespaceSelector:
+     matchNames:
+-    - {{ .Values.serviceMonitor.namespace }}
++    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
+ {{- end }}
+diff '--color=auto' -tuNr charts/redis.orig/values.yaml charts/redis/values.yaml
+--- charts/redis.orig/values.yaml	2025-09-15 11:46:17.166165940 +0000
++++ charts/redis/values.yaml	2025-09-15 11:59:08.888120334 +0000
+@@ -46,7 +46,7 @@
+   enabled: false
+   interval: 30s
+   scrapeTimeout: 10s
+-  namespace: monitoring
++  namespace: ""
+   # -- extraLabels are added to the servicemonitor when enabled set to true
+   extraLabels: {}
+     # foo: bar

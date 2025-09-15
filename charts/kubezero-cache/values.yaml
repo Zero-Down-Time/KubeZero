@@ -1,63 +1,68 @@
 redis:
   enabled: false
 
-  architecture: standalone
+  redisStandalone:
+    tag: v8.0.3
 
-  #image:
-  # tag: 7.2.5-debian-12-r4
+    service:
+      additional:
+        enabled: false
+      headless:
+        enabled: false
 
-  replica:
-    replicaCount: 0
-    podAntiAffinityPreset: hard
-
-  auth:
+  serviceMonitor:
     enabled: false
 
-  master:
-    persistence:
-      enabled: false
-#   resources:
-#     requests:
-#       memory: 256Mi
-#       cpu: 100m
-
-  metrics:
+  redisExporter:
     enabled: false
-    serviceMonitor:
-      enabled: false
-    resources:
-      requests:
-        cpu: 20m
-        memory: 16Mi
-      limits:
-        memory: 64Mi
+
+  # Single node assume pure cache
+  storageSpec: null
+
+
+redis-replication:
+  enabled: false
+
+  redisReplication:
+    tag: v8.0.3
+
+    service:
+      additional:
+        enabled: false
+
+# storageSpec:
+#   volumeClaimTemplate:
+#     spec:
+#       resources:
+#         requests:
+#           storage: 2Gi
+
+  # Add pdb by default
+  pdb:
+    enabled: true
+    maxUnavailable: 1
+    minAvailable: null
+
+
+redis-sentinel:
+  enabled: false
+
+  redisSentinel:
+    tag: v8.0.3
+
+    service:
+      additional:
+        enabled: false
+
+  # Add pdb by default
+  pdb:
+    enabled: true
+    maxUnavailable: 1
+    minAvailable: null
 
 
 redis-cluster:
   enabled: false
-
-  usePassword: false
-
-  cluster:
-    nodes: 2
-    replicas: 1
-
-  metrics:
-    enabled: false
-    serviceMonitor:
-      enabled: false
-    resources:
-      requests:
-        cpu: 20m
-        memory: 16Mi
-      limits:
-        memory: 64Mi
-
-  persistence:
-    enabled: false
-
-  redis:
-    podAntiAffinityPreset: hard
 
 istio:
   enabled: false

@@ -6,7 +6,9 @@ set -ex
 #login_ecr_public
 update_helm
 
-# Fetch dashboards from Grafana.com and update ZDT CM
-../kubezero-metrics/sync_grafana_dashboards.py dashboards.yaml templates/grafana-dashboards.yaml
+patch_chart redis
+patch_chart redis-replication
+patch_chart redis-sentinel
+patch_chart redis-cluster
 
 update_docs
