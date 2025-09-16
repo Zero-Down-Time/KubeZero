@@ -1,6 +1,6 @@
 diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.yaml charts/redis-sentinel/templates/redis-sentinel.yaml
---- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-09-15 18:37:20.043278241 +0000
-+++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-09-15 18:37:20.043278241 +0000
+--- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-09-16 10:57:25.734396825 +0000
++++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-09-16 10:58:16.841423846 +0000
 @@ -12,7 +12,7 @@
    clusterSize: {{ .Values.redisSentinel.clusterSize }}
    # Sentinel Config
@@ -44,9 +44,20 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.ya
    {{- end }}
    {{- if .Values.tolerations }}
    tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
+@@ -90,7 +110,9 @@
+   {{- if .Values.pdb.enabled }}
+   pdb:
+     enabled: {{ .Values.pdb.enabled }}
+-    minAvailable: {{ .Values.pdb.minAvailable }}
++    {{- with .Values.pdb.minAvailable }}
++    minAvailable: {{ . }}
++    {{- end }}
+     maxUnavailable: {{ .Values.pdb.maxUnavailable }}
+   {{- end }}
+   {{- with .Values.livenessProbe }}
 diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/servicemonitor.yaml charts/redis-sentinel/templates/servicemonitor.yaml
---- charts/redis-sentinel.orig/templates/servicemonitor.yaml	2025-09-15 18:37:20.043278241 +0000
-+++ charts/redis-sentinel/templates/servicemonitor.yaml	2025-09-15 18:37:20.043278241 +0000
+--- charts/redis-sentinel.orig/templates/servicemonitor.yaml	2025-09-16 10:57:25.734396825 +0000
++++ charts/redis-sentinel/templates/servicemonitor.yaml	2025-09-16 10:57:25.734396825 +0000
 @@ -26,5 +26,5 @@
      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
    namespaceSelector:
@@ -55,8 +66,8 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/servicemonitor.ya
 +    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
  {{- end }}
 diff '--color=auto' -tuNr charts/redis-sentinel.orig/values.yaml charts/redis-sentinel/values.yaml
---- charts/redis-sentinel.orig/values.yaml	2025-09-15 18:37:20.043278241 +0000
-+++ charts/redis-sentinel/values.yaml	2025-09-15 18:38:18.347011060 +0000
+--- charts/redis-sentinel.orig/values.yaml	2025-09-16 10:57:25.734396825 +0000
++++ charts/redis-sentinel/values.yaml	2025-09-16 10:57:25.734396825 +0000
 @@ -33,7 +33,7 @@
  #   test: echo
  

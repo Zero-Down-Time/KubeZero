@@ -1,6 +1,6 @@
 diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replication.yaml charts/redis-replication/templates/redis-replication.yaml
---- charts/redis-replication.orig/templates/redis-replication.yaml	2025-09-15 18:37:20.026611459 +0000
-+++ charts/redis-replication/templates/redis-replication.yaml	2025-09-15 18:37:20.026611459 +0000
+--- charts/redis-replication.orig/templates/redis-replication.yaml	2025-09-16 10:57:25.717730041 +0000
++++ charts/redis-replication/templates/redis-replication.yaml	2025-09-16 10:57:45.471202656 +0000
 @@ -9,7 +9,7 @@
      redis.opstreelabs.in/recreate-statefulset: "true"
      {{ end }}
@@ -60,15 +60,21 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
    {{- end }}
    {{- if .Values.tolerations }}
    tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
-@@ -101,4 +120,4 @@
-     minAvailable: {{ .Values.pdb.minAvailable }}
+@@ -98,7 +117,9 @@
+   {{- if .Values.pdb.enabled }}
+   pdb:
+     enabled: {{ .Values.pdb.enabled }}
+-    minAvailable: {{ .Values.pdb.minAvailable }}
++    {{- with .Values.pdb.minAvailable }}
++    minAvailable: {{ . }}
++    {{- end }}
      maxUnavailable: {{ .Values.pdb.maxUnavailable }}
    {{- end }}
 -  
 +
 diff '--color=auto' -tuNr charts/redis-replication.orig/templates/servicemonitor.yaml charts/redis-replication/templates/servicemonitor.yaml
---- charts/redis-replication.orig/templates/servicemonitor.yaml	2025-09-15 18:37:20.026611459 +0000
-+++ charts/redis-replication/templates/servicemonitor.yaml	2025-09-15 18:37:20.026611459 +0000
+--- charts/redis-replication.orig/templates/servicemonitor.yaml	2025-09-16 10:57:25.717730041 +0000
++++ charts/redis-replication/templates/servicemonitor.yaml	2025-09-16 10:57:25.717730041 +0000
 @@ -26,5 +26,5 @@
      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
    namespaceSelector:
@@ -77,8 +83,8 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/servicemonitor
 +    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
  {{- end }}
 diff '--color=auto' -tuNr charts/redis-replication.orig/values.yaml charts/redis-replication/values.yaml
---- charts/redis-replication.orig/values.yaml	2025-09-15 18:37:20.026611459 +0000
-+++ charts/redis-replication/values.yaml	2025-09-15 18:38:34.933791376 +0000
+--- charts/redis-replication.orig/values.yaml	2025-09-16 10:57:25.717730041 +0000
++++ charts/redis-replication/values.yaml	2025-09-16 10:57:25.717730041 +0000
 @@ -50,7 +50,7 @@
    enabled: false
    interval: 30s
