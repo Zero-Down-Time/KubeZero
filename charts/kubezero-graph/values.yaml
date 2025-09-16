@@ -52,7 +52,7 @@ neo4j:
     name: "graph-backup"
     image:
       repository: "neo4j/helm-charts-backup"
-      tag: "2025.07.1"
+      tag: "2025.8.0"
 
     resources: {}
     #  requests:
