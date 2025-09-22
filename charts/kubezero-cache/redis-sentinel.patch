@@ -1,6 +1,6 @@
 diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.yaml charts/redis-sentinel/templates/redis-sentinel.yaml
---- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-09-16 10:57:25.734396825 +0000
-+++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-09-16 10:58:16.841423846 +0000
+--- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-09-22 17:18:23.834030177 +0000
++++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-09-22 17:18:23.834030177 +0000
 @@ -12,7 +12,7 @@
    clusterSize: {{ .Values.redisSentinel.clusterSize }}
    # Sentinel Config
@@ -10,7 +10,7 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.ya
      {{- if and .Values.redisSentinelConfig.redisReplicationPassword.secretName .Values.redisSentinelConfig.redisReplicationPassword.secretKey }}
      redisReplicationPassword:
        secretKeyRef:
-@@ -49,6 +49,11 @@
+@@ -51,6 +51,11 @@
      {{- if .Values.redisSentinel.minReadySeconds }}
      minReadySeconds: {{ .Values.redisSentinel.minReadySeconds }}
      {{- end }}
@@ -22,7 +22,7 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.ya
  
    redisExporter:
      enabled: {{ .Values.redisExporter.enabled }}
-@@ -75,6 +80,21 @@
+@@ -80,6 +85,21 @@
    {{- end }}
    {{- if .Values.affinity }}
    affinity: {{ toYaml .Values.affinity | nindent 4 }}
@@ -44,7 +44,7 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.ya
    {{- end }}
    {{- if .Values.tolerations }}
    tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
-@@ -90,7 +110,9 @@
+@@ -95,7 +115,9 @@
    {{- if .Values.pdb.enabled }}
    pdb:
      enabled: {{ .Values.pdb.enabled }}
@@ -55,19 +55,9 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.ya
      maxUnavailable: {{ .Values.pdb.maxUnavailable }}
    {{- end }}
    {{- with .Values.livenessProbe }}
-diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/servicemonitor.yaml charts/redis-sentinel/templates/servicemonitor.yaml
---- charts/redis-sentinel.orig/templates/servicemonitor.yaml	2025-09-16 10:57:25.734396825 +0000
-+++ charts/redis-sentinel/templates/servicemonitor.yaml	2025-09-16 10:57:25.734396825 +0000
-@@ -26,5 +26,5 @@
-     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
-   namespaceSelector:
-     matchNames:
--    - {{ .Values.serviceMonitor.namespace }}
-+    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
- {{- end }}
 diff '--color=auto' -tuNr charts/redis-sentinel.orig/values.yaml charts/redis-sentinel/values.yaml
---- charts/redis-sentinel.orig/values.yaml	2025-09-16 10:57:25.734396825 +0000
-+++ charts/redis-sentinel/values.yaml	2025-09-16 10:57:25.734396825 +0000
+--- charts/redis-sentinel.orig/values.yaml	2025-09-22 17:18:23.834030177 +0000
++++ charts/redis-sentinel/values.yaml	2025-09-22 17:18:23.834030177 +0000
 @@ -33,7 +33,7 @@
  #   test: echo
  
@@ -77,16 +67,7 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/values.yaml charts/redis-se
    redisReplicationPassword:
      secretName: ""
      secretKey: ""
-@@ -62,7 +62,7 @@
-   enabled: false
-   interval: 30s
-   scrapeTimeout: 10s
--  namespace: monitoring
-+  namespace: ""
-   # -- extraLabels are added to the servicemonitor when enabled set to true
-   extraLabels: {}
-     # foo: bar
-@@ -152,8 +152,7 @@
+@@ -157,8 +157,7 @@
  
  pdb:
    enabled: false

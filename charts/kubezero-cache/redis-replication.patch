@@ -1,6 +1,6 @@
 diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replication.yaml charts/redis-replication/templates/redis-replication.yaml
---- charts/redis-replication.orig/templates/redis-replication.yaml	2025-09-16 10:57:25.717730041 +0000
-+++ charts/redis-replication/templates/redis-replication.yaml	2025-09-16 10:57:45.471202656 +0000
+--- charts/redis-replication.orig/templates/redis-replication.yaml	2025-09-22 17:23:23.915916398 +0000
++++ charts/redis-replication/templates/redis-replication.yaml	2025-09-22 17:23:23.915916398 +0000
 @@ -9,7 +9,7 @@
      redis.opstreelabs.in/recreate-statefulset: "true"
      {{ end }}
@@ -72,33 +72,13 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
    {{- end }}
 -  
 +
-diff '--color=auto' -tuNr charts/redis-replication.orig/templates/servicemonitor.yaml charts/redis-replication/templates/servicemonitor.yaml
---- charts/redis-replication.orig/templates/servicemonitor.yaml	2025-09-16 10:57:25.717730041 +0000
-+++ charts/redis-replication/templates/servicemonitor.yaml	2025-09-16 10:57:25.717730041 +0000
-@@ -26,5 +26,5 @@
-     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
-   namespaceSelector:
-     matchNames:
--    - {{ .Values.serviceMonitor.namespace }}
-+    - {{ .Values.serviceMonitor.namespace | default .Release.Namespace }}
- {{- end }}
 diff '--color=auto' -tuNr charts/redis-replication.orig/values.yaml charts/redis-replication/values.yaml
---- charts/redis-replication.orig/values.yaml	2025-09-16 10:57:25.717730041 +0000
-+++ charts/redis-replication/values.yaml	2025-09-16 10:57:25.717730041 +0000
-@@ -50,7 +50,7 @@
-   enabled: false
-   interval: 30s
-   scrapeTimeout: 10s
--  namespace: monitoring
-+  namespace: ""
-   # -- extraLabels are added to the servicemonitor when enabled set to true
-   extraLabels: {}
-     # foo: bar
-@@ -159,5 +159,4 @@
+--- charts/redis-replication.orig/values.yaml	2025-09-22 17:23:23.912583042 +0000
++++ charts/redis-replication/values.yaml	2025-09-22 17:24:25.079649660 +0000
+@@ -161,5 +161,4 @@
  
  pdb:
    enabled: false
 -  minAvailable: 1
 -  maxUnavailable: null
-\ No newline at end of file
 +  maxUnavailable: 1

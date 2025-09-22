@@ -1,8 +1,8 @@
 apiVersion: v2
-appVersion: 0.16.5
+appVersion: 0.16.6
 description: Provides easy redis setup definitions for Kubernetes services, and deployment.
 home: https://github.com/ot-container-kit/redis-operator
-icon: https://github.com/OT-CONTAINER-KIT/redis-operator/raw/master/static/redis-operator-logo.svg
+icon: https://github.com/OT-CONTAINER-KIT/redis-operator/raw/main/static/redis-operator-logo.svg
 keywords:
 - operator
 - redis
@@ -18,4 +18,4 @@ name: redis
 sources:
 - https://github.com/ot-container-kit/redis-operator
 type: application
-version: 0.16.5
+version: 0.16.6

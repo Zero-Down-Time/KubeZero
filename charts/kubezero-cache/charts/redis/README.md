@@ -72,6 +72,7 @@ helm delete <my-release> --namespace <namespace>
 | redisExporter.image | string | `"quay.io/opstree/redis-exporter"` |  |
 | redisExporter.imagePullPolicy | string | `"IfNotPresent"` |  |
 | redisExporter.resources | object | `{}` |  |
+| redisExporter.securityContext | object | `{}` |  |
 | redisExporter.tag | string | `"v1.44.0"` |  |
 | redisStandalone.ignoreAnnotations | list | `[]` |  |
 | redisStandalone.image | string | `"quay.io/opstree/redis"` |  |
@@ -90,7 +91,7 @@ helm delete <my-release> --namespace <namespace>
 | serviceMonitor.enabled | bool | `false` |  |
 | serviceMonitor.extraLabels | object | `{}` | extraLabels are added to the servicemonitor when enabled set to true |
 | serviceMonitor.interval | string | `"30s"` |  |
-| serviceMonitor.namespace | string | `"monitoring"` |  |
+| serviceMonitor.namespace | string | `""` | Namespace where servicemonitor resource will be created, if empty it will be created in the same namespace as the redis |
 | serviceMonitor.scrapeTimeout | string | `"10s"` |  |
 | sidecars.env | list | `[]` |  |
 | sidecars.image | string | `""` |  |

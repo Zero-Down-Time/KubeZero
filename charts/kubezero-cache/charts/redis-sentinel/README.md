@@ -85,6 +85,7 @@ helm delete <my-release> --namespace <namespace>
 | redisExporter.image | string | `"quay.io/opstree/redis-exporter"` |  |
 | redisExporter.imagePullPolicy | string | `"IfNotPresent"` |  |
 | redisExporter.resources | object | `{}` |  |
+| redisExporter.securityContext | object | `{}` |  |
 | redisExporter.tag | string | `"v1.44.0"` |  |
 | redisSentinel.clusterSize | int | `3` |  |
 | redisSentinel.ignoreAnnotations | list | `[]` |  |
@@ -99,6 +100,7 @@ helm delete <my-release> --namespace <namespace>
 | redisSentinel.resources | object | `{}` |  |
 | redisSentinel.serviceType | string | `"ClusterIP"` |  |
 | redisSentinel.tag | string | `"v7.0.15"` |  |
+| redisSentinelConfig.announceHostnames | string | `""` |  |
 | redisSentinelConfig.downAfterMilliseconds | string | `""` |  |
 | redisSentinelConfig.failoverTimeout | string | `""` |  |
 | redisSentinelConfig.masterGroupName | string | `""` |  |
@@ -108,12 +110,13 @@ helm delete <my-release> --namespace <namespace>
 | redisSentinelConfig.redisReplicationName | string | `"redis-replication"` |  |
 | redisSentinelConfig.redisReplicationPassword.secretKey | string | `""` |  |
 | redisSentinelConfig.redisReplicationPassword.secretName | string | `""` |  |
+| redisSentinelConfig.resolveHostnames | string | `""` |  |
 | securityContext | object | `{}` |  |
 | serviceAccountName | string | `""` |  |
 | serviceMonitor.enabled | bool | `false` |  |
 | serviceMonitor.extraLabels | object | `{}` | extraLabels are added to the servicemonitor when enabled set to true |
 | serviceMonitor.interval | string | `"30s"` |  |
-| serviceMonitor.namespace | string | `"monitoring"` |  |
+| serviceMonitor.namespace | string | `""` | Namespace where servicemonitor resource will be created, if empty it will be created in the same namespace as the redis-sentinel |
 | serviceMonitor.scrapeTimeout | string | `"10s"` |  |
 | sidecars.env | list | `[]` |  |
 | sidecars.image | string | `""` |  |

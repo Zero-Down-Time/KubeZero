@@ -1,6 +1,6 @@
 # kubezero-cache
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Cache module
 
@@ -19,10 +19,10 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://ot-container-kit.github.io/helm-charts | redis | 0.16.5 |
-| https://ot-container-kit.github.io/helm-charts | redis-cluster | 0.17.0 |
-| https://ot-container-kit.github.io/helm-charts | redis-replication | 0.16.8 |
-| https://ot-container-kit.github.io/helm-charts | redis-sentinel | 0.16.9 |
+| https://ot-container-kit.github.io/helm-charts | redis | 0.16.6 |
+| https://ot-container-kit.github.io/helm-charts | redis-cluster | 0.17.1 |
+| https://ot-container-kit.github.io/helm-charts | redis-replication | 0.16.9 |
+| https://ot-container-kit.github.io/helm-charts | redis-sentinel | 0.16.10 |
 
 ## Values
 

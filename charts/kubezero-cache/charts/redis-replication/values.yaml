@@ -45,11 +45,13 @@ externalService:
   #   foo: bar
   serviceType: NodePort
   port: 6379
+  #nodePort: 31000
 
 serviceMonitor:
   enabled: false
   interval: 30s
   scrapeTimeout: 10s
+  # -- Namespace where servicemonitor resource will be created, if empty it will be created in the same namespace as the redis-replication
   namespace: ""
   # -- extraLabels are added to the servicemonitor when enabled set to true
   extraLabels: {}
