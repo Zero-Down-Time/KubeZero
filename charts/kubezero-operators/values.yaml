@@ -88,7 +88,12 @@ redis-operator:
     kind: ClusterIssuer
     name: kubezero-local-ca-issuer
 
+  certificate:
+    name: redis-operator-webhook
+    secretName: redis-operator-webhook-cert
+
   service:
+    name: redis-operator-webhook
     namespace: operators
 
   certmanager:

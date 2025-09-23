@@ -1,0 +1,37 @@
+diff '--color=auto' -tuNr charts/redis-operator.orig/templates/mutating-webhook-configuration.yaml charts/redis-operator/templates/mutating-webhook-configuration.yaml
+--- charts/redis-operator.orig/templates/mutating-webhook-configuration.yaml	2025-09-23 11:20:11.533537139 +0000
++++ charts/redis-operator/templates/mutating-webhook-configuration.yaml	2025-09-23 11:22:40.691157698 +0000
+@@ -5,13 +5,13 @@
+ metadata:
+   name: mutating-webhook-configuration
+   annotations:
+-    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/serving-cert
++    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ .Values.certificate.name }}
+ webhooks:
+ - admissionReviewVersions:
+   - v1
+   clientConfig:
+     service:
+-      name: webhook-service
++      name: {{ .Values.service.name }}
+       namespace: {{ .Release.Namespace }}
+       path: /mutate-core-v1-pod
+   failurePolicy: Fail
+@@ -31,4 +31,4 @@
+       - key: redis_setup_type
+         operator: Exists
+ 
+-{{ end }}
+\ No newline at end of file
++{{ end }}
+diff '--color=auto' -tuNr charts/redis-operator.orig/templates/operator-deployment.yaml charts/redis-operator/templates/operator-deployment.yaml
+--- charts/redis-operator.orig/templates/operator-deployment.yaml	2025-09-23 11:20:11.533537139 +0000
++++ charts/redis-operator/templates/operator-deployment.yaml	2025-09-23 11:20:44.833750101 +0000
+@@ -46,7 +46,6 @@
+         - /operator
+         - manager
+         args:
+-        - --leader-elect
+         {{- if .Values.redisOperator.pprof.enabled }}
+         - --pprof-bind-address={{ .Values.redisOperator.pprof.bindAddress }}
+         {{- end }}

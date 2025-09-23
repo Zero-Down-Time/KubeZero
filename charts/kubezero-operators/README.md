@@ -60,6 +60,8 @@ Kubernetes: `>= 1.30.0-0`
 | rabbitmq-cluster-operator.msgTopologyOperator.metrics.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.msgTopologyOperator.metrics.serviceMonitor.enabled | bool | `true` |  |
 | rabbitmq-cluster-operator.useCertManager | bool | `true` |  |
+| redis-operator.certificate.name | string | `"redis-operator-webhook"` |  |
+| redis-operator.certificate.secretName | string | `"redis-operator-webhook-cert"` |  |
 | redis-operator.certmanager.enabled | bool | `true` |  |
 | redis-operator.enabled | bool | `false` |  |
 | redis-operator.issuer.create | bool | `false` |  |
@@ -75,6 +77,7 @@ Kubernetes: `>= 1.30.0-0`
 | redis-operator.securityContext.readOnlyRootFilesystem | bool | `true` |  |
 | redis-operator.securityContext.runAsNonRoot | bool | `true` |  |
 | redis-operator.securityContext.runAsUser | int | `1000` |  |
+| redis-operator.service.name | string | `"redis-operator-webhook"` |  |
 | redis-operator.service.namespace | string | `"operators"` |  |
 | strimzi-kafka-operator.enabled | bool | `false` |  |
 | strimzi-kafka-operator.leaderElection.enable | bool | `false` |  |
