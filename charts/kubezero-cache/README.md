@@ -30,6 +30,12 @@ Kubernetes: `>= 1.30.0-0`
 |-----|------|---------|-------------|
 | istio.enabled | bool | `false` |  |
 | redis-cluster.enabled | bool | `false` |  |
+| redis-cluster.redisCluster.enableMasterSlaveAntiAffinity | bool | `true` |  |
+| redis-cluster.redisCluster.follower.pdb.enabled | bool | `true` |  |
+| redis-cluster.redisCluster.leader.pdb.enabled | bool | `true` |  |
+| redis-cluster.redisExporter.enabled | bool | `false` |  |
+| redis-cluster.serviceMonitor.enabled | bool | `false` |  |
+| redis-cluster.storageSpec.nodeConfVolume | bool | `false` |  |
 | redis-replication.enabled | bool | `false` |  |
 | redis-replication.pdb.enabled | bool | `true` |  |
 | redis-replication.redisReplication.service.additional.enabled | bool | `false` |  |

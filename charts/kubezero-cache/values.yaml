@@ -60,6 +60,36 @@ redis-sentinel:
 redis-cluster:
   enabled: false
 
+  redisCluster:
+  # Not yet until v8 support gets merged
+  # clusterVersion: v8
+  # tag: v8.0.3
+    enableMasterSlaveAntiAffinity: true
+
+    leader:
+      # Add pdb by default
+      pdb:
+        enabled: true
+
+    follower:
+      # Add pdb by default
+      pdb:
+        enabled: true
+
+  serviceMonitor:
+    enabled: false
+  redisExporter:
+    enabled: false
+
+  # Ensure restarting nodes keep their identity and re-join
+  # without the need for a dedicated node-conf volume, we always have /data vol
+  storageSpec:
+    nodeConfVolume: false
+  externalConfig:
+    enabled: true
+    data: |
+      cluster-config-file /data/nodes.conf
+
 istio:
   enabled: false
 

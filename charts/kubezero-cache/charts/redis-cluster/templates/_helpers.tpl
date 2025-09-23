@@ -29,7 +29,9 @@ tolerations:
 pdb:
   enabled: {{ .pdb.enabled }}
   maxUnavailable: {{ .pdb.maxUnavailable }}
-  minAvailable: {{ .pdb.minAvailable }}
+  {{- with .pdb.minAvailable }}
+  minAvailable: {{ . }}
+  {{- end }}
 {{- end }}
 {{- if .nodeSelector }}
 nodeSelector:

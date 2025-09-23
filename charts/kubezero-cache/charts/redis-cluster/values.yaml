@@ -52,7 +52,6 @@ redisCluster:
     pdb:
       enabled: false
       maxUnavailable: 1
-      minAvailable: 1
     livenessProbe: {}
       # timeoutSeconds: 30
       # periodSeconds: 45
@@ -65,7 +64,7 @@ redisCluster:
       # successThreshold: 1
       # failureThreshold: 4
       # initialDelaySeconds: 15
-    
+
   follower:
     # -- Number of Redis follower (slave) nodes. If not set, uses clusterSize value
     replicas: 3
@@ -90,7 +89,6 @@ redisCluster:
     pdb:
       enabled: false
       maxUnavailable: 1
-      minAvailable: 1
     livenessProbe: {}
       # timeoutSeconds: 30
       # periodSeconds: 45
