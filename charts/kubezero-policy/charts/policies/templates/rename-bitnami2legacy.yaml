@@ -1,3 +1,4 @@
+{{- if .Values.bestPractices.enabled }}
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -26,8 +27,8 @@ spec:
           patchStrategicMerge:
             spec:
               containers:
-              - name: "{{ element.name }}"
-                image: "{{ regex_replace_all('^(docker\\.io/bitnami/)?(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$2' )}}"
+              - name: "{{`{{ element.name }}`}}"
+                image: "{{`{{ regex_replace_all('^(docker\\.io/bitnami/)?(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$2' )}}`}}"
     - name: replace-image-registry-pod-initcontainers
       match:
         any:
@@ -36,7 +37,7 @@ spec:
             - Pod
       preconditions:
         all:
-        - key: "{{ request.object.spec.initContainers[] || `[]` | length(@) }}"
+        - key: "{{`{{ request.object.spec.initContainers[] || `}}`[]`{{` | length(@) }}`}}"
           operator: GreaterThanOrEquals
           value: 1
       mutate:
@@ -45,5 +46,6 @@ spec:
           patchStrategicMerge:
             spec:
               initContainers:
-              - name: "{{ element.name }}"
-                image: "{{ regex_replace_all('^(docker\\.io/bitnami/)?(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$2' )}}"
+              - name: "{{`{{ element.name }}`}}"
+                image: "{{`{{ regex_replace_all('^(docker\\.io/bitnami/)?(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$2' )}}`}}"
+{{- end }}

@@ -2,7 +2,7 @@ apiVersion: v2
 name: policies
 description: KubeZero collection of Kyverno policies
 type: application
-version: 0.1.0
+version: 0.1.1
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:

@@ -21,6 +21,6 @@ dependencies:
     repository: https://kyverno.github.io/kyverno/
     condition: kyverno.enabled
   - name: policies
-    version: 0.1.0
+    version: 0.1.1
     condition: policies.enabled
 kubeVersion: ">= 1.30.0-0"
