@@ -3,14 +3,13 @@ gzip: true
 condition: 'index .Values "redis-operator" "redisOperator" "metrics" "enabled"'
 folder: Operators
 dashboards:
-# what about https://github.com/OT-CONTAINER-KIT/redis-operator/tree/main/dashboards ??
 - name: redis-operator
   #url: https://grafana.com/api/dashboards/763/revisions/6/download
   url: https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/heads/main/dashboards/redis-operator.json
   tags:
   - Redis
   - Operators
-- name: redis cluster
+- name: redis-cluster
   # url: https://grafana.com/api/dashboards/14615/revisions/1/download
   url: https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/heads/main/dashboards/redis-operator-cluster.json
   tags:
