@@ -1,0 +1,49 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: rename-bitnami2legacy
+  annotations:
+    policies.kyverno.io/title: Rename all Bitnami images to legacy
+    pod-policies.kyverno.io/autogen-controllers: none
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/description: >-
+      Replaces all docker image URLs from bitnami to bitnamilegacy.
+      This is stop gap solution to deal with the Broadcom / Bitnami changes
+      in September 2025.
+spec:
+  background: false
+  rules:
+    - name: replace-image-registry-pod-containers
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      mutate:
+        foreach:
+        - list: "request.object.spec.containers"
+          patchStrategicMerge:
+            spec:
+              containers:
+              - name: "{{ element.name }}"
+                image: "{{ regex_replace_all('^(docker\\.io/bitnami/)?(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$2' )}}"
+    - name: replace-image-registry-pod-initcontainers
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      preconditions:
+        all:
+        - key: "{{ request.object.spec.initContainers[] || `[]` | length(@) }}"
+          operator: GreaterThanOrEquals
+          value: 1
+      mutate:
+        foreach:
+        - list: "request.object.spec.initContainers"
+          patchStrategicMerge:
+            spec:
+              initContainers:
+              - name: "{{ element.name }}"
+                image: "{{ regex_replace_all('^(docker\\.io/bitnami/)?(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$2' )}}"
