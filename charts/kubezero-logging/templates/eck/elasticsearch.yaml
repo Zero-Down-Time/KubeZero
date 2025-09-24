@@ -25,6 +25,7 @@ spec:
       node.processors: {{ .processors }}
       {{- end }}
       indices.memory.index_buffer_size: "20%"
+      indices.query.bool.max_clause_count: 2000
       index.store.type: niofs
     podTemplate:
       # Remove once https://github.com/elastic/elasticsearch/pull/65923 is merged
