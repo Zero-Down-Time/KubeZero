@@ -28,7 +28,7 @@ spec:
             spec:
               containers:
               - name: "{{`{{ element.name }}`}}"
-                image: "{{`{{ regex_replace_all('^(docker\\.io/bitnami/)?(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$2' )}}`}}"
+                image: "{{`{{ regex_replace_all('^docker\\.io/bitnami/(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$1' )}}`}}"
     - name: replace-image-registry-pod-initcontainers
       match:
         any:
@@ -47,5 +47,5 @@ spec:
             spec:
               initContainers:
               - name: "{{`{{ element.name }}`}}"
-                image: "{{`{{ regex_replace_all('^(docker\\.io/bitnami/)?(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$2' )}}`}}"
+                image: "{{`{{ regex_replace_all('^docker\\.io/bitnami/(.*)$', '{{element.image}}', 'docker.io/bitnamilegacy/$1' )}}`}}"
 {{- end }}
