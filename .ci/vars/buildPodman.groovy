@@ -7,7 +7,7 @@ def call(Map config=[:]) {
       }
       agent {
         node {
-          label 'podman-aws-trivy'
+          label 'podman-aws-grype'
         }
       }
       stages {
@@ -42,26 +42,15 @@ def call(Map config=[:]) {
         stage('Scan') {
           steps {
             // we always scan and create the full json report
-            sh 'TRIVY_FORMAT=json TRIVY_OUTPUT="reports/trivy.json" make scan'
+            sh 'GRYPE_OUTPUT=json GRYPE_FILE="reports/grype-report.json" make scan'
 
-            // render custom full html report
-            sh 'trivy convert -f template -t @/home/jenkins/html.tpl -o reports/trivy.html reports/trivy.json'
-
-            publishHTML target: [
-              allowMissing: true,
-              alwaysLinkToLastBuild: true,
-              keepAll: true,
-              reportDir: 'reports',
-              reportFiles: 'trivy.html',
-              reportName: 'TrivyScan',
-              reportTitles: 'TrivyScan'
-            ]
-            sh 'echo "Trivy report at: $BUILD_URL/TrivyScan"'
-
-            // fail build if issues found above trivy threshold
+            // fail build if grypeFail is set, default is any ERROR marks build unstable
             script {
-              if ( config.trivyFail ) {
-                sh "TRIVY_SEVERITY=${config.trivyFail} trivy convert --report summary --exit-code 1 reports/trivy.json"
+              def failBuild=config.grypeFail
+              if (failBuild == null || failBuild.isEmpty()) {
+                  recordIssues enabledForFailure: true, tool: grype(), sourceCodeRetention: 'NEVER', skipPublishingChecks: true, qualityGates: [[threshold: 1, type: 'TOTAL_ERROR', criticality: 'NOTE']]
+              } else {
+                  recordIssues enabledForFailure: true, tool: grype(), sourceCodeRetention: 'NEVER', skipPublishingChecks: true, qualityGates: [[threshold: 1, type: 'TOTAL_ERROR', criticality: 'FAILURE']]
               }
             }
           }
@@ -85,4 +74,4 @@ def call(Map config=[:]) {
         }
       }
     }
-  }
+}
