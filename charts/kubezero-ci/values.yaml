@@ -183,6 +183,7 @@ jenkins:
       - pipeline-graph-view
       - pipeline-stage-view
       - configuration-as-code
+      - warnings-ng
       - antisamy-markup-formatter
       - prometheus
       - htmlpublisher
@@ -200,7 +201,7 @@ jenkins:
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.7.2
+      tag: v0.8.0
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false
@@ -212,7 +213,7 @@ jenkins:
     garbageCollection:
       enabled: true
     customJenkinsLabels:
-    - podman-aws-trivy
+    - podman-aws-grype
     idleMinutes: 30
     containerCap: 2
     resources:
@@ -292,16 +293,6 @@ jenkins:
       enabled: false
       gateway: istio-ingress/private-ingressgateway
       url: jenkins-agent.example.com
-
-trivy:
-  enabled: false
-  #image:
-  #tag: 0.57.0
-  persistence:
-    enabled: true
-    size: 2Gi
-  rbac:
-    create: false
 
 renovate:
   enabled: false

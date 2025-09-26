@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-ci
 description: KubeZero umbrella chart for all things CI
 type: application
-version: 0.8.28
+version: 0.9.0
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -25,10 +25,6 @@ dependencies:
     version: 5.8.92
     repository: https://charts.jenkins.io
     condition: jenkins.enabled
-  - name: trivy
-    version: 0.18.0
-    repository: https://aquasecurity.github.io/helm-charts/
-    condition: trivy.enabled
   - name: renovate
     version: 44.8.1
     repository: https://docs.renovatebot.com/helm-charts

@@ -12,6 +12,42 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.8.92
+
+Update `configuration-as-code` to version `1995.v540b_50a_eb_0c1`
+
+## 5.8.91
+
+Fix `docker-agent` git repository URL
+
+## 5.8.90
+
+Update `jenkins/inbound-agent` to version `3341.v0766d82b_dec0-1`
+
+## 5.8.89
+
+Fix chart deployment.
+
+## 5.8.88
+
+Update `jenkins/jenkins` to version `2.516.3-jdk21`
+
+## 5.8.87
+
+Update `jenkins/inbound-agent` to version `3327.v868139a_d00e0-8`
+
+## 5.8.86
+
+Update `kubernetes` to version `4371.vb_33b_086d54a_1`
+
+## 5.8.85
+
+Update `jenkins/inbound-agent` to version `3327.v868139a_d00e0-7`
+
+## 5.8.84
+
+Update `kubernetes` to version `4369.va_9a_89327dd35`
+
 ## 5.8.83
 
 Revert `defaultConfig=false` changes, see [#1470](https://github.com/jenkinsci/helm-charts/issues/1470).
