@@ -17,9 +17,14 @@ Add subtree to your project:
 git subtree add --prefix .ci https://git.zero-downtime.net/ZeroDownTime/ci-tools-lib.git main --squash
 ```
 
-
 ## Jenkins
 Shared groovy libraries
 
 ## Make
 Common Makefile include
+
+# Renovate
+Run renovate locally to test custom config:
+```
+LOG_LEVEL=debug ~/node_modules/renovate/dist/renovate.js --platform local --dry-run
+```

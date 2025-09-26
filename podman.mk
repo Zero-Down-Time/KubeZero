@@ -29,10 +29,6 @@ ARCH ::= amd64
 ALL_ARCHS ::= amd64 arm64
 _ARCH = $(or $(filter $(ARCH),$(ALL_ARCHS)),$(error $$ARCH [$(ARCH)] must be exactly one of "$(ALL_ARCHS)"))
 
-ifneq ($(TRIVY_REMOTE),)
-	TRIVY_OPTS ::= --server $(TRIVY_REMOTE)
-endif
-
 help: ## Show Help
 	grep -E '^[a-zA-Z_-]+:.*?## .*$$' .ci/podman.mk | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
@@ -47,9 +43,9 @@ build: ## Build the app
 
 test:: ## test built artificats
 
-scan: ## Scan image using trivy
-	echo "Scanning $(IMAGE):$(TAG)-$(_ARCH) using Trivy $(TRIVY_REMOTE)"
-	trivy image $(TRIVY_OPTS) --quiet --no-progress --ignorefile ./.trivyignore.yaml localhost/$(IMAGE):$(TAG)-$(_ARCH)
+scan: ## Scan image using grype
+	echo "Scanning $(IMAGE):$(TAG)-$(_ARCH) using Grype"
+	grype podman:localhost/$(IMAGE):$(TAG)-$(_ARCH)
 
 # first tag and push all actual images
 # create new manifest for each tag and add all available TAG-ARCH before pushing
