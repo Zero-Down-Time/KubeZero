@@ -1,17 +1,15 @@
 #!/bin/bash
 
 # AI Bot Blocker Pattern Generator
-# Converts HAProxy AI bot list to regex pattern blocks
+# Converts HAProxy AI bot list to regex pattern blocks to stay under Istio limit
 
 set -euo pipefail
 
 URL="https://raw.githubusercontent.com/ai-robots-txt/ai.robots.txt/refs/heads/main/haproxy-block-ai-bots.txt"
 TEMP_FILE=$(mktemp)
 MAX_BYTES=1000
-OUTPUT_FILE="ai-bot-patterns.yml"
 
 # Download and clean the bot list
-echo "Downloading AI bot list..."
 curl -s "$URL" | grep -v '^#' | grep -v '^$' | sort -u > "$TEMP_FILE"
 
 # Function to escape regex special characters
@@ -30,11 +28,6 @@ block_count=1
 header_template='    - headers:
         user-agent:
           regex: "(?i).*(?:'
-
-# Clear output file
-> "$OUTPUT_FILE"
-
-echo "Processing $(wc -l < "$TEMP_FILE") bot patterns..."
 
 while IFS= read -r bot_name; do
     # Skip empty lines
@@ -57,8 +50,7 @@ while IFS= read -r bot_name; do
     # Check if adding this pattern would exceed the limit
     if [[ $block_size -gt $MAX_BYTES ]] && [[ -n "$current_patterns" ]]; then
         # Output current block
-        echo "$header_template$current_patterns).*\"" >> "$OUTPUT_FILE"
-        echo "" >> "$OUTPUT_FILE"
+        echo "$header_template$current_patterns).*\""
 
         # Start new block
         current_patterns="$escaped_bot"
@@ -72,16 +64,8 @@ done < "$TEMP_FILE"
 
 # Output final block if not empty
 if [[ -n "$current_patterns" ]]; then
-    echo "$header_template$current_patterns).*\"" >> "$OUTPUT_FILE"
+    echo "$header_template$current_patterns).*\""
 fi
 
 # Cleanup
 rm "$TEMP_FILE"
-
-echo "Generated $block_count pattern blocks in $OUTPUT_FILE"
-echo "Each block is under $MAX_BYTES bytes"
-
-# Show summary
-echo ""
-echo "Summary:"
-grep "^# Block" "$OUTPUT_FILE"
