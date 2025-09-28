@@ -117,6 +117,12 @@ jenkins:
     javaOpts: "-XX:+UseContainerSupport -XX:+UseStringDeduplication -Dhudson.model.DirectoryBrowserSupport.CSP=\"sandbox allow-popups; default-src 'none'; img-src 'self' cdn.zero-downtime.net; style-src 'unsafe-inline';\""
     jenkinsOpts: "--sessionTimeout=300 --sessionEviction=10800"
 
+    # until https://github.com/kiwigrid/k8s-sidecar/issues/400 is fixed
+    sidecars:
+      configAutoReload:
+        image:
+          tag: 1.30.3
+
     # Until we setup the logging and metrics pipelines in OTEL
     containerEnv:
       - name: OTEL_LOGS_EXPORTER
@@ -179,6 +185,7 @@ jenkins:
       - kubernetes-credentials-provider
       - workflow-aggregator
       - git
+      - git-forensics
       - basic-branch-build-strategies
       - pipeline-graph-view
       - pipeline-stage-view

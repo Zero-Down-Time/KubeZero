@@ -151,6 +151,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.resources.limits.memory | string | `"4096Mi"` |  |
 | jenkins.controller.resources.requests.cpu | string | `"250m"` |  |
 | jenkins.controller.resources.requests.memory | string | `"1280Mi"` |  |
+| jenkins.controller.sidecars.configAutoReload.image.tag | string | `"1.30.3"` |  |
 | jenkins.controller.testEnabled | bool | `false` |  |
 | jenkins.enabled | bool | `false` |  |
 | jenkins.istio.agent.enabled | bool | `false` |  |
