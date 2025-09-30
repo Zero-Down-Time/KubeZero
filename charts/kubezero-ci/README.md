@@ -35,11 +35,6 @@ Kubernetes: `>= 1.30.0`
  - integrated AI scraper blocking
  - ZDT branding using the CDN
 
-# Verdaccio
-
-## Authentication sealed-secret
-```htpasswd -n -b -B -C 4 <username> <password> | kubeseal --raw --namespace verdaccio --name verdaccio-htpasswd```
-
 ## Resources
 
 ### JVM tuning in containers
