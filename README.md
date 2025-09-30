@@ -19,7 +19,7 @@ KubeZero is a Kubernetes distribution providing an integrated container platform
 
 # Version / Support Matrix
 KubeZero releases track the same *minor* version of Kubernetes.
-Any 1.31.X-Y release of Kubezero supports any Kubernetes cluster 1.31.X.
+Any 1.32.X-Y release of Kubezero supports any Kubernetes cluster 1.32.X.
 
 KubeZero is distributed as a collection of versioned Helm charts, allowing custom upgrade schedules and module versions as needed.
 
@@ -28,15 +28,15 @@ KubeZero is distributed as a collection of versioned Helm charts, allowing custo
 gantt
     title KubeZero Support Timeline
     dateFormat  YYYY-MM-DD
-    section 1.30
-    beta     :130b, 2024-09-01, 2024-10-31
-    release  :after 130b, 2025-04-30
-    section 1.31
-    beta     :131b, 2024-12-01, 2025-02-28
-    release  :after 131b, 2025-07-31
     section 1.32
     beta     :132b, 2025-05-01, 2025-06-01
-    release  :after 132b, 2025-10-31
+    release  :after 132b, 2025-11-30
+    section 1.33
+    beta     :133b, 2025-10-01, 2025-11-01
+    release  :after 133b, 2026-01-31
+    section 1.34
+    beta     :134b, 2026-01-01, 2026-02-28
+    release  :after 134b, 2026-05-31
 ```
 
 [Upstream release policy](https://kubernetes.io/releases/)
@@ -44,8 +44,8 @@ gantt
 # Components
 
 ## OS
-- all compute nodes are running on Alpine V3.21
-- 1 or 2 GB encrypted root file system
+- all compute nodes are running on Alpine V3.22
+- 2 GB encrypted root file system
 - no external dependencies at boot time, apart from container registries
 - focused on security and minimal footprint
 
@@ -73,8 +73,8 @@ gantt
 
 ## Network
 - Cilium using Geneve encapsulation, incl. increased MTU allowing flexible / more containers per worker node compared to eg. AWS VPC CNI
-- Multus support for multiple network interfaces per pod, eg. additional AWS CNI
 - no restrictions on IP space / sizing from the underlying VPC architecture
+- Multus support for multiple network interfaces (NoCloud only)
 
 ## Storage
 - flexible EBS support incl. zone awareness
