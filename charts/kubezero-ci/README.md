@@ -103,7 +103,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.garbageCollection.enabled | bool | `true` |  |
 | jenkins.agent.idleMinutes | int | `30` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
-| jenkins.agent.image.tag | string | `"v0.8.0"` |  |
+| jenkins.agent.image.tag | string | `"v0.8.1"` |  |
 | jenkins.agent.inheritYamlMergeStrategy | bool | `true` |  |
 | jenkins.agent.podName | string | `"podman-aws"` |  |
 | jenkins.agent.podRetention | string | `"Default"` |  |
@@ -129,22 +129,23 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.initContainerResources.requests.cpu | string | `"50m"` |  |
 | jenkins.controller.initContainerResources.requests.memory | string | `"256Mi"` |  |
 | jenkins.controller.installPlugins[0] | string | `"kubernetes"` |  |
-| jenkins.controller.installPlugins[10] | string | `"prometheus"` |  |
-| jenkins.controller.installPlugins[11] | string | `"htmlpublisher"` |  |
-| jenkins.controller.installPlugins[12] | string | `"build-discarder"` |  |
-| jenkins.controller.installPlugins[13] | string | `"dark-theme"` |  |
-| jenkins.controller.installPlugins[14] | string | `"matrix-auth"` |  |
-| jenkins.controller.installPlugins[15] | string | `"reverse-proxy-auth-plugin"` |  |
-| jenkins.controller.installPlugins[16] | string | `"opentelemetry"` |  |
+| jenkins.controller.installPlugins[10] | string | `"antisamy-markup-formatter"` |  |
+| jenkins.controller.installPlugins[11] | string | `"prometheus"` |  |
+| jenkins.controller.installPlugins[12] | string | `"htmlpublisher"` |  |
+| jenkins.controller.installPlugins[13] | string | `"build-discarder"` |  |
+| jenkins.controller.installPlugins[14] | string | `"dark-theme"` |  |
+| jenkins.controller.installPlugins[15] | string | `"matrix-auth"` |  |
+| jenkins.controller.installPlugins[16] | string | `"reverse-proxy-auth-plugin"` |  |
+| jenkins.controller.installPlugins[17] | string | `"opentelemetry"` |  |
 | jenkins.controller.installPlugins[1] | string | `"kubernetes-credentials-provider"` |  |
 | jenkins.controller.installPlugins[2] | string | `"workflow-aggregator"` |  |
 | jenkins.controller.installPlugins[3] | string | `"git"` |  |
-| jenkins.controller.installPlugins[4] | string | `"basic-branch-build-strategies"` |  |
-| jenkins.controller.installPlugins[5] | string | `"pipeline-graph-view"` |  |
-| jenkins.controller.installPlugins[6] | string | `"pipeline-stage-view"` |  |
-| jenkins.controller.installPlugins[7] | string | `"configuration-as-code"` |  |
-| jenkins.controller.installPlugins[8] | string | `"warnings-ng"` |  |
-| jenkins.controller.installPlugins[9] | string | `"antisamy-markup-formatter"` |  |
+| jenkins.controller.installPlugins[4] | string | `"git-forensics"` |  |
+| jenkins.controller.installPlugins[5] | string | `"basic-branch-build-strategies"` |  |
+| jenkins.controller.installPlugins[6] | string | `"pipeline-graph-view"` |  |
+| jenkins.controller.installPlugins[7] | string | `"pipeline-stage-view"` |  |
+| jenkins.controller.installPlugins[8] | string | `"configuration-as-code"` |  |
+| jenkins.controller.installPlugins[9] | string | `"warnings-ng"` |  |
 | jenkins.controller.javaOpts | string | `"-XX:+UseContainerSupport -XX:+UseStringDeduplication -Dhudson.model.DirectoryBrowserSupport.CSP=\"sandbox allow-popups; default-src 'none'; img-src 'self' cdn.zero-downtime.net; style-src 'unsafe-inline';\""` |  |
 | jenkins.controller.jenkinsOpts | string | `"--sessionTimeout=300 --sessionEviction=10800"` |  |
 | jenkins.controller.prometheus.enabled | bool | `false` |  |

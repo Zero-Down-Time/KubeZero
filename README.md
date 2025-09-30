@@ -33,10 +33,10 @@ gantt
     release  :after 132b, 2025-11-30
     section 1.33
     beta     :133b, 2025-10-01, 2025-11-01
-    release  :after 133b, 2026-01-31
+    release  :after 133b, 2026-03-31
     section 1.34
     beta     :134b, 2026-01-01, 2026-02-28
-    release  :after 134b, 2026-05-31
+    release  :after 134b, 2026-07-31
 ```
 
 [Upstream release policy](https://kubernetes.io/releases/)
