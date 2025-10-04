@@ -16,7 +16,7 @@ data:
             "name": "envoy.overload_actions.shrink_heap",
             "triggers": [
               {
-                "name": "envoy.resource_monitors.fixed_heap",
+                "name": "envoy.resource_monitors.cgroup_memory",
                 "threshold": {
                   "value": 0.92
                 }
@@ -27,7 +27,7 @@ data:
             "name": "envoy.overload_actions.stop_accepting_requests",
             "triggers": [
               {
-                "name": "envoy.resource_monitors.fixed_heap",
+                "name": "envoy.resource_monitors.cgroup_memory",
                 "threshold": {
                   "value": 0.98
                 }
@@ -38,22 +38,22 @@ data:
         "refresh_interval": "0.25s",
         "resource_monitors": [
           {
-            "name": "envoy.resource_monitors.fixed_heap",
+            "name": "envoy.resource_monitors.cgroup_memory",
             "typed_config": {
               "@type": "type.googleapis.com/envoy.extensions.resource_monitors.fixed_heap.v3.FixedHeapConfig",
               "max_heap_size_bytes": 536870912
             }
-          }
-        ]
-      },
-      "layeredRuntime": {
-        "layers": [
+          },
           {
-            "name": "static_layer_0",
-            "staticLayer": {
-              "envoy.resource_monitors.downstream_connections": 50000
+            "name": "envoy.resource_monitors.global_downstream_max_connections",
+            "typed_config": {
+              "@type": "type.googleapis.com/envoy.extensions.resource_monitors.downstream_connections.v3.DownstreamConnectionsConfig",
+              "max_active_downstream_connections": 50000
             }
           }
         ]
       }
     }
+
+#             "@type": "type.googleapis.com/envoy.extensions.resource_monitors.cgroup_memory.v3.CgroupMemoryConfig",
+#             "max_memory_bytes": 1073741824
