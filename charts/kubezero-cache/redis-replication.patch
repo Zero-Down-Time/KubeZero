@@ -1,6 +1,51 @@
+diff '--color=auto' -tuNr charts/redis-replication.orig/templates/_helpers.tpl charts/redis-replication/templates/_helpers.tpl
+--- charts/redis-replication.orig/templates/_helpers.tpl	2025-10-01 14:03:41.574490121 +0000
++++ charts/redis-replication/templates/_helpers.tpl	2025-10-01 14:03:54.737904228 +0000
+@@ -44,21 +44,22 @@
+ {{- end }}
+ {{- end -}}
+ 
+-{{/* Generate sidecar properties */}}
+-{{- define "sidecar.properties" -}}
+-{{- with .Values.sidecars }}
+-name: {{ .name }}
+-image: {{ .image }}
+-{{- if .imagePullPolicy }}
+-imagePullPolicy: {{ .imagePullPolicy }}
+-{{- end }}
+-{{- if .resources }}
+-resources:
+-  {{ toYaml .resources | nindent 2 }}
+-{{- end }}
+-{{- if .env }}
+-env:
+-{{ toYaml .env | nindent 2 }}
+-{{- end }}
+-{{- end }}
+-{{- end -}}
+\ No newline at end of file
++{{/* Generate sidecar properties for redis-vault */}}
++{{- define "redisVault.sidecar" -}}
++- name: redis-vault
++  image: {{ .Values.redisVault.image.repository }}:{{ .Values.redisVault.image.tag }}
++  resources: {{ toYaml .Values.redisVault.resources | nindent 4 }}
++  mountPath:
++    - name: {{ .Values.redisReplication.name | default .Release.Name }}
++      mountPath: /data
++      readOnly: true
++  securityContext:
++    runAsUser: 1000
++    runAsNonRoot: true
++    readOnlyRootFilesystem: true
++    capabilities:
++      drop: ["ALL"]
++  {{- with .Values.redisVault.env }}
++  env: {{ toYaml . | nindent 4 }}
++  {{- end -}}
++{{- end -}}
 diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replication.yaml charts/redis-replication/templates/redis-replication.yaml
---- charts/redis-replication.orig/templates/redis-replication.yaml	2025-09-22 17:23:23.915916398 +0000
-+++ charts/redis-replication/templates/redis-replication.yaml	2025-09-22 17:23:23.915916398 +0000
+--- charts/redis-replication.orig/templates/redis-replication.yaml	2025-10-01 14:03:41.574490121 +0000
++++ charts/redis-replication/templates/redis-replication.yaml	2025-10-01 14:03:41.577823475 +0000
 @@ -9,7 +9,7 @@
      redis.opstreelabs.in/recreate-statefulset: "true"
      {{ end }}
@@ -60,7 +105,23 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
    {{- end }}
    {{- if .Values.tolerations }}
    tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
-@@ -98,7 +117,9 @@
+@@ -86,8 +105,13 @@
+   {{- if and .Values.initContainer .Values.initContainer.enabled (ne .Values.initContainer.image "") }}
+   initContainer: {{ include "initContainer.properties" . | nindent 4 }}
+   {{- end }}
+-  {{- if and .Values.sidecars (ne .Values.sidecars.name "") (ne .Values.sidecars.image "") }}
+-  sidecars: {{ include "sidecar.properties" . | nindent 4 }}
++  {{- if .Values.redisVault.enabled }}
++  sidecars: {{ include "redisVault.sidecar" . | nindent 4 }}
++  {{- else }}
++  {{- with .Values.sidecars }}
++  sidecars:
++  {{ toYaml . | nindent 4 }}
++  {{- end }}
+   {{- end }}
+   {{- if and .Values.serviceAccountName (ne .Values.serviceAccountName "") }}
+   serviceAccountName: "{{ .Values.serviceAccountName }}"
+@@ -98,7 +122,9 @@
    {{- if .Values.pdb.enabled }}
    pdb:
      enabled: {{ .Values.pdb.enabled }}
@@ -73,8 +134,43 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
 -  
 +
 diff '--color=auto' -tuNr charts/redis-replication.orig/values.yaml charts/redis-replication/values.yaml
---- charts/redis-replication.orig/values.yaml	2025-09-22 17:23:23.912583042 +0000
-+++ charts/redis-replication/values.yaml	2025-09-22 17:24:25.079649660 +0000
+--- charts/redis-replication.orig/values.yaml	2025-10-01 14:03:41.574490121 +0000
++++ charts/redis-replication/values.yaml	2025-10-01 14:03:41.577823475 +0000
+@@ -90,20 +90,20 @@
+   command: []
+   args: []
+ 
+-sidecars:
+-  name: ""
+-  image: ""
+-  imagePullPolicy: "IfNotPresent"
+-  resources:
+-    limits:
+-      cpu: "100m"
+-      memory: "128Mi"
+-    requests:
+-      cpu: "50m"
+-      memory: "64Mi"
+-  env: []
+-    # - name: MY_ENV_VAR
+-    #   value: "my-env-var-value"
++sidecars: []
++# - name: ""
++#   image: ""
++#   imagePullPolicy: "IfNotPresent"
++#   resources:
++#     limits:
++#       cpu: "100m"
++#       memory: "128Mi"
++#     requests:
++#       cpu: "50m"
++#       memory: "64Mi"
++#   env: []
++#     # - name: MY_ENV_VAR
++#     #   value: "my-env-var-value"
+ 
+ priorityClassName: ""
+ 
 @@ -161,5 +161,4 @@
  
  pdb:

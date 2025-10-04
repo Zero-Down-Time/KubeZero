@@ -44,21 +44,22 @@ args:
 {{- end }}
 {{- end -}}
 
-{{/* Generate sidecar properties */}}
-{{- define "sidecar.properties" -}}
-{{- with .Values.sidecars }}
-name: {{ .name }}
-image: {{ .image }}
-{{- if .imagePullPolicy }}
-imagePullPolicy: {{ .imagePullPolicy }}
-{{- end }}
-{{- if .resources }}
-resources:
-  {{ toYaml .resources | nindent 2 }}
-{{- end }}
-{{- if .env }}
-env:
-{{ toYaml .env | nindent 2 }}
-{{- end }}
-{{- end }}
+{{/* Generate sidecar properties for redis-vault */}}
+{{- define "redisVault.sidecar" -}}
+- name: redis-vault
+  image: {{ .Values.redisVault.image.repository }}:{{ .Values.redisVault.image.tag }}
+  resources: {{ toYaml .Values.redisVault.resources | nindent 4 }}
+  mountPath:
+    - name: {{ .Values.redisReplication.name | default .Release.Name }}
+      mountPath: /data
+      readOnly: true
+  securityContext:
+    runAsUser: 1000
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: ["ALL"]
+  {{- with .Values.redisVault.env }}
+  env: {{ toYaml . | nindent 4 }}
+  {{- end -}}
 {{- end -}}

@@ -41,6 +41,23 @@ redis-replication:
   pdb:
     enabled: true
 
+  redisVault:
+    enabled: false
+
+    image:
+      repository: public.ecr.aws/zero-downtime/redis-vault
+      tag: v0.1.0
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+
+    # Custom settings for redis-vault
+    env: []
+    # - name: RUST_LOG
+    #   value: "debug"
+
 
 redis-sentinel:
   enabled: false
@@ -48,9 +65,20 @@ redis-sentinel:
   redisSentinel:
     tag: v8.0.3
 
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+
     service:
       additional:
         enabled: false
+
+  redisSentinelConfig:
+    failoverTimeout: "60000"
+    downAfterMilliseconds:  "10000"
+    resolveHostnames : "yes"
+    announceHostnames : "yes"
 
   # Add pdb by default
   pdb:

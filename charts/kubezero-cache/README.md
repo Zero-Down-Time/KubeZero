@@ -1,6 +1,6 @@
 # kubezero-cache
 
-![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.3](https://img.shields.io/badge/Version-0.2.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Cache module
 
@@ -30,6 +30,8 @@ Kubernetes: `>= 1.30.0-0`
 |-----|------|---------|-------------|
 | istio.enabled | bool | `false` |  |
 | redis-cluster.enabled | bool | `false` |  |
+| redis-cluster.externalConfig.data | string | `"cluster-config-file /data/nodes.conf\n"` |  |
+| redis-cluster.externalConfig.enabled | bool | `true` |  |
 | redis-cluster.redisCluster.enableMasterSlaveAntiAffinity | bool | `true` |  |
 | redis-cluster.redisCluster.follower.pdb.enabled | bool | `true` |  |
 | redis-cluster.redisCluster.leader.pdb.enabled | bool | `true` |  |
@@ -40,10 +42,22 @@ Kubernetes: `>= 1.30.0-0`
 | redis-replication.pdb.enabled | bool | `true` |  |
 | redis-replication.redisReplication.service.additional.enabled | bool | `false` |  |
 | redis-replication.redisReplication.tag | string | `"v8.0.3"` |  |
+| redis-replication.redisVault.enabled | bool | `false` |  |
+| redis-replication.redisVault.env | list | `[]` |  |
+| redis-replication.redisVault.image.repository | string | `"public.ecr.aws/zero-downtime/redis-vault"` |  |
+| redis-replication.redisVault.image.tag | string | `"v0.1.0"` |  |
+| redis-replication.redisVault.resources.requests.cpu | string | `"10m"` |  |
+| redis-replication.redisVault.resources.requests.memory | string | `"16Mi"` |  |
 | redis-sentinel.enabled | bool | `false` |  |
 | redis-sentinel.pdb.enabled | bool | `true` |  |
+| redis-sentinel.redisSentinel.resources.requests.cpu | string | `"10m"` |  |
+| redis-sentinel.redisSentinel.resources.requests.memory | string | `"16Mi"` |  |
 | redis-sentinel.redisSentinel.service.additional.enabled | bool | `false` |  |
 | redis-sentinel.redisSentinel.tag | string | `"v8.0.3"` |  |
+| redis-sentinel.redisSentinelConfig.announceHostnames | string | `"yes"` |  |
+| redis-sentinel.redisSentinelConfig.downAfterMilliseconds | string | `"10000"` |  |
+| redis-sentinel.redisSentinelConfig.failoverTimeout | string | `"60000"` |  |
+| redis-sentinel.redisSentinelConfig.resolveHostnames | string | `"yes"` |  |
 | redis.enabled | bool | `false` |  |
 | redis.redisExporter.enabled | bool | `false` |  |
 | redis.redisStandalone.service.additional.enabled | bool | `false` |  |

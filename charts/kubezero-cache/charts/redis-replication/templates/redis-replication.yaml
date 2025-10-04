@@ -105,8 +105,13 @@ spec:
   {{- if and .Values.initContainer .Values.initContainer.enabled (ne .Values.initContainer.image "") }}
   initContainer: {{ include "initContainer.properties" . | nindent 4 }}
   {{- end }}
-  {{- if and .Values.sidecars (ne .Values.sidecars.name "") (ne .Values.sidecars.image "") }}
-  sidecars: {{ include "sidecar.properties" . | nindent 4 }}
+  {{- if .Values.redisVault.enabled }}
+  sidecars: {{ include "redisVault.sidecar" . | nindent 4 }}
+  {{- else }}
+  {{- with .Values.sidecars }}
+  sidecars:
+  {{ toYaml . | nindent 4 }}
+  {{- end }}
   {{- end }}
   {{- if and .Values.serviceAccountName (ne .Values.serviceAccountName "") }}
   serviceAccountName: "{{ .Values.serviceAccountName }}"
