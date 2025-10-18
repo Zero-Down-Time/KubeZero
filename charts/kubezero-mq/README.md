@@ -1,6 +1,6 @@
 # kubezero-mq
 
-![Version: 0.3.12](https://img.shields.io/badge/Version-0.3.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.13](https://img.shields.io/badge/Version-0.3.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for MQ systems like NATS, RabbitMQ
 
@@ -20,7 +20,7 @@ Kubernetes: `>= 1.26.0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.bitnami.com/bitnami | rabbitmq | 14.7.0 |
-| https://nats-io.github.io/k8s/helm/charts/ | nats | 1.3.7 |
+| https://nats-io.github.io/k8s/helm/charts/ | nats | 1.3.15 |
 
 ## Values
 
