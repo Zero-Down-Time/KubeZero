@@ -1,6 +1,6 @@
 # kubezero-addons
 
-![Version: 0.8.16](https://img.shields.io/badge/Version-0.8.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.32](https://img.shields.io/badge/AppVersion-v1.32-informational?style=flat-square)
+![Version: 0.8.17](https://img.shields.io/badge/Version-0.8.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.32](https://img.shields.io/badge/AppVersion-v1.32-informational?style=flat-square)
 
 KubeZero umbrella chart for various optional cluster addons
 
@@ -18,13 +18,13 @@ Kubernetes: `>= 1.31.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://caas-team.github.io/helm-charts/ | py-kube-downscaler | 0.3.5 |
-| https://kubernetes-sigs.github.io/external-dns/ | external-dns | 1.18.0 |
-| https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.49.0 |
-| https://nvidia.github.io/k8s-device-plugin | nvidia-device-plugin | 0.17.3 |
+| https://caas-team.github.io/helm-charts/ | py-kube-downscaler | 0.3.7 |
+| https://kubernetes-sigs.github.io/external-dns/ | external-dns | 1.19.0 |
+| https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.52.0 |
+| https://nvidia.github.io/k8s-device-plugin | nvidia-device-plugin | 0.17.4 |
 | https://twin.github.io/helm-charts | aws-eks-asg-rolling-update-handler | 1.5.0 |
 | oci://public.ecr.aws/aws-ec2/helm | aws-node-termination-handler | 0.27.2 |
-| oci://public.ecr.aws/neuron | neuron-helm-chart | 1.2.0 |
+| oci://public.ecr.aws/neuron | neuron-helm-chart | 1.3.0 |
 
 # MetalLB   
    

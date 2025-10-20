@@ -2,7 +2,7 @@
 set -eE
 set -o pipefail
 
-KUBE_VERSION=v1.32
+KUBE_VERSION=v1.33
 
 ARGO_APP=${1:-/tmp/new-kubezero-argoapp.yaml}
 

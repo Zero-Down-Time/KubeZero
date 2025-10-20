@@ -3,11 +3,11 @@ ARG ALPINE_VERSION=3.22
 FROM docker.io/alpine:${ALPINE_VERSION}
 
 ARG ALPINE_VERSION
-ARG KUBE_VERSION=1.32
+ARG KUBE_VERSION=1.33
 
 ARG SOPS_VERSION="3.10.2"
-ARG VALS_VERSION="0.41.3"
-ARG HELM_SECRETS_VERSION="4.6.5"
+ARG VALS_VERSION="0.42.1"
+ARG HELM_SECRETS_VERSION="4.6.10"
 
 RUN cd /etc/apk/keys && \
     wget "https://cdn.zero-downtime.net/alpine/stefan@zero-downtime.net-61bb6bfb.rsa.pub" && \
@@ -27,7 +27,6 @@ RUN cd /etc/apk/keys && \
       apache2-utils \
       ytt@testing \
       etcd-ctl@edge-community \
-      cri-tools@kubezero \
       etcdhelper@kubezero \
       etcd-defrag@kubezero \
       kubeadm@kubezero~=${KUBE_VERSION} \

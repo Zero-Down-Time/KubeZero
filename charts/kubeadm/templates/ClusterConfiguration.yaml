@@ -3,7 +3,6 @@ kind: ClusterConfiguration
 kubernetesVersion: {{ .Chart.Version }}
 clusterName: {{ .Values.global.clusterName }}
 featureGates:
-  ControlPlaneKubeletLocalMode: true
   NodeLocalCRISocket: true
 controlPlaneEndpoint: {{ .Values.api.endpoint }}
 proxy:

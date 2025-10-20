@@ -1,13 +1,3 @@
-multus:
-  enabled: false
-  image:
-    repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-    tag: v4.2.0
-
-  clusterNetwork: "cilium"
-  defaultNetworks: []
-  readinessindicatorfile: "/etc/cni/net.d/05-cilium.conflist"
-
 cilium:
   enabled: false
 
@@ -249,3 +239,14 @@ haproxy:
   #  limits:
   #    cpu: 250m
   #    memory: 128Mi
+
+multus:
+  enabled: false
+  image:
+    repository: ghcr.io/k8snetworkplumbingwg/multus-cni
+    tag: v4.2.0
+
+  clusterNetwork: "cilium"
+  defaultNetworks: []
+  readinessindicatorfile: "/etc/cni/net.d/05-cilium.conflist"
+

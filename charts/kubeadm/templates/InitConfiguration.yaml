@@ -18,6 +18,7 @@ nodeRegistration:
   - FileAvailable--etc-kubernetes-manifests-etcd.yaml
   - Swap
   - KubeletVersion
+  - HTTPProxyCIDR
   kubeletExtraArgs:
     - name: node-labels
       value: {{ .Values.nodeLabels | quote }}

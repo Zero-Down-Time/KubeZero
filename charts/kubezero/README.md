@@ -1,6 +1,6 @@
 # kubezero
 
-![Version: 1.32.6](https://img.shields.io/badge/Version-1.32.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.33.5](https://img.shields.io/badge/Version-1.33.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero - Root App of Apps chart
 
@@ -14,7 +14,7 @@ KubeZero - Root App of Apps chart
 
 ## Requirements
 
-Kubernetes: `>= 1.32.0-0`
+Kubernetes: `>= 1.33.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
