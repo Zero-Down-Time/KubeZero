@@ -4,42 +4,33 @@ import argparse
 import io
 import yaml
 
+ALL_MODULES=[
+"addons",
+"network",
+"policy",
+"cert-manager",
+"storage",
+"istio",
+"istio-ingress",
+"falco",
+"telemetry",
+"operators",
+"metrics",
+"logging",
+"argo",
+]
 
 def migrate(values):
     """Actual changes here"""
 
-    # 1.32
-    values["network"]["enabled"] = True
+    # Ensure all previous hot fix release are flushed
+    for m in ALL_MODULES:
+        try:
+            values[m].pop("targetRevision")
+        except KeyError as e:
+            pass
 
-    try:
-        values["addons"]["enabled"] = True
-    except KeyError:
-        values["addons"] = {}
-        values["addons"]["enabled"] = True
-
-    try:
-        values["policy"] = {"enabled": True}
-    except KeyError:
-        pass
-
-    try:
-        values["istio-ingress"]["gateway"]["service"]["extraPorts"] = values["istio-ingress"]["gateway"]["service"]["ports"]
-        values["istio-ingress"]["gateway"]["service"].pop("ports")
-    except KeyError:
-        pass
-
-    try:
-        values["istio-private-ingress"]["gateway"]["service"]["extraPorts"] = values["istio-private-ingress"]["gateway"]["service"]["ports"]
-        values["istio-private-ingress"]["gateway"]["service"].pop("ports")
-    except KeyError:
-        pass
-
-    try:
-        values["storage"]["aws-ebs-csi-driver"].pop("IamArn")
-        values["storage"]["aws-efs-csi-driver"].pop("IamArn")
-    except KeyError:
-        pass
-
+    # 1.33
 
     return values
 

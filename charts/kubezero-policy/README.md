@@ -1,6 +1,6 @@
 # kubezero-policy
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.14](https://img.shields.io/badge/AppVersion-v1.14-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for Kyverno
 
@@ -14,7 +14,7 @@ KubeZero umbrella chart for Kyverno
 
 ## Requirements
 
-Kubernetes: `>= 1.30.0-0`
+Kubernetes: `>= 1.33.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|

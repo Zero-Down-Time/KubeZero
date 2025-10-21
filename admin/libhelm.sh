@@ -199,7 +199,8 @@ function crds() {
 
   # Only apply if there are actually any crds
   if [ -s $WORKDIR/crds.yaml ]; then
-    [ -n "$DEBUG" ] && cat $WORKDIR/crds.yaml
+    # Too noisy
+    # [ -n "$DEBUG" ] && cat $WORKDIR/crds.yaml
     kubectl apply -f $WORKDIR/crds.yaml --server-side --force-conflicts $(field_manager $ARGOCD)
   fi
 }

@@ -13,4 +13,5 @@ apply:
   - FileAvailable--etc-kubernetes-manifests-etcd.yaml
   - Swap
   - KubeletVersion
+  - CreateJob
   skipPhases: []
