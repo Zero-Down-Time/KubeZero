@@ -45,7 +45,7 @@ policy:
 cert-manager:
   enabled: false
   namespace: cert-manager
-  targetRevision: 0.9.12
+  targetRevision: 0.9.13
 
 storage:
   enabled: false

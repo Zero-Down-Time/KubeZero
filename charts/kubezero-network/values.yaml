@@ -42,8 +42,6 @@ cilium:
   #rollOutCiliumPods: true
 
   kubeProxyReplacement: true
-  dnsProxy:
-    enableTransparentMode: true
 
 # For LB support via L2announcement or BGP - on-prem only
 # l2announcements:
@@ -64,8 +62,15 @@ cilium:
       enabled: false
     hostRoot: "/sys/fs/cgroup"
 
+  # no more iptables
   bpf:
     preallocateMaps: true
+    masquerade: true
+    hostLegacyRouting: false
+
+  nodePort:
+    enabled: true
+
   # we need biDirectional so use helm init-container
   # autoMount:
   #   enabled: false

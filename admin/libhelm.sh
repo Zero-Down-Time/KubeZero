@@ -7,14 +7,14 @@ ENV_VALUES=""
 
 export HELM_SECRETS_BACKEND="vals"
 
-# Waits for max 300s and retries
+# Waits for max 600s and retries
 function wait_for() {
   local TRIES=0
   while true; do
     eval " $@" && break
-    [ $TRIES -eq 100 ] && return 1
+    [ $TRIES -eq 60 ] && return 1
     let TRIES=$TRIES+1
-    sleep 3
+    sleep 10
   done
 }
 

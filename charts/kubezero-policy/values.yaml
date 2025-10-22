@@ -19,9 +19,25 @@ kyverno:
   config:
     preserve: false
     webhookAnnotations:
+      admissions.enforcer/disabled: null
       argocd.argoproj.io/installation-id: KubeZero-ArgoCD
       # Unfortunately Argo needs different values for Mutating and Validating hooks so disabled for now
       # argocd.argoproj.io/tracking-id: policy:/ServiceAccount:kyverno/kyverno-admission-controller
+      #
+
+    # Enable for all but kyverno namespace, even for kube-system !
+    webhooks:
+      namespaceSelector: null
+    resourceFiltersExcludeNamespaces: ["kube-system"]
+
+    # ensure that cilium our CNI is never blocked
+    resourceFiltersInclude:
+      - '["Deployment", "kube-system", "cilium-operator"]'
+      - '["Deployment/?*", "kube-system", "cilium-operator"]'
+      - '["DeamonSet", "kube-system", "cilium"]'
+      - '["DeamonSet/?*", "kube-system", "cilium"]'
+      - '["Pod", "kube-system", "cilium-*"]'
+      - '["Pod/?*", "kube-system", "cilium-*"]'
 
   features:
     logging:

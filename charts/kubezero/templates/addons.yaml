@@ -41,12 +41,9 @@ external-dns:
   extraArgs:
     - "--aws-zone-type=public"
     - "--aws-zones-cache-duration=1h"
-  env:
-    {{- include "aws-iam-env" (merge (dict "roleName" "externalDNS") .) | nindent 4 }}
-  extraVolumes:
-    {{- include "aws-iam-volumes" . | nindent 4 }}
-  extraVolumeMounts:
-    {{- include "aws-iam-volumemounts" . | nindent 4 }}
+  serviceAccount:
+    annotations:
+      kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.externalDNS"
   {{- end }}
 
 cluster-autoscaler:

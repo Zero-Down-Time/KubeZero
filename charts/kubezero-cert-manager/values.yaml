@@ -38,29 +38,6 @@ cert-manager:
 
   #enableCertificateOwnerRef: true
 
-  # On AWS enable Projected Service Accounts to assume IAM role
-  #extraEnv:
-  #- name: AWS_ROLE_ARN
-  #  value: "<cert-manager IAM ROLE ARN>"
-  #- name: AWS_WEB_IDENTITY_TOKEN_FILE
-  #  value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-  #- name: AWS_STS_REGIONAL_ENDPOINTS
-  #  value: regional
-
-  #volumes:
-  #- name: aws-token
-  #  projected:
-  #    sources:
-  #    - serviceAccountToken:
-  #        path: token
-  #        expirationSeconds: 86400
-  #        audience: "sts.amazonaws.com"
-
-  #volumeMounts:
-  #- name: aws-token
-  #  mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-  #  readOnly: true
-
   ingressShim:
     defaultIssuerName: letsencrypt-dns-prod
     defaultIssuerKind: ClusterIssuer
@@ -77,8 +54,6 @@ cert-manager:
   prometheus:
     servicemonitor:
       enabled: false
-
-  # cert-manager.podAnnotations -- "iam.amazonaws.com/roleIAM:" role ARN the cert-manager might use via kiam eg."arn:aws:iam::123456789012:role/certManagerRoleArn"
 
   startupapicheck:
     enabled: false
