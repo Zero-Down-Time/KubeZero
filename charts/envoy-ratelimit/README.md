@@ -28,7 +28,7 @@ Kubernetes: `>= 1.31.0-0`
 | descriptors.privateIngress | list | `[]` |  |
 | failureModeDeny | bool | `false` |  |
 | image.repository | string | `"envoyproxy/ratelimit"` |  |
-| image.tag | string | `"38f01982"` |  |
+| image.tag | string | `"110924a5"` |  |
 | localCacheSize | int | `1048576` |  |
 | log.format | string | `"json"` |  |
 | log.level | string | `"warn"` |  |
