@@ -1,6 +1,6 @@
 # kubezero-istio-gateway
 
-![Version: 0.26.3](https://img.shields.io/badge/Version-0.26.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.27.3](https://img.shields.io/badge/Version-0.27.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio gateways
 
@@ -21,7 +21,7 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://istio-release.storage.googleapis.com/charts | gateway | 1.26.3 |
+| https://istio-release.storage.googleapis.com/charts | gateway | 1.27.3 |
 
 ## Values
 
@@ -35,7 +35,7 @@ Kubernetes: `>= 1.30.0-0`
 | gateway.minReadySeconds | int | `10` |  |
 | gateway.podAnnotations."proxy.istio.io/config" | string | `"{ \"terminationDrainDuration\": \"90s\" }"` |  |
 | gateway.replicaCount | int | `1` |  |
-| gateway.resources.limits.memory | string | `"256Mi"` |  |
+| gateway.resources.limits.memory | string | `"512Mi"` |  |
 | gateway.resources.requests.cpu | string | `"50m"` |  |
 | gateway.resources.requests.memory | string | `"96Mi"` |  |
 | gateway.service.externalTrafficPolicy | string | `"Local"` |  |
