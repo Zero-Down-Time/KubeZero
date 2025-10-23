@@ -3,7 +3,7 @@ name: kubezero-addons
 description: KubeZero umbrella chart for various optional cluster addons
 type: application
 version: 0.8.17
-appVersion: v1.32
+appVersion: v1.33
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -49,4 +49,4 @@ dependencies:
     version: 0.3.7
     repository: https://caas-team.github.io/helm-charts/
     condition: py-kube-downscaler.enabled
-kubeVersion: ">= 1.31.0-0"
+kubeVersion: ">= 1.33.0-0"

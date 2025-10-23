@@ -45,18 +45,6 @@ spec:
           resources:
 {{- toYaml . | nindent 12 }}
 {{- end }}
-          volumeMounts:
-            - name: aws-token
-              mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-              readOnly: true
-      volumes:
-        - name: aws-token
-          projected:
-            sources:
-            - serviceAccountToken:
-                path: token
-                expirationSeconds: 86400
-                audience: "sts.amazonaws.com"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

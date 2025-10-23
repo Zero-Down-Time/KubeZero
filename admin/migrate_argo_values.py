@@ -32,6 +32,9 @@ def migrate(values):
 
     # 1.33
 
+    # cleanup of all things AWS IAM
+    deleteKey(values["cert-manager"], "IamArn")
+
     return values
 
 

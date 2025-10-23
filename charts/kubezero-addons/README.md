@@ -47,23 +47,15 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | aws-eks-asg-rolling-update-handler.enabled | bool | `false` |  |
 | aws-eks-asg-rolling-update-handler.environmentVars[0].name | string | `"CLUSTER_NAME"` |  |
 | aws-eks-asg-rolling-update-handler.environmentVars[0].value | string | `""` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[1].name | string | `"AWS_REGION"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[1].value | string | `"us-west-2"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[2].name | string | `"EXECUTION_INTERVAL"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[2].value | string | `"60"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[3].name | string | `"METRICS"` |  |
+| aws-eks-asg-rolling-update-handler.environmentVars[1].name | string | `"EXECUTION_INTERVAL"` |  |
+| aws-eks-asg-rolling-update-handler.environmentVars[1].value | string | `"60"` |  |
+| aws-eks-asg-rolling-update-handler.environmentVars[2].name | string | `"METRICS"` |  |
+| aws-eks-asg-rolling-update-handler.environmentVars[2].value | string | `"true"` |  |
+| aws-eks-asg-rolling-update-handler.environmentVars[3].name | string | `"EAGER_CORDONING"` |  |
 | aws-eks-asg-rolling-update-handler.environmentVars[3].value | string | `"true"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[4].name | string | `"EAGER_CORDONING"` |  |
+| aws-eks-asg-rolling-update-handler.environmentVars[4].name | string | `"SLOW_MODE"` |  |
 | aws-eks-asg-rolling-update-handler.environmentVars[4].value | string | `"true"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[5].name | string | `"SLOW_MODE"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[5].value | string | `"true"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[6].name | string | `"AWS_ROLE_ARN"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[6].value | string | `""` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[7].name | string | `"AWS_WEB_IDENTITY_TOKEN_FILE"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[7].value | string | `"/var/run/secrets/sts.amazonaws.com/serviceaccount/token"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[8].name | string | `"AWS_STS_REGIONAL_ENDPOINTS"` |  |
-| aws-eks-asg-rolling-update-handler.environmentVars[8].value | string | `"regional"` |  |
-| aws-eks-asg-rolling-update-handler.image.repository | string | `"twinproduction/aws-eks-asg-rolling-update-handler"` |  |
+| aws-eks-asg-rolling-update-handler.image.repository | string | `"docker.io/twinproduction/aws-eks-asg-rolling-update-handler"` |  |
 | aws-eks-asg-rolling-update-handler.image.tag | string | `"v1.8.4"` |  |
 | aws-eks-asg-rolling-update-handler.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | aws-eks-asg-rolling-update-handler.resources.limits.memory | string | `"128Mi"` |  |
@@ -81,11 +73,6 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | aws-node-termination-handler.enableSpotInterruptionDraining | bool | `false` |  |
 | aws-node-termination-handler.enableSqsTerminationDraining | bool | `true` |  |
 | aws-node-termination-handler.enabled | bool | `false` |  |
-| aws-node-termination-handler.extraEnv[0] | object | `{"name":"AWS_ROLE_ARN","value":""}` | "arn:aws:iam::${AWS::AccountId}:role/${AWS::Region}.${ClusterName}.awsNth" |
-| aws-node-termination-handler.extraEnv[1].name | string | `"AWS_WEB_IDENTITY_TOKEN_FILE"` |  |
-| aws-node-termination-handler.extraEnv[1].value | string | `"/var/run/secrets/sts.amazonaws.com/serviceaccount/token"` |  |
-| aws-node-termination-handler.extraEnv[2].name | string | `"AWS_STS_REGIONAL_ENDPOINTS"` |  |
-| aws-node-termination-handler.extraEnv[2].value | string | `"regional"` |  |
 | aws-node-termination-handler.fullnameOverride | string | `"aws-node-termination-handler"` |  |
 | aws-node-termination-handler.ignoreDaemonSets | bool | `true` |  |
 | aws-node-termination-handler.jsonLogging | bool | `true` |  |
@@ -108,7 +95,7 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | cluster-autoscaler.extraArgs.scan-interval | string | `"30s"` |  |
 | cluster-autoscaler.extraArgs.skip-nodes-with-local-storage | bool | `false` |  |
 | cluster-autoscaler.image.repository | string | `"registry.k8s.io/autoscaling/cluster-autoscaler"` |  |
-| cluster-autoscaler.image.tag | string | `"v1.32.1"` |  |
+| cluster-autoscaler.image.tag | string | `"v1.33.2"` |  |
 | cluster-autoscaler.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | cluster-autoscaler.podDisruptionBudget | bool | `false` |  |
 | cluster-autoscaler.prometheusRule.enabled | bool | `false` |  |
@@ -130,11 +117,10 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | external-dns.tolerations[0].effect | string | `"NoSchedule"` |  |
 | external-dns.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
 | external-dns.triggerLoopOnEvent | bool | `true` |  |
-| forseti.aws.iamRoleArn | string | `""` | "arn:aws:iam::${AWS::AccountId}:role/${AWS::Region}.${ClusterName}.kubezeroForseti" |
-| forseti.aws.region | string | `""` |  |
 | forseti.enabled | bool | `false` |  |
 | forseti.image.name | string | `"public.ecr.aws/zero-downtime/forseti"` |  |
 | forseti.image.tag | string | `"v0.1.2"` |  |
+| forseti.serviceAccount.annotations | object | `{}` |  |
 | fuseDevicePlugin.enabled | bool | `false` |  |
 | fuseDevicePlugin.image.name | string | `"public.ecr.aws/zero-downtime/fuse-device-plugin"` |  |
 | fuseDevicePlugin.image.tag | string | `"v1.2.0"` |  |

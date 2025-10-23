@@ -22,9 +22,9 @@ forseti:
 
   {{- if eq .Values.global.platform "aws" }}
   # AWS
-  aws:
-    region: {{ $.Values.global.aws.region }}
-    iamRoleArn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.kubezeroForseti"
+  serviceAccount:
+    annotations:
+      kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.kubezeroForseti"
   {{- end }}
 
 external-dns:
@@ -73,14 +73,10 @@ cluster-autoscaler:
   # AWS
   awsRegion: {{ .Values.global.aws.region }}
 
-  extraEnv:
-    AWS_ROLE_ARN: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.clusterAutoScaler"
-    AWS_WEB_IDENTITY_TOKEN_FILE: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-    AWS_STS_REGIONAL_ENDPOINTS: "regional"
-  extraVolumes:
-    {{- include "aws-iam-volumes" . | nindent 4 }}
-  extraVolumeMounts:
-    {{- include "aws-iam-volumemounts" . | nindent 4 }}
+  rbac:
+    serviceAccount:
+      annotations:
+        kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.clusterAutoScaler"
   {{- end }}
 
 {{- with .Values.addons.fuseDevicePlugin }}
@@ -126,8 +122,10 @@ aws-node-termination-handler:
 
   queueURL: "https://sqs.{{ .Values.global.aws.region }}.amazonaws.com/{{ .Values.global.aws.accountId }}/{{ .Values.global.clusterName }}_Nth"
   managedTag: "zdt:kubezero:nth:{{ .Values.global.clusterName }}"
-  extraEnv:
-    {{- include "aws-iam-env" (merge (dict "roleName" "awsNth") .) | nindent 4 }}
+
+  serviceAccount:
+    annotations:
+      kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.awsNth"
 
 aws-eks-asg-rolling-update-handler:
   enabled: {{ default "true" (index .Values "addons" "aws-eks-asg-rolling-update-handler" "enabled") }}
@@ -136,8 +134,11 @@ aws-eks-asg-rolling-update-handler:
   {{- toYaml . | nindent 2 }}
   {{- end }}
 
+  serviceAccount:
+    annotations:
+      kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.awsRuh"
+
   environmentVars:
-    {{- include "aws-iam-env" (merge (dict "roleName" "awsRuh") .) | nindent 4 }}
     - name: CLUSTER_NAME
       value: {{ .Values.global.clusterName }}
     - name: EXECUTION_INTERVAL

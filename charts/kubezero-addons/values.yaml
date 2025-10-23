@@ -19,10 +19,9 @@ forseti:
     name: public.ecr.aws/zero-downtime/forseti
     tag: v0.1.2
 
-  aws:
-    region: ""
-    # -- "arn:aws:iam::${AWS::AccountId}:role/${AWS::Region}.${ClusterName}.kubezeroForseti"
-    iamRoleArn: ""
+  serviceAccount:
+    annotations: {}
+    # kubezero.com/aws-iam-role-arn: "arn:aws:iam::${AWS::AccountId}:role/${AWS::Region}.${ClusterName}.kubezeroForseti"
 
 aws-eks-asg-rolling-update-handler:
   enabled: false
@@ -33,8 +32,6 @@ aws-eks-asg-rolling-update-handler:
   environmentVars:
     - name: CLUSTER_NAME
       value: ""
-    - name: AWS_REGION
-      value: us-west-2
     - name: EXECUTION_INTERVAL
       value: "60"
     - name: METRICS
@@ -44,12 +41,6 @@ aws-eks-asg-rolling-update-handler:
     # Only disable if all services have PDBs across AZs
     - name: SLOW_MODE
       value: "true"
-    - name: AWS_ROLE_ARN
-      value: ""
-    - name: AWS_WEB_IDENTITY_TOKEN_FILE
-      value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-    - name: AWS_STS_REGIONAL_ENDPOINTS
-      value: "regional"
 
   securityContext:
     runAsNonRoot: true
@@ -98,14 +89,6 @@ aws-node-termination-handler:
   queueURL: ""
 
   metadataTries: 0
-  extraEnv:
-  # -- "arn:aws:iam::${AWS::AccountId}:role/${AWS::Region}.${ClusterName}.awsNth"
-  - name: AWS_ROLE_ARN
-    value: ""
-  - name: AWS_WEB_IDENTITY_TOKEN_FILE
-    value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-  - name: AWS_STS_REGIONAL_ENDPOINTS
-    value: "regional"
 
   enablePrometheusServer: false
   serviceMonitor:
@@ -234,26 +217,6 @@ cluster-autoscaler:
   tolerations:
   - key: node-role.kubernetes.io/control-plane
     effect: NoSchedule
-
-  # On AWS enable Projected Service Accounts to assume IAM role
-  #extraEnv:
-  # AWS_ROLE_ARN: <IamArn>
-  # AWS_WEB_IDENTITY_TOKEN_FILE: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-  # AWS_STS_REGIONAL_ENDPOINTS: "regional"
-
-  #extraVolumes:
-  #- name: aws-token
-  #  projected:
-  #    sources:
-  #    - serviceAccountToken:
-  #        path: token
-  #        expirationSeconds: 86400
-  #        audience: "sts.amazonaws.com"
-
-  #extraVolumeMounts:
-  #- name: aws-token
-  #  mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-  #  readOnly: true
 
 external-dns:
   enabled: false

@@ -1,22 +1,10 @@
 diff -tuNr charts/aws-eks-asg-rolling-update-handler.orig/templates/deployment.yaml charts/aws-eks-asg-rolling-update-handler/templates/deployment.yaml
 --- charts/aws-eks-asg-rolling-update-handler.orig/templates/deployment.yaml	2023-04-12 15:49:08.744242462 +0000
 +++ charts/aws-eks-asg-rolling-update-handler/templates/deployment.yaml	2023-04-12 15:55:44.399489809 +0000
-@@ -34,6 +34,26 @@
+@@ -34,6 +34,14 @@
            resources:
  {{- toYaml . | nindent 12 }}
  {{- end }}
-+          volumeMounts:
-+            - name: aws-token
-+              mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-+              readOnly: true
-+      volumes:
-+        - name: aws-token
-+          projected:
-+            sources:
-+            - serviceAccountToken:
-+                path: token
-+                expirationSeconds: 86400
-+                audience: "sts.amazonaws.com"
 +      {{- with .Values.nodeSelector }}
 +      nodeSelector:
 +        {{- toYaml . | nindent 8 }}

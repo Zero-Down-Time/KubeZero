@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kubezero-forseti
-  namespace: kube-system
   labels:
     app: kubezero-forseti
 spec:
@@ -28,15 +27,6 @@ spec:
         #- --leader-elect
         command:
         - /forseti
-        env:
-        - name: AWS_REGION
-          value: "{{ .Values.forseti.aws.region }}"
-        - name: AWS_ROLE_ARN
-          value: "{{ .Values.forseti.aws.iamRoleArn }}"
-        - name: AWS_STS_REGIONAL_ENDPOINTS
-          value: regional
-        - name: AWS_WEB_IDENTITY_TOKEN_FILE
-          value: /var/run/secrets/sts.amazonaws.com/serviceaccount/token
         livenessProbe:
           httpGet:
             path: /healthz
@@ -58,10 +48,6 @@ spec:
             memory: 64Mi
         securityContext:
           allowPrivilegeEscalation: false
-        volumeMounts:
-        - mountPath: /var/run/secrets/sts.amazonaws.com/serviceaccount/
-          name: aws-token
-          readOnly: true
       securityContext:
         runAsNonRoot: true
       serviceAccountName: kubezero-forseti
@@ -72,13 +58,4 @@ spec:
       - key: node-role.kubernetes.io/control-plane
         effect: NoSchedule
       priorityClassName: system-cluster-critical
-      volumes:
-      - name: aws-token
-        projected:
-          defaultMode: 420
-          sources:
-          - serviceAccountToken:
-              audience: sts.amazonaws.com
-              expirationSeconds: 86400
-              path: token
 {{- end }}

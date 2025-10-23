@@ -5,7 +5,6 @@ metadata:
   labels:
     app: kubezero-forseti
   name: forseti-metrics-service
-  namespace: kube-system
 spec:
   ports:
   - name: http
