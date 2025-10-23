@@ -25,9 +25,9 @@ byte_length() {
 # Initialize variables
 current_patterns=""
 block_count=1
-header_template='    - headers:
+header_template="    - headers:
         user-agent:
-          regex: "(?i).*(?:'
+          regex: '(?i).*(?:"
 
 while IFS= read -r bot_name; do
     # Skip empty lines
@@ -44,13 +44,13 @@ while IFS= read -r bot_name; do
     fi
 
     # Calculate total block size including template
-    full_block="$header_template$new_pattern).*\""
+    full_block="$header_template$new_pattern).*'"
     block_size=$(byte_length "$full_block")
 
     # Check if adding this pattern would exceed the limit
     if [[ $block_size -gt $MAX_BYTES ]] && [[ -n "$current_patterns" ]]; then
         # Output current block
-        echo "$header_template$current_patterns).*\""
+        echo "$header_template$current_patterns).*'"
 
         # Start new block
         current_patterns="$escaped_bot"
@@ -64,7 +64,7 @@ done < "$TEMP_FILE"
 
 # Output final block if not empty
 if [[ -n "$current_patterns" ]]; then
-    echo "$header_template$current_patterns).*\""
+    echo "$header_template$current_patterns).*'"
 fi
 
 # Cleanup
