@@ -5,7 +5,6 @@ set -x
 
 ARTIFACTS=($(echo $1 | tr "," "\n"))
 ACTION="${2:-apply}"
-ARGOCD="${3:-true}"
 
 LOCAL_DEV=1
 
@@ -27,6 +26,7 @@ if [ -z "$KUBE_VERSION" ]; then
 fi
 
 ### Main
+ARGOCD=$(argo_used)
 get_kubezero_values $ARGOCD
 
 # Always use embedded kubezero chart

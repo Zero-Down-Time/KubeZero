@@ -32,7 +32,7 @@ Kubernetes: `>= 1.33.0-0`
 | addons.external-dns.enabled | bool | `false` |  |
 | addons.forseti.enabled | bool | `false` |  |
 | addons.sealed-secrets.enabled | bool | `false` |  |
-| addons.targetRevision | string | `"0.8.15"` |  |
+| addons.targetRevision | string | `"0.8.17"` |  |
 | argo.argo-cd.enabled | bool | `false` |  |
 | argo.argo-cd.istio.enabled | bool | `false` |  |
 | argo.argocd-image-updater.enabled | bool | `false` |  |
@@ -41,7 +41,7 @@ Kubernetes: `>= 1.33.0-0`
 | argo.targetRevision | string | `"0.4.2"` |  |
 | cert-manager.enabled | bool | `false` |  |
 | cert-manager.namespace | string | `"cert-manager"` |  |
-| cert-manager.targetRevision | string | `"0.9.12"` |  |
+| cert-manager.targetRevision | string | `"0.9.13"` |  |
 | falco.enabled | bool | `false` |  |
 | falco.k8saudit.enabled | bool | `false` |  |
 | falco.targetRevision | string | `"0.1.2"` |  |
@@ -77,13 +77,13 @@ Kubernetes: `>= 1.33.0-0`
 | network.cilium.enabled | bool | `true` |  |
 | network.enabled | bool | `false` |  |
 | network.retain | bool | `true` |  |
-| network.targetRevision | string | `"0.5.9"` |  |
+| network.targetRevision | string | `"0.5.10"` |  |
 | operators.enabled | bool | `false` |  |
 | operators.namespace | string | `"operators"` |  |
 | operators.targetRevision | string | `"0.2.1"` |  |
 | policy.enabled | bool | `false` |  |
 | policy.namespace | string | `"kyverno"` |  |
-| policy.targetRevision | string | `"0.1.0"` |  |
+| policy.targetRevision | string | `"0.1.1"` |  |
 | storage.aws-ebs-csi-driver.enabled | bool | `false` |  |
 | storage.aws-efs-csi-driver.enabled | bool | `false` |  |
 | storage.enabled | bool | `false` |  |
