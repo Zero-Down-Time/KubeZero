@@ -22,6 +22,7 @@ argo-cd:
   controller:
     metrics:
       enabled: {{ .Values.metrics.enabled }}
+
   repoServer:
     {{- with index .Values "argo" "argo-cd" "repoServer" }}
     {{- toYaml . | nindent 4 }}
@@ -34,20 +35,16 @@ argo-cd:
     volumes:
       - name: cmp-tmp
         emptyDir: {}
-      {{- include "aws-iam-volumes" . | nindent 6 }}
 
-    env:
-      {{- include "aws-iam-env" (merge (dict "roleName" "argocd-repo-server") .) | nindent 6 }}
-    volumeMounts:
-      {{- include "aws-iam-volumemounts" . | nindent 6 }}
+    serviceAccount:
+      annotations:
+        kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.argocd-repo-server"
 
     extraContainers:
       - name: cmp-kubezero-git-sync
         image: '{{ "{{" }} default .Values.global.image.repository .Values.repoServer.image.repository {{ "}}" }}:{{ "{{" }} default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag {{ "}}" }}'
         imagePullPolicy: '{{ "{{" }} default .Values.global.image.imagePullPolicy .Values.repoServer.image.imagePullPolicy {{ "}}" }}'
         command: ["/usr/local/bin/argocd-cmp-server"]
-        env:
-          {{- include "aws-iam-env" (merge (dict "roleName" "argocd-repo-server") .) | nindent 10 }}
         volumeMounts:
           - mountPath: /var/run/argocd
             name: var-files
@@ -55,7 +52,6 @@ argo-cd:
             name: plugins
           - mountPath: /tmp
             name: cmp-tmp
-          {{- include "aws-iam-volumemounts" . | nindent 10 }}
         securityContext:
           runAsNonRoot: true
           readOnlyRootFilesystem: true
@@ -92,12 +88,9 @@ argocd-image-updater:
   {{- end }}
 
   {{- if eq .Values.global.platform "aws" }}
-  extraEnv:
-    {{- include "aws-iam-env" (merge (dict "roleName" "argocd-image-updater") .) | nindent 4 }}
-  volumes:
-    {{- include "aws-iam-volumes" . | nindent 4 }}
-  volumeMounts:
-    {{- include "aws-iam-volumemounts" . | nindent 4 }}
+  serviceAccount:
+    annotations:
+      kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.argocd-image-updater"
   {{- end }}
 
   metrics:
