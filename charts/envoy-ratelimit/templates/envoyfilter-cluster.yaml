@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   name: ingressgateway-ratelimit
-  namespace: {{ .Release.Namespace }}
+  namespace: istio-ingress
   labels:
     {{- include "kubezero-lib.labels" . | nindent 4 }}
 spec:
@@ -27,23 +27,21 @@ spec:
             "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
             domain: ingress
             failure_mode_deny: {{ .Values.failureModeDeny }}
-            timeout: 0.5s
+            timeout: 1s
             rate_limit_service:
               grpc_service:
                 envoy_grpc:
                   cluster_name: rate_limit_cluster
-              transport_api_version: V3
     - applyTo: CLUSTER
       match:
         cluster:
-          service: ratelimit.default.svc.cluster.local
+          service: ratelimit.istio-system.svc.cluster.local
       patch:
         operation: ADD
         value:
           name: rate_limit_cluster
           type: STRICT_DNS
-          connect_timeout: 0.5s
-          lb_policy: ROUND_ROBIN
+          connect_timeout: 1s
           http2_protocol_options: {}
           load_assignment:
             cluster_name: rate_limit_cluster
@@ -60,7 +58,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   name: private-ingressgateway-ratelimit
-  namespace: {{ .Release.Namespace }}
+  namespace: istio-ingress
   labels:
     {{- include "kubezero-lib.labels" . | nindent 4 }}
 spec:
@@ -85,23 +83,21 @@ spec:
             "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
             domain:  private-ingress
             failure_mode_deny: {{ .Values.failureModeDeny }}
-            timeout: 0.5s
+            timeout: 1s
             rate_limit_service:
               grpc_service:
                 envoy_grpc:
                   cluster_name: rate_limit_cluster
-              transport_api_version: V3
     - applyTo: CLUSTER
       match:
         cluster:
-          service: ratelimit.default.svc.cluster.local
+          service: ratelimit.istio-system.svc.cluster.local
       patch:
         operation: ADD
         value:
           name: rate_limit_cluster
           type: STRICT_DNS
-          connect_timeout: 0.5s
-          lb_policy: ROUND_ROBIN
+          connect_timeout: 1s
           http2_protocol_options: {}
           load_assignment:
             cluster_name: rate_limit_cluster

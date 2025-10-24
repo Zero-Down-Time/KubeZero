@@ -61,4 +61,3 @@ kiali-server:
 # for available options see envoy-ratelimit chart
 envoy-ratelimit:
   enabled: false
-
