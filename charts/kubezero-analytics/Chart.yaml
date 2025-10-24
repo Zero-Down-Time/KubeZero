@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-analytics
 description: KubeZero Analytics module
 type: application
-version: 0.1.0
+version: 0.1.1
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -13,7 +13,7 @@ maintainers:
     email: stefan@zero-downtime.net
 dependencies:
   - name: umami
-    version: 5.0.8
+    version: 6.0.1
     repository: https://charts.christianhuth.de
     condition: umami.enabled
   - name: kubezero-lib
