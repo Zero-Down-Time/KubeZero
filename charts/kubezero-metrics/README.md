@@ -47,12 +47,6 @@ Kubernetes: `>= 1.30.0-0`
 | istio.prometheus.url | string | `""` |  |
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].env[0].name | string | `"SNS_FORWARDER_ARN_PREFIX"` |  |
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].env[0].valueFrom.fieldRef.fieldPath | string | `"metadata.annotations['kubezero.com/sns_forwarder_ARN_PREFIX']"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].env[1].name | string | `"AWS_ROLE_ARN"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].env[1].valueFrom.fieldRef.fieldPath | string | `"metadata.annotations['kubezero.com/sns_forwarder_AWS_ROLE_ARN']"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].env[2].name | string | `"AWS_WEB_IDENTITY_TOKEN_FILE"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].env[2].value | string | `"/var/run/secrets/sts.amazonaws.com/serviceaccount/token"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].env[3].name | string | `"AWS_STS_REGIONAL_ENDPOINTS"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].env[3].value | string | `"regional"` |  |
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].image | string | `"datareply/alertmanager-sns-forwarder:latest"` |  |
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].imagePullPolicy | string | `"Always"` |  |
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].livenessProbe.httpGet.path | string | `"/health"` |  |
@@ -70,14 +64,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].resources.limits.memory | string | `"64Mi"` |  |
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].resources.requests.cpu | string | `"25m"` |  |
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].resources.requests.memory | string | `"32Mi"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].volumeMounts[0].mountPath | string | `"/var/run/secrets/sts.amazonaws.com/serviceaccount/"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].volumeMounts[0].name | string | `"aws-token"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.containers[0].volumeMounts[0].readOnly | bool | `true` |  |
 | kube-prometheus-stack.alertmanager.alertmanagerSpec.logFormat | string | `"json"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.volumes[0].name | string | `"aws-token"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.volumes[0].projected.sources[0].serviceAccountToken.audience | string | `"sts.amazonaws.com"` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.volumes[0].projected.sources[0].serviceAccountToken.expirationSeconds | int | `86400` |  |
-| kube-prometheus-stack.alertmanager.alertmanagerSpec.volumes[0].projected.sources[0].serviceAccountToken.path | string | `"token"` |  |
 | kube-prometheus-stack.alertmanager.config.global.resolve_timeout | string | `"5m"` |  |
 | kube-prometheus-stack.alertmanager.config.inhibit_rules[0].equal[0] | string | `"namespace"` |  |
 | kube-prometheus-stack.alertmanager.config.inhibit_rules[0].equal[1] | string | `"alertname"` |  |
@@ -127,6 +114,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.grafana.sidecar.dashboards.provider.foldersFromFilesStructure | bool | `true` |  |
 | kube-prometheus-stack.grafana.sidecar.dashboards.script | string | `"/opt/script.sh"` |  |
 | kube-prometheus-stack.grafana.sidecar.dashboards.searchNamespace | string | `"ALL"` |  |
+| kube-prometheus-stack.grafana.sidecar.image.tag | string | `"1.30.3"` |  |
 | kube-prometheus-stack.grafana.testFramework.enabled | bool | `false` |  |
 | kube-prometheus-stack.kube-state-metrics.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | kube-prometheus-stack.kube-state-metrics.tolerations[0].effect | string | `"NoSchedule"` |  |
