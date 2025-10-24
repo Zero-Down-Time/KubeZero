@@ -7,7 +7,7 @@
          "app.kubernetes.io/instance": "k8s",
          "app.kubernetes.io/name": "prometheus",
          "app.kubernetes.io/part-of": "kube-prometheus",
-         "app.kubernetes.io/version": "3.5.0",
+         "app.kubernetes.io/version": "3.6.0",
          "prometheus": "k8s",
          "role": "alert-rules"
       },
@@ -182,7 +182,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/prometheus/prometheusremotewritebehind",
                      "summary": "Prometheus remote write is behind."
                   },
-                  "expr": "# Without max_over_time, failed scrapes could create false negatives, see\n# https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.\n(\n  max_over_time(prometheus_remote_storage_highest_timestamp_in_seconds{job=\"prometheus-k8s\",namespace=\"monitoring\"}[5m])\n- ignoring(remote_name, url) group_right\n  max_over_time(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{job=\"prometheus-k8s\",namespace=\"monitoring\"}[5m])\n)\n> 120\n",
+                  "expr": "# Without max_over_time, failed scrapes could create false negatives, see\n# https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.\n(\n  max_over_time(prometheus_remote_storage_queue_highest_timestamp_seconds{job=\"prometheus-k8s\",namespace=\"monitoring\"}[5m])\n-\n  max_over_time(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{job=\"prometheus-k8s\",namespace=\"monitoring\"}[5m])\n)\n> 120\n",
                   "for": "15m",
                   "labels": {
                      "severity": "critical"

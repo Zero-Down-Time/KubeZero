@@ -10,7 +10,7 @@ update_jsonnet() {
   which jb > /dev/null || { echo "Required jb ( json-bundler ) not found!"; exit 1;}
 
   # remove previous versions
-  rm -f jsonnetfile.json jsonnetfile.lock.json
+  # rm -f jsonnetfile.json jsonnetfile.lock.json
 
   jb init
   jb install github.com/prometheus-operator/kube-prometheus/jsonnet/kube-prometheus@main

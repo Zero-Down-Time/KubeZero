@@ -18,7 +18,7 @@ spec:
 
         # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
 
-        max_over_time(alertmanager_config_last_reload_successful{job="alertmanager-main",namespace="monitoring"}[5m]) == 0
+        max_over_time(alertmanager_config_last_reload_successful{job="alertmanager-main",container="alertmanager",namespace="monitoring"}[5m]) == 0
 
         '
       for: 10m
@@ -29,7 +29,7 @@ spec:
         description: Alertmanager {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod{{`}}`}} has only found {{`{{`}} $value {{`}}`}} members of the {{`{{`}}$labels.job{{`}}`}} cluster.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagermembersinconsistent
         summary: A member of an Alertmanager cluster has not found all other cluster members.
-      expr: "# Without max_over_time, failed scrapes could create false negatives, see\n# https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.\n  max_over_time(alertmanager_cluster_members{job=\"alertmanager-main\",namespace=\"monitoring\"}[5m])\n< on (namespace,service) group_left\n  count by (namespace,service) (max_over_time(alertmanager_cluster_members{job=\"alertmanager-main\",namespace=\"monitoring\"}[5m]))\n"
+      expr: "# Without max_over_time, failed scrapes could create false negatives, see\n# https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.\n  max_over_time(alertmanager_cluster_members{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"}[5m])\n< on (namespace,service) group_left\n  count by (namespace,service) (max_over_time(alertmanager_cluster_members{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"}[5m]))\n"
       for: 15m
       labels:
         severity: critical
@@ -38,7 +38,7 @@ spec:
         description: Alertmanager {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod{{`}}`}} failed to send {{`{{`}} $value | humanizePercentage {{`}}`}} of notifications to {{`{{`}} $labels.integration {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerfailedtosendalerts
         summary: An Alertmanager instance failed to send notifications.
-      expr: "(\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\"}[15m])\n)\n> 0.01\n"
+      expr: "(\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"}[15m])\n)\n> 0.01\n"
       for: 5m
       labels:
         severity: warning
@@ -47,7 +47,7 @@ spec:
         description: The minimum notification failure rate to {{`{{`}} $labels.integration {{`}}`}} sent from any instance in the {{`{{`}}$labels.job{{`}}`}} cluster is {{`{{`}} $value | humanizePercentage {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerclusterfailedtosendalerts
         summary: All Alertmanager instances in a cluster failed to send notifications to a critical integration.
-      expr: "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration=~`.*`}[15m])\n)\n> 0.01\n"
+      expr: "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\", integration=~`.*`}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\", integration=~`.*`}[15m])\n)\n> 0.01\n"
       for: 5m
       labels:
         severity: critical
@@ -56,7 +56,7 @@ spec:
         description: The minimum notification failure rate to {{`{{`}} $labels.integration {{`}}`}} sent from any instance in the {{`{{`}}$labels.job{{`}}`}} cluster is {{`{{`}} $value | humanizePercentage {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerclusterfailedtosendalerts
         summary: All Alertmanager instances in a cluster failed to send notifications to a non-critical integration.
-      expr: "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",namespace=\"monitoring\", integration!~`.*`}[15m])\n)\n> 0.01\n"
+      expr: "min by (namespace,service, integration) (\n  rate(alertmanager_notifications_failed_total{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\", integration!~`.*`}[15m])\n/\n  ignoring (reason) group_left rate(alertmanager_notifications_total{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\", integration!~`.*`}[15m])\n)\n> 0.01\n"
       for: 5m
       labels:
         severity: warning
@@ -65,7 +65,7 @@ spec:
         description: Alertmanager instances within the {{`{{`}}$labels.job{{`}}`}} cluster have different configurations.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerconfiginconsistent
         summary: Alertmanager instances within the same cluster have different configurations.
-      expr: "count by (namespace,service) (\n  count_values by (namespace,service) (\"config_hash\", alertmanager_config_hash{job=\"alertmanager-main\",namespace=\"monitoring\"})\n)\n!= 1\n"
+      expr: "count by (namespace,service) (\n  count_values by (namespace,service) (\"config_hash\", alertmanager_config_hash{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"})\n)\n!= 1\n"
       for: 20m
       labels:
         severity: critical
@@ -74,7 +74,7 @@ spec:
         description: '{{`{{`}} $value | humanizePercentage {{`}}`}} of Alertmanager instances within the {{`{{`}}$labels.job{{`}}`}} cluster have been up for less than half of the last 5m.'
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerclusterdown
         summary: Half or more of the Alertmanager instances within the same cluster are down.
-      expr: "(\n  count by (namespace,service) (\n    avg_over_time(up{job=\"alertmanager-main\",namespace=\"monitoring\"}[5m]) < 0.5\n  )\n/\n  count by (namespace,service) (\n    up{job=\"alertmanager-main\",namespace=\"monitoring\"}\n  )\n)\n>= 0.5\n"
+      expr: "(\n  count by (namespace,service) (\n    avg_over_time(up{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"}[5m]) < 0.5\n  )\n/\n  count by (namespace,service) (\n    up{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"}\n  )\n)\n>= 0.5\n"
       for: 5m
       labels:
         severity: critical
@@ -83,7 +83,7 @@ spec:
         description: '{{`{{`}} $value | humanizePercentage {{`}}`}} of Alertmanager instances within the {{`{{`}}$labels.job{{`}}`}} cluster have restarted at least 5 times in the last 10m.'
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/alertmanager/alertmanagerclustercrashlooping
         summary: Half or more of the Alertmanager instances within the same cluster are crashlooping.
-      expr: "(\n  count by (namespace,service) (\n    changes(process_start_time_seconds{job=\"alertmanager-main\",namespace=\"monitoring\"}[10m]) > 4\n  )\n/\n  count by (namespace,service) (\n    up{job=\"alertmanager-main\",namespace=\"monitoring\"}\n  )\n)\n>= 0.5\n"
+      expr: "(\n  count by (namespace,service) (\n    changes(process_start_time_seconds{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"}[10m]) > 4\n  )\n/\n  count by (namespace,service) (\n    up{job=\"alertmanager-main\",container=\"alertmanager\",namespace=\"monitoring\"}\n  )\n)\n>= 0.5\n"
       for: 5m
       labels:
         severity: critical

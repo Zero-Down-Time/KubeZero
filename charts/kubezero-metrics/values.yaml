@@ -117,27 +117,6 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 16Gi
-      #volumes:
-      #  - name: aws-token
-      #    projected:
-      #      sources:
-      #      - serviceAccountToken:
-      #          path: token
-      #          expirationSeconds: 86400
-      #          audience: "sts.amazonaws.com"
-      #volumeMounts:
-      #  - name: aws-token
-      #    mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-      #    readOnly: true
-      #containers:
-      #  - name: prometheus
-      #    env:
-      #      - name: AWS_ROLE_ARN
-      #        value: "<prometheus IAM ROLE ARN>"
-      #      - name: AWS_WEB_IDENTITY_TOKEN_FILE
-      #        value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-      #      - name: AWS_STS_REGIONAL_ENDPOINTS
-      #        value: regional
 
   # Custom Grafana tweaks
   grafana:
@@ -171,7 +150,12 @@ kube-prometheus-stack:
       log.console:
         format: json
 
+    # Pin sidecar due to Python issues with crts
+    # https://github.com/kiwigrid/k8s-sidecar/issues/400
     sidecar:
+      image:
+        tag: 1.30.3
+
       dashboards:
         searchNamespace: ALL
         provider:

@@ -41,13 +41,9 @@ aws-ebs-csi-driver:
     k8sTagClusterId: {{ .Values.global.clusterName }}
     enableMetrics: {{ .Values.metrics.enabled }}
     region: {{ .Values.global.aws.region }}
-    env:
-    - name: AWS_ROLE_ARN
-      value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.ebs-csi-controller-sa"
-    - name: AWS_WEB_IDENTITY_TOKEN_FILE
-      value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-    - name: AWS_STS_REGIONAL_ENDPOINTS
-      value: regional
+    serviceaccount:
+      annotations:
+        kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.ebs-csi-controller-sa"
 
   node:
     enableMetrics: {{ .Values.metrics.enabled }}
@@ -73,11 +69,9 @@ aws-efs-csi-driver:
   # Temp for old 1.7 chart we use atm
   replicaCount: {{ ternary 2 1 .Values.global.highAvailable }}
   controller:
-    extraEnv:
-    - name: AWS_ROLE_ARN
-      value: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.efs-csi-controller-sa"
-    - name: AWS_WEB_IDENTITY_TOKEN_FILE
-      value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
+    serviceaccount:
+      annotations:
+        kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.efs-csi-controller-sa"
 
     # The EFS controller steel needs hostnetwork and cannot update on single node control planes otherwise
     {{- if not .Values.global.highAvailable }}

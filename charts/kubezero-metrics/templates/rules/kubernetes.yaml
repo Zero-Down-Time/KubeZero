@@ -25,7 +25,7 @@ spec:
         description: Pod {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod {{`}}`}} has been in a non-ready state for longer than 15 minutes on cluster {{`{{`}} $labels.cluster {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubepodnotready
         summary: Pod has been in a non-ready state for more than 15 minutes.
-      expr: "sum by (namespace, pod, cluster) (\n  max by(namespace, pod, cluster) (\n    kube_pod_status_phase{job=\"kube-state-metrics\", phase=~\"Pending|Unknown|Failed\"}\n  ) * on(namespace, pod, cluster) group_left(owner_kind) topk by(namespace, pod, cluster) (\n    1, max by(namespace, pod, owner_kind, cluster) (kube_pod_owner{owner_kind!=\"Job\"})\n  )\n) > 0\n"
+      expr: "sum by (namespace, pod, cluster) (\n  max by(namespace, pod, cluster) (\n    kube_pod_status_phase{job=\"kube-state-metrics\", phase=~\"Pending|Unknown\"}\n  ) * on(namespace, pod, cluster) group_left(owner_kind) topk by(namespace, pod, cluster) (\n    1, max by(namespace, pod, owner_kind, cluster) (kube_pod_owner{owner_kind!=\"Job\"})\n  )\n) > 0\n"
       for: 15m
       labels:
         severity: warning
@@ -177,10 +177,10 @@ spec:
     rules:
     - alert: KubeCPUQuotaOvercommit
       annotations:
-        description: Cluster {{`{{`}} $labels.cluster {{`}}`}}  has overcommitted CPU resource requests for Namespaces.
+        description: Cluster {{`{{`}} $labels.cluster {{`}}`}} has overcommitted CPU resource requests for Namespaces.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubecpuquotaovercommit
         summary: Cluster has overcommitted CPU resource requests.
-      expr: "sum(min without(resource) (kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\", resource=~\"(cpu|requests.cpu)\"})) by (cluster)\n  /\nsum(kube_node_status_allocatable{resource=\"cpu\", job=\"kube-state-metrics\"}) by (cluster)\n  > 1.5\n"
+      expr: "sum by(cluster) (\n  min without(resource) (kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\", resource=~\"(cpu|requests.cpu)\"})\n)\n/\nsum by(cluster) (\n  kube_node_status_allocatable{resource=\"cpu\", job=\"kube-state-metrics\"}\n) > 1.5\n"
       for: 5m
       labels:
         severity: warning
@@ -189,7 +189,7 @@ spec:
         description: Cluster {{`{{`}} $labels.cluster {{`}}`}} has overcommitted memory resource requests for Namespaces.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubememoryquotaovercommit
         summary: Cluster has overcommitted memory resource requests.
-      expr: "sum(min without(resource) (kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\", resource=~\"(memory|requests.memory)\"})) by (cluster)\n  /\nsum(kube_node_status_allocatable{resource=\"memory\", job=\"kube-state-metrics\"}) by (cluster)\n  > 1.5\n"
+      expr: "sum by(cluster) (\n  min without(resource) (kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\", resource=~\"(memory|requests.memory)\"})\n)\n/\nsum by(cluster) (\n  kube_node_status_allocatable{resource=\"memory\", job=\"kube-state-metrics\"}\n) > 1.5\n"
       for: 5m
       labels:
         severity: warning
@@ -225,7 +225,7 @@ spec:
         description: '{{`{{`}} $value | humanizePercentage {{`}}`}} throttling of CPU in namespace {{`{{`}} $labels.namespace {{`}}`}} for container {{`{{`}} $labels.container {{`}}`}} in pod {{`{{`}} $labels.pod {{`}}`}} on cluster {{`{{`}} $labels.cluster {{`}}`}}.'
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/cputhrottlinghigh
         summary: Processes experience elevated CPU throttling.
-      expr: "sum(increase(container_cpu_cfs_throttled_periods_total{container!=\"\", job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", }[5m])) without (id, metrics_path, name, image, endpoint, job, node)\n  / on (cluster, namespace, pod, container, instance) group_left\nsum(increase(container_cpu_cfs_periods_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", }[5m])) without (id, metrics_path, name, image, endpoint, job, node)\n  > ( 25 / 100 )\n"
+      expr: "sum without (id, metrics_path, name, image, endpoint, job, node) (\n  topk by (cluster, namespace, pod, container, instance) (1,\n    increase(\n      container_cpu_cfs_throttled_periods_total{container!=\"\", job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", }\n    [5m])\n  )\n)\n/ on (cluster, namespace, pod, container, instance) group_left\nsum without (id, metrics_path, name, image, endpoint, job, node) (\n  topk by (cluster, namespace, pod, container, instance) (1,\n    increase(\n      container_cpu_cfs_periods_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", }\n    [5m])\n  )\n)\n> ( 25 / 100 )\n"
       for: 15m
       labels:
         severity: info
@@ -546,9 +546,7 @@ spec:
         description: Kubelet Pod startup 99th percentile latency is {{`{{`}} $value {{`}}`}} seconds on node {{`{{`}} $labels.node {{`}}`}} on cluster {{`{{`}} $labels.cluster {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeletpodstartuplatencyhigh
         summary: Kubelet Pod startup latency is too high.
-      expr: 'histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet", metrics_path="/metrics"}[5m])) by (cluster, instance, le)) * on(cluster, instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
-
-        '
+      expr: "histogram_quantile(0.99,\n  sum by (cluster, instance, le) (\n    topk by (cluster, instance, le, operation_type) (1,\n      rate(kubelet_pod_worker_duration_seconds_bucket{job=\"kubelet\", metrics_path=\"/metrics\"}[5m])\n    )\n  )\n)\n* on(cluster, instance) group_left(node)\ntopk by (cluster, instance, node) (1,\n  kubelet_node_name{job=\"kubelet\", metrics_path=\"/metrics\"}\n)\n> 60\n"
       for: 15m
       labels:
         severity: warning
@@ -889,12 +887,12 @@ spec:
       record: namespace_workload_pod:kube_pod_owner:relabel
   - name: kube-scheduler.rules
     rules:
-    - expr: 'histogram_quantile(0.99, sum(rate(scheduler_e2e_scheduling_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
+    - expr: 'histogram_quantile(0.99, sum(rate(scheduler_scheduling_attempt_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
 
         '
       labels:
         quantile: '0.99'
-      record: cluster_quantile:scheduler_e2e_scheduling_duration_seconds:histogram_quantile
+      record: cluster_quantile:scheduler_scheduling_attempt_duration_seconds:histogram_quantile
     - expr: 'histogram_quantile(0.99, sum(rate(scheduler_scheduling_algorithm_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
 
         '
@@ -907,12 +905,12 @@ spec:
       labels:
         quantile: '0.99'
       record: cluster_quantile:scheduler_binding_duration_seconds:histogram_quantile
-    - expr: 'histogram_quantile(0.9, sum(rate(scheduler_e2e_scheduling_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
+    - expr: 'histogram_quantile(0.9, sum(rate(scheduler_scheduling_attempt_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
 
         '
       labels:
         quantile: '0.9'
-      record: cluster_quantile:scheduler_e2e_scheduling_duration_seconds:histogram_quantile
+      record: cluster_quantile:scheduler_scheduling_attempt_duration_seconds:histogram_quantile
     - expr: 'histogram_quantile(0.9, sum(rate(scheduler_scheduling_algorithm_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
 
         '
@@ -925,12 +923,12 @@ spec:
       labels:
         quantile: '0.9'
       record: cluster_quantile:scheduler_binding_duration_seconds:histogram_quantile
-    - expr: 'histogram_quantile(0.5, sum(rate(scheduler_e2e_scheduling_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
+    - expr: 'histogram_quantile(0.5, sum(rate(scheduler_scheduling_attempt_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
 
         '
       labels:
         quantile: '0.5'
-      record: cluster_quantile:scheduler_e2e_scheduling_duration_seconds:histogram_quantile
+      record: cluster_quantile:scheduler_scheduling_attempt_duration_seconds:histogram_quantile
     - expr: 'histogram_quantile(0.5, sum(rate(scheduler_scheduling_algorithm_duration_seconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod))
 
         '

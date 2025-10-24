@@ -6,10 +6,6 @@ set -ex
 #login_ecr_public
 update_helm
 
-patch_chart aws-ebs-csi-driver
-
-patch_chart aws-efs-csi-driver
-
 patch_chart lvm-localpv
 
 patch_chart gemini

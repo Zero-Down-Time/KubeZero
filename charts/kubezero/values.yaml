@@ -49,7 +49,7 @@ cert-manager:
 
 storage:
   enabled: false
-  targetRevision: 0.8.11
+  targetRevision: 0.8.12
   lvm-localpv:
     enabled: false
   aws-ebs-csi-driver:
@@ -80,7 +80,7 @@ istio-private-ingress:
   enabled: false
   chart: kubezero-istio-gateway
   namespace: istio-ingress
-  targetRevision: 0.26.1
+  targetRevision: 0.27.3
   gateway:
     service: {}
 
@@ -103,7 +103,7 @@ operators:
 metrics:
   enabled: false
   namespace: monitoring
-  targetRevision: 0.12.0
+  targetRevision: 0.12.1
   istio:
     grafana: {}
     prometheus: {}

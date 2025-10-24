@@ -120,28 +120,6 @@ aws-ebs-csi-driver:
     volumeModificationFeature:
       enabled: true
 
-    #env:
-    #  ebsPlugin:
-      #- name: AWS_ROLE_ARN
-      #  value: "<ebs-csi-driver IAM ROLE ARN>"
-      #- name: AWS_WEB_IDENTITY_TOKEN_FILE
-      #  value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-      #- name: AWS_STS_REGIONAL_ENDPOINTS
-      #  value: regional
-
-    volumeMounts:
-      - name: aws-token
-        mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-        readOnly: true
-    volumes:
-      - name: aws-token
-        projected:
-          sources:
-          - serviceAccountToken:
-              path: token
-              expirationSeconds: 86400
-              audience: "sts.amazonaws.com"
-
     resources:
       requests:
         cpu: 10m
@@ -226,24 +204,6 @@ aws-efs-csi-driver:
       node-role.kubernetes.io/control-plane: ""
 
     regionalStsEndpoints: true
-
-    volumeMounts:
-      - name: aws-token
-        mountPath: /var/run/secrets/sts.amazonaws.com/serviceaccount/
-    volumes:
-      - name: aws-token
-        projected:
-          sources:
-          - serviceAccountToken:
-              path: token
-              expirationSeconds: 86400
-              audience: "sts.amazonaws.com"
-
-    #env:
-    #- name: AWS_ROLE_ARN
-    #  value: "<aws-efs-csi-driver IAM ROLE ARN>"
-    #- name: AWS_WEB_IDENTITY_TOKEN_FILE
-    #  value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
 
   node:
     logLevel: 2

@@ -230,13 +230,6 @@ jenkins:
       limits:
         cpu: ""
         memory: ""
-    # envVars:
-    # - name: AWS_WEB_IDENTITY_TOKEN_FILE
-    #   value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-    # - name: AWS_STS_REGIONAL_ENDPOINTS
-    #   value: regional
-    # - name: AWS_ROLE_ARN
-    #   value: "<IAM ROLE ARN>"
     yamlMergeStrategy: "merge"
     inheritYamlMergeStrategy: true
     runAsUser: 1000
