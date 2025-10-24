@@ -6,7 +6,11 @@ alertmanager:
     podMetadata:
       annotations:
         kubezero.com/sns_forwarder_ARN_PREFIX: "arn:aws:sns:{{ .global.aws.region }}:{{ .global.aws.accountId }}:"
-        kubezero.com/sns_forwarder_AWS_ROLE_ARN: "arn:aws:iam::{{ .global.aws.accountId }}:role/{{ .global.aws.region }}.{{ .global.clusterName }}.alertmanager"
+
+  serviceAccount:
+    annotations:
+      kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .global.aws.accountId }}:role/{{ .global.aws.region }}.{{ .global.clusterName }}.alertmanager"
+
   config:
     receivers:
       - name: 'null'
@@ -16,33 +20,17 @@ alertmanager:
             url: http://localhost:9087/alert/AlertHub
     route:
       receiver: alerthub-notifications
+
 prometheus:
+  serviceAccount:
+    annotations:
+      kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .global.aws.accountId }}:role/{{ .global.aws.region }}.{{ .global.clusterName }}.prometheus"
+
   prometheusSpec:
     externalLabels:
       awsAccount: '{{ .global.aws.accountId }}'
       awsRegion: {{ .global.aws.region }}
       clusterName: {{ .global.clusterName }}
-    containers:
-      - name: prometheus
-        env:
-          - name: AWS_ROLE_ARN
-            value: "arn:aws:iam::{{ .global.aws.accountId }}:role/{{ .global.aws.region }}.{{ .global.clusterName }}.prometheus"
-          - name: AWS_WEB_IDENTITY_TOKEN_FILE
-            value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-          - name: AWS_STS_REGIONAL_ENDPOINTS
-            value: regional
-    volumes:
-      - name: aws-token
-        projected:
-          sources:
-          - serviceAccountToken:
-              path: token
-              expirationSeconds: 86400
-              audience: "sts.amazonaws.com"
-    volumeMounts:
-      - name: aws-token
-        mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-        readOnly: true
     additionalScrapeConfigs:
       - job_name: 'cri'
         metrics_path: '/v1/metrics'

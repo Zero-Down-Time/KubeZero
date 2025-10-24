@@ -251,18 +251,6 @@ kube-prometheus-stack:
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['kubezero.com/sns_forwarder_ARN_PREFIX']
-        - name: AWS_ROLE_ARN
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.annotations['kubezero.com/sns_forwarder_AWS_ROLE_ARN']
-        - name: AWS_WEB_IDENTITY_TOKEN_FILE
-          value: "/var/run/secrets/sts.amazonaws.com/serviceaccount/token"
-        - name: AWS_STS_REGIONAL_ENDPOINTS
-          value: regional
-        volumeMounts:
-        - name: aws-token
-          mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-          readOnly: true
         resources:
           limits:
             memory: 64Mi
@@ -285,14 +273,6 @@ kube-prometheus-stack:
             port: webhook-port
           initialDelaySeconds: 10
           timeoutSeconds: 10
-      volumes:
-      - name: aws-token
-        projected:
-          sources:
-          - serviceAccountToken:
-              path: token
-              expirationSeconds: 86400
-              audience: "sts.amazonaws.com"
 
 # Metrics adapter
 prometheus-adapter:
