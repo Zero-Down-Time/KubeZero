@@ -408,10 +408,10 @@ controller:
   # Plugins will be installed during Jenkins controller start
   # -- List of Jenkins plugins to install. If you don't want to install plugins, set it to `false`
   installPlugins:
-    - kubernetes:4371.vb_33b_086d54a_1
+    - kubernetes:4384.v1b_6367f393d9
     - workflow-aggregator:608.v67378e9d3db_1
-    - git:5.7.0
-    - configuration-as-code:1995.v540b_50a_eb_0c1
+    - git:5.8.0
+    - configuration-as-code:2006.v001a_2ca_6b_574
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
   # -- Download the minimum required version or latest version of all dependencies
@@ -693,6 +693,9 @@ controller:
   # -- Topology spread constraints
   topologySpreadConstraints: {}
 
+  # -- DNS config for the pod
+  dnsConfig: {}
+
   ingress:
     # -- Enables ingress
     enabled: false
@@ -965,7 +968,7 @@ agent:
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3341.v0766d82b_dec0-1"
+    tag: "3345.v03dee9b_f88fc-2"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"

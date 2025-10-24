@@ -12,6 +12,54 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.8.104
+
+Update `configuration-as-code` to version `2006.v001a_2ca_6b_574`
+
+## 5.8.103
+
+Update `jenkins/inbound-agent` to version `3345.v03dee9b_f88fc-2`
+
+## 5.8.102
+
+Update `jenkins/jenkins` to version `2.528.1-jdk21`
+
+## 5.8.101
+
+Update `jenkins/inbound-agent` to version `3345.v03dee9b_f88fc-1`
+
+## 5.8.100
+
+Add support for [custom DNS configuration](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config) in the controller
+
+## 5.8.99
+
+Update `git` to version `5.8.0`
+
+## 5.8.98
+
+Update `jenkins/inbound-agent` to version `3341.v0766d82b_dec0-4`
+
+## 5.8.97
+
+Update `configuration-as-code` to version `1998.v3e50e6e9d9d3`
+
+## 5.8.96
+
+Update `jenkins/inbound-agent` to version `3341.v0766d82b_dec0-3`
+
+## 5.8.95
+
+Update `jenkins/inbound-agent` to version `3341.v0766d82b_dec0-2`
+
+## 5.8.94
+
+Update `kubernetes` to version `4384.v1b_6367f393d9`
+
+## 5.8.93
+
+Update `kubernetes` to version `4383.vb_76fc9d3c4dc`
+
 ## 5.8.92
 
 Update `configuration-as-code` to version `1995.v540b_50a_eb_0c1`

@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.9.1](https://img.shields.io/badge/Version-0.9.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.8.92 |
-| https://dl.gitea.io/charts/ | gitea | 12.3.0 |
-| https://docs.renovatebot.com/helm-charts | renovate | 44.8.1 |
+| https://charts.jenkins.io | jenkins | 5.8.104 |
+| https://dl.gitea.io/charts/ | gitea | 12.4.0 |
+| https://docs.renovatebot.com/helm-charts | renovate | 44.15.1 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -111,7 +111,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.serviceAccount | string | `"jenkins-podman-aws"` |  |
 | jenkins.agent.showRawYaml | bool | `false` |  |
 | jenkins.agent.yamlMergeStrategy | string | `"merge"` |  |
-| jenkins.agent.yamlTemplate | string | `"apiVersion: v1\nkind: Pod\nspec:\n  securityContext:\n    fsGroup: 1000\n  containers:\n  - name: jnlp\n    resources:\n      requests:\n        cpu: \"200m\"\n        memory: \"512Mi\"\n      limits:\n        cpu: \"4\"\n        memory: \"6144Mi\"\n        github.com/fuse: 1\n    volumeMounts:\n    - name: aws-token\n      mountPath: \"/var/run/secrets/sts.amazonaws.com/serviceaccount/\"\n      readOnly: true\n    - name: host-registries-conf\n      mountPath: \"/home/jenkins/.config/containers/registries.conf\"\n      readOnly: true\n  volumes:\n  - name: aws-token\n    projected:\n      sources:\n      - serviceAccountToken:\n          path: token\n          expirationSeconds: 86400\n          audience: \"sts.amazonaws.com\"\n  - name: host-registries-conf\n    hostPath:\n      path: /etc/containers/registries.conf\n      type: File"` |  |
+| jenkins.agent.yamlTemplate | string | `"apiVersion: v1\nkind: Pod\nspec:\n  securityContext:\n    fsGroup: 1000\n  containers:\n  - name: jnlp\n    resources:\n      requests:\n        cpu: \"200m\"\n        memory: \"512Mi\"\n      limits:\n        cpu: \"4\"\n        memory: \"6144Mi\"\n        github.com/fuse: 1\n    volumeMounts:\n    - name: host-registries-conf\n      mountPath: \"/home/jenkins/.config/containers/registries.conf\"\n      readOnly: true\n  volumes:\n  - name: host-registries-conf\n    hostPath:\n      path: /etc/containers/registries.conf\n      type: File"` |  |
 | jenkins.controller.JCasC.configScripts.zdt-settings | string | `"jenkins:\n  noUsageStatistics: true\n  disabledAdministrativeMonitors:\n  - \"jenkins.security.ResourceDomainRecommendation\"\nappearance:\n  themeManager:\n    disableUserThemes: true\n    theme: \"dark\"\nunclassified:\n  openTelemetry:\n    configurationProperties: |-\n      otel.exporter.otlp.protocol=grpc\n      otel.instrumentation.jenkins.web.enabled=false\n    ignoredSteps: \"dir,echo,isUnix,pwd,properties\"\n    #endpoint: \"telemetry-jaeger-collector.telemetry:4317\"\n    exportOtelConfigurationAsEnvironmentVariables: false\n    #observabilityBackends:\n    # - jaeger:\n    #     jaegerBaseUrl: \"https://jaeger.example.com\"\n    #     name: \"KubeZero Jaeger\"\n    serviceName: \"Jenkins\"\n  buildDiscarders:\n    configuredBuildDiscarders:\n    - \"jobBuildDiscarder\"\n    - defaultBuildDiscarder:\n        discarder:\n          logRotator:\n            artifactDaysToKeepStr: \"32\"\n            artifactNumToKeepStr: \"10\"\n            daysToKeepStr: \"100\"\n            numToKeepStr: \"10\"\n"` |  |
 | jenkins.controller.containerEnv[0].name | string | `"OTEL_LOGS_EXPORTER"` |  |
 | jenkins.controller.containerEnv[0].value | string | `"none"` |  |

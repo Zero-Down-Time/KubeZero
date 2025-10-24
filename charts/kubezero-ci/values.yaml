@@ -252,20 +252,10 @@ jenkins:
               memory: "6144Mi"
               github.com/fuse: 1
           volumeMounts:
-          - name: aws-token
-            mountPath: "/var/run/secrets/sts.amazonaws.com/serviceaccount/"
-            readOnly: true
           - name: host-registries-conf
             mountPath: "/home/jenkins/.config/containers/registries.conf"
             readOnly: true
         volumes:
-        - name: aws-token
-          projected:
-            sources:
-            - serviceAccountToken:
-                path: token
-                expirationSeconds: 86400
-                audience: "sts.amazonaws.com"
         - name: host-registries-conf
           hostPath:
             path: /etc/containers/registries.conf
