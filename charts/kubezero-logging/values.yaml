@@ -251,6 +251,12 @@ fluent-bit:
     - key: aws.amazon.com/neuron
       effect: NoSchedule
       operator: Exists
+    - key: ebs.csi.aws.com/agent-not-ready
+      effect: NoSchedule
+      operator: Exists
+    - key: efs.csi.aws.com/agent-not-ready
+      effect: NoSchedule
+      operator: Exists
 
   resources:
     requests:
