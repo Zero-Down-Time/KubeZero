@@ -41,7 +41,7 @@ aws-ebs-csi-driver:
     k8sTagClusterId: {{ .Values.global.clusterName }}
     enableMetrics: {{ .Values.metrics.enabled }}
     region: {{ .Values.global.aws.region }}
-    serviceaccount:
+    serviceAccount:
       annotations:
         kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.ebs-csi-controller-sa"
 

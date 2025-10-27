@@ -94,6 +94,11 @@ kube-prometheus-stack:
       logFormat: json
       # externalUrl:
 
+      # Bugfix for EC2 discovery
+      # https://github.com/prometheus/prometheus/issues/17397
+      image:
+        tag: v3.6.0
+
       # gather ALL monitors
       podMonitorSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
