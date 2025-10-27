@@ -166,7 +166,7 @@ config:
 
 ### Configuration for Kubernetes Attributes Processor
 
-The collector can be configured to add Kubernetes metadata, such as pod name and namespace name, as resource attributes to incoming logs, metrics and traces. 
+The collector can be configured to add Kubernetes metadata, such as pod name and namespace name, as resource attributes to incoming logs, metrics and traces.
 
 This feature is disabled by default. It has the following requirements:
 
@@ -189,6 +189,50 @@ presets:
     extractAllPodLabels: true
     extractAllPodAnnotations: true
 ```
+
+### Configuration for Annotation-Based Discovery
+
+The collector can be configured to automatically discover and collect telemetry from pods based on annotations. For logs specifically the feature can be used as a drop-in replacement for the `logsCollection` preset, allowing for more selective collection of logs and additional parsing capabilities.
+
+> [!WARNING] > `annotationDiscovery.logs` and `logsCollection` are mutually exclusive.
+
+`presets.annotationDiscovery.logs.enabled: true`: Collects logs only from all pods by-default, and allows to define additional configuration through annotations. Log collection from specific Pods/containers, can be disabled by using the proper annotation.
+
+Here is an example `values.yaml`:
+
+```yaml
+mode: daemonset
+
+image:
+  repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s"
+
+command:
+  name: "otelcol-k8s"
+
+presets:
+  annotationDiscovery:
+    logs:
+      enabled: true
+    metrics:
+      enabled: true
+```
+
+#### How Annotation-Based Discovery Works
+
+When annotation-based discovery is enabled, the collector will:
+
+1. **Discover Pods**: Use the Receiver Creator receiver to watch for pods with specific annotations
+2. **Generate Receiver Configurations**: Automatically generate receiver configuration
+
+**Default Behavior**: When `presets.annotationDiscovery.logs.enabled` is `true`, the collector will collect logs from all containers by default, unless a pod explicitly opts out using the `io.opentelemetry.discovery.logs/enabled: "false"` annotation.
+
+This approach provides the same functionality as `logsCollection` but with fine-grained control over which pods are monitored, making it ideal for environments where you want to selectively collect telemetry from specific applications or services.
+
+For more details and configuration options, see the [Receiver Creator](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/receivercreator/README.md#generate-receiver-configurations-from-provided-hints) documentation.
+
+#### :memo: Note: RBAC Permissions
+
+When annotation-based discovery is enabled, the chart automatically creates the necessary RBAC rules to allow the collector to list pods in the cluster. This is required for the Receiver Creator receiver to discover pods with the relevant annotations.
 
 ### Configuration for Retrieving Kubelet Metrics
 
@@ -269,6 +313,20 @@ presets:
 ## CRDs
 
 At this time, Prometheus CRDs are supported but other CRDs are not.
+
+### Service Account Configuration
+
+The chart allows you to control the `automountServiceAccountToken` setting for the collector pods. This can be useful for security purposes when you want to prevent automatic mounting of the service account token.
+
+*Example*: Disable automatic mounting of service account token:
+
+```yaml
+serviceAccount:
+  create: true
+  automountServiceAccountToken: false
+```
+
+By default, `automountServiceAccountToken` is set to `true` (Kubernetes default behavior). When set to `false`, the service account token will not be automatically mounted into the collector pods.
 
 ### Other configuration options
 

@@ -220,9 +220,12 @@ jenkins:
     garbageCollection:
       enabled: true
     customJenkinsLabels:
-    - podman-aws-grype
+      - podman-aws-grype
     idleMinutes: 30
     containerCap: 2
+    envVars:
+      - name: HOME
+        value: "/home/jenkins/agent"
     resources:
       requests:
         cpu: ""

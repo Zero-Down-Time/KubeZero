@@ -224,6 +224,7 @@ aws-efs-csi-driver:
           - matchExpressions:
             - key: node.kubernetes.io/csi.efs.fs
               operator: Exists
+
     tolerations:
     - key: kubezero-workergroup
       effect: NoSchedule

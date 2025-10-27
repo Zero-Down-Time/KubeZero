@@ -4,6 +4,7 @@ imagePullSecrets:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 serviceAccountName: {{ include "opentelemetry-collector.serviceAccountName" . }}
+automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
 securityContext:
   {{- toYaml .Values.podSecurityContext | nindent 2 }}
 {{- with .Values.hostAliases }}
@@ -144,7 +145,7 @@ containers:
       - mountPath: /conf
         name: {{ include "opentelemetry-collector.lowercase_chartname" . }}-configmap
       {{- end }}
-      {{- if .Values.presets.logsCollection.enabled }}
+      {{- if or .Values.presets.logsCollection.enabled .Values.presets.annotationDiscovery.logs.enabled }}
       - name: varlogpods
         mountPath: /var/log/pods
         readOnly: true
@@ -175,6 +176,9 @@ initContainers:
 {{- if .Values.priorityClassName }}
 priorityClassName: {{ .Values.priorityClassName | quote }}
 {{- end }}
+{{- if .Values.runtimeClassName }}
+runtimeClassName: {{ .Values.runtimeClassName | quote }}
+{{- end }}
 volumes:
   {{- if or .Values.configMap.create .Values.configMap.existingName }}
   - name: {{ include "opentelemetry-collector.lowercase_chartname" . }}-configmap
@@ -184,7 +188,7 @@ volumes:
         - key: relay
           path: relay.yaml
   {{- end }}
-  {{- if .Values.presets.logsCollection.enabled }}
+  {{- if or .Values.presets.logsCollection.enabled .Values.presets.annotationDiscovery.logs.enabled }}
   - name: varlogpods
     hostPath:
       path: /var/log/pods

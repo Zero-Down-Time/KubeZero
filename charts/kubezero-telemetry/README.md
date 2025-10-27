@@ -1,6 +1,6 @@
 # kubezero-telemetry
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.5.1](https://img.shields.io/badge/Version-0.5.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for OpenTelemetry, Jaeger etc.
 
@@ -19,13 +19,13 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://fluent.github.io/helm-charts | fluent-bit | 0.49.0 |
+| https://fluent.github.io/helm-charts | fluent-bit | 0.54.0 |
 | https://fluent.github.io/helm-charts | fluentd | 0.5.3 |
 | https://jaegertracing.github.io/helm-charts | jaeger | 3.4.1 |
-| https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.125.0 |
+| https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.138.0 |
 | https://opensearch-project.github.io/helm-charts/ | data-prepper | 0.3.1 |
-| https://opensearch-project.github.io/helm-charts/ | opensearch | 3.0.0 |
-| https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.0.0 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch | 3.3.1 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.3.0 |
 
 ## Values
 
