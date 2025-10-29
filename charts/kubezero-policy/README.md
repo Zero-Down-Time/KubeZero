@@ -40,7 +40,16 @@ Kubernetes: `>= 1.33.0-0`
 | kyverno.cleanupController.rbac.clusterRole.extraResources[0].verbs[2] | string | `"watch"` |  |
 | kyverno.cleanupController.revisionHistoryLimit | int | `2` |  |
 | kyverno.config.preserve | bool | `false` |  |
+| kyverno.config.resourceFiltersExcludeNamespaces[0] | string | `"kube-system"` |  |
+| kyverno.config.resourceFiltersInclude[0] | string | `"[\"Deployment\", \"kube-system\", \"cilium-operator\"]"` |  |
+| kyverno.config.resourceFiltersInclude[1] | string | `"[\"Deployment/?*\", \"kube-system\", \"cilium-operator\"]"` |  |
+| kyverno.config.resourceFiltersInclude[2] | string | `"[\"DeamonSet\", \"kube-system\", \"cilium\"]"` |  |
+| kyverno.config.resourceFiltersInclude[3] | string | `"[\"DeamonSet/?*\", \"kube-system\", \"cilium\"]"` |  |
+| kyverno.config.resourceFiltersInclude[4] | string | `"[\"Pod\", \"kube-system\", \"cilium-*\"]"` |  |
+| kyverno.config.resourceFiltersInclude[5] | string | `"[\"Pod/?*\", \"kube-system\", \"cilium-*\"]"` |  |
+| kyverno.config.webhookAnnotations."admissions.enforcer/disabled" | string | `nil` |  |
 | kyverno.config.webhookAnnotations."argocd.argoproj.io/installation-id" | string | `"KubeZero-ArgoCD"` |  |
+| kyverno.config.webhooks.namespaceSelector | string | `nil` |  |
 | kyverno.crds.migration.enabled | bool | `false` |  |
 | kyverno.enabled | bool | `false` |  |
 | kyverno.features.logging.format | string | `"json"` |  |

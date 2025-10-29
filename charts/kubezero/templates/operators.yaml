@@ -84,6 +84,12 @@ altinity-clickhouse-operator:
 
 {{- define "operators-argo" }}
 
+  ignoreDifferences:
+  - group: admissionregistration.k8s.io
+    kind: MutatingWebhookConfiguration
+    jsonPointers:
+    - /metadata/generation
+
 {{- end }}
 
 {{ include "kubezero-app.app" . }}
