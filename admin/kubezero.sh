@@ -123,11 +123,6 @@ upgrade_kubezero_config() {
   migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml \
     && mv "$WORKDIR"/new-kubezero-values.yaml "$WORKDIR"/kubezero-values.yaml
 
-  # V1.32 - Inject new global.apiServerUrl
-  _API_ENDPOINT=$(kubectl config view | yq .clusters[0].cluster.server | sed -e 's,https://,,' -e 's/:6443//')
-  yq '.global.apiServerUrl="'$_API_ENDPOINT'"' -i "$WORKDIR"/kubezero-values.yaml
-  #
-
   update_kubezero_cm
 
   if [ "$ARGOCD" == "true" ]; then
@@ -136,7 +131,7 @@ upgrade_kubezero_config() {
     kubectl get application kubezero -n argocd -o yaml | \
       yq ".spec.source.helm.valuesObject |= load(\"$WORKDIR/kubezero-values.yaml\") | .spec.source.targetRevision = strenv(kubezero_chart_version)" \
       > $WORKDIR/new-argocd-app.yaml
-      kubectl replace -f $WORKDIR/new-argocd-app.yaml $(field_manager $ARGOCD)
+      retry 5 1 10 kubectl replace -f $WORKDIR/new-argocd-app.yaml $(field_manager $ARGOCD)
   fi
 }
 
