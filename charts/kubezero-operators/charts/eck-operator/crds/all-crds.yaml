@@ -4,14 +4,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: agents.agent.k8s.elastic.co
 spec:
   group: agent.k8s.elastic.co
@@ -121,7 +121,7 @@ spec:
                               pod is available (Ready for at least minReadySeconds) the old DaemonSet pod
                               on that node is marked deleted. If the old pod becomes unavailable for any
                               reason (Ready transitions to false, is evicted, or is drained) an updated
-                              pod is immediatedly created on that node without considering surge limits.
+                              pod is immediately created on that node without considering surge limits.
                               Allowing surge implies the possibility that the resources consumed by the
                               daemonset on any given node can double if the readiness check fails, and
                               so resource intensive daemonsets should take into account that they may
@@ -235,7 +235,8 @@ spec:
                     secretName:
                       description: |-
                         SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                        Elastic resource not managed by the operator. The referenced secret must contain the following:
+                        Elastic resource not managed by the operator.
+                        The referenced secret must contain the following:
                         - `url`: the URL to reach the Elastic resource
                         - `username`: the username of the user to be authenticated to the Elastic resource
                         - `password`: the password of the user to be authenticated to the Elastic resource
@@ -259,6 +260,7 @@ spec:
                 description: |-
                   FleetServerRef is a reference to Fleet Server that this Agent should connect to to obtain it's configuration.
                   Don't set unless `mode` is set to `fleet`.
+                  References to Fleet servers running outside the Kubernetes cluster via the `secretName` attribute are not supported.
                 properties:
                   name:
                     description: Name of an existing Kubernetes object corresponding
@@ -271,7 +273,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -722,7 +725,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -1059,15 +1063,13 @@ spec:
                                 volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
                                 If specified, the CSI driver will create or update the volume with the attributes defined
                                 in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-                                it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-                                will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-                                If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-                                will be set by the persistentvolume controller if it exists.
+                                it can be changed after the claim is created. An empty string or nil value indicates that no
+                                VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+                                this field can be reset to its previous value (including nil) to cancel the modification.
                                 If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                                 set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                 exists.
                                 More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                                (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                               type: string
                             volumeMode:
                               description: |-
@@ -1138,14 +1140,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: apmservers.apm.k8s.elastic.co
 spec:
   group: apm.k8s.elastic.co
@@ -1223,7 +1225,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -1673,7 +1676,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -2371,14 +2375,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: beats.beat.k8s.elastic.co
 spec:
   group: beat.k8s.elastic.co
@@ -2492,7 +2496,7 @@ spec:
                               pod is available (Ready for at least minReadySeconds) the old DaemonSet pod
                               on that node is marked deleted. If the old pod becomes unavailable for any
                               reason (Ready transitions to false, is evicted, or is drained) an updated
-                              pod is immediatedly created on that node without considering surge limits.
+                              pod is immediately created on that node without considering surge limits.
                               Allowing surge implies the possibility that the resources consumed by the
                               daemonset on any given node can double if the readiness check fails, and
                               so resource intensive daemonsets should take into account that they may
@@ -2602,7 +2606,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -2637,7 +2642,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -2682,7 +2688,8 @@ spec:
                             secretName:
                               description: |-
                                 SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                                Elastic resource not managed by the operator. The referenced secret must contain the following:
+                                Elastic resource not managed by the operator.
+                                The referenced secret must contain the following:
                                 - `url`: the URL to reach the Elastic resource
                                 - `username`: the username of the user to be authenticated to the Elastic resource
                                 - `password`: the password of the user to be authenticated to the Elastic resource
@@ -2723,7 +2730,8 @@ spec:
                             secretName:
                               description: |-
                                 SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                                Elastic resource not managed by the operator. The referenced secret must contain the following:
+                                Elastic resource not managed by the operator.
+                                The referenced secret must contain the following:
                                 - `url`: the URL to reach the Elastic resource
                                 - `username`: the username of the user to be authenticated to the Elastic resource
                                 - `password`: the password of the user to be authenticated to the Elastic resource
@@ -2853,14 +2861,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: elasticmapsservers.maps.k8s.elastic.co
 spec:
   group: maps.k8s.elastic.co
@@ -2950,7 +2958,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -3457,14 +3466,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: elasticsearchautoscalers.autoscaling.k8s.elastic.co
 spec:
   group: autoscaling.k8s.elastic.co
@@ -3816,14 +3825,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: elasticsearches.elasticsearch.k8s.elastic.co
 spec:
   group: elasticsearch.k8s.elastic.co
@@ -4363,7 +4372,8 @@ spec:
                             secretName:
                               description: |-
                                 SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                                Elastic resource not managed by the operator. The referenced secret must contain the following:
+                                Elastic resource not managed by the operator.
+                                The referenced secret must contain the following:
                                 - `url`: the URL to reach the Elastic resource
                                 - `username`: the username of the user to be authenticated to the Elastic resource
                                 - `password`: the password of the user to be authenticated to the Elastic resource
@@ -4404,7 +4414,8 @@ spec:
                             secretName:
                               description: |-
                                 SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                                Elastic resource not managed by the operator. The referenced secret must contain the following:
+                                Elastic resource not managed by the operator.
+                                The referenced secret must contain the following:
                                 - `url`: the URL to reach the Elastic resource
                                 - `username`: the username of the user to be authenticated to the Elastic resource
                                 - `password`: the password of the user to be authenticated to the Elastic resource
@@ -4681,15 +4692,13 @@ spec:
                                   volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
                                   If specified, the CSI driver will create or update the volume with the attributes defined
                                   in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-                                  it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-                                  will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-                                  If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-                                  will be set by the persistentvolume controller if it exists.
+                                  it can be changed after the claim is created. An empty string or nil value indicates that no
+                                  VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+                                  this field can be reset to its previous value (including nil) to cancel the modification.
                                   If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                                   set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                   exists.
                                   More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                                  (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                                 type: string
                               volumeMode:
                                 description: |-
@@ -4710,10 +4719,18 @@ spec:
                 type: array
               podDisruptionBudget:
                 description: |-
-                  PodDisruptionBudget provides access to the default Pod disruption budget for the Elasticsearch cluster.
-                  The default budget doesn't allow any Pod to be removed in case the cluster is not green or if there is only one node of type `data` or `master`.
-                  In all other cases the default PodDisruptionBudget sets `minUnavailable` equal to the total number of nodes minus 1.
-                  To disable, set `PodDisruptionBudget` to the empty value (`{}` in YAML).
+                  PodDisruptionBudget provides access to the default Pod disruption budget(s) for the Elasticsearch cluster.
+                  The behavior depends on the license level.
+                  With a Basic license or if podDisruptionBudget.spec is not empty:
+                    The default budget doesn't allow any Pod to be removed in case the cluster is not green or if there is only one node of type `data` or `master`.
+                    In all other cases the default podDisruptionBudget sets `minUnavailable` equal to the total number of nodes minus 1.
+                  With an Enterprise license and if podDisruptionBudget.spec is empty:
+                    The default budget is split into multiple budgets, each targeting a specific node role type allowing additional disruptions
+                    for certain roles according to the health status of the cluster.
+                      Example:
+                        All data roles (excluding frozen): allows disruptions only when the cluster is green.
+                        All other roles: allows disruptions only when the cluster is yellow or green.
+                  To disable, set `podDisruptionBudget` to the empty value (`{}` in YAML).
                 properties:
                   metadata:
                     description: |-
@@ -6352,15 +6369,13 @@ spec:
                                   volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
                                   If specified, the CSI driver will create or update the volume with the attributes defined
                                   in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-                                  it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-                                  will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-                                  If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-                                  will be set by the persistentvolume controller if it exists.
+                                  it can be changed after the claim is created. An empty string or nil value indicates that no
+                                  VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+                                  this field can be reset to its previous value (including nil) to cancel the modification.
                                   If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                                   set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                   exists.
                                   More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                                  (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                                 type: string
                               volumeMode:
                                 description: |-
@@ -6608,14 +6623,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: enterprisesearches.enterprisesearch.k8s.elastic.co
 spec:
   group: enterprisesearch.k8s.elastic.co
@@ -6704,7 +6719,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -7282,7 +7298,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -7775,14 +7792,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: kibanas.kibana.k8s.elastic.co
 spec:
   group: kibana.k8s.elastic.co
@@ -7860,7 +7877,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -7891,7 +7909,8 @@ spec:
                   secretName:
                     description: |-
                       SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                      Elastic resource not managed by the operator. The referenced secret must contain the following:
+                      Elastic resource not managed by the operator.
+                      The referenced secret must contain the following:
                       - `url`: the URL to reach the Elastic resource
                       - `username`: the username of the user to be authenticated to the Elastic resource
                       - `password`: the password of the user to be authenticated to the Elastic resource
@@ -8355,7 +8374,8 @@ spec:
                             secretName:
                               description: |-
                                 SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                                Elastic resource not managed by the operator. The referenced secret must contain the following:
+                                Elastic resource not managed by the operator.
+                                The referenced secret must contain the following:
                                 - `url`: the URL to reach the Elastic resource
                                 - `username`: the username of the user to be authenticated to the Elastic resource
                                 - `password`: the password of the user to be authenticated to the Elastic resource
@@ -8396,7 +8416,8 @@ spec:
                             secretName:
                               description: |-
                                 SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                                Elastic resource not managed by the operator. The referenced secret must contain the following:
+                                Elastic resource not managed by the operator.
+                                The referenced secret must contain the following:
                                 - `url`: the URL to reach the Elastic resource
                                 - `username`: the username of the user to be authenticated to the Elastic resource
                                 - `password`: the password of the user to be authenticated to the Elastic resource
@@ -9088,14 +9109,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: logstashes.logstash.k8s.elastic.co
 spec:
   group: logstash.k8s.elastic.co
@@ -9197,7 +9218,8 @@ spec:
                     secretName:
                       description: |-
                         SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                        Elastic resource not managed by the operator. The referenced secret must contain the following:
+                        Elastic resource not managed by the operator.
+                        The referenced secret must contain the following:
                         - `url`: the URL to reach the Elastic resource
                         - `username`: the username of the user to be authenticated to the Elastic resource
                         - `password`: the password of the user to be authenticated to the Elastic resource
@@ -9249,7 +9271,8 @@ spec:
                             secretName:
                               description: |-
                                 SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                                Elastic resource not managed by the operator. The referenced secret must contain the following:
+                                Elastic resource not managed by the operator.
+                                The referenced secret must contain the following:
                                 - `url`: the URL to reach the Elastic resource
                                 - `username`: the username of the user to be authenticated to the Elastic resource
                                 - `password`: the password of the user to be authenticated to the Elastic resource
@@ -9290,7 +9313,8 @@ spec:
                             secretName:
                               description: |-
                                 SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-                                Elastic resource not managed by the operator. The referenced secret must contain the following:
+                                Elastic resource not managed by the operator.
+                                The referenced secret must contain the following:
                                 - `url`: the URL to reach the Elastic resource
                                 - `username`: the username of the user to be authenticated to the Elastic resource
                                 - `password`: the password of the user to be authenticated to the Elastic resource
@@ -10063,15 +10087,13 @@ spec:
                             volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
                             If specified, the CSI driver will create or update the volume with the attributes defined
                             in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-                            it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-                            will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-                            If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-                            will be set by the persistentvolume controller if it exists.
+                            it can be changed after the claim is created. An empty string or nil value indicates that no
+                            VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+                            this field can be reset to its previous value (including nil) to cancel the modification.
                             If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                             set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                             exists.
                             More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                            (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
                           type: string
                         volumeMode:
                           description: |-
@@ -10234,13 +10256,11 @@ spec:
                           description: |-
                             currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
                             When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim
-                            This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
                           type: string
                         modifyVolumeStatus:
                           description: |-
                             ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
                             When this is unset, there is no ModifyVolume operation being attempted.
-                            This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
                           properties:
                             status:
                               description: "status is the status of the ControllerModifyVolume
@@ -10331,14 +10351,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.1.0'
-    helm.sh/chart: 'eck-operator-crds-3.1.0'
+    app.kubernetes.io/version: '3.2.0'
+    helm.sh/chart: 'eck-operator-crds-3.2.0'
   name: stackconfigpolicies.stackconfigpolicy.k8s.elastic.co
 spec:
   group: stackconfigpolicy.k8s.elastic.co

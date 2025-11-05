@@ -71,8 +71,11 @@ rabbitmq-cluster-operator:
 redis-operator:
   enabled: false
 
+  # Webhook for anti-affintity of redis-cluster shard pods
+  certmanager:
+    enabled: false
   redisOperator:
-    webhook: true
+    webhook: false
     metrics:
       enabled: false
 
@@ -95,9 +98,6 @@ redis-operator:
   service:
     name: redis-operator-webhook
     namespace: operators
-
-  certmanager:
-    enabled: true
 
   securityContext:
     capabilities:

@@ -98,7 +98,7 @@ telemetry:
 operators:
   enabled: false
   namespace: operators
-  targetRevision: 0.2.5
+  targetRevision: 0.2.6
 
 metrics:
   enabled: false

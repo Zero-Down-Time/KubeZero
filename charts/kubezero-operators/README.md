@@ -1,6 +1,6 @@
 # kubezero-operators
 
-![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Various operators supported by KubeZero
 
@@ -20,11 +20,11 @@ Kubernetes: `>= 1.30.0-0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.bitnami.com/bitnami | rabbitmq-cluster-operator | 4.4.34 |
-| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.26.0 |
-| https://docs.altinity.com/clickhouse-operator | altinity-clickhouse-operator | 0.25.3 |
-| https://helm.elastic.co | eck-operator | 3.1.0 |
-| https://ot-container-kit.github.io/helm-charts | redis-operator | 0.22.1 |
-| oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.47.0 |
+| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.26.1 |
+| https://docs.altinity.com/clickhouse-operator | altinity-clickhouse-operator | 0.25.5 |
+| https://helm.elastic.co | eck-operator | 3.2.0 |
+| https://ot-container-kit.github.io/helm-charts | redis-operator | 0.22.2 |
+| oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.48.0 |
 
 ## Values
 
@@ -68,7 +68,7 @@ Kubernetes: `>= 1.30.0-0`
 | redis-operator.issuer.kind | string | `"ClusterIssuer"` |  |
 | redis-operator.issuer.name | string | `"kubezero-local-ca-issuer"` |  |
 | redis-operator.redisOperator.metrics.enabled | bool | `false` |  |
-| redis-operator.redisOperator.webhook | bool | `true` |  |
+| redis-operator.redisOperator.webhook | bool | `false` |  |
 | redis-operator.resources.limits.cpu | string | `"500m"` |  |
 | redis-operator.resources.limits.memory | string | `"128Mi"` |  |
 | redis-operator.resources.requests.cpu | string | `"10m"` |  |
