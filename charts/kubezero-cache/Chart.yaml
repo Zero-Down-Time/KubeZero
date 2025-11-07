@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-cache
 description: KubeZero Cache module
 type: application
-version: 0.2.3
+version: 0.2.4
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -17,19 +17,19 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: redis
-    version: 0.16.6
+    version: 0.16.8
     repository: https://ot-container-kit.github.io/helm-charts
     condition: redis.enabled
   - name: redis-replication
-    version: 0.16.9
+    version: 0.16.11
     repository: https://ot-container-kit.github.io/helm-charts
     condition: redis-replication.enabled
   - name: redis-sentinel
-    version: 0.16.10
+    version: 0.16.11
     repository: https://ot-container-kit.github.io/helm-charts
     condition: redis-sentinel.enabled
   - name: redis-cluster
-    version: 0.17.1
+    version: 0.17.3
     repository: https://ot-container-kit.github.io/helm-charts
     condition: redis-cluster.enabled
 
