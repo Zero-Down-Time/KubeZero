@@ -22,6 +22,7 @@ Kubernetes: `>= 1.30.0-0`
 | https://charts.bitnami.com/bitnami | rabbitmq-cluster-operator | 4.4.34 |
 | https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.26.1 |
 | https://docs.altinity.com/clickhouse-operator | altinity-clickhouse-operator | 0.25.5 |
+| https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0 | flink-kubernetes-operator | 1.13.0 |
 | https://helm.elastic.co | eck-operator | 3.2.0 |
 | https://ot-container-kit.github.io/helm-charts | redis-operator | 0.22.2 |
 | oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.48.0 |
@@ -62,7 +63,7 @@ Kubernetes: `>= 1.30.0-0`
 | rabbitmq-cluster-operator.useCertManager | bool | `true` |  |
 | redis-operator.certificate.name | string | `"redis-operator-webhook"` |  |
 | redis-operator.certificate.secretName | string | `"redis-operator-webhook-cert"` |  |
-| redis-operator.certmanager.enabled | bool | `true` |  |
+| redis-operator.certmanager.enabled | bool | `false` |  |
 | redis-operator.enabled | bool | `false` |  |
 | redis-operator.issuer.create | bool | `false` |  |
 | redis-operator.issuer.kind | string | `"ClusterIssuer"` |  |

@@ -1,14 +1,5 @@
 {{- define "operators-values" }}
 
-{{- with index .Values "operators" "opensearch-operator" }}
-opensearch-operator:
-  {{- if eq $.Values.global.platform "aws" }}
-  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
-  {{- end }}
-
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-
 {{- with index .Values "operators" "eck-operator" }}
 eck-operator:
   {{- if eq $.Values.global.platform "aws" }}
@@ -77,6 +68,16 @@ altinity-clickhouse-operator:
 # dashboards:
 #   enabled: {{ .enabled }}
   {{- end }}
+{{- end }}
+
+{{- with index .Values "operators" "flink-kubernetes-operator" }}
+flink-kubernetes-operator:
+# {{- if eq $.Values.global.platform "aws" }}
+# {{- include "kubezero-lib.control-plane" . | nindent 2 }}
+# {{- end }}
+
+  {{- toYaml . | nindent 2 }}
+
 {{- end }}
 
 {{- end }}

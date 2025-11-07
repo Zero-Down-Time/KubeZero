@@ -42,4 +42,8 @@ dependencies:
     version: 0.22.2
     repository: https://ot-container-kit.github.io/helm-charts
     condition: redis-operator.enabled
-kubeVersion: ">= 1.30.0-0"
+  - name: flink-kubernetes-operator
+    version: 1.13.0
+    repository:  https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0
+    condition: flink-kubernetes-operator.enabled
+kubeVersion: ">= 1.33.0-0"

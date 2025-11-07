@@ -7,6 +7,13 @@ kyverno:
     {{- include "kubezero-lib.control-plane" . | nindent 4 }}
   {{- end }}
 
+  {{- if ne .Values.global.platform "gke" }}
+  # Enable for all but kyverno namespace, even for kube-system !
+  config:
+    webhooks:
+      namespaceSelector: null
+  {{- end }}
+
   grafana:
     enabled: {{ .Values.metrics.enabled }}
 

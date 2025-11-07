@@ -25,9 +25,8 @@ kyverno:
       # argocd.argoproj.io/tracking-id: policy:/ServiceAccount:kyverno/kyverno-admission-controller
       #
 
-    # Enable for all but kyverno namespace, even for kube-system !
-    webhooks:
-      namespaceSelector: null
+    # include kube-system namespace,
+    # webhooks.namespaceSelector required to be nulled on supported platforms !
     resourceFiltersExcludeNamespaces: ["kube-system"]
 
     # ensure that cilium our CNI is never blocked

@@ -139,3 +139,6 @@ altinity-clickhouse-operator:
     enabled: false
     additionalLabels:
       grafana_dashboard: "1"
+
+flink-kubernetes-operator:
+  enabled: false
