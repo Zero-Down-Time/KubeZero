@@ -47,7 +47,7 @@ Kubernetes: `>= 1.33.0-0`
 | cloudnative-pg.config.data.ENABLE_INSTANCE_MANAGER_INPLACE_UPDATES | string | `"true"` |  |
 | cloudnative-pg.config.data.INSTANCES_ROLLOUT_DELAY | string | `"10"` |  |
 | cloudnative-pg.enabled | bool | `false` |  |
-| cloudnative-pg.monitoring.grafanaDashboard.create | bool | `false` |  |
+| cloudnative-pg.monitoring.dashboards | bool | `false` |  |
 | cloudnative-pg.monitoring.podMonitorEnabled | bool | `false` |  |
 | cloudnative-pg.resources.limits.memory | string | `"128Mi"` |  |
 | cloudnative-pg.resources.requests.cpu | string | `"10m"` |  |

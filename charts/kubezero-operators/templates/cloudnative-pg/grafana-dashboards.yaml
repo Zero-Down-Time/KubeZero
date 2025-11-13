@@ -1,4 +1,4 @@
-{{- if index .Values "cloudnative-pg" "monitoring" "podMonitorEnabled" }}
+{{- if and (index .Values "cloudnative-pg" "enabled") (index .Values "cloudnative-pg" "monitoring" "dashboards") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

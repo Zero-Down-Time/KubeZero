@@ -7,9 +7,8 @@ cloudnative-pg:
 
   monitoring:
     podMonitorEnabled: false
-    # We pull in the dashboard via our pipeline !
-    grafanaDashboard:
-      create: false
+    # This enables our own dashboard handling incl. gzip, same source though
+    dashboards: false
 
   resources:
     requests:

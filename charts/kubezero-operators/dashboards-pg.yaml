@@ -1,6 +1,6 @@
 configmap: grafana-dashboards-pg
 gzip: true
-condition: 'index .Values "cloudnative-pg" "monitoring" "podMonitorEnabled"'
+condition: 'and (index .Values "cloudnative-pg" "enabled") (index .Values "cloudnative-pg" "monitoring" "dashboards")'
 folder: Operators
 dashboards:
 - name: Cloudnative-pg
