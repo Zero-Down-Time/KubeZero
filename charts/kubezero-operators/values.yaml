@@ -44,8 +44,13 @@ strimzi-kafka-operator:
 #   limits:
 #     memory: 256Mi
 
-  monitoring:
-    podMonitorEnabled: false
+  # We use only a subset so disabled here but provided via dashboards-strimzi.yaml
+  dashboards:
+    enabled: false
+
+  metrics:
+    podMonitor: false
+    dashboards: false
 
 # rabbitmq cluster operator
 rabbitmq-cluster-operator:

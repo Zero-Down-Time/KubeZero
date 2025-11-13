@@ -31,10 +31,9 @@ strimzi-kafka-operator:
 
   {{- toYaml . | nindent 2 }}
 
-  {{- with $.Values.metrics }}
-  monitoring:
-    podMonitorEnabled: {{ .enabled }}
-  {{- end }}
+  metrics:
+    podMonitor: {{ index $.Values "metrics" "enabled" }}
+    dashboards: {{ index $.Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
 {{- end }}
 
 {{- with index .Values "operators" "redis-operator" }}

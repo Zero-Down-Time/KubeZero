@@ -1,6 +1,6 @@
 # kubezero-policy
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for Kyverno
 
@@ -20,7 +20,7 @@ Kubernetes: `>= 1.33.0-0`
 |------------|------|---------|
 |  | policies | 0.1.1 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://kyverno.github.io/kyverno/ | kyverno | 3.5.2 |
+| https://kyverno.github.io/kyverno/ | kyverno | 3.6.0 |
 
 # Kyverno
 
@@ -49,7 +49,6 @@ Kubernetes: `>= 1.33.0-0`
 | kyverno.config.resourceFiltersInclude[5] | string | `"[\"Pod/?*\", \"kube-system\", \"cilium-*\"]"` |  |
 | kyverno.config.webhookAnnotations."admissions.enforcer/disabled" | string | `nil` |  |
 | kyverno.config.webhookAnnotations."argocd.argoproj.io/installation-id" | string | `"KubeZero-ArgoCD"` |  |
-| kyverno.config.webhooks.namespaceSelector | string | `nil` |  |
 | kyverno.crds.migration.enabled | bool | `false` |  |
 | kyverno.enabled | bool | `false` |  |
 | kyverno.features.logging.format | string | `"json"` |  |

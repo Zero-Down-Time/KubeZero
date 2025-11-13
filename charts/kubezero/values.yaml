@@ -108,7 +108,11 @@ metrics:
     grafana: {}
     prometheus: {}
   # our custom scrapeConfig which gets merged
-  kube-prometheus-stack: {}
+  kube-prometheus-stack:
+    prometheus:
+      enabled: false
+    grafana:
+      enabled: false
   kubezero:
     prometheus:
       prometheusSpec:

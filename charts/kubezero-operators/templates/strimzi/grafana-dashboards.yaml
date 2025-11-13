@@ -1,4 +1,4 @@
-{{- if index .Values "strimzi-kafka-operator" "monitoring" "podMonitorEnabled" }}
+{{- if and ( index .Values "strimzi-kafka-operator" "enabled" ) ( index .Values "strimzi-kafka-operator" "metrics" "dashboards" ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

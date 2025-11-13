@@ -1,4 +1,4 @@
-{{- if index .Values "cloudnative-pg" "monitoring" "podMonitorEnabled" }}
+{{- if and ( index .Values "strimzi-kafka-operator" "enabled" ) ( index .Values "strimzi-kafka-operator" "metrics" "podMonitor" ) }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:

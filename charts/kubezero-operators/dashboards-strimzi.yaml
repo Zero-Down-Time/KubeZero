@@ -1,6 +1,6 @@
 configmap: grafana-dashboards-strimzi
 gzip: true
-condition: 'index .Values "strimzi-kafka-operator" "monitoring" "podMonitorEnabled"'
+condition: 'and ( index .Values "strimzi-kafka-operator" "enabled" ) ( index .Values "strimzi-kafka-operator" "metrics" "dashboards" )'
 folder: Operators
 dashboards:
 - name: strimzi-kafka-operator

@@ -14,7 +14,7 @@ Various operators supported by KubeZero
 
 ## Requirements
 
-Kubernetes: `>= 1.30.0-0`
+Kubernetes: `>= 1.33.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
@@ -54,6 +54,7 @@ Kubernetes: `>= 1.30.0-0`
 | cloudnative-pg.resources.requests.memory | string | `"32Mi"` |  |
 | eck-operator.enabled | bool | `false` |  |
 | eck-operator.installCRDs | bool | `false` |  |
+| flink-kubernetes-operator.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.clusterOperator.metrics.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.clusterOperator.metrics.serviceMonitor.enabled | bool | `true` |  |
 | rabbitmq-cluster-operator.enabled | bool | `false` |  |
@@ -80,9 +81,11 @@ Kubernetes: `>= 1.30.0-0`
 | redis-operator.securityContext.runAsUser | int | `1000` |  |
 | redis-operator.service.name | string | `"redis-operator-webhook"` |  |
 | redis-operator.service.namespace | string | `"operators"` |  |
+| strimzi-kafka-operator.dashboards.enabled | bool | `false` |  |
 | strimzi-kafka-operator.enabled | bool | `false` |  |
 | strimzi-kafka-operator.leaderElection.enable | bool | `false` |  |
-| strimzi-kafka-operator.monitoring.podMonitorEnabled | bool | `false` |  |
+| strimzi-kafka-operator.metrics.dashboards | bool | `false` |  |
+| strimzi-kafka-operator.metrics.podMonitor | bool | `false` |  |
 | strimzi-kafka-operator.resources.requests.cpu | string | `"20m"` |  |
 | strimzi-kafka-operator.resources.requests.memory | string | `"256Mi"` |  |
 | strimzi-kafka-operator.revisionHistoryLimit | int | `2` |  |

@@ -42,7 +42,7 @@ kyverno:
     logging:
       format: json
 
-  # Enabled via kubezero global metrics flag
+  # Enabled via kubezero metrics.kube-prometheus-stack.grafana.enabled flag
   grafana:
     enabled: false
 
