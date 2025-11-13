@@ -2,17 +2,25 @@
 rules:
 - name: alertmanager
   url: file://rules/alertmanager-prometheusRule
+  condition: 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'
 - name: kube-prometheus
   url: file://rules/kube-prometheus-prometheusRule
+  condition: 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'
 - name: kube-state-metrics
   url: file://rules/kube-state-metrics-prometheusRule
+  condition: 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'
 - name: kubernetes
   url: file://rules/kubernetes-prometheusRule
+  condition: 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'
 - name: node-exporter
   url: file://rules/node-exporter-prometheusRule
+  condition: 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'
 - name: prometheus-operator
   url: file://rules/prometheus-operator-prometheusRule
+  condition: 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'
 - name: prometheus
   url: file://rules/prometheus-prometheusRule
+  condition: 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'
 - name: etcd-mixin
   url: file://rules/etcd-mixin-prometheusRule
+  condition: 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'

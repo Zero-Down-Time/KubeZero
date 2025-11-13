@@ -1,6 +1,7 @@
 configmap: grafana-dashboards-k8s
 gzip: true
 folder: Kubernetes
+condition: 'index .Values "kube-prometheus-stack" "grafana" "enabled"'
 dashboards:
 - name: coreDNS
   url: https://grafana.com/api/dashboards/15762/revisions/18/download

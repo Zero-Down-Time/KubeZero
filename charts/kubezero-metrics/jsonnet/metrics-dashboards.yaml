@@ -1,6 +1,7 @@
 configmap: grafana-dashboards-metrics
 gzip: true
 folder: KubeZero
+condition: 'index .Values "kube-prometheus-stack" "grafana" "enabled"'
 dashboards:
 - name: AlertManager
   url: https://grafana.com/api/dashboards/9578/revisions/4/download

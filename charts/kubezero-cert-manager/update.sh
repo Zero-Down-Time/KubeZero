@@ -7,11 +7,9 @@ update_helm
 
 update_docs
 
-cd jsonnet
-
-update_jsonnet
-
 # Install cert-mamanger mixin
+cd jsonnet
+# update_jsonnet
 jb install github.com/imusmanmalik/cert-manager-mixin@main
 
 # Install rules

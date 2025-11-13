@@ -1,3 +1,4 @@
+{{- if index .Values "kube-prometheus-stack" "prometheus" "enabled" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -198,7 +199,7 @@ spec:
         description: Namespace {{`{{`}} $labels.namespace {{`}}`}} is using {{`{{`}} $value | humanizePercentage {{`}}`}} of its {{`{{`}} $labels.resource {{`}}`}} quota on cluster {{`{{`}} $labels.cluster {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubequotaalmostfull
         summary: Namespace quota is going to be full.
-      expr: "kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n  / ignoring(instance, job, type)\n(kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"} > 0)\n  > 0.9 < 1\n"
+      expr: "max without (instance, job, type) (\n  kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n)\n/ on (cluster, namespace, resource, resourcequota) group_left()\n(\n  max without (instance, job, type) (\n    kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"}\n  ) > 0\n)\n> 0.9 < 1\n"
       for: 15m
       labels:
         severity: info
@@ -207,7 +208,7 @@ spec:
         description: Namespace {{`{{`}} $labels.namespace {{`}}`}} is using {{`{{`}} $value | humanizePercentage {{`}}`}} of its {{`{{`}} $labels.resource {{`}}`}} quota on cluster {{`{{`}} $labels.cluster {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubequotafullyused
         summary: Namespace quota is fully used.
-      expr: "kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n  / ignoring(instance, job, type)\n(kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"} > 0)\n  == 1\n"
+      expr: "max without (instance, job, type) (\n  kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n)\n/ on (cluster, namespace, resource, resourcequota) group_left()\n(\n  max without (instance, job, type) (\n    kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"}\n  ) > 0\n)\n== 1\n"
       for: 15m
       labels:
         severity: info
@@ -216,7 +217,7 @@ spec:
         description: Namespace {{`{{`}} $labels.namespace {{`}}`}} is using {{`{{`}} $value | humanizePercentage {{`}}`}} of its {{`{{`}} $labels.resource {{`}}`}} quota on cluster {{`{{`}} $labels.cluster {{`}}`}}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubequotaexceeded
         summary: Namespace quota has exceeded the limits.
-      expr: "kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n  / ignoring(instance, job, type)\n(kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"} > 0)\n  > 1\n"
+      expr: "max without (instance, job, type) (\n  kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n)\n/ on (cluster, namespace, resource, resourcequota) group_left()\n(\n  max without (instance, job, type) (\n    kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"}\n  ) > 0\n) > 1\n"
       for: 15m
       labels:
         severity: warning
@@ -437,7 +438,7 @@ spec:
         description: KubeAPI has disappeared from Prometheus target discovery.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeapidown
         summary: Target disappeared from Prometheus target discovery.
-      expr: 'absent(up{job="apiserver"} == 1)
+      expr: 'absent(up{job="apiserver"})
 
         '
       for: 15m
@@ -617,7 +618,7 @@ spec:
         description: Kubelet has disappeared from Prometheus target discovery.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeletdown
         summary: Target disappeared from Prometheus target discovery.
-      expr: 'absent(up{job="kubelet", metrics_path="/metrics"} == 1)
+      expr: 'absent(up{job="kubelet", metrics_path="/metrics"})
 
         '
       for: 15m
@@ -630,7 +631,7 @@ spec:
         description: KubeScheduler has disappeared from Prometheus target discovery.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeschedulerdown
         summary: Target disappeared from Prometheus target discovery.
-      expr: 'absent(up{job="kube-scheduler"} == 1)
+      expr: 'absent(up{job="kube-scheduler"})
 
         '
       for: 15m
@@ -643,7 +644,7 @@ spec:
         description: KubeControllerManager has disappeared from Prometheus target discovery.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubecontrollermanagerdown
         summary: Target disappeared from Prometheus target discovery.
-      expr: 'absent(up{job="kube-controller-manager"} == 1)
+      expr: 'absent(up{job="kube-controller-manager"})
 
         '
       for: 15m
@@ -968,3 +969,4 @@ spec:
         quantile: '0.5'
       record: node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile
 
+{{- end }}

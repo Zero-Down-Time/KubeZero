@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import json
 import yaml
@@ -33,6 +34,8 @@ def traverse_json(obj):
 with open(config_file, "r") as yaml_contents:
     config = yaml.safe_load(yaml_contents.read())
 
+# basepath of config_file for file:// URLs later one
+config_file_path = os.path.dirname(config_file)
 
 configmap = ""
 if "condition" in config:
@@ -93,7 +96,7 @@ for b in config["dashboards"]:
             continue
         raw_text = response.text
     else:
-        with open(b["url"].replace("file://", ""), "r") as file_contents:
+        with open(os.path.join(config_file_path, b["url"].replace("file://", "")), "r") as file_contents:
             raw_text = file_contents.read()
 
     obj = json.loads(raw_text)

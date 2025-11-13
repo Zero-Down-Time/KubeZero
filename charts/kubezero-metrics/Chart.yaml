@@ -21,6 +21,7 @@ dependencies:
   - name: kube-prometheus-stack
     version: 79.5.0
     repository: https://prometheus-community.github.io/helm-charts
+    condition: kube-prometheus-stack.enabled
   - name: prometheus-adapter
     version: 5.2.0
     repository: https://prometheus-community.github.io/helm-charts

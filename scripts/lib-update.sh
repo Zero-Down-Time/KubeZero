@@ -1,19 +1,12 @@
 #!/bin/bash
 set -ex
 
-# prometheus metrics mixin branch
-# https://github.com/prometheus-operator/kube-prometheus#compatibility
-KUBE_PROMETHEUS_RELEASE=main
-
 update_jsonnet() {
   which jsonnet > /dev/null || { echo "Required jsonnet not found!"; exit 1;}
   which jb > /dev/null || { echo "Required jb ( json-bundler ) not found!"; exit 1;}
 
-  # remove previous versions
-  # rm -f jsonnetfile.json jsonnetfile.lock.json
-
-  jb init
-  jb install github.com/prometheus-operator/kube-prometheus/jsonnet/kube-prometheus@main
+  [ -r jsonnetfile.json ] || jb init
+  [ -r jsonnetfile.lock.json ] && jb update
 }
 
 update_helm() {
@@ -27,6 +20,16 @@ login_ecr_public() {
     --region us-east-1 | helm registry login \
     --username AWS \
     --password-stdin public.ecr.aws
+}
+
+# Wrap a yaml with a Helm condition
+wrap_with_condition() {
+  YAML=$1
+  CONDITION=$2
+
+  [ -r $YAML ] || return 1
+  sed -i "1 i\\{{- if $2 }}" $YAML
+  echo '{{- end }}' >> $YAML
 }
 
 get_extract_chart() {

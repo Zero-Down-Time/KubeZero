@@ -1,3 +1,4 @@
+{{- if index .Values "kube-prometheus-stack" "prometheus" "enabled" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -323,3 +324,4 @@ spec:
     - expr: "sum without (device) (\n  rate(node_network_transmit_drop_total{job=\"node-exporter\", device!=\"lo\"}[5m])\n)\n"
       record: instance:node_network_transmit_drop_excluding_lo:rate5m
 
+{{- end }}

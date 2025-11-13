@@ -103,11 +103,12 @@ operators:
 metrics:
   enabled: false
   namespace: monitoring
-  targetRevision: 0.12.1
+  targetRevision: 0.12.2
   istio:
     grafana: {}
     prometheus: {}
   # our custom scrapeConfig which gets merged
+  kube-prometheus-stack: {}
   kubezero:
     prometheus:
       prometheusSpec:

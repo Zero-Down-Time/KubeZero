@@ -1,4 +1,9 @@
 kube-prometheus-stack:
+  enabled: false
+
+  crds:
+    enabled: false
+
   defaultRules:
     create: false
 
@@ -65,9 +70,6 @@ kube-prometheus-stack:
       certManager:
         enabled: true
 
-  nodeExporter:
-    enabled: true
-
   prometheus-node-exporter:
     hostRootFsMount:
       enabled: false
@@ -86,7 +88,7 @@ kube-prometheus-stack:
         memory: 24Mi
 
   prometheus:
-    enabled: true
+    enabled: false
 
     prometheusSpec:
       retention: 8d
@@ -125,7 +127,7 @@ kube-prometheus-stack:
 
   # Custom Grafana tweaks
   grafana:
-    enabled: true
+    enabled: false
 
     # Disabled as we use the upstream kube-mixin dashboards directly
     defaultDashboardsEnabled: false
@@ -195,6 +197,8 @@ kube-prometheus-stack:
 
   # Assign state metrics to control plane
   kube-state-metrics:
+    enabled: false
+
     tolerations:
     - key: node-role.kubernetes.io/control-plane
       effect: NoSchedule
@@ -310,7 +314,8 @@ kube-prometheus-stack:
 
 # Metrics adapter
 prometheus-adapter:
-  enabled: true
+  enabled: false
+
   logLevel: 1
   metricsRelistInterval: 3m
   prometheus:

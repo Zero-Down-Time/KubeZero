@@ -10,6 +10,8 @@ import textwrap
 config_file = sys.argv[1]
 configmap_folder = sys.argv[2]
 
+# basepath of config_file for file:// URLs later one
+config_file_path = os.path.dirname(config_file)
 
 # read config file
 with open(config_file, "r") as yaml_contents:
@@ -61,7 +63,7 @@ for r in config["rules"]:
             continue
         raw_text = response.text
     else:
-        with open(r["url"].replace("file://", ""), "r") as file_contents:
+        with open(os.path.join(config_file_path, r["url"].replace("file://", "")), "r") as file_contents:
             raw_text = file_contents.read()
 
     obj = json.loads(raw_text)

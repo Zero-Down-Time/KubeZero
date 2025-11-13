@@ -2,6 +2,7 @@
 
 {{- if eq .global.platform "aws" }}
 alertmanager:
+  enabled: true
   alertmanagerSpec:
     podMetadata:
       annotations:
@@ -20,8 +21,19 @@ alertmanager:
             url: http://localhost:9087/alert/AlertHub
     route:
       receiver: alerthub-notifications
+{{- end }}
+
+{{- if ne .global.platform "gke" }}
+grafana:
+  enabled: true
+
+kube-state-metrics:
+  enabled: true
 
 prometheus:
+  enabled: true
+
+  {{- if eq .global.platform "aws" }}
   serviceAccount:
     annotations:
       kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .global.aws.accountId }}:role/{{ .global.aws.region }}.{{ .global.clusterName }}.prometheus"
@@ -105,6 +117,7 @@ prometheus:
       {{- with .metrics.kubezero.prometheus.prometheusSpec.additionalScrapeConfigs }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
+  {{- end }}
 {{- end }}
 
 {{- end }}
@@ -116,14 +129,25 @@ prometheus:
 istio:
 {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- with index .Values "metrics" "kube-prometheus-stack" }}
+
 kube-prometheus-stack:
-  {{- toYaml ( merge ( include "_kube-prometheus-stack" $.Values | fromYaml ) . ) | nindent 2 }}
-{{- end }}
-{{- with index .Values "metrics" "prometheus-adapter" }}
+  {{- if ne .Values.global.platform "gke" }}
+  enabled: true
+  {{- toYaml ( merge ( include "_kube-prometheus-stack" .Values | fromYaml ) ( index .Values "metrics" "kube-prometheus-stack" ) ) | nindent 2 }}
+  {{- else }}
+  enabled: false
+  {{- end }}
+
 prometheus-adapter:
+  {{- if ne .Values.global.platform "gke" }}
+  enabled: true
+  {{- else }}
+  enabled: false
+  {{- end }}
+  {{- with index .Values "metrics" "prometheus-adapter" }}
   {{- toYaml . | nindent 2 }}
-{{- end }}
+  {{- end }}
+
 {{- with index .Values "metrics" "prometheus-pushgateway" }}
 prometheus-pushgateway:
   {{- toYaml . | nindent 2 }}

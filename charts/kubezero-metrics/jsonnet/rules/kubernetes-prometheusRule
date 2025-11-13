@@ -275,7 +275,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubequotaalmostfull",
                      "summary": "Namespace quota is going to be full."
                   },
-                  "expr": "kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n  / ignoring(instance, job, type)\n(kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"} > 0)\n  > 0.9 < 1\n",
+                  "expr": "max without (instance, job, type) (\n  kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n)\n/ on (cluster, namespace, resource, resourcequota) group_left()\n(\n  max without (instance, job, type) (\n    kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"}\n  ) > 0\n)\n> 0.9 < 1\n",
                   "for": "15m",
                   "labels": {
                      "severity": "info"
@@ -288,7 +288,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubequotafullyused",
                      "summary": "Namespace quota is fully used."
                   },
-                  "expr": "kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n  / ignoring(instance, job, type)\n(kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"} > 0)\n  == 1\n",
+                  "expr": "max without (instance, job, type) (\n  kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n)\n/ on (cluster, namespace, resource, resourcequota) group_left()\n(\n  max without (instance, job, type) (\n    kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"}\n  ) > 0\n)\n== 1\n",
                   "for": "15m",
                   "labels": {
                      "severity": "info"
@@ -301,7 +301,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubequotaexceeded",
                      "summary": "Namespace quota has exceeded the limits."
                   },
-                  "expr": "kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n  / ignoring(instance, job, type)\n(kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"} > 0)\n  > 1\n",
+                  "expr": "max without (instance, job, type) (\n  kube_resourcequota{job=\"kube-state-metrics\", type=\"used\"}\n)\n/ on (cluster, namespace, resource, resourcequota) group_left()\n(\n  max without (instance, job, type) (\n    kube_resourcequota{job=\"kube-state-metrics\", type=\"hard\"}\n  ) > 0\n) > 1\n",
                   "for": "15m",
                   "labels": {
                      "severity": "warning"
@@ -562,7 +562,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeapidown",
                      "summary": "Target disappeared from Prometheus target discovery."
                   },
-                  "expr": "absent(up{job=\"apiserver\"} == 1)\n",
+                  "expr": "absent(up{job=\"apiserver\"})\n",
                   "for": "15m",
                   "labels": {
                      "severity": "critical"
@@ -771,7 +771,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeletdown",
                      "summary": "Target disappeared from Prometheus target discovery."
                   },
-                  "expr": "absent(up{job=\"kubelet\", metrics_path=\"/metrics\"} == 1)\n",
+                  "expr": "absent(up{job=\"kubelet\", metrics_path=\"/metrics\"})\n",
                   "for": "15m",
                   "labels": {
                      "severity": "critical"
@@ -789,7 +789,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeschedulerdown",
                      "summary": "Target disappeared from Prometheus target discovery."
                   },
-                  "expr": "absent(up{job=\"kube-scheduler\"} == 1)\n",
+                  "expr": "absent(up{job=\"kube-scheduler\"})\n",
                   "for": "15m",
                   "labels": {
                      "severity": "critical"
@@ -807,7 +807,7 @@
                      "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubecontrollermanagerdown",
                      "summary": "Target disappeared from Prometheus target discovery."
                   },
-                  "expr": "absent(up{job=\"kube-controller-manager\"} == 1)\n",
+                  "expr": "absent(up{job=\"kube-controller-manager\"})\n",
                   "for": "15m",
                   "labels": {
                      "severity": "critical"

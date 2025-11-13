@@ -1,3 +1,4 @@
+{{- if index .Values "kube-prometheus-stack" "prometheus" "enabled" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -90,3 +91,4 @@ spec:
     - expr: count without(instance, pod, node) (up == 0)
       record: count:up0
 
+{{- end }}

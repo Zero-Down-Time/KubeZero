@@ -1,6 +1,7 @@
 configmap: grafana-dashboards-zdt
 gzip: true
 folder: KubeZero
+condition: 'index .Values "kube-prometheus-stack" "grafana" "enabled"'
 dashboards:
 - name: home
   url: file://zdt/home.json

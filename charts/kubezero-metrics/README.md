@@ -1,6 +1,6 @@
 # kubezero-metrics
 
-![Version: 0.12.1](https://img.shields.io/badge/Version-0.12.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.12.2](https://img.shields.io/badge/Version-0.12.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Prometheus, Grafana and Alertmanager as well as all Kubernetes integrations.
 
@@ -19,7 +19,7 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 78.4.0 |
+| https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 79.5.0 |
 | https://prometheus-community.github.io/helm-charts | prometheus-adapter | 5.2.0 |
 | https://prometheus-community.github.io/helm-charts | prometheus-pushgateway | 3.4.1 |
 
@@ -87,7 +87,9 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.alertmanager.config.route.routes[0].receiver | string | `"null"` |  |
 | kube-prometheus-stack.alertmanager.enabled | bool | `false` |  |
 | kube-prometheus-stack.coreDns.enabled | bool | `true` |  |
+| kube-prometheus-stack.crds.enabled | bool | `false` |  |
 | kube-prometheus-stack.defaultRules.create | bool | `false` |  |
+| kube-prometheus-stack.enabled | bool | `false` |  |
 | kube-prometheus-stack.grafana."grafana.ini"."auth.anonymous".enabled | bool | `true` |  |
 | kube-prometheus-stack.grafana."grafana.ini"."log.console".format | string | `"json"` |  |
 | kube-prometheus-stack.grafana."grafana.ini".alerting.enabled | bool | `false` |  |
@@ -101,7 +103,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.grafana."grafana.ini".security.strict_transport_security | bool | `true` |  |
 | kube-prometheus-stack.grafana."grafana.ini".server.enable_gzip | bool | `true` |  |
 | kube-prometheus-stack.grafana.defaultDashboardsEnabled | bool | `false` |  |
-| kube-prometheus-stack.grafana.enabled | bool | `true` |  |
+| kube-prometheus-stack.grafana.enabled | bool | `false` |  |
 | kube-prometheus-stack.grafana.extraContainerVolumes[0].configMap.defaultMode | int | `511` |  |
 | kube-prometheus-stack.grafana.extraContainerVolumes[0].configMap.name | string | `"script-configmap"` |  |
 | kube-prometheus-stack.grafana.extraContainerVolumes[0].name | string | `"script-volume"` |  |
@@ -116,6 +118,35 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.grafana.sidecar.dashboards.searchNamespace | string | `"ALL"` |  |
 | kube-prometheus-stack.grafana.sidecar.image.tag | string | `"1.30.3"` |  |
 | kube-prometheus-stack.grafana.testFramework.enabled | bool | `false` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[0] | string | `"certificatesigningrequests"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[10] | string | `"limitranges"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[11] | string | `"mutatingwebhookconfigurations"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[12] | string | `"namespaces"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[13] | string | `"networkpolicies"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[14] | string | `"nodes"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[15] | string | `"persistentvolumeclaims"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[16] | string | `"persistentvolumes"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[17] | string | `"poddisruptionbudgets"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[18] | string | `"pods"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[19] | string | `"replicasets"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[1] | string | `"configmaps"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[20] | string | `"replicationcontrollers"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[21] | string | `"resourcequotas"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[22] | string | `"secrets"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[23] | string | `"services"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[24] | string | `"statefulsets"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[25] | string | `"storageclasses"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[26] | string | `"validatingwebhookconfigurations"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[27] | string | `"volumeattachments"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[2] | string | `"cronjobs"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[3] | string | `"daemonsets"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[4] | string | `"deployments"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[5] | string | `"endpointslices"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[6] | string | `"horizontalpodautoscalers"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[7] | string | `"ingresses"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[8] | string | `"jobs"` |  |
+| kube-prometheus-stack.kube-state-metrics.collectors[9] | string | `"leases"` |  |
+| kube-prometheus-stack.kube-state-metrics.enabled | bool | `false` |  |
 | kube-prometheus-stack.kube-state-metrics.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | kube-prometheus-stack.kube-state-metrics.tolerations[0].effect | string | `"NoSchedule"` |  |
 | kube-prometheus-stack.kube-state-metrics.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
@@ -138,7 +169,6 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.kubeStateMetrics.enabled | bool | `true` |  |
 | kube-prometheus-stack.kubelet.enabled | bool | `true` |  |
 | kube-prometheus-stack.kubelet.serviceMonitor.cAdvisor | bool | `true` |  |
-| kube-prometheus-stack.nodeExporter.enabled | bool | `true` |  |
 | kube-prometheus-stack.prometheus-node-exporter.hostRootFsMount.enabled | bool | `false` |  |
 | kube-prometheus-stack.prometheus-node-exporter.prometheus.monitor.relabelings[0].action | string | `"replace"` |  |
 | kube-prometheus-stack.prometheus-node-exporter.prometheus.monitor.relabelings[0].regex | string | `"^(.*)$"` |  |
@@ -148,7 +178,8 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.prometheus-node-exporter.prometheus.monitor.relabelings[0].targetLabel | string | `"instance"` |  |
 | kube-prometheus-stack.prometheus-node-exporter.resources.requests.cpu | string | `"20m"` |  |
 | kube-prometheus-stack.prometheus-node-exporter.resources.requests.memory | string | `"24Mi"` |  |
-| kube-prometheus-stack.prometheus.enabled | bool | `true` |  |
+| kube-prometheus-stack.prometheus.enabled | bool | `false` |  |
+| kube-prometheus-stack.prometheus.prometheusSpec.image.tag | string | `"v3.6.0"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.logFormat | string | `"json"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues | bool | `false` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.portName | string | `"http-prometheus"` |  |
@@ -171,7 +202,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.prometheusOperator.resources.requests.memory | string | `"64Mi"` |  |
 | kube-prometheus-stack.prometheusOperator.tolerations[0].effect | string | `"NoSchedule"` |  |
 | kube-prometheus-stack.prometheusOperator.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
-| prometheus-adapter.enabled | bool | `true` |  |
+| prometheus-adapter.enabled | bool | `false` |  |
 | prometheus-adapter.logLevel | int | `1` |  |
 | prometheus-adapter.metricsRelistInterval | string | `"3m"` |  |
 | prometheus-adapter.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
