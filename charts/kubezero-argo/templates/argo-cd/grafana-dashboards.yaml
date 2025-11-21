@@ -1,4 +1,4 @@
-{{- if index .Values "argo-cd" "controller" "metrics" "enabled" }}
+{{- if index .Values "argo-cd" "controller" "metrics" "dashboards" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

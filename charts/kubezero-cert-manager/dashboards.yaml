@@ -1,7 +1,7 @@
 configmap: grafana-dashboard
 gzip: true
 folder: KubeZero
-condition: 'index .Values "cert-manager" "prometheus" "servicemonitor" "enabled"'
+condition: 'index .Values "cert-manager" "prometheus" "dashboards"'
 dashboards:
 - name: cert-manager
   url: https://gitlab.com/uneeq-oss/cert-manager-mixin/-/raw/master/dashboards/cert-manager.json

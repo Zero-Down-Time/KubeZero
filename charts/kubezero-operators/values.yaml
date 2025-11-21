@@ -80,8 +80,10 @@ redis-operator:
     enabled: false
   redisOperator:
     webhook: false
+
     metrics:
       enabled: false
+      dashboards: false
 
   resources:
     requests:
@@ -146,3 +148,22 @@ altinity-clickhouse-operator:
 
 flink-kubernetes-operator:
   enabled: false
+
+  # Makes no sense for more than one namespace
+  jobServiceAccount:
+    create: false
+
+  operatorPod:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 1024Mi
+
+  metrics:
+    port: 9999
+
+  defaultConfiguration:
+    flink-conf.yaml: |+
+      kubernetes.operator.metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+      kubernetes.operator.metrics.reporter.prom.port: 9999
+      kubernetes.operator.flink.client.timeout: 120s

@@ -32,10 +32,10 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.configs.cm."resource.customizations" | string | `"argoproj.io/Application:\n  health.lua: |\n    hs = {}\n    hs.status = \"Progressing\"\n    hs.message = \"\"\n    if obj.status ~= nil then\n      if obj.status.health ~= nil then\n        hs.status = obj.status.health.status\n        if obj.status.health.message ~= nil then\n          hs.message = obj.status.health.message\n        end\n      end\n    end\n    return hs\n"` |  |
 | argo-cd.configs.cm."server.rbac.log.enforce.enable" | string | `nil` |  |
 | argo-cd.configs.cm."timeout.reconciliation" | string | `"300s"` |  |
-| argo-cd.configs.cm."ui.bannercontent" | string | `"KubeZero v1.32 - Release notes"` |  |
+| argo-cd.configs.cm."ui.bannercontent" | string | `"KubeZero v1.33 - Release notes"` |  |
 | argo-cd.configs.cm."ui.bannerpermanent" | string | `"true"` |  |
 | argo-cd.configs.cm."ui.bannerposition" | string | `"bottom"` |  |
-| argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.32"` |  |
+| argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.33"` |  |
 | argo-cd.configs.cm.installationID | string | `"KubeZero-ArgoCD"` |  |
 | argo-cd.configs.cm.url | string | `"https://argocd.example.com"` |  |
 | argo-cd.configs.params."controller.diff.server.side" | string | `"true"` |  |
@@ -46,6 +46,7 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.configs.secret.createSecret | bool | `false` |  |
 | argo-cd.configs.ssh.extraHosts | string | `"git.zero-downtime.net ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7UgK7Z4dDcuIW1uMOsuwhrqdkJCvYG/ZjHtLM7WaKFxVRnzNnNkQJNncWIGNDUQ1xxrbsoSNRZDtk0NlOjNtx2aApSWl4iWghkpXELvsZtOZ7I9FSC/E6ImLC3KWfK7P0mhZaF6kHPfpu8Y6pjUyLBTpV1AaVwr0I8onyqGazJOVotTFaBFEi/sT0O2FUk7agwZYfj61w3JGOy3c+fmBcK3lXf/QM90tosOpJNuJ7n5Vk5FDDLkl9rO4XR/+mXHFvITiWb8F5C50YAwjYcy36yWSSryUAAHAuqpgotwh65vSG6fZvFhmEwO2BrCkOV5+k8iRfhy/yZODJzZ5V/5cbMbdZrY6lm/p5/S1wv8BEyPekBGdseqQjEO0IQiQHcMrfgTrrQ7ndbZzVZRByZI+wbGFkBCzNSJcNsoiHjs2EblxYyuW0qUvvrBxLnySvaxyPm4BOukSAZAOEaUrajpQlnHdnY1CGcgbwxw0LNv3euKQ3tDJSUlKO0Wd8d85PRv1THW4Ui9Lhsmv+BPA2vJZDOkx/n0oyPFAB0oyd5JNM38eFxLCmPC2OE63gDP+WmzVO61YCVTnvhpQjEOLawEWVFsk0y25R5z5BboDqJaOFnZF6i517O96cn17z3Ls4hxw3+0rlKczYRoyfUHs7KQENa4mY8YlJweNTBgld//RMUQ=="` |  |
 | argo-cd.configs.styles | string | `".sidebar__logo img { content: url(https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png); }\n.sidebar__logo__text-logo { height: 0em; }\n.sidebar { background: linear-gradient(to bottom, #6A4D79, #493558, #2D1B30, #0D0711); }\n"` |  |
+| argo-cd.controller.metrics.dashboards | bool | `false` |  |
 | argo-cd.controller.metrics.enabled | bool | `false` |  |
 | argo-cd.controller.metrics.serviceMonitor.enabled | bool | `true` |  |
 | argo-cd.controller.resources.limits.memory | string | `"2048Mi"` |  |
@@ -54,7 +55,7 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.dex.enabled | bool | `false` |  |
 | argo-cd.enabled | bool | `false` |  |
 | argo-cd.global.image.repository | string | `"public.ecr.aws/zero-downtime/zdt-argocd"` |  |
-| argo-cd.global.image.tag | string | `"v3.1.4"` |  |
+| argo-cd.global.image.tag | string | `"v3.1.9"` |  |
 | argo-cd.global.logging.format | string | `"json"` |  |
 | argo-cd.global.networkPolicy.create | bool | `true` |  |
 | argo-cd.istio.enabled | bool | `false` |  |

@@ -5,17 +5,17 @@ set -ex
 
 update_helm
 
-update_docs
+patch_chart cert-manager
 
-# Install cert-mamanger mixin
+# build cert-mamanger mixin
 cd jsonnet
-# update_jsonnet
-jb install github.com/imusmanmalik/cert-manager-mixin@main
+jsonnet -J vendor -m rules rules.jsonnet
+cd -
 
 # Install rules
-rm -rf rules && mkdir -p rules
-jsonnet -J vendor -m rules rules.jsonnet
-../../kubezero-metrics/sync_prometheus_rules.py ../prometheus-rules.yaml ../templates
+../kubezero-metrics/sync_prometheus_rules.py prometheus-rules.yaml templates
 
 # Fetch dashboards from Grafana.com and update ZDT CM
-../../kubezero-metrics/sync_grafana_dashboards.py ../dashboards.yaml ../templates/grafana-dashboards.yaml
+../kubezero-metrics/sync_grafana_dashboards.py dashboards.yaml templates/grafana-dashboards.yaml
+
+update_docs

@@ -43,6 +43,9 @@ If your resolvers need additional sercrets like CloudFlare API tokens etc. make 
 | cert-manager.global.leaderElection.namespace | string | `"cert-manager"` |  |
 | cert-manager.ingressShim.defaultIssuerKind | string | `"ClusterIssuer"` |  |
 | cert-manager.ingressShim.defaultIssuerName | string | `"letsencrypt-dns-prod"` |  |
+| cert-manager.prometheus.dashboards | bool | `false` |  |
+| cert-manager.prometheus.enabled | bool | `false` |  |
+| cert-manager.prometheus.rules | bool | `false` |  |
 | cert-manager.prometheus.servicemonitor.enabled | bool | `false` |  |
 | cert-manager.startupapicheck.enabled | bool | `false` |  |
 | cert-manager.webhook.extraArgs[0] | string | `"--logging-format=json"` |  |

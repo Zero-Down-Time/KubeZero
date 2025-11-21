@@ -24,6 +24,8 @@ istiod:
 
   telemetry:
     enabled: false
+    # install our dashboards via gzip pipeline
+    dashboards: false
 
   meshConfig:
     accessLogFile: /dev/stdout

@@ -1,4 +1,4 @@
-{{- if .Values.istiod.telemetry.enabled }}
+{{- if .Values.istiod.telemetry.dashboards }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

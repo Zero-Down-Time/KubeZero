@@ -11,7 +11,8 @@ global:
 
 istiod:
   telemetry:
-    enabled: {{ $.Values.metrics.enabled }}
+    enabled: {{ .Values.metrics.enabled }}
+    dashboards: {{ index .Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
 
   {{- if eq .Values.global.platform "aws" }}
   {{- include "kubezero-lib.control-plane" . | nindent 2 }}

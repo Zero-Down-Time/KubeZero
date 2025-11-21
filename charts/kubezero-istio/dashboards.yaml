@@ -2,7 +2,7 @@
 configmap: grafana-dashboards
 gzip: true
 folder: Istio
-condition: '.Values.istiod.telemetry.enabled'
+condition: '.Values.istiod.telemetry.dashboards'
 dashboards:
 - name: istio-control-plane
   url: https://grafana.com/api/dashboards/7645/revisions/273/download

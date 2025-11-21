@@ -189,6 +189,8 @@ jenkins:
       - basic-branch-build-strategies
       - pipeline-graph-view
       - pipeline-stage-view
+      - http_request
+      - pipeline-utility-steps
       - configuration-as-code
       - warnings-ng
       - antisamy-markup-formatter
@@ -197,7 +199,7 @@ jenkins:
       - build-discarder
       - dark-theme
       - matrix-auth
-      - reverse-proxy-auth-plugin
+      - oic-auth
       - opentelemetry
 
   serviceAccountAgent:

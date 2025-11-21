@@ -1,4 +1,4 @@
 rules:
 - name: prometheus-rules
-  condition: 'index .Values "cert-manager" "prometheus" "servicemonitor" "enabled"'
-  url: file://rules/cert-manager-mixin-prometheusRule
+  condition: 'index .Values "cert-manager" "prometheus" "rules"'
+  url: file://jsonnet/rules/cert-manager-mixin-prometheusRule

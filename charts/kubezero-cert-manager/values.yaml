@@ -52,8 +52,12 @@ cert-manager:
       - "--leader-elect=false"
 
   prometheus:
+    enabled: false
     servicemonitor:
       enabled: false
+    # install our dashboards and rules via gzip pipeline
+    dashboards: false
+    rules: false
 
   startupapicheck:
     enabled: false

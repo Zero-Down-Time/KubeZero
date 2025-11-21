@@ -30,8 +30,11 @@ cert-manager:
   {{- end }}
 
   prometheus:
+    enabled: {{ .Values.metrics.enabled }}
     servicemonitor:
-      enabled: {{ $.Values.metrics.enabled }}
+      enabled: {{ .Values.metrics.enabled }}
+    rules: {{ index $.Values "metrics" "kube-prometheus-stack" "prometheus" "enabled" }}
+    dashboards: {{ index $.Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
 
 {{- with index .Values "cert-manager" "clusterIssuer" }}
 clusterIssuer:

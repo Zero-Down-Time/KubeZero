@@ -1,4 +1,4 @@
-{{- if index .Values "cert-manager" "prometheus" "servicemonitor" "enabled" }}
+{{- if index .Values "cert-manager" "prometheus" "rules" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:

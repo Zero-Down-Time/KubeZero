@@ -15,7 +15,7 @@ kyverno:
   {{- end }}
 
   grafana:
-    enabled: {{ .Values.metrics.enabled }}
+    enabled: {{ index .Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
 
   admissionController:
     serviceMonitor:

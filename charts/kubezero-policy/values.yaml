@@ -20,10 +20,9 @@ kyverno:
     preserve: false
     webhookAnnotations:
       admissions.enforcer/disabled: null
-      argocd.argoproj.io/installation-id: KubeZero-ArgoCD
       # Unfortunately Argo needs different values for Mutating and Validating hooks so disabled for now
       # argocd.argoproj.io/tracking-id: policy:/ServiceAccount:kyverno/kyverno-admission-controller
-      #
+      # argocd.argoproj.io/installation-id: KubeZero-ArgoCD
 
     # include kube-system namespace,
     # webhooks.namespaceSelector required to be nulled on supported platforms !

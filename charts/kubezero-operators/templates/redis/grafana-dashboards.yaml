@@ -1,4 +1,4 @@
-{{- if index .Values "redis-operator" "redisOperator" "metrics" "enabled" }}
+{{- if index .Values "redis-operator" "redisOperator" "metrics" "dashboards" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

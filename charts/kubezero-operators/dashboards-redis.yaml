@@ -1,6 +1,6 @@
 configmap: redis-dashboards
 gzip: true
-condition: 'index .Values "redis-operator" "redisOperator" "metrics" "enabled"'
+condition: 'index .Values "redis-operator" "redisOperator" "metrics" "dashboards"'
 folder: Operators
 dashboards:
 - name: redis-operator

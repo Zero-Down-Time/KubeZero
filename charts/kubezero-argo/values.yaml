@@ -102,6 +102,7 @@ argo-cd:
   controller:
     metrics:
       enabled: false
+      dashboards: false
       serviceMonitor:
         enabled: true
 

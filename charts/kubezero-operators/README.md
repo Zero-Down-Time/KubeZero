@@ -69,6 +69,7 @@ Kubernetes: `>= 1.33.0-0`
 | redis-operator.issuer.create | bool | `false` |  |
 | redis-operator.issuer.kind | string | `"ClusterIssuer"` |  |
 | redis-operator.issuer.name | string | `"kubezero-local-ca-issuer"` |  |
+| redis-operator.redisOperator.metrics.dashboards | bool | `false` |  |
 | redis-operator.redisOperator.metrics.enabled | bool | `false` |  |
 | redis-operator.redisOperator.webhook | bool | `false` |  |
 | redis-operator.resources.limits.cpu | string | `"500m"` |  |

@@ -1,6 +1,6 @@
 configmap: grafana-dashboards
 gzip: true
-condition: 'index .Values "argo-cd" "controller" "metrics" "enabled"'
+condition: 'index .Values "argo-cd" "controller" "metrics" "dashboards"'
 folder: KubeZero
 dashboards:
 - name: ArgoCD

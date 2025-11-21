@@ -43,11 +43,10 @@ redis-operator:
 
   {{- toYaml . | nindent 2 }}
 
-  {{- with $.Values.metrics }}
   redisOperator:
     metrics:
-      enabled: {{ .enabled }}
-  {{- end }}
+      enabled: {{ index $.Values "metrics" "enabled" }}
+      dashboards: {{ index $.Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
 {{- end }}
 
 {{- with index .Values "operators" "altinity-clickhouse-operator" }}

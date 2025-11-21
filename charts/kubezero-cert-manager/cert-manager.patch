@@ -1,0 +1,11 @@
+diff '--color=auto' -rtuN charts/cert-manager.orig/values.schema.json charts/cert-manager/values.schema.json
+--- charts/cert-manager.orig/values.schema.json	2025-10-15 14:25:59.000000000 +0000
++++ charts/cert-manager/values.schema.json	2025-11-13 16:25:46.223041705 +0000
+@@ -999,7 +999,6 @@
+       "type": "object"
+     },
+     "helm-values.prometheus": {
+-      "additionalProperties": false,
+       "properties": {
+         "enabled": {
+           "$ref": "#/$defs/helm-values.prometheus.enabled"

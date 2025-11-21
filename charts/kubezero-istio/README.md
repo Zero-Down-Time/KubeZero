@@ -43,6 +43,7 @@ Kubernetes: `>= 1.30.0-0`
 | istiod.resources.limits.memory | string | `"256Mi"` |  |
 | istiod.resources.requests.cpu | string | `"100m"` |  |
 | istiod.resources.requests.memory | string | `"128Mi"` |  |
+| istiod.telemetry.dashboards | bool | `false` |  |
 | istiod.telemetry.enabled | bool | `false` |  |
 | kiali-server.auth.strategy | string | `"anonymous"` |  |
 | kiali-server.deployment.ingress_enabled | bool | `false` |  |
