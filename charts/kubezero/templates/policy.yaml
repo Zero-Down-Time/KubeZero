@@ -11,7 +11,12 @@ kyverno:
   # Enable for all but kyverno namespace, even for kube-system !
   config:
     webhooks:
-      namespaceSelector: null
+      namespaceSelector:
+        matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - ""
   {{- end }}
 
   grafana:
