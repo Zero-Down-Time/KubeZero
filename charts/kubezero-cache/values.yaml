@@ -51,7 +51,7 @@ redis-replication:
 
     image:
       repository: public.ecr.aws/zero-downtime/redis-vault
-      tag: v0.1.6
+      tag: v0.1.7
 
     resources:
       requests:
