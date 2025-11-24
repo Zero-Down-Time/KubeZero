@@ -19,7 +19,7 @@ cloudnative-pg:
 
   monitoring:
     podMonitorEnabled: {{ index $.Values "metrics" "enabled" }}
-    dashboards: {{ index $.Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
+    dashboards: {{ include "kubezero.grafana.enabled" $ }}
 {{- end }}
 
 {{- with index .Values "operators" "strimzi-kafka-operator" }}
@@ -32,7 +32,7 @@ strimzi-kafka-operator:
 
   metrics:
     podMonitor: {{ index $.Values "metrics" "enabled" }}
-    dashboards: {{ index $.Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
+    dashboards: {{ include "kubezero.grafana.enabled" $ }}
 {{- end }}
 
 {{- with index .Values "operators" "redis-operator" }}
@@ -46,7 +46,7 @@ redis-operator:
   redisOperator:
     metrics:
       enabled: {{ index $.Values "metrics" "enabled" }}
-      dashboards: {{ index $.Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
+      dashboards: {{ include "kubezero.grafana.enabled" $ }}
 {{- end }}
 
 {{- with index .Values "operators" "altinity-clickhouse-operator" }}

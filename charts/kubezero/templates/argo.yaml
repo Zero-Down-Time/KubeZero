@@ -22,7 +22,7 @@ argo-cd:
   controller:
     metrics:
       enabled: {{ .Values.metrics.enabled }}
-      dashboards: {{ index .Values "metrics" "kube-prometheus-stack" "grafana" "enabled" }}
+      dashboards: {{ include "kubezero.grafana.enabled" . }}
 
   repoServer:
     {{- with index .Values "argo" "argo-cd" "repoServer" }}
