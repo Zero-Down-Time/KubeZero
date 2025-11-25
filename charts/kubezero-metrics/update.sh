@@ -13,6 +13,12 @@ rm -rf templates/crds
 mv charts/kube-prometheus-stack/charts/crds/crds templates
 rm -rf charts/kube-prometheus-stack/charts/crds
 
+# add ArgoCD server-side apply annotation as App setting seems not working for CRDs
+# argocd.argoproj.io/sync-options: ServerSideApply=true
+for crd in templates/crds/*.yaml; do
+  yq -i '.metadata.annotations."argocd.argoproj.io/sync-options"="ServerSideApply=true"' $crd
+done
+
 # make some crds conditional
 for c in alertmanagerconfigs prometheusagents prometheusrules alertmanagers prometheuses scrapeconfigs thanosrulers; do
   wrap_with_condition templates/crds/crd-${c}.yaml 'index .Values "kube-prometheus-stack" "prometheus" "enabled"'

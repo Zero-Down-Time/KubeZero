@@ -46,7 +46,7 @@ spec:
             bin/elasticsearch-plugin install --batch repository-s3;
             {{- end }}
             {{- if $.Values.es.prometheus }}
-            bin/elasticsearch-plugin install --batch https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/{{ $.Values.version }}.0/prometheus-exporter-{{ $.Values.version }}.0.zip;
+            bin/elasticsearch-plugin install --batch https://cdn.zero-downtime.net/misc/prometheus-exporter-7.17.7.0.zip
             {{- end }}
         {{- end }}
         containers:
