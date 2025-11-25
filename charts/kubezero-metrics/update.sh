@@ -13,10 +13,9 @@ rm -rf templates/crds
 mv charts/kube-prometheus-stack/charts/crds/crds templates
 rm -rf charts/kube-prometheus-stack/charts/crds
 
-# add ArgoCD server-side apply annotation as App setting seems not working for CRDs
-# argocd.argoproj.io/sync-options: ServerSideApply=true
+# ClientSideApplyMigration fails due to size of CRDs
 for crd in templates/crds/*.yaml; do
-  yq -i '.metadata.annotations."argocd.argoproj.io/sync-options"="ServerSideApply=true"' $crd
+  yq -i '.metadata.annotations."argocd.argoproj.io/sync-options"="ClientSideApplyMigration=false"' $crd
 done
 
 # make some crds conditional

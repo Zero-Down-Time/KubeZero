@@ -6,7 +6,7 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
     operator.prometheus.io/version: 0.86.2
-    argocd.argoproj.io/sync-options: ServerSideApply=true
+    argocd.argoproj.io/sync-options: ClientSideApplyMigration=false
   name: servicemonitors.monitoring.coreos.com
 spec:
   group: monitoring.coreos.com
