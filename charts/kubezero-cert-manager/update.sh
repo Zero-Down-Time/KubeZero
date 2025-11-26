@@ -9,6 +9,7 @@ patch_chart cert-manager
 
 # build cert-mamanger mixin
 cd jsonnet
+jb install
 jsonnet -J vendor -m rules rules.jsonnet
 cd -
 

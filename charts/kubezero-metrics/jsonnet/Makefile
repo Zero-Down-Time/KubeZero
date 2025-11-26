@@ -17,7 +17,7 @@ fmt:
 		xargs -n 1 -- $(JSONNET_FMT) -i
 
 generate: clean
-	# jb update
+	jb install
 	jsonnet -J vendor -m dashboards -e '(import "dashboards.libsonnet").grafanaDashboards'
 	jsonnet -J vendor -m rules rules.libsonnet
 
