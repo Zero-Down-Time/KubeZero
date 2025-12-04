@@ -16,8 +16,8 @@ fmt:
 	find . -name 'vendor' -prune -o -name '*.libsonnet' -print -o -name '*.jsonnet' -print | \
 		xargs -n 1 -- $(JSONNET_FMT) -i
 
-generate: clean build.sh
-	bash build.sh $<
+generate: clean
+	jb install
 	jsonnet -J vendor -m rules -e '(import "prometheusRules.libsonnet")'
 	jsonnet -J vendor -m dashboards -e '(import "dashboards.libsonnet")'
 
@@ -25,7 +25,7 @@ render: generate
 	../../kubezero-metrics/sync_grafana_dashboards.py dashboards.yaml ../templates/lvm/grafana-dashboards.yaml
 	../../kubezero-metrics/sync_prometheus_rules.py rules.yaml ../templates/lvm/
 
-lint: 
+lint:
 	find . -name 'vendor' -prune -o -name '*.libsonnet' -print -o -name '*.jsonnet' -print | \
 		while read f; do \
 			$(JSONNET_FMT) "$$f" | diff -u "$$f" -; \
