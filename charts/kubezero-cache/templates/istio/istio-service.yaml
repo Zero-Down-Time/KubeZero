@@ -2,7 +2,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: redis
+  name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "kubezero-lib.labels" . | indent 4 }}
@@ -16,7 +16,7 @@ spec:
     - port: {{ default 6379 .Values.istio.port }}
     route:
     - destination:
-        host: {{ default "redis-cluster-headless" .Values.istio.destinationHost }}
+        host: {{ default .Release.Name .Values.istio.destinationHost }}
         port:
           number: 6379
 {{- end }}

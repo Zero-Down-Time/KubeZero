@@ -1,7 +1,7 @@
-diff '--color=auto' -tuNr charts/redis-replication.orig/templates/_helpers.tpl charts/redis-replication/templates/_helpers.tpl
---- charts/redis-replication.orig/templates/_helpers.tpl	2025-10-01 14:03:41.574490121 +0000
-+++ charts/redis-replication/templates/_helpers.tpl	2025-10-01 14:03:54.737904228 +0000
-@@ -44,21 +44,22 @@
+diff '--color=auto' -rtuN charts/redis-replication.orig/templates/_helpers.tpl charts/redis-replication/templates/_helpers.tpl
+--- charts/redis-replication.orig/templates/_helpers.tpl	2025-12-04 12:10:45.347863320 +0000
++++ charts/redis-replication/templates/_helpers.tpl	2025-12-04 12:10:45.351196672 +0000
+@@ -42,21 +42,22 @@
  {{- end }}
  {{- end -}}
  
@@ -43,9 +43,9 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/_helpers.tpl c
 +  env: {{ toYaml . | nindent 4 }}
 +  {{- end -}}
 +{{- end -}}
-diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replication.yaml charts/redis-replication/templates/redis-replication.yaml
---- charts/redis-replication.orig/templates/redis-replication.yaml	2025-10-01 14:03:41.574490121 +0000
-+++ charts/redis-replication/templates/redis-replication.yaml	2025-10-01 14:03:41.577823475 +0000
+diff '--color=auto' -rtuN charts/redis-replication.orig/templates/redis-replication.yaml charts/redis-replication/templates/redis-replication.yaml
+--- charts/redis-replication.orig/templates/redis-replication.yaml	2025-12-04 12:10:45.347863320 +0000
++++ charts/redis-replication/templates/redis-replication.yaml	2025-12-04 12:10:45.351196672 +0000
 @@ -9,7 +9,7 @@
      redis.opstreelabs.in/recreate-statefulset: "true"
      {{ end }}
@@ -66,24 +66,7 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
  
    redisExporter:
      enabled: {{ .Values.redisExporter.enabled }}
-@@ -37,14 +41,14 @@
-     imagePullPolicy: "{{ .Values.redisExporter.imagePullPolicy }}"
-     {{- if .Values.redisExporter.resources}}
-     resources: {{ toYaml .Values.redisExporter.resources | nindent 6 }}
--    {{- end }}  
-+    {{- end }}
-     {{- if .Values.redisExporter.env }}
-     env: {{ toYaml .Values.redisExporter.env | nindent 6 }}
-     {{- end }}
-     {{- if .Values.redisExporter.securityContext}}
-     securityContext: {{ toYaml .Values.redisExporter.securityContext | nindent 6 }}
-     {{- end }}
--  
-+
-   {{- if .Values.externalConfig.enabled }}
-   redisConfig:
-     additionalRedisConfig: "{{ .Values.redisReplication.name | default .Release.Name }}-ext-config"
-@@ -66,6 +70,21 @@
+@@ -71,6 +75,21 @@
    {{- end }}
    {{- if .Values.affinity }}
    affinity: {{ toYaml .Values.affinity | nindent 4 }}
@@ -105,7 +88,7 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
    {{- end }}
    {{- if .Values.tolerations }}
    tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
-@@ -86,8 +105,13 @@
+@@ -91,8 +110,13 @@
    {{- if and .Values.initContainer .Values.initContainer.enabled (ne .Values.initContainer.image "") }}
    initContainer: {{ include "initContainer.properties" . | nindent 4 }}
    {{- end }}
@@ -121,7 +104,7 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
    {{- end }}
    {{- if and .Values.serviceAccountName (ne .Values.serviceAccountName "") }}
    serviceAccountName: "{{ .Values.serviceAccountName }}"
-@@ -98,7 +122,9 @@
+@@ -103,7 +127,9 @@
    {{- if .Values.pdb.enabled }}
    pdb:
      enabled: {{ .Values.pdb.enabled }}
@@ -133,10 +116,10 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/templates/redis-replicat
    {{- end }}
 -  
 +
-diff '--color=auto' -tuNr charts/redis-replication.orig/values.yaml charts/redis-replication/values.yaml
---- charts/redis-replication.orig/values.yaml	2025-10-01 14:03:41.574490121 +0000
-+++ charts/redis-replication/values.yaml	2025-10-01 14:03:41.577823475 +0000
-@@ -90,20 +90,20 @@
+diff '--color=auto' -rtuN charts/redis-replication.orig/values.yaml charts/redis-replication/values.yaml
+--- charts/redis-replication.orig/values.yaml	2025-12-04 12:10:45.347863320 +0000
++++ charts/redis-replication/values.yaml	2025-12-04 12:10:45.351196672 +0000
+@@ -93,20 +93,20 @@
    command: []
    args: []
  
@@ -171,7 +154,7 @@ diff '--color=auto' -tuNr charts/redis-replication.orig/values.yaml charts/redis
  
  priorityClassName: ""
  
-@@ -161,5 +161,4 @@
+@@ -164,5 +164,4 @@
  
  pdb:
    enabled: false

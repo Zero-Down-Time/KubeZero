@@ -131,6 +131,8 @@ redis-cluster:
 
 istio:
   enabled: false
+  url: external-servicename
+  gateway: istio-ingress/private-ingressgateway
 
 snapshotgroups: {}
 # - name: redis-snaps
