@@ -51,7 +51,7 @@ redis-replication:
 
     image:
       repository: public.ecr.aws/zero-downtime/redis-vault
-      tag: v0.1.6
+      tag: v0.1.8
 
     resources:
       requests:
@@ -68,7 +68,7 @@ redis-sentinel:
   enabled: false
 
   redisSentinel:
-    tag: v8.0.3
+    tag: v8.2.3
 
     resources:
       requests:
