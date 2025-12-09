@@ -1,6 +1,6 @@
 # kubezero-cache
 
-![Version: 0.2.4](https://img.shields.io/badge/Version-0.2.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Cache module
 
@@ -37,6 +37,7 @@ Kubernetes: `>= 1.30.0-0`
 | redis-cluster.redisCluster.enableMasterSlaveAntiAffinity | bool | `true` |  |
 | redis-cluster.redisCluster.follower.pdb.enabled | bool | `true` |  |
 | redis-cluster.redisCluster.leader.pdb.enabled | bool | `true` |  |
+| redis-cluster.redisCluster.maxMemoryPercentOfLimit | int | `90` |  |
 | redis-cluster.redisExporter.enabled | bool | `false` |  |
 | redis-cluster.serviceMonitor.enabled | bool | `false` |  |
 | redis-cluster.storageSpec.keepAfterDelete | bool | `true` |  |
@@ -44,12 +45,13 @@ Kubernetes: `>= 1.30.0-0`
 | redis-replication.enabled | bool | `false` |  |
 | redis-replication.pdb.enabled | bool | `true` |  |
 | redis-replication.redisExporter.enabled | bool | `false` |  |
+| redis-replication.redisReplication.maxMemoryPercentOfLimit | int | `90` |  |
 | redis-replication.redisReplication.service.additional.enabled | bool | `false` |  |
-| redis-replication.redisReplication.tag | string | `"v8.0.3"` |  |
+| redis-replication.redisReplication.tag | string | `"v8.2.3"` |  |
 | redis-replication.redisVault.enabled | bool | `false` |  |
 | redis-replication.redisVault.env | list | `[]` |  |
 | redis-replication.redisVault.image.repository | string | `"public.ecr.aws/zero-downtime/redis-vault"` |  |
-| redis-replication.redisVault.image.tag | string | `"v0.1.6"` |  |
+| redis-replication.redisVault.image.tag | string | `"v0.1.8"` |  |
 | redis-replication.redisVault.resources.requests.cpu | string | `"10m"` |  |
 | redis-replication.redisVault.resources.requests.memory | string | `"16Mi"` |  |
 | redis-replication.serviceMonitor.enabled | bool | `false` |  |
@@ -60,7 +62,7 @@ Kubernetes: `>= 1.30.0-0`
 | redis-sentinel.redisSentinel.resources.requests.cpu | string | `"10m"` |  |
 | redis-sentinel.redisSentinel.resources.requests.memory | string | `"16Mi"` |  |
 | redis-sentinel.redisSentinel.service.additional.enabled | bool | `false` |  |
-| redis-sentinel.redisSentinel.tag | string | `"v8.0.3"` |  |
+| redis-sentinel.redisSentinel.tag | string | `"v8.2.3"` |  |
 | redis-sentinel.redisSentinelConfig.announceHostnames | string | `"yes"` |  |
 | redis-sentinel.redisSentinelConfig.downAfterMilliseconds | string | `"10000"` |  |
 | redis-sentinel.redisSentinelConfig.failoverTimeout | string | `"60000"` |  |
@@ -68,9 +70,10 @@ Kubernetes: `>= 1.30.0-0`
 | redis-sentinel.serviceMonitor.enabled | bool | `false` |  |
 | redis.enabled | bool | `false` |  |
 | redis.redisExporter.enabled | bool | `false` |  |
+| redis.redisStandalone.maxMemoryPercentOfLimit | int | `90` |  |
 | redis.redisStandalone.service.additional.enabled | bool | `false` |  |
 | redis.redisStandalone.service.headless.enabled | bool | `false` |  |
-| redis.redisStandalone.tag | string | `"v8.0.3"` |  |
+| redis.redisStandalone.tag | string | `"v8.2.3"` |  |
 | redis.serviceMonitor.enabled | bool | `false` |  |
 | redis.storageSpec | string | `nil` |  |
 | snapshotgroups | object | `{}` |  |

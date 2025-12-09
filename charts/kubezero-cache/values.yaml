@@ -2,13 +2,15 @@ redis:
   enabled: false
 
   redisStandalone:
-    tag: v8.0.3
+    tag: v8.2.3
 
     service:
       additional:
         enabled: false
       headless:
         enabled: false
+
+    maxMemoryPercentOfLimit: 90
 
   serviceMonitor:
     enabled: false
@@ -23,11 +25,13 @@ redis-replication:
   enabled: false
 
   redisReplication:
-    tag: v8.0.3
+    tag: v8.2.3
 
     service:
       additional:
         enabled: false
+
+    maxMemoryPercentOfLimit: 90
 
   storageSpec:
     keepAfterDelete: true
@@ -100,8 +104,9 @@ redis-cluster:
   redisCluster:
   # Not yet until v8 support gets merged
   # clusterVersion: v8
-  # tag: v8.0.3
+  # tag: v8.2.3
     enableMasterSlaveAntiAffinity: true
+    maxMemoryPercentOfLimit: 90
 
     leader:
       # Add pdb by default
