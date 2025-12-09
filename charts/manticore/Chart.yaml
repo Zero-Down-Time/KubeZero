@@ -2,7 +2,7 @@ apiVersion: v2
 name: manticore
 description: Chart for Manticore 
 type: application
-version: 5.0.25
+version: 5.0.26
 appVersion: 5.0.25
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
@@ -17,6 +17,6 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts
   - name: manticoresearch
-    version: "5.0.25"
+    version: "15.1.0"
     repository: https://helm.manticoresearch.com
 kubeVersion: ">= 1.20.0"
