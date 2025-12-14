@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.9.1](https://img.shields.io/badge/Version-0.9.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.9.2](https://img.shields.io/badge/Version-0.9.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.8.104 |
+| https://charts.jenkins.io | jenkins | 5.8.114 |
 | https://dl.gitea.io/charts/ | gitea | 12.4.0 |
-| https://docs.renovatebot.com/helm-charts | renovate | 44.15.1 |
+| https://docs.renovatebot.com/helm-charts | renovate | 45.47.3 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -95,6 +95,8 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.containerCap | int | `2` |  |
 | jenkins.agent.customJenkinsLabels[0] | string | `"podman-aws-grype"` |  |
 | jenkins.agent.defaultsProviderTemplate | string | `"podman-aws"` |  |
+| jenkins.agent.envVars[0].name | string | `"HOME"` |  |
+| jenkins.agent.envVars[0].value | string | `"/home/jenkins/agent"` |  |
 | jenkins.agent.garbageCollection.enabled | bool | `true` |  |
 | jenkins.agent.idleMinutes | int | `30` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
@@ -124,14 +126,16 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.initContainerResources.requests.cpu | string | `"50m"` |  |
 | jenkins.controller.initContainerResources.requests.memory | string | `"256Mi"` |  |
 | jenkins.controller.installPlugins[0] | string | `"kubernetes"` |  |
-| jenkins.controller.installPlugins[10] | string | `"antisamy-markup-formatter"` |  |
-| jenkins.controller.installPlugins[11] | string | `"prometheus"` |  |
-| jenkins.controller.installPlugins[12] | string | `"htmlpublisher"` |  |
-| jenkins.controller.installPlugins[13] | string | `"build-discarder"` |  |
-| jenkins.controller.installPlugins[14] | string | `"dark-theme"` |  |
-| jenkins.controller.installPlugins[15] | string | `"matrix-auth"` |  |
-| jenkins.controller.installPlugins[16] | string | `"reverse-proxy-auth-plugin"` |  |
-| jenkins.controller.installPlugins[17] | string | `"opentelemetry"` |  |
+| jenkins.controller.installPlugins[10] | string | `"configuration-as-code"` |  |
+| jenkins.controller.installPlugins[11] | string | `"warnings-ng"` |  |
+| jenkins.controller.installPlugins[12] | string | `"antisamy-markup-formatter"` |  |
+| jenkins.controller.installPlugins[13] | string | `"prometheus"` |  |
+| jenkins.controller.installPlugins[14] | string | `"htmlpublisher"` |  |
+| jenkins.controller.installPlugins[15] | string | `"build-discarder"` |  |
+| jenkins.controller.installPlugins[16] | string | `"dark-theme"` |  |
+| jenkins.controller.installPlugins[17] | string | `"matrix-auth"` |  |
+| jenkins.controller.installPlugins[18] | string | `"oic-auth"` |  |
+| jenkins.controller.installPlugins[19] | string | `"opentelemetry"` |  |
 | jenkins.controller.installPlugins[1] | string | `"kubernetes-credentials-provider"` |  |
 | jenkins.controller.installPlugins[2] | string | `"workflow-aggregator"` |  |
 | jenkins.controller.installPlugins[3] | string | `"git"` |  |
@@ -139,8 +143,8 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.installPlugins[5] | string | `"basic-branch-build-strategies"` |  |
 | jenkins.controller.installPlugins[6] | string | `"pipeline-graph-view"` |  |
 | jenkins.controller.installPlugins[7] | string | `"pipeline-stage-view"` |  |
-| jenkins.controller.installPlugins[8] | string | `"configuration-as-code"` |  |
-| jenkins.controller.installPlugins[9] | string | `"warnings-ng"` |  |
+| jenkins.controller.installPlugins[8] | string | `"http_request"` |  |
+| jenkins.controller.installPlugins[9] | string | `"pipeline-utility-steps"` |  |
 | jenkins.controller.javaOpts | string | `"-XX:+UseContainerSupport -XX:+UseStringDeduplication -Dhudson.model.DirectoryBrowserSupport.CSP=\"sandbox allow-popups; default-src 'none'; img-src 'self' cdn.zero-downtime.net; style-src 'unsafe-inline';\""` |  |
 | jenkins.controller.jenkinsOpts | string | `"--sessionTimeout=300 --sessionEviction=10800"` |  |
 | jenkins.controller.prometheus.enabled | bool | `false` |  |

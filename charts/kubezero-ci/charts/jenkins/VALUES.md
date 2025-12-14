@@ -32,7 +32,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | [agent.idleMinutes](./values.yaml#L1139) | int | Allows the Pod to remain active for reuse until the configured number of minutes has passed since the last step was executed on it | `0` |
 | [agent.image.registry](./values.yaml#L967) | string | Registry to pull the agent jnlp image from | `""` |
 | [agent.image.repository](./values.yaml#L969) | string | Repository to pull the agent jnlp image from | `"jenkins/inbound-agent"` |
-| [agent.image.tag](./values.yaml#L971) | string | Tag of the image to pull | `"3345.v03dee9b_f88fc-2"` |
+| [agent.image.tag](./values.yaml#L971) | string | Tag of the image to pull | `"3355.v388858a_47b_33-3"` |
 | [agent.imagePullSecretName](./values.yaml#L978) | string | Name of the secret to be used to pull the image | `nil` |
 | [agent.inheritYamlMergeStrategy](./values.yaml#L1158) | bool | Controls whether the defined yaml merge strategy will be inherited if another defined pod template is configured to inherit from the current one | `false` |
 | [agent.instanceCap](./values.yaml#L1122) | int | Max number of agents to launch for this type of agent | `2147483647` |
@@ -168,7 +168,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | [controller.initializeOnce](./values.yaml#L429) | bool | Initialize only on first installation. Ensures plugins do not get updated inadvertently. Requires `persistence.enabled` to be set to `true` | `false` |
 | [controller.installLatestPlugins](./values.yaml#L418) | bool | Download the minimum required version or latest version of all dependencies | `true` |
 | [controller.installLatestSpecifiedPlugins](./values.yaml#L421) | bool | Set to true to download the latest version of any plugin that is requested to have the latest version | `false` |
-| [controller.installPlugins](./values.yaml#L410) | list | List of Jenkins plugins to install. If you don't want to install plugins, set it to `false` | `["kubernetes:4384.v1b_6367f393d9","workflow-aggregator:608.v67378e9d3db_1","git:5.8.0","configuration-as-code:2006.v001a_2ca_6b_574"]` |
+| [controller.installPlugins](./values.yaml#L410) | list | List of Jenkins plugins to install. If you don't want to install plugins, set it to `false` | `["kubernetes:4398.vb_b_33d9e7fe23","workflow-aggregator:608.v67378e9d3db_1","git:5.8.1","configuration-as-code:2006.v001a_2ca_6b_574"]` |
 | [controller.javaOpts](./values.yaml#L164) | string | Append to `JAVA_OPTS` env var | `nil` |
 | [controller.jenkinsAdminEmail](./values.yaml#L98) | string | Email address for the administrator of the Jenkins instance | `nil` |
 | [controller.jenkinsHome](./values.yaml#L103) | string | Custom Jenkins home path | `"/var/jenkins_home"` |
@@ -286,7 +286,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | [fullnameOverride](./values.yaml#L13) | string | Override the full resource names | `jenkins-(release-name)` or `jenkins` if the release-name is `jenkins` |
 | [helmtest.bats.image.registry](./values.yaml#L1384) | string | Registry of the image used to test the framework | `"docker.io"` |
 | [helmtest.bats.image.repository](./values.yaml#L1386) | string | Repository of the image used to test the framework | `"bats/bats"` |
-| [helmtest.bats.image.tag](./values.yaml#L1388) | string | Tag of the image to test the framework | `"1.12.0"` |
+| [helmtest.bats.image.tag](./values.yaml#L1388) | string | Tag of the image to test the framework | `"1.13.0"` |
 | [kubernetesURL](./values.yaml#L24) | string | The URL of the Kubernetes API server | `"https://kubernetes.default"` |
 | [nameOverride](./values.yaml#L10) | string | Override the resource name prefix | `Chart.Name` |
 | [namespaceOverride](./values.yaml#L16) | string | Override the deployment namespace | `Release.Namespace` |

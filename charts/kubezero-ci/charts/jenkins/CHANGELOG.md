@@ -12,6 +12,46 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.8.114
+
+Update `kubernetes` to version `4398.vb_b_33d9e7fe23`
+
+## 5.8.113
+
+Update `git` to version `5.8.1`
+
+## 5.8.112
+
+Update `jenkins/inbound-agent` to version `3355.v388858a_47b_33-3`
+
+## 5.8.111
+
+Update `jenkins/jenkins` to version `2.528.3-jdk21`
+
+## 5.8.110
+
+Update `jenkins/inbound-agent` to version `3345.v03dee9b_f88fc-6`
+
+## 5.8.109
+
+Update `jenkins/jenkins` to version `2.528.2-jdk21`
+
+## 5.8.108
+
+Update `kubernetes` to version `4392.v19cea_fdb_5913`
+
+## 5.8.107
+
+Update `docker.io/bats/bats` to version `1.13.0`
+
+## 5.8.106
+
+Update `jenkins/inbound-agent` to version `3345.v03dee9b_f88fc-5`
+
+## 5.8.105
+
+Update `jenkins/inbound-agent` to version `3345.v03dee9b_f88fc-3`
+
 ## 5.8.104
 
 Update `configuration-as-code` to version `2006.v001a_2ca_6b_574`
