@@ -1,6 +1,6 @@
-diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.yaml charts/redis-sentinel/templates/redis-sentinel.yaml
---- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-09-22 17:18:23.834030177 +0000
-+++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-09-22 17:18:23.834030177 +0000
+diff '--color=auto' -rtuN charts/redis-sentinel.orig/templates/redis-sentinel.yaml charts/redis-sentinel/templates/redis-sentinel.yaml
+--- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-12-16 14:03:25.346442867 +0000
++++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-12-16 14:03:25.346442867 +0000
 @@ -12,7 +12,7 @@
    clusterSize: {{ .Values.redisSentinel.clusterSize }}
    # Sentinel Config
@@ -55,9 +55,21 @@ diff '--color=auto' -tuNr charts/redis-sentinel.orig/templates/redis-sentinel.ya
      maxUnavailable: {{ .Values.pdb.maxUnavailable }}
    {{- end }}
    {{- with .Values.livenessProbe }}
-diff '--color=auto' -tuNr charts/redis-sentinel.orig/values.yaml charts/redis-sentinel/values.yaml
---- charts/redis-sentinel.orig/values.yaml	2025-09-22 17:18:23.834030177 +0000
-+++ charts/redis-sentinel/values.yaml	2025-09-22 17:18:23.834030177 +0000
+diff '--color=auto' -rtuN charts/redis-sentinel.orig/templates/servicemonitor.yaml charts/redis-sentinel/templates/servicemonitor.yaml
+--- charts/redis-sentinel.orig/templates/servicemonitor.yaml	2025-12-16 14:03:25.346442867 +0000
++++ charts/redis-sentinel/templates/servicemonitor.yaml	2025-12-16 14:03:52.623063507 +0000
+@@ -18,7 +18,7 @@
+ spec:
+   selector:
+     matchLabels:
+-      app: {{ .Values.redisSentinel.name | default .Release.Name }}
++      app: {{ .Values.redisSentinel.name | default .Release.Name }}-sentinel
+       redis_setup_type: sentinel
+       role: sentinel
+   endpoints:
+diff '--color=auto' -rtuN charts/redis-sentinel.orig/values.yaml charts/redis-sentinel/values.yaml
+--- charts/redis-sentinel.orig/values.yaml	2025-12-16 14:03:25.346442867 +0000
++++ charts/redis-sentinel/values.yaml	2025-12-16 14:03:25.346442867 +0000
 @@ -33,7 +33,7 @@
  #   test: echo
  

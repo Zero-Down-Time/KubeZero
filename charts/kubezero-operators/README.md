@@ -1,6 +1,6 @@
 # kubezero-operators
 
-![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.7](https://img.shields.io/badge/Version-0.2.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Various operators supported by KubeZero
 
@@ -20,12 +20,12 @@ Kubernetes: `>= 1.33.0-0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.bitnami.com/bitnami | rabbitmq-cluster-operator | 4.4.34 |
-| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.26.1 |
+| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.27.0 |
 | https://docs.altinity.com/clickhouse-operator | altinity-clickhouse-operator | 0.25.5 |
 | https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0 | flink-kubernetes-operator | 1.13.0 |
 | https://helm.elastic.co | eck-operator | 3.2.0 |
 | https://ot-container-kit.github.io/helm-charts | redis-operator | 0.22.2 |
-| oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.48.0 |
+| oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.49.1 |
 
 ## Values
 
@@ -54,7 +54,12 @@ Kubernetes: `>= 1.33.0-0`
 | cloudnative-pg.resources.requests.memory | string | `"32Mi"` |  |
 | eck-operator.enabled | bool | `false` |  |
 | eck-operator.installCRDs | bool | `false` |  |
+| flink-kubernetes-operator.defaultConfiguration."flink-conf.yaml" | string | `"kubernetes.operator.metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory\nkubernetes.operator.metrics.reporter.prom.port: 9999\nkubernetes.operator.flink.client.timeout: 120s\n"` |  |
 | flink-kubernetes-operator.enabled | bool | `false` |  |
+| flink-kubernetes-operator.jobServiceAccount.create | bool | `false` |  |
+| flink-kubernetes-operator.metrics.port | int | `9999` |  |
+| flink-kubernetes-operator.operatorPod.resources.requests.cpu | string | `"10m"` |  |
+| flink-kubernetes-operator.operatorPod.resources.requests.memory | string | `"1024Mi"` |  |
 | rabbitmq-cluster-operator.clusterOperator.metrics.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.clusterOperator.metrics.serviceMonitor.enabled | bool | `true` |  |
 | rabbitmq-cluster-operator.enabled | bool | `false` |  |

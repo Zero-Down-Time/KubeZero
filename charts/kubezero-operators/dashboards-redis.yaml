@@ -1,16 +1,17 @@
 configmap: redis-dashboards
 gzip: true
-condition: 'index .Values "redis-operator" "redisOperator" "metrics" "dashboards"'
-folder: Operators
+condition: 'and (index .Values "redis-operator" "enabled") (index .Values "redis-operator" "redisOperator" "metrics" "dashboards")'
+folder: Cache
 dashboards:
-- name: redis-operator
+- name: redis
   #url: https://grafana.com/api/dashboards/763/revisions/6/download
   url: https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/heads/main/dashboards/redis-operator.json
+  title: "Redis cluster status"
   tags:
   - Redis
-  - Operators
 - name: redis-cluster
   # url: https://grafana.com/api/dashboards/14615/revisions/1/download
   url: https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/heads/main/dashboards/redis-operator-cluster.json
+  title: "Redis"
   tags:
   - Redis

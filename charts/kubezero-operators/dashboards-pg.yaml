@@ -1,10 +1,10 @@
 configmap: grafana-dashboards-pg
 gzip: true
 condition: 'and (index .Values "cloudnative-pg" "enabled") (index .Values "cloudnative-pg" "monitoring" "dashboards")'
-folder: Operators
+folder: Databases
 dashboards:
-- name: Cloudnative-pg
+- name: CloudNativePG
   url: https://raw.githubusercontent.com/cloudnative-pg/grafana-dashboards/refs/heads/main/charts/cluster/grafana-dashboard.json
   tags:
   - cloudnative-pg
-  - SQL
+  - postgresql

@@ -14,10 +14,10 @@ config_file = sys.argv[1]
 configmap_file = sys.argv[2]
 
 
+# Force datasource to be Prometheus
 def traverse_json(obj):
     if isinstance(obj, dict):
         for k, v in obj.items():
-            # CloudBender::StackRef
             if k == "datasource" and v:
                 obj[k] = "Prometheus"
 
@@ -107,6 +107,10 @@ for b in config["dashboards"]:
     # Set default tim in all charts to 1h
     obj["time"] = {"from": "now-1h", "to": "now"}
     obj["refresh"] = "30s"
+
+    # Custom title
+    if "title" in b:
+        obj["title"] = b["title"]
 
     # set tags
     if "tags" in b:
