@@ -1,8 +1,9 @@
 configmap: grafana-dashboards-rabbitmq
 condition: '.Values.rabbitmq.metrics.enabled'
 gzip: true
-# folder: 
+folder: Messaging
 dashboards:
 - name: rabbitmq
   url: https://grafana.com/api/dashboards/10991/revisions/11/download
-  tags: ['RabbitMQ']
+  tags:
+  - RabbitMQ

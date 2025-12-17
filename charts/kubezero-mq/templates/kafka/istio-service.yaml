@@ -1,0 +1,20 @@
+{{- if .Values.akhq.istio.enabled }}
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: akhq
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  gateways:
+  - {{ .Values.akhq.istio.gateway }}
+  hosts:
+  - {{ .Values.akhq.istio.url }}
+  http:
+  - route:
+    - destination:
+        host: {{ .Release.Name }}-akhq
+        port:
+          number: 80
+{{- end }}

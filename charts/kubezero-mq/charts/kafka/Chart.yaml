@@ -1,0 +1,15 @@
+apiVersion: v2
+name: kafka
+description: Kafka cluster incl. optional Connector based on Strimzi operator
+type: application
+version: 0.1.0
+home: https://kubezero.com
+icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
+keywords:
+  - kubezero
+  - kafka
+  - strimzi
+maintainers:
+  - name: Stefan Reimer
+    email: stefan@zero-downtime.net
+kubeVersion: ">= 1.33.0"

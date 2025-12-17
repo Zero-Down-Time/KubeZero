@@ -32,6 +32,32 @@ nats:
     # url: "mq.example.com"
     gateway: istio-ingress/private-ingressgateway
 
+kafka:
+  enabled: false
+
+  cluster:
+    name: example
+    version: 4.1.1
+
+  storage:
+    size: 1Gi
+
+akhq:
+  enabled: false
+
+  revisionHistoryLimit: 2
+
+  configuration:
+    akhq:
+      connections:
+        local:
+          properties:
+            bootstrap.servers: "example-kafka-plain-bootstrap:9092"
+
+  istio:
+    enabled: false
+    url: example-akhq.local
+    gateway: istio-ingress/private-ingressgateway
 
 # rabbitmq
 rabbitmq:

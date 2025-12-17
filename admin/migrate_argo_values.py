@@ -12,6 +12,7 @@ ALL_MODULES=[
 "storage",
 "istio",
 "istio-ingress",
+"istio-private-ingress",
 "falco",
 "telemetry",
 "operators",

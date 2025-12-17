@@ -138,6 +138,7 @@ kube-prometheus-stack:
       analytics:
         check_for_updates: false
         check_for_plugin_updates: false
+        reporting_enabled: false
       security:
         disable_gravatar: true
         cookie_secure: true
@@ -147,6 +148,8 @@ kube-prometheus-stack:
       #  disable_signout_menu: true
       auth.anonymous:
         enabled: true
+      users:
+        default_theme: tron
       dashboards:
         min_refresh_interval: "30s"
         default_home_dashboard_path: '/tmp/dashboards/KubeZero/home.json'

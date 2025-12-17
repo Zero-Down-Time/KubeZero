@@ -1,6 +1,6 @@
 # kubezero-mq
 
-![Version: 0.3.13](https://img.shields.io/badge/Version-0.3.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.14](https://img.shields.io/badge/Version-0.3.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for MQ systems like NATS, RabbitMQ
 
@@ -14,18 +14,24 @@ KubeZero umbrella chart for MQ systems like NATS, RabbitMQ
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0`
+Kubernetes: `>= 1.33.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
+|  | kafka | 0.1.0 |
+| https://akhq.io/ | akhq | 0.26.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.bitnami.com/bitnami | rabbitmq | 14.7.0 |
-| https://nats-io.github.io/k8s/helm/charts/ | nats | 1.3.15 |
+| https://nats-io.github.io/k8s/helm/charts/ | nats | 2.12.2 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| akhq.enabled | bool | `false` |  |
+| kafka.cluster.name | string | `"example"` |  |
+| kafka.cluster.version | string | `"4.1.1"` |  |
+| kafka.enabled | bool | `false` |  |
+| kafka.storage.size | string | `"1Gi"` |  |
 | nats.config.cluster.routeURLs.useFQDN | bool | `true` |  |
 | nats.config.jetstream.enabled | bool | `true` |  |
 | nats.enabled | bool | `false` |  |
