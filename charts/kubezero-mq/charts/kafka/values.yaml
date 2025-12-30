@@ -1,0 +1,10 @@
+cluster:
+  name: example
+  version: 4.1.1
+
+storage:
+  size: 1Gi
+
+connect:
+  enabled: false
+  replicas: 1

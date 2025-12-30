@@ -22,7 +22,6 @@ export KUBE_VERSION_MINOR=$(echo $KUBE_VERSION | sed -e 's/\.[0-9]*$//')
 export KUBECONFIG="${HOSTFS}/root/.kube/config"
 
 # etcd
-export ETCDCTL_API=3
 export ETCDCTL_CACERT=${HOSTFS}/etc/kubernetes/pki/etcd/ca.crt
 export ETCDCTL_CERT=${HOSTFS}/etc/kubernetes/pki/apiserver-etcd-client.crt
 export ETCDCTL_KEY=${HOSTFS}/etc/kubernetes/pki/apiserver-etcd-client.key

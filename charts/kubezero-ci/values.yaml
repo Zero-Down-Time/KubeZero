@@ -107,7 +107,8 @@ jenkins:
 
   controller:
     image:
-      tag: lts-alpine-jdk21
+      tag: 2.528.3-lts-alpine
+      #tag: lts-alpine-jdk21
       #tagLabel: alpine
     disableRememberMe: true
     prometheus:

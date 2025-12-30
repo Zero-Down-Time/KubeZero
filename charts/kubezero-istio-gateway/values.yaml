@@ -26,6 +26,7 @@ gateway:
     # noGateway: true -> this port does NOT get mapped to a Gateway port
     # tls: optional gateway port setting
     # gatewayProtocol: Loadbalancer protocol which is NOT the same as Container Procotol !
+    # hosts: list of hosts that server port response to (optional, defaults to certnames)
 
   podAnnotations:
     proxy.istio.io/config: '{ "terminationDrainDuration": "90s" }'

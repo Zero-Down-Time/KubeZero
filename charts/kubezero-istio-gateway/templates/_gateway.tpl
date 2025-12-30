@@ -32,8 +32,12 @@
     {{- toYaml . | nindent 4 }}
   {{- end }}
   hosts:
+  {{- if $port.hosts }}
+    {{- toYaml $port.hosts | nindent 4 }}
+  {{- else }}
   {{- range $cert := $.certificates }}
   {{- toYaml $cert.dnsNames | nindent 2 }}
+  {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}

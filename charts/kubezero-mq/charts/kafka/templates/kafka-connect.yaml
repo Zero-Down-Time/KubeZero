@@ -1,0 +1,21 @@
+{{- if .Values.connect.enabled }}
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaConnect
+metadata:
+  name: {{ .Values.cluster.name }}
+  annotations:
+    strimzi.io/use-connector-resources: "true"
+spec:
+  version: {{ .Values.cluster.version }}
+  replicas: {{ .Values.connect.replicas }}
+  bootstrapServers: {{ .Values.cluster.name }}-kafka-plain-bootstrap:9092
+  groupId: {{ .Values.cluster.name }}-connect-group
+  configStorageTopic: {{ .Values.cluster.name }}-connect-configs
+  statusStorageTopic: {{ .Values.cluster.name }}-connect-status
+  offsetStorageTopic: {{ .Values.cluster.name }}-connect-offsets
+  config:
+    # -1 means it will use the default replication factor configured in the broker
+    config.storage.replication.factor: -1
+    offset.storage.replication.factor: -1
+    status.storage.replication.factor: -1
+{{- end }}
