@@ -23,7 +23,7 @@
     {
       "customType": "regex",
       "fileMatch": ["^values\\.ya?ml$", "^Chart\\.yaml$"],
-      "matchStrings": ["#\\s*renovate:\\s*datasource=(?<datasource>[^ ]+)\\s*depName=(?<depName>.*?)\\s*\\n.*?:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"]
+      "matchStrings": ["# renovate: datasource=(?<datasource>[^ ]+)(?: depName=(?<depName>[^ ]+))\\n.*?:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"]
     }
   ]
 }
