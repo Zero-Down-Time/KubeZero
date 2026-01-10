@@ -23,8 +23,7 @@
     {
       "customType": "regex",
       "fileMatch": ["^values\\.ya?ml$", "^Chart\\.yaml$"],
-      "matchStrings": ["# renovate: datasource=(?<datasource>[^ ]+)(?: depName=(?<depName>[^ ]+))?(?: packageName=(?<packageName>[^ ]+))?(?: versioning=(?<versioning>[^ ]+))?(?: registryUrl=(?<registryUrl>[^ ]+))?\\n_?pkgver=(?<currentValue>.*)"
-      ]
+      "matchStrings": ["#\\s*renovate:\\s*datasource=(?<datasource>[^ ]+)\\s*depName=(?<depName>.*?)\\s*\\n.*?:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"]
     }
   ]
 }
