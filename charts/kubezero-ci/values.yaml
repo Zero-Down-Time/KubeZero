@@ -2,7 +2,8 @@ gitea:
   enabled: false
 
   image:
-    # tag: 1.23.5
+    # renovate: datasource=github-releases depName=go-gitea/gitea
+    tag: 1.23.5
     rootless: true
 
   repliaCount: 1
@@ -149,14 +150,24 @@ jenkins:
     JCasC:
       configScripts:
         zdt-settings: |
-          jenkins:
-            noUsageStatistics: true
-            disabledAdministrativeMonitors:
-            - "jenkins.security.ResourceDomainRecommendation"
           appearance:
             themeManager:
               disableUserThemes: true
               theme: "dark"
+            simpleTheme:
+              elements:
+              - cssText:
+                  text: |-
+                    .pipeline-new-node {
+                        display: none;
+                    }
+          jenkins:
+            noUsageStatistics: true
+            disabledAdministrativeMonitors:
+            - "jenkins.security.ResourceDomainRecommendation"
+          security:
+            scriptApproval:
+              forceSandbox: true
           unclassified:
             openTelemetry:
               configurationProperties: |-
@@ -194,11 +205,13 @@ jenkins:
       - pipeline-utility-steps
       - configuration-as-code
       - warnings-ng
+      - text-finder
       - antisamy-markup-formatter
       - prometheus
       - htmlpublisher
       - build-discarder
       - dark-theme
+      - simple-theme-plugin
       - matrix-auth
       - oic-auth
       - opentelemetry

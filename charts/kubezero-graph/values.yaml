@@ -17,6 +17,7 @@ neo4j:
     neo4j:
       enabled: false
 
+  # no metrics support in the community edition anyways
   serviceMonitor:
     enabled: false
 

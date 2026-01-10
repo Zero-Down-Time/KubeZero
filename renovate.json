@@ -18,5 +18,13 @@
     }
   ],
   "ignorePaths": ["charts/*/charts/**"],
-  "enabledManagers": ["dockerfile", "helmv3", "helm-values"]
+  "enabledManagers": ["dockerfile", "helmv3", "helm-values"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^values\\.ya?ml$", "^Chart\\.yaml$"],
+      "matchStrings": ["# renovate: datasource=(?<datasource>[^ ]+)(?: depName=(?<depName>[^ ]+))?(?: packageName=(?<packageName>[^ ]+))?(?: versioning=(?<versioning>[^ ]+))?(?: registryUrl=(?<registryUrl>[^ ]+))?\\n_?pkgver=(?<currentValue>.*)"
+      ]
+    }
+  ]
 }

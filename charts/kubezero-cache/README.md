@@ -1,6 +1,6 @@
 # kubezero-cache
 
-![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Cache module
 
@@ -51,7 +51,7 @@ Kubernetes: `>= 1.30.0-0`
 | redis-replication.redisVault.enabled | bool | `false` |  |
 | redis-replication.redisVault.env | list | `[]` |  |
 | redis-replication.redisVault.image.repository | string | `"public.ecr.aws/zero-downtime/redis-vault"` |  |
-| redis-replication.redisVault.image.tag | string | `"v0.1.8"` |  |
+| redis-replication.redisVault.image.tag | string | `"v0.2.0"` |  |
 | redis-replication.redisVault.resources.requests.cpu | string | `"10m"` |  |
 | redis-replication.redisVault.resources.requests.memory | string | `"16Mi"` |  |
 | redis-replication.serviceMonitor.enabled | bool | `false` |  |
