@@ -9,21 +9,41 @@
   "prConcurrentLimit": 0,
   "packageRules": [
     {
-      "matchDatasources": ["helm", "docker"],
-      "matchManagers": ["helmv3", "helm-values"],
+      "matchDatasources": [
+        "helm",
+        "docker"
+      ],
+      "matchManagers": [
+        "helmv3",
+        "helm-values"
+      ],
       "additionalBranchPrefix": "{{parentDir}}-",
-      "matchFileNames": ["charts/*/Chart.yaml"],
+      "matchFileNames": [
+        "charts/*/Chart.yaml"
+      ],
       "groupName": "{{parentDir}}-dependencies",
       "bumpVersion": "patch"
     }
   ],
-  "ignorePaths": ["charts/*/charts/**"],
-  "enabledManagers": ["dockerfile", "helmv3", "helm-values"],
+  "ignorePaths": [
+    "charts/*/charts/**"
+  ],
+  "enabledManagers": [
+    "dockerfile",
+    "helmv3",
+    "helm-values",
+    "custom.regex"
+  ],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^values\\.ya?ml$", "^Chart\\.yaml$"],
-      "matchStrings": ["# renovate: datasource=(?<datasource>[^ ]+)(?: depName=(?<depName>[^ ]+))\\n.*?:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"]
+      "managerFilePatterns": [
+        "/values\\.ya?ml/",
+        "/Chart\\.yaml/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[^ ]+)(?: depName=(?<depName>[^ ]+))\\n.*?:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ]
     }
   ]
 }
