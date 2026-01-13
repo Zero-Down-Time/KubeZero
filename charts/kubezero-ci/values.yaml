@@ -220,11 +220,10 @@ jenkins:
     create: true
     name: jenkins-podman-aws
 
-  # Preconfigure agents to use zdt podman requires fuse/overlayfs
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.8.1
+      tag: v0.8.2
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false
@@ -269,7 +268,6 @@ jenkins:
             limits:
               cpu: "4"
               memory: "6144Mi"
-              github.com/fuse: 1
           volumeMounts:
           - name: host-registries-conf
             mountPath: "/home/jenkins/.config/containers/registries.conf"

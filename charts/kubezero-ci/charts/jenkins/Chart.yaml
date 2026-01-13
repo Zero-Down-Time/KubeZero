@@ -1,7 +1,7 @@
 annotations:
   artifacthub.io/category: integration-delivery
   artifacthub.io/changes: |
-    - Update `kubernetes` to version `4398.vb_b_33d9e7fe23`
+    - Added default fsGroupChangePolicy value, allow overriding in accordance to current deprecation plans
   artifacthub.io/images: |
     - name: jenkins
       image: docker.io/jenkins/jenkins:2.528.3-jdk21
@@ -46,4 +46,4 @@ sources:
 - https://github.com/maorfr/kube-tasks
 - https://github.com/jenkinsci/configuration-as-code-plugin
 type: application
-version: 5.8.114
+version: 5.8.116
