@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-ci
 description: KubeZero umbrella chart for all things CI
 type: application
-version: 0.9.4
+version: 0.9.5
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -26,7 +26,7 @@ dependencies:
     repository: https://charts.jenkins.io
     condition: jenkins.enabled
   - name: renovate
-    version: 45.69.4
+    version: 45.74.2
     repository: https://docs.renovatebot.com/helm-charts
     condition: renovate.enabled
 kubeVersion: ">= 1.30.0"
