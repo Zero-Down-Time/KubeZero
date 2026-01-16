@@ -223,7 +223,7 @@ jenkins:
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.8.2
+      tag: v0.8.3
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false
@@ -277,6 +277,14 @@ jenkins:
           hostPath:
             path: /etc/containers/registries.conf
             type: File
+#   additionalContainers:
+#   - sideContainerName: aws-cli
+#     image:
+#       repository: amazon/aws-cli
+#       tag: 2.32.34
+#     command: cat
+#     args: ""
+#     TTYEnabled: true
 
   rbac:
     readSecrets: true

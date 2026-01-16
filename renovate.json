@@ -33,17 +33,5 @@
     "helmv3",
     "helm-values",
     "custom.regex"
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/values\\.ya?ml/",
-        "/Chart\\.yaml/"
-      ],
-      "matchStrings": [
-        "# renovate: datasource=(?<datasource>[^ ]+)(?: depName=(?<depName>[^ ]+))\\n.*?:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
-      ]
-    }
   ]
 }
