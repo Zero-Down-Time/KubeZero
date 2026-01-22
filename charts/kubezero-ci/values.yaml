@@ -3,7 +3,7 @@ gitea:
 
   image:
     # renovate: datasource=github-releases depName=go-gitea/gitea
-    tag: 1.25.3
+    tag: 1.25.4
     rootless: true
 
   repliaCount: 1
