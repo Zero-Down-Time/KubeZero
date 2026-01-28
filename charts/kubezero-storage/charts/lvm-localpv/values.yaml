@@ -38,12 +38,12 @@ lvmNode:
   # microk8s where kubelet dir is different
   kubeletDir: "/var/lib/kubelet/"
   resources: {}
-#    limits:
-#      cpu: 10m
-#      memory: 32Mi
-#    requests:
-#      cpu: 10m
-#      memory: 32Mi
+  #    limits:
+  #      cpu: 10m
+  #      memory: 32Mi
+  #    requests:
+  #      cpu: 10m
+  #      memory: 32Mi
   ## Labels to be added to openebs-lvm node pods
   podLabels:
     app: openebs-lvm-node
@@ -64,7 +64,11 @@ lvmNode:
     burst: 0
   # Disable or enable the use of hostNetwork for the lvm node daemonset.
   hostNetwork: false
-
+  serviceMonitor:
+    enabled: false
+    # add labels to the serviceMonitor if you make use of serviceMonitorSelector in prometheus operator
+#   labels:
+#     release: prometheus
 
 # lvmController contains the configurables for
 # the lvm controller deployment
@@ -117,12 +121,12 @@ lvmController:
   annotations: {}
   podAnnotations: {}
   resources: {}
-#    limits:
-#      cpu: 10m
-#      memory: 32Mi
-#    requests:
-#      cpu: 10m
-#      memory: 32Mi
+  #    limits:
+  #      cpu: 10m
+  #      memory: 32Mi
+  #    requests:
+  #      cpu: 10m
+  #      memory: 32Mi
   ## Labels to be added to openebs-lvm controller pods
   podLabels:
     name: openebs-lvm-controller
@@ -148,11 +152,11 @@ lvmPlugin:
   image:
     # Make sure that registry name end with a '/'.
     # For example : registry.k8s.io/ is a correct value here and quay.io is incorrect
-    registry:
+    registry: docker.io/
     repository: openebs/lvm-driver
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: 1.7.0
+    tag: 1.8.0
   ioLimits:
     enabled: false
     containerRuntime: containerd

@@ -57,6 +57,51 @@ lvm-localpv:
   prometheus:
     enabled: false
 
+garage:
+  enabled: false
+
+  # Defaults are single node
+  garage:
+    dbEngine: "sqlite"
+    replicationFactor: "1"
+    compressionLevel: "3"
+    metadataAutoSnapshotInterval: "6h"
+    rpcSecret: secretref+k8s://v1/Secret/kubezero/kubezero-secrets/garage.rpcSecret
+    existingRpcSecret: garage-rpc-secret
+
+    s3:
+      api:
+        region: "local-garage"
+        rootDomain: ".s3.garage.cluster.local"
+      web:
+        rootDomain: ".web.garage.cluster.local"
+        index: "index.html"
+
+  deployment:
+    replicaCount: 1
+
+  persistence:
+    enabled: true
+    meta:
+      # storageClass: "fast-storage-class"
+      size: 384Mi
+    data:
+      # storageClass: "slow-storage-class"
+      size: 16Gi
+
+# livenessProbe:
+#   httpGet:
+#     path: /health
+#     port: 3903
+#   initialDelaySeconds: 5
+#   periodSeconds: 30
+# readinessProbe:
+#   httpGet:
+#     path: /health
+#     port: 3903
+#   initialDelaySeconds: 5
+#   periodSeconds: 10
+
 k8up:
   enabled: false
 

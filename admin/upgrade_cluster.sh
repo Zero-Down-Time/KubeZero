@@ -2,7 +2,7 @@
 set -eE
 set -o pipefail
 
-KUBE_VERSION=v1.33
+KUBE_VERSION=v1.34
 
 ARGO_APP=${1:-/tmp/new-kubezero-argoapp.yaml}
 
@@ -45,6 +45,7 @@ cluster_modules() {
 
 backup() {
   # Trigger backup of upgraded cluster state
+  echo "Backing up cluster state ..."
   kubectl create job --from=cronjob/kubezero-backup kubezero-backup-$KUBE_VERSION -n kube-system
   while true; do
     kubectl wait --for=condition=complete job/kubezero-backup-$KUBE_VERSION -n kube-system 2>/dev/null && kubectl delete job kubezero-backup-$KUBE_VERSION -n kube-system && break
@@ -64,18 +65,18 @@ control_plane_healthy() {
 
 control_plane_healthy
 
+# backup
+
 [ "$ARGOCD" == "true" ] && disable_argo
 
 control_plane_phase1
 
 control_plane_healthy
 
-echo "Replace controller nodes first to not stall out V1.32 controllers ... <return> to continue"
-read -r
+#echo "Replace controller nodes first to not stall out V1.32 controllers ... <return> to continue"
+#read -r
 
 cluster_modules
-
-backup
 
 echo "Once ALL nodes, incl. workers, ALL, are running on $KUBE_VERSION <return> to continue"
 read -r

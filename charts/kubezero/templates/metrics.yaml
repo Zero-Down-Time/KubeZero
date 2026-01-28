@@ -1,5 +1,14 @@
 {{- define "_kube-prometheus-stack" }}
 
+kube-state-metrics:
+  enabled: true
+  {{- if eq .global.platform "aws" }}
+  {{- include "kubezero-lib.control-plane" . | nindent 2 }}
+  {{- end }}
+
+kubeStateMetrics:
+  enabled: true
+
 {{- if eq .global.platform "aws" }}
 alertmanager:
   enabled: true
@@ -24,10 +33,29 @@ alertmanager:
 {{- end }}
 
 {{- if ne .global.platform "gke" }}
-grafana:
+coreDns:
+  enabled: true
+kubeApiServer:
+  enabled: true
+kubeEtcd:
+  enabled: true
+kubeControllerManager:
+  enabled: true
+kubeScheduler:
+  enabled: true
+kubelet:
+  enabled: true
+prometheusOperator:
+  enabled: true
+  admissionWebhooks:
+    certManager:
+      enabled: true
+prometheus-node-exporter:
+  enabled: true
+nodeExporter:
   enabled: true
 
-kube-state-metrics:
+grafana:
   enabled: true
 
 prometheus:
@@ -131,12 +159,8 @@ istio:
 {{- end }}
 
 kube-prometheus-stack:
-  {{- if ne .Values.global.platform "gke" }}
   enabled: true
   {{- toYaml ( merge ( include "_kube-prometheus-stack" .Values | fromYaml ) ( index .Values "metrics" "kube-prometheus-stack" ) ) | nindent 2 }}
-  {{- else }}
-  enabled: false
-  {{- end }}
 
 prometheus-adapter:
   {{- if ne .Values.global.platform "gke" }}

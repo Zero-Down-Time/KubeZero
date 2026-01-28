@@ -1,0 +1,63 @@
+diff '--color=auto' -rtuN charts/garage.orig/templates/workload.yaml charts/garage/templates/workload.yaml
+--- charts/garage.orig/templates/workload.yaml	2026-01-26 15:46:07.325593274 +0000
++++ charts/garage/templates/workload.yaml	2026-01-26 15:47:16.399344814 +0000
+@@ -30,26 +30,6 @@
+       serviceAccountName: {{ include "garage.serviceAccountName" . }}
+       securityContext:
+         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+-      initContainers:
+-        # Copies garage.toml from configmap to temporary etc volume and replaces RPC secret placeholder
+-        - name: {{ .Chart.Name }}-init
+-          image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+-          imagePullPolicy: {{ .Values.initImage.pullPolicy }}
+-          command: ["sh", "-c", "sed \"s/__RPC_SECRET_REPLACE__/$RPC_SECRET/\" /mnt/garage.toml > /mnt/etc/garage.toml"]
+-          env:
+-            - name: RPC_SECRET
+-              valueFrom:
+-                secretKeyRef:
+-                  name: {{ include "garage.rpcSecretName" . }}
+-                  key: rpcSecret
+-          securityContext:
+-            {{- toYaml .Values.securityContext | nindent 12 }}
+-          volumeMounts:
+-            - name: configmap
+-              mountPath: /mnt/garage.toml
+-              subPath: garage.toml
+-            - name: etc
+-              mountPath: /mnt/etc
+       containers:
+         - name: {{ .Chart.Name }}
+           securityContext:
+@@ -63,8 +43,13 @@
+               name: web-api
+             - containerPort: 3903
+               name: admin
+-          {{- with .Values.environment }}
+           env:
++            - name: GARAGE_RPC_SECRET
++              valueFrom:
++                secretKeyRef:
++                  name: {{ include "garage.rpcSecretName" . }}
++                  key: rpcSecret
++          {{- with .Values.environment }}
+             {{- toYaml . | nindent 12 }}
+           {{- end }}
+           volumeMounts:
+@@ -72,7 +57,7 @@
+               mountPath: /mnt/meta
+             - name: data
+               mountPath: /mnt/data
+-            - name: etc
++            - name: configmap
+               mountPath: /etc/garage.toml
+               subPath: garage.toml
+           {{- with .Values.extraVolumeMounts }}
+@@ -92,8 +77,6 @@
+         - name: configmap
+           configMap:
+             name: {{ include "garage.fullname" . }}-config
+-        - name: etc
+-          emptyDir: {}
+         {{- if .Values.persistence.enabled }}
+         {{- if eq .Values.deployment.kind "DaemonSet" }}
+         - name: meta

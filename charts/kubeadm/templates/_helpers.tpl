@@ -1,9 +1,9 @@
 {{- /* Feature gates for all control plane components */ -}}
 {{- /* Issues: MemoryQoS */ -}}
-{{- /* DisableAllocatorDualWrite for now until we restrict IP ranges */ -}}
 {{- /* v1.28: PodAndContainerStatsFromCRI still not working */ -}}
+{{- /* v1.34: MutatingAdmissionPolicy, CoordinatedLeaderElection are causing startup issues */ -}}
 {{- define "kubeadm.featuregates" }}
-{{- $gates := list "CustomCPUCFSQuotaPeriod" "VolumeAttributesClass" "MutatingAdmissionPolicy" "ListFromCacheSnapshot" "DisableAllocatorDualWrite"}}
+{{- $gates := list "CustomCPUCFSQuotaPeriod" "EnvFiles" }}
 {{- if eq .return "csv" }}
 {{- range $key := $gates }}
 {{- $key }}=true,

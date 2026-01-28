@@ -8,25 +8,26 @@ kube-prometheus-stack:
     create: false
 
   coreDns:
-    enabled: true
+    enabled: false
   kubeDns:
     enabled: false
-
   kubeApiServer:
-    enabled: true
+    enabled: false
   kubeStateMetrics:
-    enabled: true
+    enabled: false
   kubeProxy:
+    enabled: false
+  nodeExporter:
     enabled: false
 
   kubeEtcd:
-    enabled: true
+    enabled: false
     service:
       port: 2381
       targetPort: 2381
 
   kubeControllerManager:
-    enabled: true
+    enabled: false
     service:
       port: 10257
       targetPort: 10257
@@ -35,7 +36,7 @@ kube-prometheus-stack:
       insecureSkipVerify: true
 
   kubeScheduler:
-    enabled: true
+    enabled: false
     service:
       port: 10259
       targetPort: 10259
@@ -44,13 +45,13 @@ kube-prometheus-stack:
       insecureSkipVerify: true
 
   kubelet:
-    enabled: true
+    enabled: false
     serviceMonitor:
       # removed with 1.18, but still required for all container metrics ??
       cAdvisor: true
 
   prometheusOperator:
-    enabled: true
+    enabled: false
     logFormat: json
 
     # Run on controller nodes
@@ -68,9 +69,10 @@ kube-prometheus-stack:
 
     admissionWebhooks:
       certManager:
-        enabled: true
+        enabled: false
 
   prometheus-node-exporter:
+    enabled: false
     hostRootFsMount:
       enabled: false
     prometheus:
@@ -148,8 +150,8 @@ kube-prometheus-stack:
       #  disable_signout_menu: true
       auth.anonymous:
         enabled: true
-      users:
-        default_theme: tron
+#     users:
+#       default_theme: tron
       dashboards:
         min_refresh_interval: "30s"
         default_home_dashboard_path: '/tmp/dashboards/KubeZero/home.json'
@@ -202,11 +204,6 @@ kube-prometheus-stack:
   kube-state-metrics:
     enabled: false
 
-    tolerations:
-    - key: node-role.kubernetes.io/control-plane
-      effect: NoSchedule
-    nodeSelector:
-      node-role.kubernetes.io/control-plane: ""
     collectors:
       - certificatesigningrequests
       - configmaps

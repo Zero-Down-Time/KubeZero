@@ -59,11 +59,15 @@ Kubernetes: `>= 1.30.0`
 | gitea.extraVolumes[1].configMap.name | string | `"gitea-kubezero-ci-templates"` |  |
 | gitea.extraVolumes[1].name | string | `"gitea-templates"` |  |
 | gitea.gitea.admin.existingSecret | string | `"gitea-admin-secret"` |  |
+| gitea.gitea.config."service.explore".DISABLE_USERS_PAGE | string | `"true"` |  |
+| gitea.gitea.config."service.explore".REQUIRE_SIGNIN_VIEW | string | `"true"` |  |
 | gitea.gitea.config."ssh.minimum_key_sizes".RSA | int | `2047` |  |
 | gitea.gitea.config.cache.ADAPTER | string | `"memory"` |  |
 | gitea.gitea.config.database.DB_TYPE | string | `"sqlite3"` |  |
 | gitea.gitea.config.log.LEVEL | string | `"warn"` |  |
 | gitea.gitea.config.queue.TYPE | string | `"level"` |  |
+| gitea.gitea.config.service.DEFAULT_ORG_VISIBILITY | string | `"private"` |  |
+| gitea.gitea.config.service.DISABLE_REGISTRATION | string | `"true"` |  |
 | gitea.gitea.config.session.PROVIDER | string | `"memory"` |  |
 | gitea.gitea.config.ui.DEFAULT_THEME | string | `"gitea-dark"` |  |
 | gitea.gitea.config.ui.THEMES | string | `"gitea-light,gitea-dark"` |  |
@@ -71,7 +75,7 @@ Kubernetes: `>= 1.30.0`
 | gitea.gitea.metrics.enabled | bool | `false` |  |
 | gitea.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | gitea.image.rootless | bool | `true` |  |
-| gitea.image.tag | string | `"1.25.3"` |  |
+| gitea.image.tag | string | `"1.25.4"` |  |
 | gitea.istio.blockApi | bool | `false` |  |
 | gitea.istio.enabled | bool | `false` |  |
 | gitea.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |

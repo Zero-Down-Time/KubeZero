@@ -73,6 +73,12 @@ gitea:
         ADAPTER: memory
       session:
         PROVIDER: memory
+      service:
+        DISABLE_REGISTRATION: "true"
+        DEFAULT_ORG_VISIBILITY: "private"
+      service.explore:
+        REQUIRE_SIGNIN_VIEW: "true"
+        DISABLE_USERS_PAGE: "true"
       queue:
         TYPE: level
       ui:
@@ -108,9 +114,8 @@ jenkins:
 
   controller:
     image:
+      # renovate: datasource=docker depName=jenkins/jenkins
       tag: 2.528.3-lts-alpine
-      #tag: lts-alpine-jdk21
-      #tagLabel: alpine
     disableRememberMe: true
     prometheus:
       enabled: false
@@ -154,6 +159,9 @@ jenkins:
             themeManager:
               disableUserThemes: true
               theme: "dark"
+            loginTheme:
+              branding: "https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg"
+              useDefaultTheme: true
             simpleTheme:
               elements:
               - cssText:
@@ -211,6 +219,7 @@ jenkins:
       - htmlpublisher
       - build-discarder
       - dark-theme
+      - login-theme
       - simple-theme-plugin
       - matrix-auth
       - oic-auth
@@ -223,7 +232,7 @@ jenkins:
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.8.3
+      tag: v0.8.4
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false

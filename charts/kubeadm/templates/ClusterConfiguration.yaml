@@ -2,8 +2,7 @@ apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
 kubernetesVersion: {{ .Chart.Version }}
 clusterName: {{ .Values.global.clusterName }}
-featureGates:
-  NodeLocalCRISocket: true
+#featureGates:
 controlPlaneEndpoint: {{ .Values.api.endpoint }}
 proxy:
   disabled: true
@@ -11,7 +10,9 @@ networking:
   podSubnet: 10.244.0.0/16
 etcd:
   local:
-    # imageTag: 3.5.12-0
+    {{- with .Values.etcd.imageTag }}
+    imageTag: {{ . }}
+    {{- end }}
     extraArgs:
       - name: advertise-client-urls
         value: https://{{ .Values.etcd.nodeName }}:2379
@@ -39,6 +40,11 @@ etcd:
         value: "671088640" # 640MB max size
       - name: max-wals
         value: "3"
+      # Allow some time on slow HDDs, defaults are 100 and 1000
+      - name: heartbeat-interval
+        value: "250"
+      - name: election-timeout
+        value: "3000"
       ### DNS discovery
       #- name: discovery-srv
       #  value: {{ .Values.domain }}
@@ -136,13 +142,17 @@ apiServer:
     - name: logging-format
       value: json
     # Required for MutatingAdmissionPolicy
-    # Required for VolumeAttributesClass
-    # Required for CoordinatedLeaderElection - coordination.k8s.io/v1alpha1=true
-    - name: runtime-config
-      value: admissionregistration.k8s.io/v1alpha1=true,storage.k8s.io/v1beta1=true
+    # Required for CoordinatedLeaderElection
+    #- name: runtime-config
+    #  value: admissionregistration.k8s.io/v1alpha1=true,coordination.k8s.io/v1alpha1=true
     {{- with .Values.api.extraArgs }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+    # Reduce concurrency to limit burstsm defaults are 200 and 400
+    - name: max-mutating-requests-inflight
+      value: "100"
+    - name: max-requests-inflight
+      value: "200"
   extraVolumes:
   - name: kubezero-apiserver
     hostPath: /etc/kubernetes/apiserver
