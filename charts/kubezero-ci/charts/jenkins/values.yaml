@@ -32,6 +32,9 @@ renderHelmLabels: true
 # -- Configures extra labels for the agent all objects
 extraLabels: {}
 
+# -- Configures extra manifests
+extraObjects:
+
 controller:
   # -- Used for label app.kubernetes.io/component
   componentName: "jenkins-controller"
@@ -411,10 +414,10 @@ controller:
   # Plugins will be installed during Jenkins controller start
   # -- List of Jenkins plugins to install. If you don't want to install plugins, set it to `false`
   installPlugins:
-    - kubernetes:4398.vb_b_33d9e7fe23
+    - kubernetes:4423.vb_59f230b_ce53
     - workflow-aggregator:608.v67378e9d3db_1
-    - git:5.8.1
-    - configuration-as-code:2006.v001a_2ca_6b_574
+    - git:5.9.0
+    - configuration-as-code:2036.v0b_c2de701dcb_
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
   # -- Download the minimum required version or latest version of all dependencies
@@ -576,8 +579,10 @@ controller:
         # -- Repository of the image that triggers the reload
         repository: kiwigrid/k8s-sidecar
         # -- Tag for the image that triggers the reload
-        tag: 1.30.7
+        tag: 2.5.0
       imagePullPolicy: IfNotPresent
+      # -- Port for sidecar health probes
+      healthPort: 8060
       resources:
         {}
         #   limits:
@@ -714,6 +719,9 @@ controller:
     #       {{ template "jenkins.fullname" . }}
     #     # Don't use string here, use only integer value!
     #     servicePort: 8080
+
+    # -- Ingress rule pathType, choices are: Exact, ImplementationSpecific, Prefix
+    pathType: ImplementationSpecific
 
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
     # For Kubernetes v1.19+, use 'networking.k8s.io/v1'
@@ -971,7 +979,7 @@ agent:
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3355.v388858a_47b_33-3"
+    tag: "3355.v388858a_47b_33-7"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"

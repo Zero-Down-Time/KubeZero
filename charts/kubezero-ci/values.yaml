@@ -121,7 +121,7 @@ jenkins:
       enabled: false
     testEnabled: false
     enableRawHtmlMarkupFormatter: true
-    javaOpts: "-XX:+UseContainerSupport -XX:+UseStringDeduplication -Dhudson.model.DirectoryBrowserSupport.CSP=\"sandbox allow-popups; default-src 'none'; img-src 'self' cdn.zero-downtime.net; style-src 'unsafe-inline';\""
+    javaOpts: "-XX:+UseContainerSupport -XX:+UseStringDeduplication"
     jenkinsOpts: "--sessionTimeout=300 --sessionEviction=10800"
 
     # until https://github.com/kiwigrid/k8s-sidecar/issues/400 is fixed
@@ -161,6 +161,10 @@ jenkins:
               theme: "dark"
             loginTheme:
               branding: "https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg"
+              footer: |-
+                <div style="text-align:center;">
+                Zero Down Time edition
+                </div>
               useDefaultTheme: true
             simpleTheme:
               elements:
@@ -169,6 +173,11 @@ jenkins:
                     .pipeline-new-node {
                         display: none;
                     }
+                    .jenkins-header .app-jenkins-logo #jenkins-head-icon {
+                        content: url('https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg');
+                    }
+              - faviconUrl:
+                  url: "https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg"
           jenkins:
             noUsageStatistics: true
             disabledAdministrativeMonitors:
@@ -176,6 +185,18 @@ jenkins:
           security:
             scriptApproval:
               forceSandbox: true
+            contentSecurityPolicy:
+              advanced:
+              - custom:
+                  rules:
+                  - allowFetch:
+                      allow:
+                        byDomain:
+                          domain: "cdn.zero-downtime.net"
+                      directive: "img-src"
+              - reporting:
+                  ignoreAnonymousReports: true
+              enforce: true
           unclassified:
             openTelemetry:
               configurationProperties: |-
@@ -218,6 +239,7 @@ jenkins:
       - prometheus
       - htmlpublisher
       - build-discarder
+      - csp
       - dark-theme
       - login-theme
       - simple-theme-plugin

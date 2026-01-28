@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.9.5](https://img.shields.io/badge/Version-0.9.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.9.6](https://img.shields.io/badge/Version-0.9.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.8.116 |
-| https://dl.gitea.io/charts/ | gitea | 12.4.0 |
-| https://docs.renovatebot.com/helm-charts | renovate | 45.74.2 |
+| https://charts.jenkins.io | jenkins | 5.8.133 |
+| https://dl.gitea.io/charts/ | gitea | 12.5.0 |
+| https://docs.renovatebot.com/helm-charts | renovate | 45.86.1 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -105,7 +105,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.garbageCollection.enabled | bool | `true` |  |
 | jenkins.agent.idleMinutes | int | `30` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
-| jenkins.agent.image.tag | string | `"v0.8.3"` |  |
+| jenkins.agent.image.tag | string | `"v0.8.4"` |  |
 | jenkins.agent.inheritYamlMergeStrategy | bool | `true` |  |
 | jenkins.agent.podName | string | `"podman-aws"` |  |
 | jenkins.agent.podRetention | string | `"Default"` |  |
@@ -119,14 +119,14 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.showRawYaml | bool | `false` |  |
 | jenkins.agent.yamlMergeStrategy | string | `"merge"` |  |
 | jenkins.agent.yamlTemplate | string | `"apiVersion: v1\nkind: Pod\nspec:\n  securityContext:\n    fsGroup: 1000\n  containers:\n  - name: jnlp\n    resources:\n      requests:\n        cpu: \"200m\"\n        memory: \"512Mi\"\n      limits:\n        cpu: \"4\"\n        memory: \"6144Mi\"\n    volumeMounts:\n    - name: host-registries-conf\n      mountPath: \"/home/jenkins/.config/containers/registries.conf\"\n      readOnly: true\n  volumes:\n  - name: host-registries-conf\n    hostPath:\n      path: /etc/containers/registries.conf\n      type: File"` |  |
-| jenkins.controller.JCasC.configScripts.zdt-settings | string | `"appearance:\n  themeManager:\n    disableUserThemes: true\n    theme: \"dark\"\n  simpleTheme:\n    elements:\n    - cssText:\n        text: |-\n          .pipeline-new-node {\n              display: none;\n          }\njenkins:\n  noUsageStatistics: true\n  disabledAdministrativeMonitors:\n  - \"jenkins.security.ResourceDomainRecommendation\"\nsecurity:\n  scriptApproval:\n    forceSandbox: true\nunclassified:\n  openTelemetry:\n    configurationProperties: |-\n      otel.exporter.otlp.protocol=grpc\n      otel.instrumentation.jenkins.web.enabled=false\n    ignoredSteps: \"dir,echo,isUnix,pwd,properties\"\n    #endpoint: \"telemetry-jaeger-collector.telemetry:4317\"\n    exportOtelConfigurationAsEnvironmentVariables: false\n    #observabilityBackends:\n    # - jaeger:\n    #     jaegerBaseUrl: \"https://jaeger.example.com\"\n    #     name: \"KubeZero Jaeger\"\n    serviceName: \"Jenkins\"\n  buildDiscarders:\n    configuredBuildDiscarders:\n    - \"jobBuildDiscarder\"\n    - defaultBuildDiscarder:\n        discarder:\n          logRotator:\n            artifactDaysToKeepStr: \"32\"\n            artifactNumToKeepStr: \"10\"\n            daysToKeepStr: \"100\"\n            numToKeepStr: \"10\"\n"` |  |
+| jenkins.controller.JCasC.configScripts.zdt-settings | string | `"appearance:\n  themeManager:\n    disableUserThemes: true\n    theme: \"dark\"\n  loginTheme:\n    branding: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\n    useDefaultTheme: true\n  simpleTheme:\n    elements:\n    - cssText:\n        text: |-\n          .pipeline-new-node {\n              display: none;\n          }\njenkins:\n  noUsageStatistics: true\n  disabledAdministrativeMonitors:\n  - \"jenkins.security.ResourceDomainRecommendation\"\nsecurity:\n  scriptApproval:\n    forceSandbox: true\nunclassified:\n  openTelemetry:\n    configurationProperties: |-\n      otel.exporter.otlp.protocol=grpc\n      otel.instrumentation.jenkins.web.enabled=false\n    ignoredSteps: \"dir,echo,isUnix,pwd,properties\"\n    #endpoint: \"telemetry-jaeger-collector.telemetry:4317\"\n    exportOtelConfigurationAsEnvironmentVariables: false\n    #observabilityBackends:\n    # - jaeger:\n    #     jaegerBaseUrl: \"https://jaeger.example.com\"\n    #     name: \"KubeZero Jaeger\"\n    serviceName: \"Jenkins\"\n  buildDiscarders:\n    configuredBuildDiscarders:\n    - \"jobBuildDiscarder\"\n    - defaultBuildDiscarder:\n        discarder:\n          logRotator:\n            artifactDaysToKeepStr: \"32\"\n            artifactNumToKeepStr: \"10\"\n            daysToKeepStr: \"100\"\n            numToKeepStr: \"10\"\n"` |  |
 | jenkins.controller.containerEnv[0].name | string | `"OTEL_LOGS_EXPORTER"` |  |
 | jenkins.controller.containerEnv[0].value | string | `"none"` |  |
 | jenkins.controller.containerEnv[1].name | string | `"OTEL_METRICS_EXPORTER"` |  |
 | jenkins.controller.containerEnv[1].value | string | `"none"` |  |
 | jenkins.controller.disableRememberMe | bool | `true` |  |
 | jenkins.controller.enableRawHtmlMarkupFormatter | bool | `true` |  |
-| jenkins.controller.image.tag | string | `"2.528.3-lts-alpine"` |  |
+| jenkins.controller.image.tag | string | `"2.541.1-lts-alpine"` |  |
 | jenkins.controller.initContainerResources.limits.memory | string | `"1024Mi"` |  |
 | jenkins.controller.initContainerResources.requests.cpu | string | `"50m"` |  |
 | jenkins.controller.initContainerResources.requests.memory | string | `"256Mi"` |  |
@@ -139,11 +139,12 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.installPlugins[15] | string | `"htmlpublisher"` |  |
 | jenkins.controller.installPlugins[16] | string | `"build-discarder"` |  |
 | jenkins.controller.installPlugins[17] | string | `"dark-theme"` |  |
-| jenkins.controller.installPlugins[18] | string | `"simple-theme-plugin"` |  |
-| jenkins.controller.installPlugins[19] | string | `"matrix-auth"` |  |
+| jenkins.controller.installPlugins[18] | string | `"login-theme"` |  |
+| jenkins.controller.installPlugins[19] | string | `"simple-theme-plugin"` |  |
 | jenkins.controller.installPlugins[1] | string | `"kubernetes-credentials-provider"` |  |
-| jenkins.controller.installPlugins[20] | string | `"oic-auth"` |  |
-| jenkins.controller.installPlugins[21] | string | `"opentelemetry"` |  |
+| jenkins.controller.installPlugins[20] | string | `"matrix-auth"` |  |
+| jenkins.controller.installPlugins[21] | string | `"oic-auth"` |  |
+| jenkins.controller.installPlugins[22] | string | `"opentelemetry"` |  |
 | jenkins.controller.installPlugins[2] | string | `"workflow-aggregator"` |  |
 | jenkins.controller.installPlugins[3] | string | `"git"` |  |
 | jenkins.controller.installPlugins[4] | string | `"git-forensics"` |  |

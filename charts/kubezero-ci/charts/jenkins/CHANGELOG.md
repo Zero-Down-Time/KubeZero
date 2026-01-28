@@ -12,6 +12,74 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.8.133
+
+Update `configuration-as-code` to version `2036.v0b_c2de701dcb_`
+
+## 5.8.132
+
+Update `git` to version `5.9.0`
+
+## 5.8.131
+
+Add `extraObjects`
+
+## 5.8.130
+
+Update `jenkins/inbound-agent` to version `3355.v388858a_47b_33-7`
+
+## 5.8.129
+
+Update `kubernetes` to version `4423.vb_59f230b_ce53`
+
+## 5.8.128
+
+Add `ingress.resourceRootUrl` to ingress' `spec.tls.hosts`
+
+## 5.8.127
+
+Update `jenkins/inbound-agent` to version `3355.v388858a_47b_33-6`
+
+## 5.8.126
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `2.5.0`
+
+## 5.8.125
+
+Update `jenkins/jenkins` to version `2.541.1-jdk21`
+
+## 5.8.124
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `2.4.0`
+
+## 5.8.123
+
+Update `kubernetes` to version `4419.v36079e3b_eb_5b_`
+
+## 5.8.122
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `2.3.0`
+
+## 5.8.121
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `2.1.4`
+
+## 5.8.120
+
+Update `configuration-as-code` to version `2031.veb_a_fdda_b_3ffd`
+
+## 5.8.119
+
+Update `kubernetes` to version `4416.v2ea_b_5372da_a_e`
+
+## 5.8.118
+
+Update `jenkins/inbound-agent` to version `3355.v388858a_47b_33-5`
+
+## 5.8.117
+
+Added value to override default ingress pathType
+
 ## 5.8.116
 
 Added default fsGroupChangePolicy value, allow overriding in accordance to current deprecation plans
