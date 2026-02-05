@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-operators
 description: Various operators supported by KubeZero
 type: application
-version: 0.2.8
+version: 0.2.9
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -19,11 +19,11 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: eck-operator
-    version: 3.2.0
+    version: 3.3.0
     repository: https://helm.elastic.co
     condition: eck-operator.enabled
   - name: cloudnative-pg
-    version: 0.27.0
+    version: 0.27.1
     repository: https://cloudnative-pg.github.io/charts
     condition: cloudnative-pg.enabled
   - name: strimzi-kafka-operator
