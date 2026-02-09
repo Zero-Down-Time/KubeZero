@@ -25,7 +25,7 @@ argo-events:
       # do NOT use -alpine tag as the entrypoint differs
       versions:
         - version: 2.10.11
-          natsImage: nats:2.11.4-scratch
+          natsImage: nats:2.12.4-scratch
           metricsExporterImage: natsio/prometheus-nats-exporter:0.17.3
           configReloaderImage: natsio/nats-server-config-reloader:0.18.0
           startCommand: /nats-server
