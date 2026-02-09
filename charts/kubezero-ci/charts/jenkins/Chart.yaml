@@ -1,14 +1,14 @@
 annotations:
   artifacthub.io/category: integration-delivery
   artifacthub.io/changes: |
-    - Update `configuration-as-code` to version `2036.v0b_c2de701dcb_`
+    - Update `jenkins/inbound-agent` to version `3355.v388858a_47b_33-11`
   artifacthub.io/images: |
     - name: jenkins
       image: docker.io/jenkins/jenkins:2.541.1-jdk21
     - name: k8s-sidecar
       image: docker.io/kiwigrid/k8s-sidecar:2.5.0
     - name: inbound-agent
-      image: jenkins/inbound-agent:3355.v388858a_47b_33-7
+      image: jenkins/inbound-agent:3355.v388858a_47b_33-11
   artifacthub.io/license: Apache-2.0
   artifacthub.io/links: |
     - name: Chart Source
@@ -46,4 +46,4 @@ sources:
 - https://github.com/maorfr/kube-tasks
 - https://github.com/jenkinsci/configuration-as-code-plugin
 type: application
-version: 5.8.133
+version: 5.8.137

@@ -254,7 +254,7 @@ jenkins:
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.8.4
+      tag: v0.8.5
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false
@@ -350,6 +350,7 @@ renovate:
 
   env:
     LOG_FORMAT: json
+    RENOVATE_USE_CLOUD_METADATA_SERVICES: "false"
   cronjob:
     concurrencyPolicy: Forbid
     jobBackoffLimit: 2
