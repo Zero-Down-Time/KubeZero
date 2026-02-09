@@ -20,7 +20,7 @@ Kubernetes: `>= 1.30.0-0`
 |------------|------|---------|
 | https://argoproj.github.io/argo-helm | argo-cd | 9.0.3 |
 | https://argoproj.github.io/argo-helm | argo-events | 2.4.16 |
-| https://argoproj.github.io/argo-helm | argocd-image-updater | 0.13.0 |
+| https://argoproj.github.io/argo-helm | argocd-image-updater | 1.1.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 
 ## Values
@@ -32,10 +32,10 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.configs.cm."resource.customizations" | string | `"argoproj.io/Application:\n  health.lua: |\n    hs = {}\n    hs.status = \"Progressing\"\n    hs.message = \"\"\n    if obj.status ~= nil then\n      if obj.status.health ~= nil then\n        hs.status = obj.status.health.status\n        if obj.status.health.message ~= nil then\n          hs.message = obj.status.health.message\n        end\n      end\n    end\n    return hs\n"` |  |
 | argo-cd.configs.cm."server.rbac.log.enforce.enable" | string | `nil` |  |
 | argo-cd.configs.cm."timeout.reconciliation" | string | `"300s"` |  |
-| argo-cd.configs.cm."ui.bannercontent" | string | `"KubeZero v1.33 - Release notes"` |  |
+| argo-cd.configs.cm."ui.bannercontent" | string | `"KubeZero v1.34 - Release notes"` |  |
 | argo-cd.configs.cm."ui.bannerpermanent" | string | `"true"` |  |
 | argo-cd.configs.cm."ui.bannerposition" | string | `"bottom"` |  |
-| argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.33"` |  |
+| argo-cd.configs.cm."ui.bannerurl" | string | `"https://kubezero.com/releases/v1.34"` |  |
 | argo-cd.configs.cm.installationID | string | `"KubeZero-ArgoCD"` |  |
 | argo-cd.configs.cm.url | string | `"https://argocd.example.com"` |  |
 | argo-cd.configs.params."controller.diff.server.side" | string | `"true"` |  |

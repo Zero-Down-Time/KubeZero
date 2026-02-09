@@ -57,6 +57,7 @@ envoy-ratelimit:
     jsonPointers:
     - /webhooks/0/failurePolicy
     - /webhooks/1/failurePolicy
+    - /metadata/generation
 
 {{- end }}
 

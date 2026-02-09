@@ -1,6 +1,6 @@
 # kubezero-istio-gateway
 
-![Version: 0.27.5](https://img.shields.io/badge/Version-0.27.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.28.3](https://img.shields.io/badge/Version-0.28.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio gateways
 
@@ -21,7 +21,7 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://istio-release.storage.googleapis.com/charts | gateway | 1.27.5 |
+| https://istio-release.storage.googleapis.com/charts | gateway | 1.28.3 |
 
 ## Values
 

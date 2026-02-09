@@ -3,6 +3,9 @@ global:
 
   logAsJson: true
 
+  nativeNftables: true
+  networkPolicy:
+    enabled: true
   defaultPodDisruptionBudget:
     enabled: false
 

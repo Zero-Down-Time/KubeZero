@@ -1,6 +1,6 @@
 # kubezero-istio
 
-![Version: 0.27.5](https://img.shields.io/badge/Version-0.27.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.28.3](https://img.shields.io/badge/Version-0.28.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio
 
@@ -22,9 +22,9 @@ Kubernetes: `>= 1.30.0-0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | envoy-ratelimit | 0.1.3 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://istio-release.storage.googleapis.com/charts | base | 1.27.5 |
-| https://istio-release.storage.googleapis.com/charts | istiod | 1.27.5 |
-| https://kiali.org/helm-charts | kiali-server | 2.17.0 |
+| https://istio-release.storage.googleapis.com/charts | base | 1.28.3 |
+| https://istio-release.storage.googleapis.com/charts | istiod | 1.28.3 |
+| https://kiali.org/helm-charts | kiali-server | 2.21.0 |
 
 ## Values
 
@@ -33,6 +33,8 @@ Kubernetes: `>= 1.30.0-0`
 | envoy-ratelimit.enabled | bool | `false` |  |
 | global.defaultPodDisruptionBudget.enabled | bool | `false` |  |
 | global.logAsJson | bool | `true` |  |
+| global.nativeNftables | bool | `true` |  |
+| global.networkPolicy.enabled | bool | `true` |  |
 | global.variant | string | `"distroless"` |  |
 | istiod.autoscaleEnabled | bool | `false` |  |
 | istiod.meshConfig.accessLogEncoding | string | `"JSON"` |  |
