@@ -103,7 +103,7 @@ operators:
 metrics:
   enabled: false
   namespace: monitoring
-  targetRevision: 0.12.2
+  targetRevision: 0.12.3
   istio:
     grafana: {}
     prometheus: {}

@@ -1,6 +1,6 @@
 # kubezero-metrics
 
-![Version: 0.12.2](https://img.shields.io/badge/Version-0.12.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.12.3](https://img.shields.io/badge/Version-0.12.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Prometheus, Grafana and Alertmanager as well as all Kubernetes integrations.
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 79.5.0 |
+| https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 81.5.1 |
 | https://prometheus-community.github.io/helm-charts | prometheus-adapter | 5.2.0 |
-| https://prometheus-community.github.io/helm-charts | prometheus-pushgateway | 3.4.1 |
+| https://prometheus-community.github.io/helm-charts | prometheus-pushgateway | 3.6.0 |
 
 ## Values
 
@@ -86,7 +86,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.alertmanager.config.route.routes[0].matchers[0] | string | `"severity = none"` |  |
 | kube-prometheus-stack.alertmanager.config.route.routes[0].receiver | string | `"null"` |  |
 | kube-prometheus-stack.alertmanager.enabled | bool | `false` |  |
-| kube-prometheus-stack.coreDns.enabled | bool | `true` |  |
+| kube-prometheus-stack.coreDns.enabled | bool | `false` |  |
 | kube-prometheus-stack.crds.enabled | bool | `false` |  |
 | kube-prometheus-stack.defaultRules.create | bool | `false` |  |
 | kube-prometheus-stack.enabled | bool | `false` |  |
@@ -95,6 +95,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.grafana."grafana.ini".alerting.enabled | bool | `false` |  |
 | kube-prometheus-stack.grafana."grafana.ini".analytics.check_for_plugin_updates | bool | `false` |  |
 | kube-prometheus-stack.grafana."grafana.ini".analytics.check_for_updates | bool | `false` |  |
+| kube-prometheus-stack.grafana."grafana.ini".analytics.reporting_enabled | bool | `false` |  |
 | kube-prometheus-stack.grafana."grafana.ini".dashboards.default_home_dashboard_path | string | `"/tmp/dashboards/KubeZero/home.json"` |  |
 | kube-prometheus-stack.grafana."grafana.ini".dashboards.min_refresh_interval | string | `"30s"` |  |
 | kube-prometheus-stack.grafana."grafana.ini".date_formats.default_timezone | string | `"UTC"` |  |
@@ -147,28 +148,27 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.kube-state-metrics.collectors[8] | string | `"jobs"` |  |
 | kube-prometheus-stack.kube-state-metrics.collectors[9] | string | `"leases"` |  |
 | kube-prometheus-stack.kube-state-metrics.enabled | bool | `false` |  |
-| kube-prometheus-stack.kube-state-metrics.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
-| kube-prometheus-stack.kube-state-metrics.tolerations[0].effect | string | `"NoSchedule"` |  |
-| kube-prometheus-stack.kube-state-metrics.tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |
-| kube-prometheus-stack.kubeApiServer.enabled | bool | `true` |  |
-| kube-prometheus-stack.kubeControllerManager.enabled | bool | `true` |  |
+| kube-prometheus-stack.kubeApiServer.enabled | bool | `false` |  |
+| kube-prometheus-stack.kubeControllerManager.enabled | bool | `false` |  |
 | kube-prometheus-stack.kubeControllerManager.service.port | int | `10257` |  |
 | kube-prometheus-stack.kubeControllerManager.service.targetPort | int | `10257` |  |
 | kube-prometheus-stack.kubeControllerManager.serviceMonitor.https | bool | `true` |  |
 | kube-prometheus-stack.kubeControllerManager.serviceMonitor.insecureSkipVerify | bool | `true` |  |
 | kube-prometheus-stack.kubeDns.enabled | bool | `false` |  |
-| kube-prometheus-stack.kubeEtcd.enabled | bool | `true` |  |
+| kube-prometheus-stack.kubeEtcd.enabled | bool | `false` |  |
 | kube-prometheus-stack.kubeEtcd.service.port | int | `2381` |  |
 | kube-prometheus-stack.kubeEtcd.service.targetPort | int | `2381` |  |
 | kube-prometheus-stack.kubeProxy.enabled | bool | `false` |  |
-| kube-prometheus-stack.kubeScheduler.enabled | bool | `true` |  |
+| kube-prometheus-stack.kubeScheduler.enabled | bool | `false` |  |
 | kube-prometheus-stack.kubeScheduler.service.port | int | `10259` |  |
 | kube-prometheus-stack.kubeScheduler.service.targetPort | int | `10259` |  |
 | kube-prometheus-stack.kubeScheduler.serviceMonitor.https | bool | `true` |  |
 | kube-prometheus-stack.kubeScheduler.serviceMonitor.insecureSkipVerify | bool | `true` |  |
-| kube-prometheus-stack.kubeStateMetrics.enabled | bool | `true` |  |
-| kube-prometheus-stack.kubelet.enabled | bool | `true` |  |
+| kube-prometheus-stack.kubeStateMetrics.enabled | bool | `false` |  |
+| kube-prometheus-stack.kubelet.enabled | bool | `false` |  |
 | kube-prometheus-stack.kubelet.serviceMonitor.cAdvisor | bool | `true` |  |
+| kube-prometheus-stack.nodeExporter.enabled | bool | `false` |  |
+| kube-prometheus-stack.prometheus-node-exporter.enabled | bool | `false` |  |
 | kube-prometheus-stack.prometheus-node-exporter.hostRootFsMount.enabled | bool | `false` |  |
 | kube-prometheus-stack.prometheus-node-exporter.prometheus.monitor.relabelings[0].action | string | `"replace"` |  |
 | kube-prometheus-stack.prometheus-node-exporter.prometheus.monitor.relabelings[0].regex | string | `"^(.*)$"` |  |
@@ -193,8 +193,8 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues | bool | `false` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage | string | `"16Gi"` |  |
-| kube-prometheus-stack.prometheusOperator.admissionWebhooks.certManager.enabled | bool | `true` |  |
-| kube-prometheus-stack.prometheusOperator.enabled | bool | `true` |  |
+| kube-prometheus-stack.prometheusOperator.admissionWebhooks.certManager.enabled | bool | `false` |  |
+| kube-prometheus-stack.prometheusOperator.enabled | bool | `false` |  |
 | kube-prometheus-stack.prometheusOperator.logFormat | string | `"json"` |  |
 | kube-prometheus-stack.prometheusOperator.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | kube-prometheus-stack.prometheusOperator.resources.limits.memory | string | `"128Mi"` |  |

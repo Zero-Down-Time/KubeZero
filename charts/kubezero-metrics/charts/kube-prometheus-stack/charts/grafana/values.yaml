@@ -80,12 +80,12 @@ deploymentStrategy:
 readinessProbe:
   httpGet:
     path: /api/health
-    port: 3000
+    port: grafana
 
 livenessProbe:
   httpGet:
     path: /api/health
-    port: 3000
+    port: grafana
   initialDelaySeconds: 60
   timeoutSeconds: 30
   failureThreshold: 10
@@ -123,7 +123,7 @@ testFramework:
     # -- The Docker registry
     registry: docker.io
     repository: bats/bats
-    tag: "v1.4.1"
+    tag: "1.13.0"
   imagePullPolicy: IfNotPresent
   securityContext: {}
   containerSecurityContext: {}
@@ -145,6 +145,7 @@ dnsConfig: {}
   #     value: "2"
   #   - name: edns0
 
+hostUsers: ~
 securityContext:
   runAsNonRoot: true
   runAsUser: 472
@@ -153,6 +154,7 @@ securityContext:
 
 containerSecurityContext:
   allowPrivilegeEscalation: false
+  privileged: false
   capabilities:
     drop:
     - ALL
@@ -188,7 +190,7 @@ downloadDashboardsImage:
   # -- The Docker registry
   registry: docker.io
   repository: curlimages/curl
-  tag: 8.9.1
+  tag: 8.18.0
   sha: ""
   pullPolicy: IfNotPresent
 
@@ -279,8 +281,6 @@ hostAliases: []
 
 ingress:
   enabled: false
-  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
-  # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
   # ingressClassName: nginx
   # Values can be templated
   annotations: {}
@@ -288,19 +288,12 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   labels: {}
   path: /
-
-  # pathType is only for k8s >= 1.1=
   pathType: Prefix
 
   hosts:
     - chart-example.local
   ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
   extraPaths: []
-  # - path: /*
-  #   backend:
-  #     serviceName: ssl-redirect
-  #     servicePort: use-annotation
-  ## Or for k8s > 1.19
   # - path: /*
   #   pathType: Prefix
   #   backend:
@@ -350,6 +343,12 @@ route:
 
     ## Additional custom rules that can be added to the route
     additionalRules: []
+
+    ## httpsRedirect adds a filter for redirecting to https (HTTP 301 Moved Permanently).
+    ## To redirect HTTP traffic to HTTPS, you need to have a Gateway with both HTTP and HTTPS listeners.
+    ## Matches and filters do not take effect if enabled.
+    ## Ref. https://gateway-api.sigs.k8s.io/guides/http-redirect-rewrite/
+    httpsRedirect: false
 
 resources: {}
 #  limits:
@@ -461,7 +460,7 @@ initChownData:
     # -- The Docker registry
     registry: docker.io
     repository: library/busybox
-    tag: "1.31.1"
+    tag: "1.37.0"
     sha: ""
     pullPolicy: IfNotPresent
 
@@ -606,7 +605,7 @@ extraSecretMounts: []
   #
   # for CSI e.g. Azure Key Vault use the following
   # - name: secrets-store-inline
-  #  mountPath: /run/secrets
+  #  mountPath: /run/secrets/vault.azure.com
   #  readOnly: true
   #  csi:
   #    driver: secrets-store.csi.k8s.io
@@ -883,10 +882,10 @@ grafana.ini:
     check_for_updates: true
   log:
     mode: console
-  grafana_net:
-    url: https://grafana.net
   server:
-    domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ tpl (.Values.ingress.hosts | first) . }}{{ else }}''{{ end }}"
+    domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ tpl (.Values.ingress.hosts | first) . }}{{ else if (and .Values.route.main.enabled .Values.route.main.hostnames) }}{{ tpl (.Values.route.main.hostnames | first) . }}{{ else }}''{{ end }}"
+  unified_storage:
+    index_path: /var/lib/grafana-search/bleve
 ## grafana Authentication can be enabled with the following values on grafana.ini
  # server:
       # The full public facing url you use in browser, used for redirects and emails
@@ -959,7 +958,7 @@ sidecar:
     # -- The Docker registry
     registry: quay.io
     repository: kiwigrid/k8s-sidecar
-    tag: 1.30.10
+    tag: 2.5.0
     sha: ""
   imagePullPolicy: IfNotPresent
   resources: {}
@@ -1060,6 +1059,16 @@ sidecar:
     # This is needed if skipReload is true, to load any alerts defined at startup time.
     # Deploy the alert sidecar as an initContainer.
     initAlerts: false
+    # Use native sidecar https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+    # restartPolicy: Always
+    # # only applies to native sidecars
+    # startupProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 8080
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 5
+    #   failureThreshold: 60 # 5 minutes
     # Additional alerts sidecar volume mounts
     extraMounts: []
     # Sets the size limit of the alert sidecar emptyDir volume
@@ -1136,6 +1145,19 @@ sidecar:
     # Otherwise, it's executed as is. Shebangs known to work are #!/bin/sh and #!/usr/bin/env python
     script: null
     skipReload: false
+    # This is needed if skipReload is true, to load any dashboards defined at startup time.
+    # Deploy the dashboard sidecar as an initContainer.
+    initDashboards: false
+    # Use native sidecar https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+    # restartPolicy: Always
+    # # only applies to native sidecars
+    # startupProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 8083
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 5
+    #   failureThreshold: 60 # 5 minutes
     # watchServerTimeout: request to the server, asking it to cleanly close the connection after that.
     # defaults to 60sec; much higher values like 3600 seconds (1h) are feasible for non-Azure K8S
     # watchServerTimeout: 3600
@@ -1245,6 +1267,16 @@ sidecar:
     # This is needed if skipReload is true, to load any datasources defined at startup time.
     # Deploy the datasources sidecar as an initContainer.
     initDatasources: false
+    # Use native sidecar https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+    # restartPolicy: Always
+    # # only applies to native sidecars
+    # startupProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 8081
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 5
+    #   failureThreshold: 60 # 5 minutes
     # Additional datasources sidecar volume mounts
     extraMounts: []
     # Sets the size limit of the datasource sidecar emptyDir volume
@@ -1381,6 +1413,16 @@ sidecar:
     # Deploy the notifier sidecar as an initContainer in addition to a container.
     # This is needed if skipReload is true, to load any notifiers defined at startup time.
     initNotifiers: false
+    # Use native sidecar https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+    # restartPolicy: Always
+    # # only applies to native sidecars
+    # startupProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 8082
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 5
+    #   failureThreshold: 60 # 5 minutes
     # Additional notifiers sidecar volume mounts
     extraMounts: []
     # Sets the size limit of the notifier sidecar emptyDir volume
@@ -1451,6 +1493,8 @@ imageRenderer:
   # image-renderer deployment serviceAccount
   serviceAccountName: ""
   automountServiceAccountToken: false
+  # image-renderer deployment hostUsers
+  hostUsers: ~
   # image-renderer deployment securityContext
   securityContext: {}
   # image-renderer deployment container securityContext
