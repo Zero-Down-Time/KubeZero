@@ -1,6 +1,6 @@
 # kubezero-addons
 
-![Version: 0.8.17](https://img.shields.io/badge/Version-0.8.17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.32](https://img.shields.io/badge/AppVersion-v1.32-informational?style=flat-square)
+![Version: 0.8.18](https://img.shields.io/badge/Version-0.8.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.33](https://img.shields.io/badge/AppVersion-v1.33-informational?style=flat-square)
 
 KubeZero umbrella chart for various optional cluster addons
 
@@ -14,17 +14,17 @@ KubeZero umbrella chart for various optional cluster addons
 
 ## Requirements
 
-Kubernetes: `>= 1.31.0-0`
+Kubernetes: `>= 1.33.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://caas-team.github.io/helm-charts/ | py-kube-downscaler | 0.3.7 |
-| https://kubernetes-sigs.github.io/external-dns/ | external-dns | 1.19.0 |
-| https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.52.0 |
-| https://nvidia.github.io/k8s-device-plugin | nvidia-device-plugin | 0.17.4 |
+| https://caas-team.github.io/helm-charts/ | py-kube-downscaler | 0.3.10 |
+| https://kubernetes-sigs.github.io/external-dns/ | external-dns | 1.20.0 |
+| https://kubernetes.github.io/autoscaler | cluster-autoscaler | 9.55.0 |
+| https://nvidia.github.io/k8s-device-plugin | nvidia-device-plugin | 0.18.2 |
 | https://twin.github.io/helm-charts | aws-eks-asg-rolling-update-handler | 1.5.0 |
-| oci://public.ecr.aws/aws-ec2/helm | aws-node-termination-handler | 0.27.2 |
-| oci://public.ecr.aws/neuron | neuron-helm-chart | 1.3.0 |
+| oci://public.ecr.aws/aws-ec2/helm | aws-node-termination-handler | 0.27.4 |
+| oci://public.ecr.aws/neuron | neuron-helm-chart | 1.4.0 |
 
 # MetalLB   
    
@@ -95,7 +95,7 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | cluster-autoscaler.extraArgs.scan-interval | string | `"30s"` |  |
 | cluster-autoscaler.extraArgs.skip-nodes-with-local-storage | bool | `false` |  |
 | cluster-autoscaler.image.repository | string | `"registry.k8s.io/autoscaling/cluster-autoscaler"` |  |
-| cluster-autoscaler.image.tag | string | `"v1.33.2"` |  |
+| cluster-autoscaler.image.tag | string | `"v1.34.3"` |  |
 | cluster-autoscaler.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | cluster-autoscaler.podDisruptionBudget | bool | `false` |  |
 | cluster-autoscaler.prometheusRule.enabled | bool | `false` |  |
@@ -121,9 +121,6 @@ Device plugin for [AWS Neuron](https://aws.amazon.com/machine-learning/neuron/) 
 | forseti.image.name | string | `"public.ecr.aws/zero-downtime/forseti"` |  |
 | forseti.image.tag | string | `"v0.1.2"` |  |
 | forseti.serviceAccount.annotations | object | `{}` |  |
-| fuseDevicePlugin.enabled | bool | `false` |  |
-| fuseDevicePlugin.image.name | string | `"public.ecr.aws/zero-downtime/fuse-device-plugin"` |  |
-| fuseDevicePlugin.image.tag | string | `"v1.2.0"` |  |
 | neuron-helm-chart.devicePlugin.tolerations[0].key | string | `"CriticalAddonsOnly"` |  |
 | neuron-helm-chart.devicePlugin.tolerations[0].operator | string | `"Exists"` |  |
 | neuron-helm-chart.devicePlugin.tolerations[1].effect | string | `"NoSchedule"` |  |

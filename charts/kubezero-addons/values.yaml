@@ -103,12 +103,6 @@ aws-node-termination-handler:
   nodeSelector:
     node-role.kubernetes.io/control-plane: ""
 
-fuseDevicePlugin:
-  enabled: false
-  image:
-    name: public.ecr.aws/zero-downtime/fuse-device-plugin
-    tag: v1.2.0
-
 neuron-helm-chart:
   enabled: false
 
@@ -183,7 +177,7 @@ cluster-autoscaler:
 
   image:
     repository: registry.k8s.io/autoscaling/cluster-autoscaler
-    tag: v1.33.2
+    tag: v1.34.3
 
   autoDiscovery:
     clusterName: ""

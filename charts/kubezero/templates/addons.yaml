@@ -79,11 +79,6 @@ cluster-autoscaler:
         kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.clusterAutoScaler"
   {{- end }}
 
-{{- with .Values.addons.fuseDevicePlugin }}
-fuseDevicePlugin:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-
 {{- with index .Values "addons" "nvidia-device-plugin" }}
 nvidia-device-plugin:
   {{- toYaml . | nindent 2 }}
