@@ -260,6 +260,7 @@ aws-efs-csi-driver:
     logLevel: 2
 
     #volMetricsOptIn: true
+    forceUnmountAfterTimeout: true
 
     resources:
       requests:

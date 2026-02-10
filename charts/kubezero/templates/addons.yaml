@@ -39,8 +39,8 @@ external-dns:
   txtOwnerId: {{ .Values.global.clusterName }}
   provider: aws
   extraArgs:
-    - "--aws-zone-type=public"
-    - "--aws-zones-cache-duration=1h"
+    aws-zone-type: public
+    aws-zones-cache-duration: "1h"
   serviceAccount:
     annotations:
       kubezero.com/aws-iam-role-arn: "arn:aws:iam::{{ .Values.global.aws.accountId }}:role/{{ .Values.global.aws.region }}.{{ .Values.global.clusterName }}.externalDNS"
