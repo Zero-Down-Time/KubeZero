@@ -9,6 +9,10 @@ nats:
 
     jetstream:
       enabled: true
+      fileStore:
+        pvc:
+          size: 10Gi
+        maxSize: 8GB
 
   podTemplate:
     topologySpreadConstraints:

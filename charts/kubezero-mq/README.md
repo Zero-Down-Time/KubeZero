@@ -1,6 +1,6 @@
 # kubezero-mq
 
-![Version: 0.3.14](https://img.shields.io/badge/Version-0.3.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.15](https://img.shields.io/badge/Version-0.3.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for MQ systems like NATS, RabbitMQ
 
@@ -21,15 +21,22 @@ Kubernetes: `>= 1.33.0`
 |  | kafka | 0.1.0 |
 | https://akhq.io/ | akhq | 0.26.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://nats-io.github.io/k8s/helm/charts/ | nats | 2.12.2 |
+| https://nats-io.github.io/k8s/helm/charts/ | nats | 2.12.4 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| akhq.configuration.akhq.connections.local.properties."bootstrap.servers" | string | `"example-kafka-plain-bootstrap:9092"` |  |
 | akhq.enabled | bool | `false` |  |
+| akhq.istio.enabled | bool | `false` |  |
+| akhq.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
+| akhq.istio.url | string | `"example-akhq.local"` |  |
+| akhq.revisionHistoryLimit | int | `2` |  |
 | kafka.cluster.name | string | `"example"` |  |
 | kafka.cluster.version | string | `"4.1.1"` |  |
+| kafka.connect.enabled | bool | `false` |  |
+| kafka.connect.replicas | int | `1` |  |
 | kafka.enabled | bool | `false` |  |
 | kafka.storage.size | string | `"1Gi"` |  |
 | nats.config.cluster.routeURLs.useFQDN | bool | `true` |  |
@@ -70,6 +77,9 @@ Kubernetes: `>= 1.33.0`
 | rabbitmq.ulimitNofiles | string | `""` |  |
 
 ## Resources
+
+### Kafka
+- https://github.com/sauljabin/kaskade
 
 ### NATS
 - https://grafana.com/grafana/dashboards/13707
