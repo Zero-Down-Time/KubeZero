@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-graph
 description: KubeZero GraphQL and GraphDB
 type: application
-version: 0.1.3
+version: 0.1.4
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -16,7 +16,7 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: neo4j
-    version: 2025.10.1
+    version: 2026.1.4
     repository: https://helm.neo4j.com/neo4j
     condition: neo4j.enabled
 # - name: neo4j-admin
