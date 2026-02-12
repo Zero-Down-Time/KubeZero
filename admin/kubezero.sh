@@ -29,7 +29,7 @@ export ETCDCTL_KEY=${HOSTFS}/etc/kubernetes/pki/apiserver-etcd-client.key
 mkdir -p ${WORKDIR}
 
 # Import version specific hooks
-. /var/lib/kubezero/hooks-${KUBE_VERSION_MINOR##v}.sh
+. /var/lib/kubezero/hooks-${KUBE_VERSION##v}.sh
 
 # Generic retry utility
 retry() {
@@ -45,11 +45,9 @@ retry() {
   done
 }
 
-
 _kubeadm() {
   kubeadm $@ --config /etc/kubernetes/kubeadm.yaml --rootfs ${HOSTFS} $LOG
 }
-
 
 # Render cluster config
 render_kubeadm() {
@@ -61,25 +59,24 @@ render_kubeadm() {
     --set patches=/etc/kubernetes/patches
 
   # Assemble kubeadm config
-  cat /dev/null > ${HOSTFS}/etc/kubernetes/kubeadm.yaml
+  cat /dev/null >${HOSTFS}/etc/kubernetes/kubeadm.yaml
   for f in Cluster Kubelet; do
     # echo "---" >> /etc/kubernetes/kubeadm.yaml
-    cat ${WORKDIR}/kubeadm/templates/${f}Configuration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
+    cat ${WORKDIR}/kubeadm/templates/${f}Configuration.yaml >>${HOSTFS}/etc/kubernetes/kubeadm.yaml
   done
 
   if [[ "$phase" == "upgrade" ]]; then
-    cat ${WORKDIR}/kubeadm/templates/UpgradeConfiguration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
+    cat ${WORKDIR}/kubeadm/templates/UpgradeConfiguration.yaml >>${HOSTFS}/etc/kubernetes/kubeadm.yaml
   elif [[ "$phase" =~ ^(bootstrap|join|restore)$ ]]; then
-    cat ${WORKDIR}/kubeadm/templates/InitConfiguration.yaml >> ${HOSTFS}/etc/kubernetes/kubeadm.yaml
+    cat ${WORKDIR}/kubeadm/templates/InitConfiguration.yaml >>${HOSTFS}/etc/kubernetes/kubeadm.yaml
   fi
 
   # "uncloak" the json patches after they got processed by helm
   for s in kube-apiserver kube-controller-manager kube-scheduler corednsdeployment; do
-    yq eval '.json' ${WORKDIR}/kubeadm/templates/patches/${s}1\+json.yaml > /tmp/_tmp.yaml && \
+    yq eval '.json' ${WORKDIR}/kubeadm/templates/patches/${s}1\+json.yaml >/tmp/_tmp.yaml &&
       mv /tmp/_tmp.yaml ${WORKDIR}/kubeadm/templates/patches/${s}1\+json.yaml
   done
 }
-
 
 parse_kubezero() {
   export CLUSTERNAME=$(yq eval '.global.clusterName // .clusterName' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
@@ -89,7 +86,6 @@ parse_kubezero() {
   export NODENAME=$(yq eval '.nodeName' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
   export PROVIDER_ID=$(yq eval '.providerID // ""' ${HOSTFS}/etc/kubernetes/kubeadm-values.yaml)
 }
-
 
 # Shared steps before calling kubeadm
 pre_kubeadm() {
@@ -101,7 +97,6 @@ pre_kubeadm() {
   cp -r ${WORKDIR}/kubeadm/templates/patches ${HOSTFS}/etc/kubernetes
 }
 
-
 # Shared steps after calling kubeadm
 post_kubeadm() {
   # KubeZero resources - will never be applied by ArgoCD
@@ -109,7 +104,6 @@ post_kubeadm() {
     kubectl apply -f $f --server-side --force-conflicts $LOG
   done
 }
-
 
 # Migrate KubeZero Config to current version
 upgrade_kubezero_config() {
@@ -119,21 +113,20 @@ upgrade_kubezero_config() {
   get_kubezero_values $ARGOCD
 
   # tumble new config through migrate.py
-  migrate_argo_values.py < "$WORKDIR"/kubezero-values.yaml > "$WORKDIR"/new-kubezero-values.yaml \
-    && mv "$WORKDIR"/new-kubezero-values.yaml "$WORKDIR"/kubezero-values.yaml
+  migrate_argo_values.py <"$WORKDIR"/kubezero-values.yaml >"$WORKDIR"/new-kubezero-values.yaml &&
+    mv "$WORKDIR"/new-kubezero-values.yaml "$WORKDIR"/kubezero-values.yaml
 
   update_kubezero_cm
 
   if [ "$ARGOCD" == "true" ]; then
     # update argo app
     export kubezero_chart_version=$(yq .version $CHARTS/kubezero/Chart.yaml)
-    kubectl get application kubezero -n argocd -o yaml | \
+    kubectl get application kubezero -n argocd -o yaml |
       yq ".spec.source.helm.valuesObject |= load(\"$WORKDIR/kubezero-values.yaml\") | .spec.source.targetRevision = strenv(kubezero_chart_version)" \
-      > $WORKDIR/new-argocd-app.yaml
-      retry 5 1 10 kubectl replace -f $WORKDIR/new-argocd-app.yaml $(field_manager $ARGOCD)
+        >$WORKDIR/new-argocd-app.yaml
+    retry 5 1 10 kubectl replace -f $WORKDIR/new-argocd-app.yaml $(field_manager $ARGOCD)
   fi
 }
-
 
 # Control plane upgrade
 kubeadm_upgrade() {
@@ -179,7 +172,6 @@ kubeadm_upgrade() {
   rm -rf ${HOSTFS}/etc/kubernetes/tmp
 
 }
-
 
 control_plane_node() {
   CMD=$1
@@ -245,7 +237,7 @@ control_plane_node() {
 
     # get current running etcd pods for etcdctl commands
     while true; do
-      etcd_endpoints=$(kubectl get pods -n kube-system -l component=etcd -o yaml | \
+      etcd_endpoints=$(kubectl get pods -n kube-system -l component=etcd -o yaml |
         yq eval '.items[].metadata.annotations."kubeadm.kubernetes.io/etcd.advertise-client-urls"' - | tr '\n' ',' | sed -e 's/,$//')
       [[ $etcd_endpoints =~ ^https:// ]] && break
       sleep 3
@@ -320,7 +312,6 @@ control_plane_node() {
   echo "${CMD}ed cluster $CLUSTERNAME successfully."
 }
 
-
 apply_module() {
   MODULES=$1
 
@@ -338,7 +329,7 @@ apply_module() {
     # apply/replace app of apps directly, if fails eg. new module added try server-side apply
     if [ $t == "kubezero" ]; then
       [ -f $CHARTS/kubezero/hooks.d/pre-install.sh ] && . $CHARTS/kubezero/hooks.d/pre-install.sh
-      kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD) || \
+      kubectl replace -f $WORKDIR/kubezero/templates $(field_manager $ARGOCD) ||
         kubectl apply -f $WORKDIR/kubezero/templates --server-side --force-conflicts $(field_manager $ARGOCD)
     else
       _helm apply $t
@@ -347,7 +338,6 @@ apply_module() {
 
   echo "Applied KubeZero modules: $MODULES"
 }
-
 
 delete_module() {
   MODULES=$1
@@ -405,7 +395,6 @@ backup() {
     --cluster --move-leader --defrag-rule="dbSize > 100*1024*1024"
 }
 
-
 debug_shell() {
   echo "Entering debug shell"
 
@@ -420,20 +409,21 @@ parse_kubezero
 # Execute tasks
 for t in $@; do
   case "$t" in
-    bootstrap) control_plane_node bootstrap;;
-    join) control_plane_node join;;
-    restore) control_plane_node restore;;
-    upgrade_control_plane) kubeadm_upgrade;;
-    upgrade_kubezero) upgrade_kubezero_config;;
-    apply_*)
-      ARGOCD=$(argo_used)
-      apply_module "${t##apply_}";;
-    delete_*)
-      ARGOCD=$(argo_used)
-      delete_module "${t##delete_}";;
-    backup) backup;;
-    debug_shell) debug_shell;;
-    *) echo "Unknown command: '$t'";;
+  bootstrap) control_plane_node bootstrap ;;
+  join) control_plane_node join ;;
+  restore) control_plane_node restore ;;
+  upgrade_control_plane) kubeadm_upgrade ;;
+  upgrade_kubezero) upgrade_kubezero_config ;;
+  apply_*)
+    ARGOCD=$(argo_used)
+    apply_module "${t##apply_}"
+    ;;
+  delete_*)
+    ARGOCD=$(argo_used)
+    delete_module "${t##delete_}"
+    ;;
+  backup) backup ;;
+  debug_shell) debug_shell ;;
+  *) echo "Unknown command: '$t'" ;;
   esac
 done
-
