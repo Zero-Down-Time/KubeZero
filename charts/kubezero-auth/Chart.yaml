@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-auth
 description: KubeZero umbrella chart for all things Authentication and Identity management
 type: application
-version: 0.7.1
+version: 0.7.2
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -17,6 +17,6 @@ dependencies:
     repository: https://cdn.zero-downtime.net/charts/
   - name: keycloakx
     repository: "oci://ghcr.io/codecentric/helm-charts"
-    version: 7.1.7
+    version: 7.1.8
     condition: keycloakx.enabled
 kubeVersion: ">= 1.30.0-0"
