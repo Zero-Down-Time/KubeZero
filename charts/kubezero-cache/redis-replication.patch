@@ -1,29 +1,14 @@
 diff '--color=auto' -rtuN charts/redis-replication.orig/templates/_helpers.tpl charts/redis-replication/templates/_helpers.tpl
---- charts/redis-replication.orig/templates/_helpers.tpl	2025-12-04 12:10:45.347863320 +0000
-+++ charts/redis-replication/templates/_helpers.tpl	2025-12-04 12:10:45.351196672 +0000
-@@ -42,21 +42,22 @@
+--- charts/redis-replication.orig/templates/_helpers.tpl	2026-02-14 17:48:58.962057834 +0000
++++ charts/redis-replication/templates/_helpers.tpl	2026-02-14 17:54:13.634258859 +0000
+@@ -40,4 +40,24 @@
  {{- end }}
- {{- end -}}
- 
--{{/* Generate sidecar properties */}}
--{{- define "sidecar.properties" -}}
--{{- with .Values.sidecars }}
--name: {{ .name }}
--image: {{ .image }}
--{{- if .imagePullPolicy }}
--imagePullPolicy: {{ .imagePullPolicy }}
--{{- end }}
--{{- if .resources }}
--resources:
--  {{ toYaml .resources | nindent 2 }}
--{{- end }}
--{{- if .env }}
--env:
--{{ toYaml .env | nindent 2 }}
--{{- end }}
--{{- end }}
+ {{- end }}
+ {{- end }}
 -{{- end -}}
 \ No newline at end of file
++{{- end -}}
++
 +{{/* Generate sidecar properties for redis-vault */}}
 +{{- define "redisVault.sidecar" -}}
 +- name: redis-vault
@@ -44,8 +29,8 @@ diff '--color=auto' -rtuN charts/redis-replication.orig/templates/_helpers.tpl c
 +  {{- end -}}
 +{{- end -}}
 diff '--color=auto' -rtuN charts/redis-replication.orig/templates/redis-replication.yaml charts/redis-replication/templates/redis-replication.yaml
---- charts/redis-replication.orig/templates/redis-replication.yaml	2025-12-04 12:10:45.347863320 +0000
-+++ charts/redis-replication/templates/redis-replication.yaml	2025-12-04 12:10:45.351196672 +0000
+--- charts/redis-replication.orig/templates/redis-replication.yaml	2026-02-14 17:48:58.965391191 +0000
++++ charts/redis-replication/templates/redis-replication.yaml	2026-02-14 17:59:55.966653363 +0000
 @@ -9,7 +9,7 @@
      redis.opstreelabs.in/recreate-statefulset: "true"
      {{ end }}
@@ -55,18 +40,18 @@ diff '--color=auto' -rtuN charts/redis-replication.orig/templates/redis-replicat
    kubernetesConfig:
      image: "{{ .Values.redisReplication.image }}:{{ .Values.redisReplication.tag }}"
      imagePullPolicy: "{{ .Values.redisReplication.imagePullPolicy }}"
-@@ -30,6 +30,10 @@
-     {{- if .Values.redisReplication.minReadySeconds }}
-     minReadySeconds: {{ .Values.redisReplication.minReadySeconds}}
+@@ -33,6 +33,10 @@
+     {{- if .Values.redisReplication.persistentVolumeClaimRetentionPolicy }}
+     persistentVolumeClaimRetentionPolicy: {{ toYaml .Values.redisReplication.persistentVolumeClaimRetentionPolicy | nindent 6 }}
      {{- end }}
 +    {{- with .Values.redisReplication.service }}
 +    service:
 +      {{- . | toYaml | nindent 6 }}
 +    {{- end }}
- 
-   redisExporter:
-     enabled: {{ .Values.redisExporter.enabled }}
-@@ -71,6 +75,21 @@
+   {{- if .Values.redisReplication.livenessProbe }}
+   livenessProbe: {{ toYaml .Values.redisReplication.livenessProbe | nindent 4 }}
+   {{- end }}
+@@ -80,6 +84,21 @@
    {{- end }}
    {{- if .Values.affinity }}
    affinity: {{ toYaml .Values.affinity | nindent 4 }}
@@ -88,23 +73,21 @@ diff '--color=auto' -rtuN charts/redis-replication.orig/templates/redis-replicat
    {{- end }}
    {{- if .Values.tolerations }}
    tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
-@@ -91,8 +110,13 @@
+@@ -108,9 +127,13 @@
    {{- if and .Values.initContainer .Values.initContainer.enabled (ne .Values.initContainer.image "") }}
    initContainer: {{ include "initContainer.properties" . | nindent 4 }}
    {{- end }}
--  {{- if and .Values.sidecars (ne .Values.sidecars.name "") (ne .Values.sidecars.image "") }}
--  sidecars: {{ include "sidecar.properties" . | nindent 4 }}
 +  {{- if .Values.redisVault.enabled }}
 +  sidecars: {{ include "redisVault.sidecar" . | nindent 4 }}
 +  {{- else }}
-+  {{- with .Values.sidecars }}
-+  sidecars:
-+  {{ toYaml . | nindent 4 }}
-+  {{- end }}
+   {{- if .Values.sidecars }}
+   sidecars: {{ toYaml .Values.sidecars | nindent 4 }}
    {{- end }}
++  {{- end }}
    {{- if and .Values.serviceAccountName (ne .Values.serviceAccountName "") }}
    serviceAccountName: "{{ .Values.serviceAccountName }}"
-@@ -103,7 +127,9 @@
+   {{- end }}
+@@ -120,7 +143,8 @@
    {{- if .Values.pdb.enabled }}
    pdb:
      enabled: {{ .Values.pdb.enabled }}
@@ -115,46 +98,10 @@ diff '--color=auto' -rtuN charts/redis-replication.orig/templates/redis-replicat
      maxUnavailable: {{ .Values.pdb.maxUnavailable }}
    {{- end }}
 -  
-+
 diff '--color=auto' -rtuN charts/redis-replication.orig/values.yaml charts/redis-replication/values.yaml
---- charts/redis-replication.orig/values.yaml	2025-12-04 12:10:45.347863320 +0000
-+++ charts/redis-replication/values.yaml	2025-12-04 12:10:45.351196672 +0000
-@@ -93,20 +93,20 @@
-   command: []
-   args: []
- 
--sidecars:
--  name: ""
--  image: ""
--  imagePullPolicy: "IfNotPresent"
--  resources:
--    limits:
--      cpu: "100m"
--      memory: "128Mi"
--    requests:
--      cpu: "50m"
--      memory: "64Mi"
--  env: []
--    # - name: MY_ENV_VAR
--    #   value: "my-env-var-value"
-+sidecars: []
-+# - name: ""
-+#   image: ""
-+#   imagePullPolicy: "IfNotPresent"
-+#   resources:
-+#     limits:
-+#       cpu: "100m"
-+#       memory: "128Mi"
-+#     requests:
-+#       cpu: "50m"
-+#       memory: "64Mi"
-+#   env: []
-+#     # - name: MY_ENV_VAR
-+#     #   value: "my-env-var-value"
- 
- priorityClassName: ""
- 
-@@ -164,5 +164,4 @@
+--- charts/redis-replication.orig/values.yaml	2026-02-14 17:48:58.962057834 +0000
++++ charts/redis-replication/values.yaml	2026-02-14 17:48:58.965391191 +0000
+@@ -196,5 +196,4 @@
  
  pdb:
    enabled: false

@@ -12,7 +12,7 @@ spec:
   clusterSize: {{ .Values.redisSentinel.clusterSize }}
   # Sentinel Config
   redisSentinelConfig:
-    redisReplicationName: {{ .Values.redisSentinelConfig.redisReplicationName | default .Release.Name }}
+    redisReplicationName: {{ .Values.redisSentinelConfig.redisReplicationName}}
     {{- if and .Values.redisSentinelConfig.redisReplicationPassword.secretName .Values.redisSentinelConfig.redisReplicationPassword.secretKey }}
     redisReplicationPassword:
       secretKeyRef:
@@ -51,11 +51,9 @@ spec:
     {{- if .Values.redisSentinel.minReadySeconds }}
     minReadySeconds: {{ .Values.redisSentinel.minReadySeconds }}
     {{- end }}
-    {{- with .Values.redisSentinel.service }}
-    service:
-      {{- . | toYaml | nindent 6 }}
+    {{- if .Values.redisSentinel.persistentVolumeClaimRetentionPolicy }}
+    persistentVolumeClaimRetentionPolicy: {{ toYaml .Values.redisSentinel.persistentVolumeClaimRetentionPolicy | nindent 6 }}
     {{- end }}
-
 
   redisExporter:
     enabled: {{ .Values.redisExporter.enabled }}
@@ -85,24 +83,12 @@ spec:
   {{- end }}
   {{- if .Values.affinity }}
   affinity: {{ toYaml .Values.affinity | nindent 4 }}
-  {{- else }}
-  affinity:
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        - labelSelector:
-            matchExpressions:
-              - key: app
-                operator: In
-                values:
-                  - {{ .Values.redisSentinel.name | default .Release.Name }}-sentinel
-              - key: role
-                operator: In
-                values:
-                  - sentinel
-          topologyKey: "kubernetes.io/hostname"
   {{- end }}
   {{- if .Values.tolerations }}
   tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
+  {{- end }}
+  {{- if .Values.topologySpreadConstraints }}
+  topologySpreadConstraints: {{ toYaml .Values.topologySpreadConstraints | nindent 4 }}
   {{- end }}
   {{- if and .Values.TLS.ca .Values.TLS.cert .Values.TLS.key .Values.TLS.secret.secretName }}
   TLS:
@@ -115,10 +101,7 @@ spec:
   {{- if .Values.pdb.enabled }}
   pdb:
     enabled: {{ .Values.pdb.enabled }}
-    {{- with .Values.pdb.minAvailable }}
-    minAvailable: {{ . }}
-    {{- end }}
-    maxUnavailable: {{ .Values.pdb.maxUnavailable }}
+    maxUnavailable: 1
   {{- end }}
   {{- with .Values.livenessProbe }}
   livenessProbe:
@@ -131,8 +114,8 @@ spec:
   {{- if and .Values.initContainer .Values.initContainer.enabled (ne .Values.initContainer.image "") }}
   initContainer: {{ include "initContainer.properties" . | nindent 4 }}
   {{- end }}
-  {{- if and .Values.sidecars (ne .Values.sidecars.name "") (ne .Values.sidecars.image "") }}
-  sidecars: {{ include "sidecar.properties" . | nindent 4 }}
+  {{- if .Values.sidecars }}
+  sidecars: {{ toYaml .Values.sidecars | nindent 4 }}
   {{- end }}
   {{- if and .Values.serviceAccountName (ne .Values.serviceAccountName "") }}
   serviceAccountName: "{{ .Values.serviceAccountName }}"

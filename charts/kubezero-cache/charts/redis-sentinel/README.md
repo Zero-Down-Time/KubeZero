@@ -94,6 +94,7 @@ helm delete <my-release> --namespace <namespace>
 | redisSentinel.imagePullSecrets | list | `[]` |  |
 | redisSentinel.minReadySeconds | int | `0` |  |
 | redisSentinel.name | string | `""` |  |
+| redisSentinel.persistentVolumeClaimRetentionPolicy | object | `{}` |  |
 | redisSentinel.recreateStatefulSetOnUpdateInvalid | bool | `false` | Some fields of statefulset are immutable, such as volumeClaimTemplates. When set to true, the operator will delete the statefulset and recreate it. Default is false. |
 | redisSentinel.redisSecret.secretKey | string | `""` |  |
 | redisSentinel.redisSecret.secretName | string | `""` |  |
@@ -118,12 +119,6 @@ helm delete <my-release> --namespace <namespace>
 | serviceMonitor.interval | string | `"30s"` |  |
 | serviceMonitor.namespace | string | `""` | Namespace where servicemonitor resource will be created, if empty it will be created in the same namespace as the redis-sentinel |
 | serviceMonitor.scrapeTimeout | string | `"10s"` |  |
-| sidecars.env | list | `[]` |  |
-| sidecars.image | string | `""` |  |
-| sidecars.imagePullPolicy | string | `"IfNotPresent"` |  |
-| sidecars.name | string | `""` |  |
-| sidecars.resources.limits.cpu | string | `"100m"` |  |
-| sidecars.resources.limits.memory | string | `"128Mi"` |  |
-| sidecars.resources.requests.cpu | string | `"50m"` |  |
-| sidecars.resources.requests.memory | string | `"64Mi"` |  |
+| sidecars | list | `[]` |  |
 | tolerations | list | `[]` |  |
+| topologySpreadConstraints | list | `[]` |  |

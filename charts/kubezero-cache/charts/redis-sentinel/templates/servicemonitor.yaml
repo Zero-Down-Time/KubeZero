@@ -18,7 +18,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.redisSentinel.name | default .Release.Name }}-sentinel
+      app: {{ .Values.redisSentinel.name | default .Release.Name }}
       redis_setup_type: sentinel
       role: sentinel
   endpoints:

@@ -1,91 +1,13 @@
 diff '--color=auto' -rtuN charts/redis-sentinel.orig/templates/redis-sentinel.yaml charts/redis-sentinel/templates/redis-sentinel.yaml
---- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2025-12-16 14:03:25.346442867 +0000
-+++ charts/redis-sentinel/templates/redis-sentinel.yaml	2025-12-16 14:03:25.346442867 +0000
-@@ -12,7 +12,7 @@
-   clusterSize: {{ .Values.redisSentinel.clusterSize }}
-   # Sentinel Config
-   redisSentinelConfig:
--    redisReplicationName: {{ .Values.redisSentinelConfig.redisReplicationName}}
-+    redisReplicationName: {{ .Values.redisSentinelConfig.redisReplicationName | default .Release.Name }}
-     {{- if and .Values.redisSentinelConfig.redisReplicationPassword.secretName .Values.redisSentinelConfig.redisReplicationPassword.secretKey }}
-     redisReplicationPassword:
-       secretKeyRef:
-@@ -51,6 +51,11 @@
-     {{- if .Values.redisSentinel.minReadySeconds }}
-     minReadySeconds: {{ .Values.redisSentinel.minReadySeconds }}
-     {{- end }}
-+    {{- with .Values.redisSentinel.service }}
-+    service:
-+      {{- . | toYaml | nindent 6 }}
-+    {{- end }}
-+
- 
-   redisExporter:
-     enabled: {{ .Values.redisExporter.enabled }}
-@@ -80,6 +85,21 @@
-   {{- end }}
-   {{- if .Values.affinity }}
-   affinity: {{ toYaml .Values.affinity | nindent 4 }}
-+  {{- else }}
-+  affinity:
-+    podAntiAffinity:
-+      requiredDuringSchedulingIgnoredDuringExecution:
-+        - labelSelector:
-+            matchExpressions:
-+              - key: app
-+                operator: In
-+                values:
-+                  - {{ .Values.redisSentinel.name | default .Release.Name }}-sentinel
-+              - key: role
-+                operator: In
-+                values:
-+                  - sentinel
-+          topologyKey: "kubernetes.io/hostname"
-   {{- end }}
-   {{- if .Values.tolerations }}
-   tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
-@@ -95,7 +115,9 @@
+--- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2026-02-14 18:06:38.092799433 +0000
++++ charts/redis-sentinel/templates/redis-sentinel.yaml	2026-02-14 18:08:13.590134069 +0000
+@@ -101,8 +101,7 @@
    {{- if .Values.pdb.enabled }}
    pdb:
      enabled: {{ .Values.pdb.enabled }}
 -    minAvailable: {{ .Values.pdb.minAvailable }}
-+    {{- with .Values.pdb.minAvailable }}
-+    minAvailable: {{ . }}
-+    {{- end }}
-     maxUnavailable: {{ .Values.pdb.maxUnavailable }}
+-    maxUnavailable: {{ .Values.pdb.maxUnavailable }}
++    maxUnavailable: 1
    {{- end }}
    {{- with .Values.livenessProbe }}
-diff '--color=auto' -rtuN charts/redis-sentinel.orig/templates/servicemonitor.yaml charts/redis-sentinel/templates/servicemonitor.yaml
---- charts/redis-sentinel.orig/templates/servicemonitor.yaml	2025-12-16 14:03:25.346442867 +0000
-+++ charts/redis-sentinel/templates/servicemonitor.yaml	2025-12-16 14:03:52.623063507 +0000
-@@ -18,7 +18,7 @@
- spec:
-   selector:
-     matchLabels:
--      app: {{ .Values.redisSentinel.name | default .Release.Name }}
-+      app: {{ .Values.redisSentinel.name | default .Release.Name }}-sentinel
-       redis_setup_type: sentinel
-       role: sentinel
-   endpoints:
-diff '--color=auto' -rtuN charts/redis-sentinel.orig/values.yaml charts/redis-sentinel/values.yaml
---- charts/redis-sentinel.orig/values.yaml	2025-12-16 14:03:25.346442867 +0000
-+++ charts/redis-sentinel/values.yaml	2025-12-16 14:03:25.346442867 +0000
-@@ -33,7 +33,7 @@
- #   test: echo
- 
- redisSentinelConfig:
--  redisReplicationName: "redis-replication"
-+  # redisReplicationName: "redis-replication"
-   redisReplicationPassword:
-     secretName: ""
-     secretKey: ""
-@@ -157,8 +157,7 @@
- 
- pdb:
-   enabled: false
--  minAvailable: 1
--  maxUnavailable: null
-+  maxUnavailable: 1
- 
- livenessProbe:
-   failureThreshold: 3
+   livenessProbe:

@@ -2,7 +2,7 @@ redis:
   enabled: false
 
   redisStandalone:
-    tag: v8.2.3
+    tag: v8.4.0
 
     service:
       additional:
@@ -25,7 +25,7 @@ redis-replication:
   enabled: false
 
   redisReplication:
-    tag: v8.2.3
+    tag: v8.4.0
 
     service:
       additional:
@@ -72,7 +72,7 @@ redis-sentinel:
   enabled: false
 
   redisSentinel:
-    tag: v8.2.3
+    tag: v8.4.0
 
     resources:
       requests:
@@ -86,7 +86,7 @@ redis-sentinel:
   redisSentinelConfig:
     failoverTimeout: "60000"
     downAfterMilliseconds:  "10000"
-    resolveHostnames : "yes"
+    #resolveHostnames : "yes"
     announceHostnames : "yes"
 
   # Add pdb by default
@@ -104,7 +104,7 @@ redis-cluster:
   redisCluster:
   # Not yet until v8 support gets merged
   # clusterVersion: v8
-  # tag: v8.2.3
+  # tag: v8.4.0
     enableMasterSlaveAntiAffinity: true
     maxMemoryPercentOfLimit: 90
 

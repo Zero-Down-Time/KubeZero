@@ -1,7 +1,7 @@
-diff '--color=auto' -tuNr charts/redis-cluster.orig/templates/_helpers.tpl charts/redis-cluster/templates/_helpers.tpl
---- charts/redis-cluster.orig/templates/_helpers.tpl	2025-09-23 13:26:49.438916162 +0000
-+++ charts/redis-cluster/templates/_helpers.tpl	2025-09-23 13:27:18.839104181 +0000
-@@ -29,7 +29,9 @@
+diff '--color=auto' -rtuN charts/redis-cluster.orig/templates/_helpers.tpl charts/redis-cluster/templates/_helpers.tpl
+--- charts/redis-cluster.orig/templates/_helpers.tpl	2026-02-14 17:48:26.578497988 +0000
++++ charts/redis-cluster/templates/_helpers.tpl	2026-02-14 17:48:26.578497988 +0000
+@@ -27,7 +27,9 @@
  pdb:
    enabled: {{ .pdb.enabled }}
    maxUnavailable: {{ .pdb.maxUnavailable }}
@@ -12,10 +12,10 @@ diff '--color=auto' -tuNr charts/redis-cluster.orig/templates/_helpers.tpl chart
  {{- end }}
  {{- if .nodeSelector }}
  nodeSelector:
-diff '--color=auto' -tuNr charts/redis-cluster.orig/values.yaml charts/redis-cluster/values.yaml
---- charts/redis-cluster.orig/values.yaml	2025-09-23 13:26:49.442249516 +0000
-+++ charts/redis-cluster/values.yaml	2025-09-23 13:26:49.442249516 +0000
-@@ -52,7 +52,6 @@
+diff '--color=auto' -rtuN charts/redis-cluster.orig/values.yaml charts/redis-cluster/values.yaml
+--- charts/redis-cluster.orig/values.yaml	2026-02-14 17:48:26.578497988 +0000
++++ charts/redis-cluster/values.yaml	2026-02-14 17:48:26.578497988 +0000
+@@ -69,7 +69,6 @@
      pdb:
        enabled: false
        maxUnavailable: 1
@@ -23,7 +23,7 @@ diff '--color=auto' -tuNr charts/redis-cluster.orig/values.yaml charts/redis-clu
      livenessProbe: {}
        # timeoutSeconds: 30
        # periodSeconds: 45
-@@ -65,7 +64,7 @@
+@@ -82,7 +81,7 @@
        # successThreshold: 1
        # failureThreshold: 4
        # initialDelaySeconds: 15
@@ -32,7 +32,7 @@ diff '--color=auto' -tuNr charts/redis-cluster.orig/values.yaml charts/redis-clu
    follower:
      # -- Number of Redis follower (slave) nodes. If not set, uses clusterSize value
      replicas: 3
-@@ -90,7 +89,6 @@
+@@ -115,7 +114,6 @@
      pdb:
        enabled: false
        maxUnavailable: 1

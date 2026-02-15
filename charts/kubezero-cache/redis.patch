@@ -1,9 +1,9 @@
-diff '--color=auto' -tuNr charts/redis.orig/templates/redis-standalone.yaml charts/redis/templates/redis-standalone.yaml
---- charts/redis.orig/templates/redis-standalone.yaml	2025-09-22 17:18:23.800696627 +0000
-+++ charts/redis/templates/redis-standalone.yaml	2025-09-22 17:18:23.800696627 +0000
-@@ -29,6 +29,10 @@
-     {{- if .Values.redisStandalone.minReadySeconds }}
-     minReadySeconds: {{ .Values.redisStandalone.minReadySeconds }}
+diff '--color=auto' -rtuN charts/redis.orig/templates/redis-standalone.yaml charts/redis/templates/redis-standalone.yaml
+--- charts/redis.orig/templates/redis-standalone.yaml	2026-02-14 17:40:21.951774854 +0000
++++ charts/redis/templates/redis-standalone.yaml	2026-02-14 17:40:21.951774854 +0000
+@@ -32,6 +32,10 @@
+     {{- if .Values.redisStandalone.persistentVolumeClaimRetentionPolicy }}
+     persistentVolumeClaimRetentionPolicy: {{ toYaml .Values.redisStandalone.persistentVolumeClaimRetentionPolicy | nindent 6 }}
      {{- end }}
 +    {{- with .Values.redisStandalone.service }}
 +    service:
