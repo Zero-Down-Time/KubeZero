@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-telemetry
 description: KubeZero Umbrella Chart for OpenTelemetry, Jaeger etc.
 type: application
-version: 0.5.1
+version: 0.5.2
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -35,7 +35,7 @@ dependencies:
     repository: https://opensearch-project.github.io/helm-charts/
     condition: data-prepper.enabled
   - name: jaeger
-    version: 3.4.1
+    version: 4.5.0
     repository: https://jaegertracing.github.io/helm-charts
     condition: jaeger.enabled
   - name: fluentd
