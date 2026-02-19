@@ -26,7 +26,8 @@
     }
   ],
   "ignorePaths": [
-    "charts/*/charts/**"
+    "charts/*/charts/**",
+    ".ci/**"
   ],
   "enabledManagers": [
     "dockerfile",

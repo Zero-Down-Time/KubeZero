@@ -6,4 +6,4 @@ podman run -it --rm \
   -e RENOVATE_AUTODISCOVER=false \
   -e RENOVATE_PLATFORM=local \
   -e LOG_LEVEL=debug \
-  -v $(pwd):/usr/src/app ghcr.io/renovatebot/renovate:42.66.7
+  -v $(pwd):/usr/src/app ghcr.io/renovatebot/renovate:latest

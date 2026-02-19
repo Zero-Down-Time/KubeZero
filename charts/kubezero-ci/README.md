@@ -21,7 +21,7 @@ Kubernetes: `>= 1.30.0`
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.jenkins.io | jenkins | 5.8.137 |
 | https://dl.gitea.io/charts/ | gitea | 12.5.0 |
-| https://docs.renovatebot.com/helm-charts | renovate | 46.5.0 |
+| oci://ghcr.io/renovatebot/charts | renovate | 46.5.0 |
 
 # Jenkins
 - default build retention 10 builds, 32days

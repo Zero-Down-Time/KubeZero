@@ -27,6 +27,6 @@ dependencies:
     condition: jenkins.enabled
   - name: renovate
     version: 46.5.0
-    repository: https://docs.renovatebot.com/helm-charts
+    repository: oci://ghcr.io/renovatebot/charts
     condition: renovate.enabled
 kubeVersion: ">= 1.30.0"
