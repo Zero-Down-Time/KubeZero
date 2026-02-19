@@ -33,6 +33,13 @@ redis-replication:
 
     maxMemoryPercentOfLimit: 90
 
+    readinessProbe:
+      failureThreshold: 2
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 2
+      timeoutSeconds: 1
+
   storageSpec:
     keepAfterDelete: true
 #   volumeClaimTemplate:
@@ -86,8 +93,15 @@ redis-sentinel:
   redisSentinelConfig:
     failoverTimeout: "60000"
     downAfterMilliseconds:  "10000"
-    #resolveHostnames : "yes"
+    resolveHostnames : "yes"
     announceHostnames : "yes"
+
+  readinessProbe:
+    failureThreshold: 2
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 2
+    timeoutSeconds: 1
 
   # Add pdb by default
   pdb:
