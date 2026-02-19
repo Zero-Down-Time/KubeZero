@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-ci
 description: KubeZero umbrella chart for all things CI
 type: application
-version: 0.9.8
+version: 0.9.9
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -22,11 +22,11 @@ dependencies:
     repository: https://dl.gitea.io/charts/
     condition: gitea.enabled
   - name: jenkins
-    version: 5.8.139
+    version: 5.8.142
     repository: https://charts.jenkins.io
     condition: jenkins.enabled
   - name: renovate
-    version: 46.5.0
+    version: 46.25.5
     repository: oci://ghcr.io/renovatebot/charts
     condition: renovate.enabled
 kubeVersion: ">= 1.30.0"
