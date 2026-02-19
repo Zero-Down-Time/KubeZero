@@ -1,0 +1,9 @@
+{{- if .Values.forgejo.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" (include "kubezero-lib.fullname" $) "templates" | replace "gitea" "forgejo" | trunc 63 | trimSuffix "-" }}
+data:
+  header.tmpl: |
+    {{- tpl (.Files.Get "files/forgejo/templates/header.tmpl") $ | nindent 4 }}
+{{- end }}

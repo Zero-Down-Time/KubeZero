@@ -1,0 +1,9 @@
+configmap: grafana-dashboards
+gzip: true
+condition: '.Values.forgejo.gitea.metrics.enabled'
+folder: KubeZero
+dashboards:
+- name: Forgejo
+  url: https://grafana.com/api/dashboards/13192/revisions/1/download
+  tags:
+  - CI

@@ -21,6 +21,7 @@ Kubernetes: `>= 1.30.0`
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.jenkins.io | jenkins | 5.8.142 |
 | https://dl.gitea.io/charts/ | gitea | 12.5.0 |
+| oci://code.forgejo.org/forgejo-helm | forgejo | 16.2.0 |
 | oci://ghcr.io/renovatebot/charts | renovate | 46.25.5 |
 
 # Jenkins
@@ -44,6 +45,53 @@ Kubernetes: `>= 1.30.0`
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| forgejo.analytics.enabled | bool | `false` |  |
+| forgejo.analytics.siteId | string | `"pleasesetasneeded"` |  |
+| forgejo.checkDeprecation | bool | `false` |  |
+| forgejo.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
+| forgejo.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| forgejo.enabled | bool | `false` |  |
+| forgejo.extraContainerVolumeMounts[0].mountPath | string | `"/data/gitea/public"` |  |
+| forgejo.extraContainerVolumeMounts[0].name | string | `"forgejo-public"` |  |
+| forgejo.extraContainerVolumeMounts[0].readOnly | bool | `true` |  |
+| forgejo.extraContainerVolumeMounts[1].mountPath | string | `"/data/gitea/templates/custom"` |  |
+| forgejo.extraContainerVolumeMounts[1].name | string | `"forgejo-templates"` |  |
+| forgejo.extraContainerVolumeMounts[1].readOnly | bool | `true` |  |
+| forgejo.extraVolumes[0].configMap.name | string | `"forgejo-kubezero-ci-public"` |  |
+| forgejo.extraVolumes[0].name | string | `"forgejo-public"` |  |
+| forgejo.extraVolumes[1].configMap.name | string | `"forgejo-kubezero-ci-templates"` |  |
+| forgejo.extraVolumes[1].name | string | `"forgejo-templates"` |  |
+| forgejo.gitea.admin.existingSecret | string | `"forgejo-admin-secret"` |  |
+| forgejo.gitea.config."service.explore".DISABLE_USERS_PAGE | string | `"true"` |  |
+| forgejo.gitea.config."service.explore".REQUIRE_SIGNIN_VIEW | string | `"true"` |  |
+| forgejo.gitea.config."ssh.minimum_key_sizes".RSA | int | `2047` |  |
+| forgejo.gitea.config.cache.ADAPTER | string | `"memory"` |  |
+| forgejo.gitea.config.database.DB_TYPE | string | `"sqlite3"` |  |
+| forgejo.gitea.config.log.LEVEL | string | `"warn"` |  |
+| forgejo.gitea.config.queue.TYPE | string | `"level"` |  |
+| forgejo.gitea.config.service.DEFAULT_ORG_VISIBILITY | string | `"private"` |  |
+| forgejo.gitea.config.service.DISABLE_REGISTRATION | string | `"true"` |  |
+| forgejo.gitea.config.session.PROVIDER | string | `"memory"` |  |
+| forgejo.gitea.config.ui.DEFAULT_THEME | string | `"forgejo-dark"` |  |
+| forgejo.gitea.config.ui.THEMES | string | `"forgejo-light,forgejo-dark"` |  |
+| forgejo.gitea.demo | bool | `false` |  |
+| forgejo.gitea.metrics.enabled | bool | `false` |  |
+| forgejo.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
+| forgejo.image.rootless | bool | `true` |  |
+| forgejo.image.tag | string | `"11.0.2"` |  |
+| forgejo.istio.blockApi | bool | `false` |  |
+| forgejo.istio.enabled | bool | `false` |  |
+| forgejo.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
+| forgejo.istio.url | string | `"git.example.com"` |  |
+| forgejo.persistence.claimName | string | `"data-gitea-0"` |  |
+| forgejo.persistence.size | string | `"4Gi"` |  |
+| forgejo.replicaCount | int | `1` |  |
+| forgejo.resources.limits.memory | string | `"2048Mi"` |  |
+| forgejo.resources.requests.cpu | string | `"200m"` |  |
+| forgejo.resources.requests.memory | string | `"1024Mi"` |  |
+| forgejo.service.http.port | int | `80` |  |
+| forgejo.strategy.type | string | `"Recreate"` |  |
+| forgejo.test.enabled | bool | `false` |  |
 | gitea.analytics.enabled | bool | `false` |  |
 | gitea.analytics.siteId | string | `"pleasesetasneeded"` |  |
 | gitea.checkDeprecation | bool | `false` |  |

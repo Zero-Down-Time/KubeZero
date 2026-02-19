@@ -1,0 +1,28 @@
+{{- if and .Values.forgejo.enabled .Values.forgejo.istio.enabled .Values.forgejo.istio.ipBlocks .Values.forgejo.istio.blockApi }}
+# Limit access to /api
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .Release.Name }}-forgejo-deny-not-in-ipblocks
+  namespace: istio-system
+  labels:
+    {{- include "kubezero-lib.labels" $ | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  action: DENY
+  rules:
+  - from:
+    - source:
+        notIpBlocks:
+        {{- toYaml .Values.forgejo.istio.ipBlocks | nindent 8 }}
+    to:
+    - operation:
+        hosts: ["{{ .Values.forgejo.istio.url }}"]
+        paths: [ "/api/*" ]
+    when:
+    - key: connection.sni
+      values:
+      - '*'
+{{- end }}

@@ -1,0 +1,8 @@
+{{- if .Values.forgejo.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" (include "kubezero-lib.fullname" $) "public" | replace "gitea" "forgejo" | trunc 63 | trimSuffix "-" }}
+data:
+{{- (.Files.Glob "files/forgejo/public/*").AsConfig | nindent 2 }}
+{{- end }}

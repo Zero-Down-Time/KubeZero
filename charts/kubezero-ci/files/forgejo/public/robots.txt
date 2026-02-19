@@ -1,0 +1,92 @@
+# This was kindly seeded with a mix of
+#  https://git.lelux.fi/theel0ja/gitea-robots.txt/src/branch/master/robots.txt
+# and
+#  https://github.com/robots.txt
+# at 2020-07-01
+# and https://gitea.com/robots.txt on 2024-01-05
+#
+# Some commented out items are left to indicate we have considered
+# them and would like to explicitly allow them for indexing while they
+# are not causing problems.
+
+User-agent: *
+
+Disallow: /api/*
+Disallow: /avatars
+Disallow: /user/*
+
+# Disallow: /*/*/src/commit/*
+# Disallow: /*/*/commit/*
+# Disallow: /*/*/*/refs/*
+
+Disallow: /*/*/*/star
+Disallow: /*/*/*/watch
+Disallow: /*/*/labels
+Disallow: /*/*/activity/*
+Disallow: /vendor/*
+Disallow: /swagger.*.json
+
+# Language spam
+Disallow: /*?lang=
+
+# from Github, to be cleaned
+Allow: /*/*/tree/master
+Allow: /*/*/blob/master
+Disallow: /*/*/pulse
+Disallow: /*/*/tree/*
+Disallow: /*/*/blob/*
+Disallow: /*/*/wiki/*/*
+Disallow: /gist/*/*/*
+Disallow: /oembed
+Disallow: /*/forks
+Disallow: /*/stars
+Disallow: /*/download
+Disallow: /*/revisions
+Disallow: /*/*/issues/new
+Disallow: /*/*/issues/search
+Disallow: /*/*/commits/*/*
+Disallow: /*/*/commits/*?author
+Disallow: /*/*/commits/*?path
+Disallow: /*/*/branches
+Disallow: /*/*/tags
+Disallow: /*/*/contributors
+Disallow: /*/*/comments
+Disallow: /*/*/stargazers
+Disallow: /*/*/search
+Disallow: /*/tarball/
+Disallow: /*/zipball/
+Disallow: /*/*/archive/
+
+# Disallow: /raw/*
+
+Disallow: /*/followers
+Disallow: /*/following
+Disallow: /stars/*
+Disallow: /*/blame/
+Disallow: /*/watchers
+Disallow: /*/network
+Disallow: /*/graphs
+
+# Disallow: /*/raw/
+
+Disallow: /*/compare/
+Disallow: /*/cache/
+Disallow: /*/*/blame/
+Disallow: /*/*/watchers
+Disallow: /*/*/network
+Disallow: /*/*/graphs
+
+# Disallow: /*/*/raw/
+
+Disallow: /*/*/compare/
+Disallow: /*/*/cache/
+Disallow: /.git/
+Disallow: /*/.git/
+Disallow: /*.git$
+Disallow: /*/sitemap.xml
+Disallow: /search/advanced
+Disallow: /search
+Disallow: /*q=
+Disallow: /*.atom
+
+Crawl-delay: 2

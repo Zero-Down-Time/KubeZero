@@ -1,0 +1,3 @@
+{{- if .Values.forgejo.analytics.enabled }}
+<script defer src="https://umami.zero-downtime.net/script.js" data-website-id="{{ .Values.forgejo.analytics.siteId }}"></script>
+{{- end }}

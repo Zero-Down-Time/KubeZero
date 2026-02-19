@@ -109,6 +109,107 @@ gitea:
     siteId: pleasesetasneeded
 
 
+forgejo:
+  enabled: false
+
+  image:
+    # renovate: datasource=docker depName=code.forgejo.org/forgejo/forgejo
+    tag: 11.0.2
+    rootless: true
+
+  replicaCount: 1
+
+  # We use RWO persistence
+  strategy:
+    type: "Recreate"
+
+  # Since V9 they default to RWX and deployment, we default to old existing RWO from statefulset
+  persistence:
+    claimName: data-gitea-0
+    size: 4Gi
+
+  service:
+    http:
+      port: 80
+
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "1024Mi"
+    limits:
+      memory: "2048Mi"
+
+  extraVolumes:
+    - name: forgejo-public
+      configMap:
+        name: forgejo-kubezero-ci-public
+    - name: forgejo-templates
+      configMap:
+        name: forgejo-kubezero-ci-templates
+
+  extraContainerVolumeMounts:
+    - name: forgejo-public
+      readOnly: true
+      mountPath: "/data/gitea/public"
+    - name: forgejo-templates
+      readOnly: true
+      mountPath: "/data/gitea/templates/custom"
+
+  checkDeprecation: false
+  test:
+    enabled: false
+
+  gitea:
+    admin:
+      existingSecret: forgejo-admin-secret
+
+    # Enable to install demo creds
+    demo: false
+
+    metrics:
+      enabled: false
+      serviceMonitor:
+        enabled: true
+
+    config:
+      database:
+        DB_TYPE: sqlite3
+      cache:
+        ADAPTER: memory
+      session:
+        PROVIDER: memory
+      service:
+        DISABLE_REGISTRATION: "true"
+        DEFAULT_ORG_VISIBILITY: "private"
+      service.explore:
+        REQUIRE_SIGNIN_VIEW: "true"
+        DISABLE_USERS_PAGE: "true"
+      queue:
+        TYPE: level
+      ui:
+        THEMES: "forgejo-light,forgejo-dark"
+        DEFAULT_THEME: "forgejo-dark"
+      log:
+        LEVEL: warn
+      ssh.minimum_key_sizes:
+        RSA: 2047
+
+  istio:
+    enabled: false
+    gateway: istio-ingress/private-ingressgateway
+    url: git.example.com
+    blockApi: false
+
+  analytics:
+    enabled: false
+    siteId: pleasesetasneeded
+
 jenkins:
   enabled: false
 
