@@ -186,10 +186,12 @@ prometheus-pushgateway:
   - group: admissionregistration.k8s.io
     kind: ValidatingWebhookConfiguration
     jsonPointers:
+    - /metadata/generation
     - /webhooks/0/failurePolicy
   - group: admissionregistration.k8s.io
     kind: MutatingWebhookConfiguration
     jsonPointers:
+    - /metadata/generation
     - /webhooks/0/failurePolicy
 
 {{- end }}

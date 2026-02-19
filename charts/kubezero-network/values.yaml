@@ -68,9 +68,6 @@ cilium:
     masquerade: true
     hostLegacyRouting: false
 
-  nodePort:
-    enabled: true
-
   # we need biDirectional so use helm init-container
   # autoMount:
   #   enabled: false
