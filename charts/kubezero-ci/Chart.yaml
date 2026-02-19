@@ -2,13 +2,12 @@ apiVersion: v2
 name: kubezero-ci
 description: KubeZero umbrella chart for all things CI
 type: application
-version: 0.9.9
+version: 0.10.0
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
   - kubezero
   - jenkins
-  - gitea
   - forgejo
   - renovate
 maintainers:
@@ -18,10 +17,6 @@ dependencies:
   - name: kubezero-lib
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
-  - name: gitea
-    version: 12.5.0
-    repository: https://dl.gitea.io/charts/
-    condition: gitea.enabled
   - name: forgejo
     version: 16.2.0
     repository: oci://code.forgejo.org/forgejo-helm

@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.9.9](https://img.shields.io/badge/Version-0.9.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -20,7 +20,6 @@ Kubernetes: `>= 1.30.0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.jenkins.io | jenkins | 5.8.142 |
-| https://dl.gitea.io/charts/ | gitea | 12.5.0 |
 | oci://code.forgejo.org/forgejo-helm | forgejo | 16.2.0 |
 | oci://ghcr.io/renovatebot/charts | renovate | 46.25.5 |
 
@@ -92,57 +91,6 @@ Kubernetes: `>= 1.30.0`
 | forgejo.service.http.port | int | `80` |  |
 | forgejo.strategy.type | string | `"Recreate"` |  |
 | forgejo.test.enabled | bool | `false` |  |
-| gitea.analytics.enabled | bool | `false` |  |
-| gitea.analytics.siteId | string | `"pleasesetasneeded"` |  |
-| gitea.checkDeprecation | bool | `false` |  |
-| gitea.enabled | bool | `false` |  |
-| gitea.extraVolumeMounts[0].mountPath | string | `"/data/gitea/public"` |  |
-| gitea.extraVolumeMounts[0].name | string | `"gitea-public"` |  |
-| gitea.extraVolumeMounts[0].readOnly | bool | `true` |  |
-| gitea.extraVolumeMounts[1].mountPath | string | `"/data/gitea/templates/custom"` |  |
-| gitea.extraVolumeMounts[1].name | string | `"gitea-templates"` |  |
-| gitea.extraVolumeMounts[1].readOnly | bool | `true` |  |
-| gitea.extraVolumes[0].configMap.name | string | `"gitea-kubezero-ci-public"` |  |
-| gitea.extraVolumes[0].name | string | `"gitea-public"` |  |
-| gitea.extraVolumes[1].configMap.name | string | `"gitea-kubezero-ci-templates"` |  |
-| gitea.extraVolumes[1].name | string | `"gitea-templates"` |  |
-| gitea.gitea.admin.existingSecret | string | `"gitea-admin-secret"` |  |
-| gitea.gitea.config."service.explore".DISABLE_USERS_PAGE | string | `"true"` |  |
-| gitea.gitea.config."service.explore".REQUIRE_SIGNIN_VIEW | string | `"true"` |  |
-| gitea.gitea.config."ssh.minimum_key_sizes".RSA | int | `2047` |  |
-| gitea.gitea.config.cache.ADAPTER | string | `"memory"` |  |
-| gitea.gitea.config.database.DB_TYPE | string | `"sqlite3"` |  |
-| gitea.gitea.config.log.LEVEL | string | `"warn"` |  |
-| gitea.gitea.config.queue.TYPE | string | `"level"` |  |
-| gitea.gitea.config.service.DEFAULT_ORG_VISIBILITY | string | `"private"` |  |
-| gitea.gitea.config.service.DISABLE_REGISTRATION | string | `"true"` |  |
-| gitea.gitea.config.session.PROVIDER | string | `"memory"` |  |
-| gitea.gitea.config.ui.DEFAULT_THEME | string | `"gitea-dark"` |  |
-| gitea.gitea.config.ui.THEMES | string | `"gitea-light,gitea-dark"` |  |
-| gitea.gitea.demo | bool | `false` |  |
-| gitea.gitea.metrics.enabled | bool | `false` |  |
-| gitea.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
-| gitea.image.rootless | bool | `true` |  |
-| gitea.image.tag | string | `"1.25.4"` |  |
-| gitea.istio.blockApi | bool | `false` |  |
-| gitea.istio.enabled | bool | `false` |  |
-| gitea.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
-| gitea.istio.url | string | `"git.example.com"` |  |
-| gitea.persistence.claimName | string | `"data-gitea-0"` |  |
-| gitea.persistence.size | string | `"4Gi"` |  |
-| gitea.postgresql-ha.enabled | bool | `false` |  |
-| gitea.postgresql.enabled | bool | `false` |  |
-| gitea.repliaCount | int | `1` |  |
-| gitea.resources.limits.memory | string | `"2048Mi"` |  |
-| gitea.resources.requests.cpu | string | `"200m"` |  |
-| gitea.resources.requests.memory | string | `"1024Mi"` |  |
-| gitea.securityContext.allowPrivilegeEscalation | bool | `false` |  |
-| gitea.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| gitea.service.http.port | int | `80` |  |
-| gitea.strategy.type | string | `"Recreate"` |  |
-| gitea.test.enabled | bool | `false` |  |
-| gitea.valkey-cluster.enabled | bool | `false` |  |
-| gitea.valkey.enabled | bool | `false` |  |
 | jenkins.agent.annotations."cluster-autoscaler.kubernetes.io/safe-to-evict" | string | `"false"` |  |
 | jenkins.agent.annotations."container.apparmor.security.beta.kubernetes.io/jnlp" | string | `"unconfined"` |  |
 | jenkins.agent.containerCap | int | `2` |  |

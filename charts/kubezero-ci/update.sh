@@ -7,11 +7,9 @@ set -ex
 update_helm
 
 patch_chart jenkins
-patch_chart gitea
 
 # Create ZDT dashboard configmap
 ../kubezero-metrics/sync_grafana_dashboards.py dashboard-jenkins.yaml templates/jenkins/grafana-dashboard.yaml
-../kubezero-metrics/sync_grafana_dashboards.py dashboard-gitea.yaml templates/gitea/grafana-dashboard.yaml
 ../kubezero-metrics/sync_grafana_dashboards.py dashboard-forgejo.yaml templates/forgejo/grafana-dashboard.yaml
 
 #Gitea dark theme

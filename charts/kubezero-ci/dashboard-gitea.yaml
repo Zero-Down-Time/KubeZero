@@ -1,9 +1,0 @@
-configmap: grafana-dashboards
-gzip: true
-condition: '.Values.gitea.gitea.metrics.enabled'
-folder: KubeZero
-dashboards:
-- name: Gitea
-  url: https://grafana.com/api/dashboards/13192/revisions/1/download
-  tags:
-  - CI
