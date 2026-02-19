@@ -416,7 +416,7 @@ controller:
   installPlugins:
     - kubernetes:4423.vb_59f230b_ce53
     - workflow-aggregator:608.v67378e9d3db_1
-    - git:5.9.0
+    - git:5.10.0
     - configuration-as-code:2037.v8e5349845172
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
@@ -979,7 +979,7 @@ agent:
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3355.v388858a_47b_33-11"
+    tag: "3355.v388858a_47b_33-14"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"

@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.9.7](https://img.shields.io/badge/Version-0.9.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.9.9](https://img.shields.io/badge/Version-0.9.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.8.137 |
+| https://charts.jenkins.io | jenkins | 5.8.142 |
 | https://dl.gitea.io/charts/ | gitea | 12.5.0 |
-| oci://ghcr.io/renovatebot/charts | renovate | 46.5.0 |
+| oci://ghcr.io/renovatebot/charts | renovate | 46.25.5 |
 
 # Jenkins
 - default build retention 10 builds, 32days
