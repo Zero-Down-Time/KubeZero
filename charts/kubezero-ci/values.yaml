@@ -3,7 +3,7 @@ forgejo:
 
   image:
     # renovate: datasource=docker depName=code.forgejo.org/forgejo/forgejo
-    tag: 11.0.2
+    tag: 14.0.2
     rootless: true
 
   replicaCount: 1
@@ -82,7 +82,6 @@ forgejo:
       queue:
         TYPE: level
       ui:
-        THEMES: "forgejo-light,forgejo-dark"
         DEFAULT_THEME: "forgejo-dark"
       log:
         LEVEL: warn

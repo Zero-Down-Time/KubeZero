@@ -77,7 +77,7 @@ Kubernetes: `>= 1.30.0`
 | forgejo.gitea.metrics.enabled | bool | `false` |  |
 | forgejo.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | forgejo.image.rootless | bool | `true` |  |
-| forgejo.image.tag | string | `"11.0.2"` |  |
+| forgejo.image.tag | string | `"14.0.2"` |  |
 | forgejo.istio.blockApi | bool | `false` |  |
 | forgejo.istio.enabled | bool | `false` |  |
 | forgejo.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
