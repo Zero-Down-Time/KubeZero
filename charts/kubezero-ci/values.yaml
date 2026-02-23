@@ -93,6 +93,8 @@ forgejo:
     gateway: istio-ingress/private-ingressgateway
     url: git.example.com
     blockApi: false
+    branding:
+      enabled: false
 
   analytics:
     enabled: false

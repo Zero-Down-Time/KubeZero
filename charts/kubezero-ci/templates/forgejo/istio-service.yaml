@@ -21,6 +21,7 @@ spec:
           regex: '(?i).*(?:QuillBot|SBIntuitionsBot|Scrapy|SemrushBot-OCOB|SemrushBot-SWA|ShapBot|Sidetrade indexer bot|TerraCotta|Thinkbot|TikTokSpider|Timpibot|VelenPublicWebCrawler|WARDBot|Webzio-Extended|YaK|YandexAdditional|YandexAdditionalBot|YouBot|aiHitBot|amazon-kendra-|anthropic-ai|atlassian-bot|bedrockbot|bigsur\.ai|cohere-ai|cohere-training-data-crawler|facebookexternalhit|iaskspider/2\.0|img2dataset|meta-externalagent|meta-externalfetcher|meta-webindexer|netEstate Imprint Crawler|omgili|omgilibot|panscient\.com|quillbot\.com|wpbot).*'
     directResponse:
       status: 418
+  {{- if .Values.forgejo.istio.branding.enabled }}
   - match:
     - uri:
         exact: /assets/img/logo.svg
@@ -35,6 +36,7 @@ spec:
     redirect:
       authority: cdn.zero-downtime.net
       uri: /assets/zdt/logo-small-64.png
+  {{- end }}
   - name: api
     match:
     - uri:
