@@ -160,6 +160,10 @@ kube-prometheus-stack:
       log.console:
         format: json
 
+    # anonymous auth enabled !
+    env:
+      GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"
+
     # Pin sidecar due to Python issues with crts
     # https://github.com/kiwigrid/k8s-sidecar/issues/400
     sidecar:
