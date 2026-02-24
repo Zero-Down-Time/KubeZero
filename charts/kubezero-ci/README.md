@@ -46,6 +46,8 @@ Kubernetes: `>= 1.30.0`
 |-----|------|---------|-------------|
 | forgejo.analytics.enabled | bool | `false` |  |
 | forgejo.analytics.siteId | string | `"pleasesetasneeded"` |  |
+| forgejo.anubis.enabled | bool | `false` |  |
+| forgejo.anubis.image.tag | string | `"v1.25.0"` |  |
 | forgejo.checkDeprecation | bool | `false` |  |
 | forgejo.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | forgejo.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
@@ -72,13 +74,13 @@ Kubernetes: `>= 1.30.0`
 | forgejo.gitea.config.service.DISABLE_REGISTRATION | string | `"true"` |  |
 | forgejo.gitea.config.session.PROVIDER | string | `"memory"` |  |
 | forgejo.gitea.config.ui.DEFAULT_THEME | string | `"forgejo-dark"` |  |
-| forgejo.gitea.config.ui.THEMES | string | `"forgejo-light,forgejo-dark"` |  |
 | forgejo.gitea.demo | bool | `false` |  |
 | forgejo.gitea.metrics.enabled | bool | `false` |  |
 | forgejo.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | forgejo.image.rootless | bool | `true` |  |
 | forgejo.image.tag | string | `"14.0.2"` |  |
 | forgejo.istio.blockApi | bool | `false` |  |
+| forgejo.istio.branding.enabled | bool | `false` |  |
 | forgejo.istio.enabled | bool | `false` |  |
 | forgejo.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
 | forgejo.istio.url | string | `"git.example.com"` |  |
@@ -88,7 +90,6 @@ Kubernetes: `>= 1.30.0`
 | forgejo.resources.limits.memory | string | `"2048Mi"` |  |
 | forgejo.resources.requests.cpu | string | `"200m"` |  |
 | forgejo.resources.requests.memory | string | `"1024Mi"` |  |
-| forgejo.service.http.port | int | `80` |  |
 | forgejo.strategy.type | string | `"Recreate"` |  |
 | forgejo.test.enabled | bool | `false` |  |
 | jenkins.agent.annotations."cluster-autoscaler.kubernetes.io/safe-to-evict" | string | `"false"` |  |

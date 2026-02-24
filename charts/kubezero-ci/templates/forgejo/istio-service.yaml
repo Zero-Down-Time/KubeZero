@@ -44,10 +44,14 @@ spec:
     route:
     - destination:
         host: forgejo-http
+        port:
+          number: {{ ternary "8080" "3000" .Values.forgejo.anubis.enabled }}
   - name: notApi
     route:
     - destination:
         host: forgejo-http
+        port:
+          number: {{ ternary "8080" "3000" .Values.forgejo.anubis.enabled }}
   tcp:
   - match:
     - port: 22

@@ -1,9 +1,15 @@
 #!/bin/bash
-set -ex
+# set -ex
 
 update_jsonnet() {
-  which jsonnet > /dev/null || { echo "Required jsonnet not found!"; exit 1;}
-  which jb > /dev/null || { echo "Required jb ( json-bundler ) not found!"; exit 1;}
+  which jsonnet >/dev/null || {
+    echo "Required jsonnet not found!"
+    exit 1
+  }
+  which jb >/dev/null || {
+    echo "Required jb ( json-bundler ) not found!"
+    exit 1
+  }
 
   [ -r jsonnetfile.json ] || jb init
   [ -r jsonnetfile.lock.json ] && jb update
@@ -29,12 +35,17 @@ wrap_with_condition() {
 
   [ -r $YAML ] || return 1
   sed -i "1 i\\{{- if $2 }}" $YAML
-  echo '{{- end }}' >> $YAML
+  echo '{{- end }}' >>$YAML
 }
 
 get_extract_chart() {
   local CHART=$1
   local VERSION=$(yq eval '.dependencies[] | select(.name=="'$CHART'") | .version' Chart.yaml)
+
+  if [ -z "$CHART" ]; then
+    echo "Missing chart"
+    exit 1
+  fi
 
   rm -rf charts/$CHART
 
@@ -75,7 +86,7 @@ patch_rebase() {
 patch_create() {
   local CHART=$1
 
-  diff -rtuN charts/$CHART.orig charts/$CHART > $CHART.patch
+  diff -rtuN charts/$CHART.orig charts/$CHART >$CHART.patch
   rm -rf charts/$CHART.orig
 }
 

@@ -1,0 +1,62 @@
+diff '--color=auto' -rtuN charts/forgejo.orig/templates/gitea/deployment.yaml charts/forgejo/templates/gitea/deployment.yaml
+--- charts/forgejo.orig/templates/gitea/deployment.yaml	2026-02-24 13:18:35.567617607 +0000
++++ charts/forgejo/templates/gitea/deployment.yaml	2026-02-24 13:18:51.894398290 +0000
+@@ -335,6 +335,42 @@
+               subPath: {{ .Values.persistence.subPath }}
+               {{- end }}
+             {{- include "gitea.container-additional-mounts" . | nindent 12 }}
++        {{- if .Values.anubis.enabled }}
++        - name: anubis
++          image: ghcr.io/techarohq/anubis:{{ .Values.anubis.image.tag }}
++          env:
++            - name: "BIND"
++              value: ":8080"
++            - name: "DIFFICULTY"
++              value: "4"
++            - name: "TARGET"
++              value: "http://localhost:3000"
++            - name: "CUSTOM_REAL_IP_HEADER"
++              value: "x-forwarded-for"
++            - name: "XFF_STRIP_PRIVATE"
++              value: "false"
++          volumeMounts:
++            - name: data
++              mountPath: /data
++              {{- if .Values.persistence.subPath }}
++              subPath: {{ .Values.persistence.subPath }}
++              {{- end }}
++          resources:
++            requests:
++              cpu: 20m
++              memory: 32Mi
++          # limits:
++          #   cpu: 750m
++          #   memory: 256Mi
++          securityContext:
++            runAsUser: 1000
++            runAsGroup: 1000
++            runAsNonRoot: true
++            allowPrivilegeEscalation: false
++            capabilities:
++              drop:
++                - ALL
++        {{- end }}
+         {{- if .Values.extraContainers }}
+         {{- toYaml .Values.extraContainers | nindent 8 }}
+         {{- end }}
+diff '--color=auto' -rtuN charts/forgejo.orig/templates/gitea/http-svc.yaml charts/forgejo/templates/gitea/http-svc.yaml
+--- charts/forgejo.orig/templates/gitea/http-svc.yaml	2026-02-24 13:18:35.567617607 +0000
++++ charts/forgejo/templates/gitea/http-svc.yaml	2026-02-24 13:18:35.570950963 +0000
+@@ -50,6 +50,12 @@
+     nodePort: {{ .Values.service.http.nodePort }}
+     {{- end }}
+     targetPort: http
++  {{- if .Values.anubis.enabled }}
++  - name: anubis
++    protocol: TCP
++    port: 8080
++    targetPort: 8080
++  {{- end }}
+   {{- if .Values.service.http.extraPorts }}
+   {{- toYaml .Values.service.http.extraPorts | nindent 2 }}
+   {{- end }}

@@ -17,10 +17,6 @@ forgejo:
     claimName: data-gitea-0
     size: 4Gi
 
-  service:
-    http:
-      port: 80
-
   containerSecurityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -53,6 +49,13 @@ forgejo:
   checkDeprecation: false
   test:
     enabled: false
+
+  # This add an Anubis sidecar fronting Forgejo
+  anubis:
+    enabled: false
+    image:
+      # renovate: datasource=docker depName=techarohq/anubis registryUrl=https://ghcr.io
+      tag: v1.25.0
 
   gitea:
     admin:

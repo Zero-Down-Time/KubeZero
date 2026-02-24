@@ -1,0 +1,25 @@
+{{- if .Values.tcpRoute.enabled -}}
+{{- $fullName := include "gitea.fullname" . -}}
+{{- $tcpRoute := .Values.tcpRoute }}
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: {{ $fullName }}-ssh
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "gitea.labels" . | nindent 4 }}
+  {{- with $tcpRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with $tcpRoute.parentRefs }}
+  parentRefs:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+  - backendRefs:
+    - kind: Service
+      name: {{ $fullName }}-ssh
+      port: {{ $tcpRoute.port | default .Values.service.ssh.port }}
+{{- end }}

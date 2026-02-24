@@ -1,0 +1,30 @@
+apiVersion: v2
+appVersion: 14.0.2
+dependencies:
+- name: common
+  repository: oci://ghcr.io/visualon/bitnamicharts
+  tags:
+  - bitnami-common
+  version: 2.34.0
+description: Forgejo Helm chart for Kubernetes
+home: https://forgejo.org/
+icon: https://code.forgejo.org/forgejo/forgejo/raw/branch/forgejo/assets/logo.svg
+keywords:
+- git
+- issue tracker
+- code review
+- wiki
+- forgejo
+- gitea
+- gogs
+maintainers:
+- email: michael.kriese@visualon.de
+  name: Michael Kriese
+- email: mail@pat-s.me
+  name: Patrick Schratz
+name: forgejo
+sources:
+- https://code.forgejo.org/forgejo-helm/forgejo-helm
+- https://codeberg.org/forgejo/forgejo
+type: application
+version: 16.2.0

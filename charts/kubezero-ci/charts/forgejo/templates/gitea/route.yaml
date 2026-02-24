@@ -1,0 +1,43 @@
+{{- if .Values.route.enabled -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "gitea.fullname" . }}-http
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "gitea.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.route.annotations | nindent 4 }}
+spec:
+  {{- if .Values.route.host }}
+  host: {{ tpl .Values.route.host $ | quote }}
+  {{- end }}
+  {{- if .Values.route.wildcardPolicy }}
+  wildcardPolicy: {{ .Values.route.wildcardPolicy }}
+  {{- end }}
+  to:
+    kind: Service
+    name: {{ include "gitea.fullname" . }}-http
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+    {{- if .Values.route.tls.existingSecret }}
+    externalCertificate: {{ .Values.route.tls.existingSecret }}
+    {{- else if and .Values.route.tls.certificate
+                    .Values.route.tls.privateKey
+                    .Values.route.tls.caCertificate }}
+    certificate: |
+{{ .Values.route.tls.certificate | indent 6 }}
+    key: |
+{{ .Values.route.tls.privateKey | indent 6 }}
+    caCertificate: |
+{{ .Values.route.tls.caCertificate | indent 6 }}
+    {{- else if or .Values.route.tls.certificate
+                    .Values.route.tls.privateKey
+                    .Values.route.tls.caCertificate }}
+    {{- fail "certificate, privateKey and caCertificate must be specified together" }}
+    {{- end }}
+{{- end }}
