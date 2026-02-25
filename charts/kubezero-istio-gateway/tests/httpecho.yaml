@@ -1,0 +1,60 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpecho
+spec:
+  hosts:
+  - "httpecho.example.com"
+  gateways:
+  - istio-ingress/ingressgateway
+  http:
+  - route:
+    - destination:
+        port:
+          number: 80
+        host: httpecho
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: httpecho
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpecho
+  labels:
+    app: httpecho
+    service: httpecho
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    app: httpecho
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpecho
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpecho
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: httpecho
+        version: v1
+    spec:
+      serviceAccountName: httpecho
+      containers:
+      - image: docker.io/ealen/echo-server
+        name: httpecho
+        ports:
+        - containerPort: 80
