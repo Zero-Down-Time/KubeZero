@@ -14,11 +14,6 @@ gateway:
   terminationGracePeriodSeconds: 120
   minReadySeconds: 10
 
-  # This will not work in 1.28 yet, verify in 1.29 via 
-  # istioctl proxy-config bootstrap istio-ingressgateway -n istio-ingress looking for downstream_max_connections
-  env:
-    ISTIO_META_GLOBAL_DOWNSTREAM_MAX_CONNECTIONS: 50000
-
   resources:
     requests:
       cpu: 50m

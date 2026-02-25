@@ -1,7 +1,22 @@
-diff -tubr charts/gateway.orig/templates/service.yaml charts/gateway/templates/service.yaml
---- charts/gateway.orig/templates/service.yaml	2022-12-09 14:58:33.000000000 +0000
-+++ charts/gateway/templates/service.yaml	2022-12-12 22:52:27.629670669 +0000
-@@ -38,7 +38,14 @@
+diff '--color=auto' -rtuN charts/gateway.orig/templates/networkpolicy.yaml charts/gateway/templates/networkpolicy.yaml
+--- charts/gateway.orig/templates/networkpolicy.yaml	2026-02-25 00:09:44.997766606 +0000
++++ charts/gateway/templates/networkpolicy.yaml	2026-02-25 00:10:07.074587445 +0000
+@@ -5,11 +5,9 @@
+   name: {{ include "gateway.name" . }}{{- if not (eq .Values.revision "") }}-{{ .Values.revision }}{{- end }}
+   namespace: {{ .Release.Namespace }}
+   labels:
+-    app: {{ include "gateway.name" . }}
+     istio.io/rev: {{ .Values.revision | default "default" | quote }}
+     install.operator.istio.io/owning-resource: {{ .Values.ownerName | default "unknown" }}
+     operator.istio.io/component: "Gateway"
+-    istio: {{ (.Values.labels.istio | quote) | default (include "gateway.name" . | trimPrefix "istio-") }}
+     release: {{ .Release.Name }}
+     app.kubernetes.io/name: {{ include "gateway.name" . }}
+     {{- include "gateway.labels" . | nindent 4 }}
+diff '--color=auto' -rtuN charts/gateway.orig/templates/service.yaml charts/gateway/templates/service.yaml
+--- charts/gateway.orig/templates/service.yaml	2026-02-25 00:09:44.997766606 +0000
++++ charts/gateway/templates/service.yaml	2026-02-25 00:09:45.004433320 +0000
+@@ -63,7 +63,14 @@
      port: 15017
      targetPort: 15017
  {{- else }}

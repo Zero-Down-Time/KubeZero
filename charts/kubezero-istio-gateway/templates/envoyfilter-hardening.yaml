@@ -17,6 +17,7 @@ spec:
         per_connection_buffer_limit_bytes: 32768
   - applyTo: NETWORK_FILTER
     match:
+      context: GATEWAY
       listener:
         filterChain:
           filter:

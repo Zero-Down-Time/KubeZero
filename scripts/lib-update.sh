@@ -1,5 +1,5 @@
 #!/bin/bash
-# set -ex
+# set -x
 
 update_jsonnet() {
   which jsonnet >/dev/null || {

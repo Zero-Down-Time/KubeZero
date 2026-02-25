@@ -1,6 +1,6 @@
 # kubezero-istio-gateway
 
-![Version: 0.28.3](https://img.shields.io/badge/Version-0.28.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.29.0](https://img.shields.io/badge/Version-0.29.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio gateways
 
@@ -21,7 +21,7 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://istio-release.storage.googleapis.com/charts | gateway | 1.28.3 |
+| https://istio-release.storage.googleapis.com/charts | gateway | 1.29.0 |
 
 ## Values
 
@@ -41,6 +41,7 @@ Kubernetes: `>= 1.30.0-0`
 | gateway.service.externalTrafficPolicy | string | `"Local"` |  |
 | gateway.service.type | string | `"NodePort"` |  |
 | gateway.terminationGracePeriodSeconds | int | `120` |  |
+| global.networkPolicy.enabled | bool | `true` |  |
 | hardening.preserveExternalRequestId | bool | `false` |  |
 | hardening.rejectUnderscoresHeaders | bool | `true` |  |
 | hardening.unescapeSlashes | bool | `true` |  |

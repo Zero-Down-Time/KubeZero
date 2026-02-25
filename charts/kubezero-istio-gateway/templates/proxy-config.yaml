@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ProxyConfig
+metadata:
+  name: {{ include "gatewayName" . | trimPrefix "istio-" }}-proxy-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "gatewaySelectorLabels" . | nindent 6 }}
+  environmentVariables:
+    ISTIO_META_GLOBAL_DOWNSTREAM_MAX_CONNECTIONS: "50000"
