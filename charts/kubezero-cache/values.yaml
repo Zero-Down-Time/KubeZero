@@ -91,8 +91,8 @@ redis-sentinel:
         enabled: false
 
   redisSentinelConfig:
-    failoverTimeout: "60000"
-    downAfterMilliseconds:  "10000"
+    failoverTimeout: "10000"
+    downAfterMilliseconds:  "5000"
     resolveHostnames : "yes"
     announceHostnames : "yes"
 

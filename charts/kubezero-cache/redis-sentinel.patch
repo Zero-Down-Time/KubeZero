@@ -1,7 +1,40 @@
 diff '--color=auto' -rtuN charts/redis-sentinel.orig/templates/redis-sentinel.yaml charts/redis-sentinel/templates/redis-sentinel.yaml
---- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2026-02-14 18:06:38.092799433 +0000
-+++ charts/redis-sentinel/templates/redis-sentinel.yaml	2026-02-14 18:08:13.590134069 +0000
-@@ -101,8 +101,7 @@
+--- charts/redis-sentinel.orig/templates/redis-sentinel.yaml	2026-02-26 14:07:23.450036839 +0000
++++ charts/redis-sentinel/templates/redis-sentinel.yaml	2026-02-26 14:07:23.456703551 +0000
+@@ -54,6 +54,10 @@
+     {{- if .Values.redisSentinel.persistentVolumeClaimRetentionPolicy }}
+     persistentVolumeClaimRetentionPolicy: {{ toYaml .Values.redisSentinel.persistentVolumeClaimRetentionPolicy | nindent 6 }}
+     {{- end }}
++    {{- with .Values.redisSentinel.service }}
++    service:
++      {{- . | toYaml | nindent 6 }}
++    {{- end }}
+ 
+   redisExporter:
+     enabled: {{ .Values.redisExporter.enabled }}
+@@ -83,6 +87,21 @@
+   {{- end }}
+   {{- if .Values.affinity }}
+   affinity: {{ toYaml .Values.affinity | nindent 4 }}
++  {{- else }}
++  affinity:
++    podAntiAffinity:
++      requiredDuringSchedulingIgnoredDuringExecution:
++        - labelSelector:
++            matchExpressions:
++              - key: app
++                operator: In
++                values:
++                  - {{ .Values.redisSentinel.name | default .Release.Name }}-sentinel
++              - key: role
++                operator: In
++                values:
++                  - sentinel
++          topologyKey: "kubernetes.io/hostname"
+   {{- end }}
+   {{- if .Values.tolerations }}
+   tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
+@@ -101,8 +120,7 @@
    {{- if .Values.pdb.enabled }}
    pdb:
      enabled: {{ .Values.pdb.enabled }}

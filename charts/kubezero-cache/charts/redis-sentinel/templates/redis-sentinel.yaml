@@ -54,6 +54,10 @@ spec:
     {{- if .Values.redisSentinel.persistentVolumeClaimRetentionPolicy }}
     persistentVolumeClaimRetentionPolicy: {{ toYaml .Values.redisSentinel.persistentVolumeClaimRetentionPolicy | nindent 6 }}
     {{- end }}
+    {{- with .Values.redisSentinel.service }}
+    service:
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
 
   redisExporter:
     enabled: {{ .Values.redisExporter.enabled }}
@@ -83,6 +87,21 @@ spec:
   {{- end }}
   {{- if .Values.affinity }}
   affinity: {{ toYaml .Values.affinity | nindent 4 }}
+  {{- else }}
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - {{ .Values.redisSentinel.name | default .Release.Name }}-sentinel
+              - key: role
+                operator: In
+                values:
+                  - sentinel
+          topologyKey: "kubernetes.io/hostname"
   {{- end }}
   {{- if .Values.tolerations }}
   tolerations: {{ toYaml .Values.tolerations | nindent 4 }}
