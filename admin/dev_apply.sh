@@ -54,6 +54,8 @@ else
     for t in ${ARTIFACTS[@]}; do
       _helm crds $t || true
     done
+    # if only crds we are done here
+    [ "$ACTION" == "crds" ] && exit 0
   fi
   for t in ${ARTIFACTS[@]}; do
     _helm $ACTION $t || true
