@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-addons
 description: KubeZero umbrella chart for various optional cluster addons
 type: application
-version: 0.8.18
+version: 0.8.19
 appVersion: v1.34
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
@@ -23,7 +23,7 @@ dependencies:
     repository: https://kubernetes-sigs.github.io/external-dns/
     condition: external-dns.enabled
   - name: cluster-autoscaler
-    version: 9.55.0
+    version: 9.55.1
     repository: https://kubernetes.github.io/autoscaler
     condition: cluster-autoscaler.enabled
   - name: nvidia-device-plugin
@@ -32,7 +32,7 @@ dependencies:
     repository: https://nvidia.github.io/k8s-device-plugin
     condition: nvidia-device-plugin.enabled
   - name: neuron-helm-chart
-    version: 1.4.0
+    version: 1.5.0
     # https://github.com/aws-neuron/neuron-helm-charts/tree/main/charts/neuron-helm-chart
     repository: oci://public.ecr.aws/neuron #/neuron-helm-chart
     condition: neuron-helm-chart.enabled
@@ -45,7 +45,7 @@ dependencies:
     repository: https://twin.github.io/helm-charts
     condition: aws-eks-asg-rolling-update-handler.enabled
   - name: py-kube-downscaler
-    version: 0.3.10
+    version: 0.3.11
     repository: https://caas-team.github.io/helm-charts/
     condition: py-kube-downscaler.enabled
 kubeVersion: ">= 1.34.0-0"
