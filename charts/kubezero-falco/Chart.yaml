@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-falco
 description: Falco Container Security and Audit components
 type: application
-version: 0.1.3
+version: 0.1.4
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -16,7 +16,7 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: falco
-    version: 5.0.0
+    version: 8.0.1
     repository: https://falcosecurity.github.io/charts
     condition: k8saudit.enabled
     alias: k8saudit
