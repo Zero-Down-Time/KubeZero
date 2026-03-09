@@ -1,6 +1,6 @@
 # kubezero-argo
 
-![Version: 0.4.6](https://img.shields.io/badge/Version-0.4.6-informational?style=flat-square)
+![Version: 0.4.8](https://img.shields.io/badge/Version-0.4.8-informational?style=flat-square)
 
 KubeZero Argo - Events, Workflow, CD
 
@@ -18,9 +18,9 @@ Kubernetes: `>= 1.30.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://argoproj.github.io/argo-helm | argo-cd | 9.0.3 |
-| https://argoproj.github.io/argo-helm | argo-events | 2.4.16 |
-| https://argoproj.github.io/argo-helm | argocd-image-updater | 1.1.0 |
+| https://argoproj.github.io/argo-helm | argo-cd | 9.4.9 |
+| https://argoproj.github.io/argo-helm | argo-events | 2.4.20 |
+| https://argoproj.github.io/argo-helm | argocd-image-updater | 1.1.1 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 
 ## Values
@@ -55,7 +55,7 @@ Kubernetes: `>= 1.30.0-0`
 | argo-cd.dex.enabled | bool | `false` |  |
 | argo-cd.enabled | bool | `false` |  |
 | argo-cd.global.image.repository | string | `"public.ecr.aws/zero-downtime/zdt-argocd"` |  |
-| argo-cd.global.image.tag | string | `"v3.1.9"` |  |
+| argo-cd.global.image.tag | string | `"v3.3.2"` |  |
 | argo-cd.global.logging.format | string | `"json"` |  |
 | argo-cd.global.networkPolicy.create | bool | `true` |  |
 | argo-cd.istio.enabled | bool | `false` |  |
@@ -84,11 +84,11 @@ Kubernetes: `>= 1.30.0-0`
 | argo-events.configs.jetstream.streamConfig.maxBytes | string | `"1GB"` |  |
 | argo-events.configs.jetstream.streamConfig.maxMsgs | int | `1000000` | Maximum number of messages before expiring oldest message |
 | argo-events.configs.jetstream.streamConfig.replicas | int | `1` | Number of replicas, defaults to 3 and requires minimal 3 |
-| argo-events.configs.jetstream.versions[0].configReloaderImage | string | `"natsio/nats-server-config-reloader:0.18.0"` |  |
-| argo-events.configs.jetstream.versions[0].metricsExporterImage | string | `"natsio/prometheus-nats-exporter:0.17.3"` |  |
-| argo-events.configs.jetstream.versions[0].natsImage | string | `"nats:2.11.4-scratch"` |  |
+| argo-events.configs.jetstream.versions[0].configReloaderImage | string | `"natsio/nats-server-config-reloader:0.22.3"` |  |
+| argo-events.configs.jetstream.versions[0].metricsExporterImage | string | `"natsio/prometheus-nats-exporter:0.19.1"` |  |
+| argo-events.configs.jetstream.versions[0].natsImage | string | `"nats:2.12.4-scratch"` |  |
 | argo-events.configs.jetstream.versions[0].startCommand | string | `"/nats-server"` |  |
-| argo-events.configs.jetstream.versions[0].version | string | `"2.10.11"` |  |
+| argo-events.configs.jetstream.versions[0].version | string | `"2.12.4"` |  |
 | argo-events.enabled | bool | `false` |  |
 | argocd-image-updater.authScripts.enabled | bool | `true` |  |
 | argocd-image-updater.authScripts.scripts."ecr-login.sh" | string | `"#!/bin/sh\naws ecr --region $AWS_REGION get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d\n"` |  |

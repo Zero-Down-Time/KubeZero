@@ -76,6 +76,9 @@ global:
   # -- Annotations for the all deployed Statefulsets
   statefulsetAnnotations: {}
 
+  # -- Labels for the all deployed Statefulsets
+  statefulsetLabels: {}
+
   # -- Annotations for the all deployed Deployments
   deploymentAnnotations: {}
 
@@ -162,6 +165,23 @@ global:
   # -- Environment variables to pass to all deployed Deployments
   env: []
 
+  # -- Extra volumes to add to all deployed Deployments and StatefulSets
+  extraVolumes: []
+  # Example of adding a custom CA bundle from a ConfigMap:
+  # - name: my-root-ca
+  #   configMap:
+  #     name: my-trustbundle
+  #     items:
+  #       - key: bundle.pem
+  #         path: ca-certificates.crt
+
+
+  # -- Extra volume mounts to add to all deployed Deployments and StatefulSets
+  extraVolumeMounts: []
+  # Example of adding a custom CA bundle mount:
+  # - name: my-root-ca
+  #   mountPath: /etc/ssl/certs
+
   # -- Annotations for the all deployed Certificates
   certificateAnnotations: {}
 
@@ -183,10 +203,6 @@ configs:
     ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/app-sync-using-impersonation/
     application.sync.impersonation.enabled: false
 
-    # -- Enable logs RBAC enforcement
-    ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/upgrading/2.3-2.4/#enable-logs-rbac-enforcement
-    server.rbac.log.enforce.enable: false
-
     # -- Enable exec feature in Argo UI
     ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
     exec.enabled: false
@@ -196,7 +212,10 @@ configs:
     admin.enabled: true
 
     # -- Timeout to discover if a new manifests version got published to the repository
-    timeout.reconciliation: 180s
+    timeout.reconciliation: 120s
+
+    # -- Maximum jitter added to the reconciliation timeout to spread out refreshes and reduce repo-server load
+    timeout.reconciliation.jitter: 60s
 
     # -- Timeout to refresh application data as well as target manifests cache
     timeout.hard.reconciliation: 0s
@@ -224,6 +243,9 @@ configs:
     #   issuer: https://login.microsoftonline.com/TENANT_ID/v2.0
     #   clientID: aaaabbbbccccddddeee
     #   clientSecret: $oidc.azuread.clientSecret
+    #   # Optional: set to true to use Azure Workload Identity instead of clientSecret
+    #   azure:
+    #     useWorkloadIdentity: false
 
     # Some OIDC providers require a separate clientID for different callback URLs.
     # For example, if configuring Argo CD with self-hosted Dex, you will need a separate client ID
@@ -880,6 +902,9 @@ controller:
   # -- Annotations for the application controller StatefulSet
   statefulsetAnnotations: {}
 
+  # -- Labels for the application controller StatefulSet
+  statefulsetLabels: {}
+
   # -- Annotations for the application controller Deployment
   deploymentAnnotations: {}
 
@@ -1163,7 +1188,7 @@ dex:
     # -- Dex image repository
     repository: ghcr.io/dexidp/dex
     # -- Dex image tag
-    tag: v2.44.0
+    tag: v2.45.1
     # -- Dex imagePullPolicy
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
@@ -1282,6 +1307,7 @@ dex:
   # @default -- See [values.yaml]
   containerSecurityContext:
     runAsNonRoot: true
+    runAsUser: 1001
     readOnlyRootFilesystem: true
     allowPrivilegeEscalation: false
     seccompProfile:
@@ -1437,8 +1463,8 @@ redis:
     # -- Redis repository
     repository: ecr-public.aws.com/docker/library/redis
     # -- Redis tag
-    ## Do not upgrade to >= 7.4.0, otherwise you are no longer using an open source version of Redis
-    tag: 7.2.11-alpine
+    ## Do not use 7.4.0 <= v < 8.0.0, otherwise you are no longer using an open source version of Redis
+    tag: 8.2.3-alpine
     # -- Redis image pull policy
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
@@ -1454,7 +1480,7 @@ redis:
       # -- Repository to use for the redis-exporter
       repository: ghcr.io/oliver006/redis_exporter
       # -- Tag to use for the redis-exporter
-      tag: v1.79.0
+      tag: v1.82.0
       # -- Image pull policy for the redis-exporter
       # @default -- `""` (defaults to global.image.imagePullPolicy)
       imagePullPolicy: ""
@@ -1734,7 +1760,7 @@ redis-ha:
     repository: ecr-public.aws.com/docker/library/redis
     # -- Redis tag
     ## Do not upgrade to >= 7.4.0, otherwise you are no longer using an open source version of Redis
-    tag: 7.2.11-alpine
+    tag: 8.2.3-alpine
   ## Prometheus redis-exporter sidecar
   exporter:
     # -- Enable Prometheus redis-exporter sidecar
@@ -2027,7 +2053,7 @@ server:
       # -- Repository to use for extension installer image
       repository: "quay.io/argoprojlabs/argocd-extension-installer"
       # -- Tag to use for extension installer image
-      tag: "v0.0.8"
+      tag: "v0.0.9"
       # -- Image pull policy for extensions
       # @default -- `""` (defaults to global.image.imagePullPolicy)
       imagePullPolicy: ""
@@ -2174,6 +2200,8 @@ server:
   ## Readiness and liveness probes for default backend
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   readinessProbe:
+    # -- Enable Kubernetes readiness probe for default backend
+    enabled: true
     # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
     failureThreshold: 3
     # -- Number of seconds after the container has started before [probe] is initiated
@@ -2186,6 +2214,8 @@ server:
     timeoutSeconds: 1
 
   livenessProbe:
+    # -- Enable Kubernetes liveness probe for default backend
+    enabled: true
     # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
     failureThreshold: 3
     # -- Number of seconds after the container has started before [probe] is initiated
@@ -2476,6 +2506,9 @@ server:
       ## Instance mode needs type NodePort, IP mode needs type ClusterIP
       ## Ref: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/how-it-works/#ingress-traffic
       serviceType: NodePort
+      # -- Annotations for the AWS ALB gRPC service
+      ## Allows adding custom annotations to the gRPC service for integrations like DataDog, Prometheus, etc.
+      serviceAnnotations: {}
 
     # Google specific options for Google Application Load Balancer
     # Applies only when `server.ingress.controller` is set to `gke`
@@ -2624,6 +2657,9 @@ server:
         #       add:
         #         - name: X-Custom-Header
         #           value: custom-value
+        # timeouts:
+        #   request: 10s
+        #   backendRequest: 2s
 
   # Gateway API GRPCRoute configuration
   # NOTE: Gateway API support is in EXPERIMENTAL status
@@ -2661,7 +2697,7 @@ server:
         #           value: custom-value
 
   # Gateway API BackendTLSPolicy configuration
-  # NOTE: BackendTLSPolicy is in EXPERIMENTAL status (v1alpha3)
+  # NOTE: BackendTLSPolicy support is in EXPERIMENTAL status
   # Required for HTTPS backends when using Gateway API
   # Not all Gateway controllers support this resource (e.g., Cilium does not support it yet)
   backendTLSPolicy:
@@ -2938,9 +2974,11 @@ repoServer:
       drop:
       - ALL
 
-  ## Readiness and liveness probes for default backend
+  ## Readiness and liveness probes for Repo Server
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   readinessProbe:
+    # -- Enable Kubernetes readiness probe for Repo Server
+    enabled: true
     # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
     failureThreshold: 3
     # -- Number of seconds after the container has started before [probe] is initiated
@@ -2953,6 +2991,8 @@ repoServer:
     timeoutSeconds: 1
 
   livenessProbe:
+    # -- Enable Kubernetes liveness probe for Repo Server
+    enabled: true
     # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
     failureThreshold: 3
     # -- Number of seconds after the container has started before [probe] is initiated

@@ -166,4 +166,5 @@ flink-kubernetes-operator:
     flink-conf.yaml: |+
       kubernetes.operator.metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
       kubernetes.operator.metrics.reporter.prom.port: 9999
-      kubernetes.operator.flink.client.timeout: 120s
+      kubernetes.operator.flink.client.timeout: 300s
+      kubernetes.operator.reconcile.parallelism: 2
