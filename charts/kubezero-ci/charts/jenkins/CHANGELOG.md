@@ -12,6 +12,42 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.9.8
+
+Update `jenkins/inbound-agent` to version `3355.v388858a_47b_33-16`
+
+## 5.9.7
+
+Update `configuration-as-code` to version `2053.vb_0da_47381a_25`
+
+## 5.9.6
+
+Don't add `secretName: "<nil>"` to ingress if no value defined
+
+## 5.9.5
+
+Don't render `tls` ingress section if its value is `{}`
+
+## 5.9.4
+
+Fix templating in `extraObjects`
+
+## 5.9.3
+
+Allow to scale controller to zero replicas during maintenance scenarios.
+
+## 5.9.2
+
+Add support for annotations on the HTTPRoute resource
+
+## 5.9.1
+
+Fix templating in secretName for ingress
+
+## 5.9.0
+
+Added [Gateway API](https://gateway-api.sigs.k8s.io/api-types/httproute/) support
+
 ## 5.8.142
 
 Update `jenkins/jenkins` to version `2.541.2-jdk21`

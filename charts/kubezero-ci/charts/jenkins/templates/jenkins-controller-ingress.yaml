@@ -65,6 +65,13 @@ spec:
     host: {{ tpl .Values.controller.ingress.resourceRootUrl . | quote }}
 {{- end }}
 {{- if .Values.controller.ingress.tls }}
+{{- $withTlsEntries := false }}
+{{- range .Values.controller.ingress.tls }}
+  {{- if gt (len .) 0 }}
+    {{- $withTlsEntries = true }}
+  {{- end }}
+{{- end }}
+{{- if $withTlsEntries }}
   tls:
 {{- range .Values.controller.ingress.tls }}
   - hosts:
@@ -74,7 +81,10 @@ spec:
 {{- if $.Values.controller.ingress.resourceRootUrl }}
       - {{ tpl $.Values.controller.ingress.resourceRootUrl $ | quote }}
 {{- end }}
-    secretName: {{ .secretName | quote }}
+{{- if .secretName }}
+    secretName: {{ tpl (.secretName | toString) $ | quote }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

@@ -303,7 +303,7 @@ control_plane_node() {
   _kubeadm init phase kubelet-finalize all
 
   # we skip kube-proxy
-  if [[ "$CMD" =~ ^(bootstrap|restore)$ ]]; then
+  if [[ "$CMD" =~ ^(bootstrap)$ ]]; then
     _kubeadm init phase addon coredns
   fi
 

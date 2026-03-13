@@ -118,6 +118,8 @@ jenkins:
     javaOpts: "-XX:+UseContainerSupport -XX:+UseStringDeduplication"
     jenkinsOpts: "--sessionTimeout=300 --sessionEviction=10800"
 
+    initializeOnce: true
+
     # until https://github.com/kiwigrid/k8s-sidecar/issues/400 is fixed
     sidecars:
       configAutoReload:
@@ -136,15 +138,8 @@ jenkins:
         cpu: "250m"
         memory: "1280Mi"
       limits:
-        #cpu: "2000m"
+        # cpu: 2
         memory: "4096Mi"
-    initContainerResources:
-      requests:
-        cpu: "50m"
-        memory: "256Mi"
-      limits:
-        #cpu: "1000m"
-        memory: "1024Mi"
 
     JCasC:
       configScripts:

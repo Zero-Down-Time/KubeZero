@@ -9,6 +9,10 @@ patches:
 {{- end }}
 skipPhases:
   - addon/kube-proxy
+timeouts:
+  controlPlaneComponentHealthCheck: 10m0s
+  kubernetesAPICall: 5m0s
+  etcdAPICall: 5m0s
 nodeRegistration:
   criSocket: "unix:///run/containerd/containerd.sock"
   ignorePreflightErrors:

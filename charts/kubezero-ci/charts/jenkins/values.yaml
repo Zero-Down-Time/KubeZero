@@ -51,6 +51,10 @@ controller:
     tagLabel: jdk21
     # -- Controller image pull policy
     pullPolicy: "Always"
+
+  # -- Number of replicas. Max 1. Can be set to 0 for maintenance scenarios.
+  replicas: 1
+
   # -- Controller image pull secret
   imagePullSecretName:
   # -- Lifecycle specification for controller-container
@@ -417,7 +421,7 @@ controller:
     - kubernetes:4423.vb_59f230b_ce53
     - workflow-aggregator:608.v67378e9d3db_1
     - git:5.10.0
-    - configuration-as-code:2037.v8e5349845172
+    - configuration-as-code:2053.vb_0da_47381a_25
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
   # -- Download the minimum required version or latest version of all dependencies
@@ -807,6 +811,25 @@ controller:
     # -- Route path
     path:
 
+  # Gateway API HTTPRoute
+  httpRoute:
+    # Toggle to create an HTTPRoute resource alongside the existing ingress definition
+    enabled: false
+    apiVersion: "gateway.networking.k8s.io/v1"
+    kind: HTTPRoute
+    # specify the Gateway instance to bind the HTTPRoute to.
+    parentRefs: []
+    # - name: envoy-gateway-bundle
+    #   namespace: envoy-gateway-system
+    # Reuse ingress host information if true; set to false to manage hostnames below
+    reuseIngressConfiguration: false
+    # Hostnames to use for the http route, only used if reuseIngressConfiguration is false.
+    hostnames: []
+    # Extra HTTPRoute rules that will be appended before the default backend
+    extraRules: []
+    # -- HTTPRoute annotations
+    annotations: {}
+
   # -- Allows for adding entries to Pod /etc/hosts
   hostAliases: []
   # ref: https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
@@ -979,7 +1002,7 @@ agent:
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3355.v388858a_47b_33-14"
+    tag: "3355.v388858a_47b_33-16"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"
