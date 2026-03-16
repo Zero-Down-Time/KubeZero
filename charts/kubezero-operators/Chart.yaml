@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-operators
 description: Various operators supported by KubeZero
 type: application
-version: 0.2.10
+version: 0.3.0
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -11,6 +11,7 @@ keywords:
   - postgres
   - kafka
   - rabbitmq
+  - garage
 maintainers:
   - name: Stefan Reimer
     email: stefan@zero-downtime.net
@@ -46,4 +47,8 @@ dependencies:
     version: 1.13.0
     repository:  https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0
     condition: flink-kubernetes-operator.enabled
+  - name: garage-operator
+    version: 0.1.4
+    repository:  oci://ghcr.io/rajsinghtech/charts
+    condition: garage-operator.enabled
 kubeVersion: ">= 1.33.0-0"

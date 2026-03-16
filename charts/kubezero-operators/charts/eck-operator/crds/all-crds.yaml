@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: agents.agent.k8s.elastic.co
 spec:
   group: agent.k8s.elastic.co
@@ -1146,8 +1146,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: apmservers.apm.k8s.elastic.co
 spec:
   group: apm.k8s.elastic.co
@@ -2381,8 +2381,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: autoopsagentpolicies.autoops.k8s.elastic.co
 spec:
   group: autoops.k8s.elastic.co
@@ -2451,6 +2451,54 @@ spec:
               image:
                 description: Image is the AutoOps Agent Docker image to deploy.
                 type: string
+              namespaceSelector:
+                description: |-
+                  NamespaceSelector is a namespace selector for the resources to be configured.
+                  Any Elasticsearch instances that belong to the selected namespaces will be configured to send data to AutoOps.
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: |-
+                        A label selector requirement is a selector that contains values, a key, and an operator that
+                        relates the key and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: |-
+                            operator represents a key's relationship to a set of values.
+                            Valid operators are In, NotIn, Exists and DoesNotExist.
+                          type: string
+                        values:
+                          description: |-
+                            values is an array of string values. If the operator is In or NotIn,
+                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                            the values array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                          x-kubernetes-list-type: atomic
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                    x-kubernetes-list-type: atomic
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                      map is equivalent to an element of matchExpressions, whose key field is "key", the
+                      operator is "In", and the values array contains only "value". The requirements are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
               podTemplate:
                 description: PodTemplate provides customisation options (labels, annotations,
                   affinity rules, resource requests, and so on) for the Agent pods
@@ -2565,8 +2613,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: beats.beat.k8s.elastic.co
 spec:
   group: beat.k8s.elastic.co
@@ -3051,8 +3099,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: elasticmapsservers.maps.k8s.elastic.co
 spec:
   group: maps.k8s.elastic.co
@@ -3656,8 +3704,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: elasticsearchautoscalers.autoscaling.k8s.elastic.co
 spec:
   group: autoscaling.k8s.elastic.co
@@ -4015,8 +4063,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: elasticsearches.elasticsearch.k8s.elastic.co
 spec:
   group: elasticsearch.k8s.elastic.co
@@ -7183,8 +7231,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: enterprisesearches.enterprisesearch.k8s.elastic.co
 spec:
   group: enterprisesearch.k8s.elastic.co
@@ -8352,8 +8400,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: kibanas.kibana.k8s.elastic.co
 spec:
   group: kibana.k8s.elastic.co
@@ -9704,8 +9752,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: logstashes.logstash.k8s.elastic.co
 spec:
   group: logstash.k8s.elastic.co
@@ -10942,8 +10990,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: packageregistries.packageregistry.k8s.elastic.co
 spec:
   group: packageregistry.k8s.elastic.co
@@ -11510,8 +11558,8 @@ metadata:
     app.kubernetes.io/instance: 'logging'
     app.kubernetes.io/managed-by: 'Helm'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '3.3.0'
-    helm.sh/chart: 'eck-operator-crds-3.3.0'
+    app.kubernetes.io/version: '3.3.1'
+    helm.sh/chart: 'eck-operator-crds-3.3.1'
   name: stackconfigpolicies.stackconfigpolicy.k8s.elastic.co
 spec:
   group: stackconfigpolicy.k8s.elastic.co
