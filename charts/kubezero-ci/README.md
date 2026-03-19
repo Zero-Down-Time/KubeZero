@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.10.1](https://img.shields.io/badge/Version-0.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.10.2](https://img.shields.io/badge/Version-0.10.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -20,8 +20,8 @@ Kubernetes: `>= 1.30.0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.jenkins.io | jenkins | 5.9.8 |
-| oci://code.forgejo.org/forgejo-helm | forgejo | 16.2.0 |
-| oci://ghcr.io/renovatebot/charts | renovate | 46.63.1 |
+| oci://code.forgejo.org/forgejo-helm | forgejo | 16.2.1 |
+| oci://ghcr.io/renovatebot/charts | renovate | 46.72.5 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -78,7 +78,7 @@ Kubernetes: `>= 1.30.0`
 | forgejo.gitea.metrics.enabled | bool | `false` |  |
 | forgejo.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | forgejo.image.rootless | bool | `true` |  |
-| forgejo.image.tag | string | `"14.0.2"` |  |
+| forgejo.image.tag | string | `"14.0.3"` |  |
 | forgejo.istio.blockApi | bool | `false` |  |
 | forgejo.istio.branding.enabled | bool | `false` |  |
 | forgejo.istio.enabled | bool | `false` |  |

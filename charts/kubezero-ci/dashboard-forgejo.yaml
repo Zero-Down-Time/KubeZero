@@ -4,6 +4,6 @@ condition: '.Values.forgejo.gitea.metrics.enabled'
 folder: KubeZero
 dashboards:
 - name: Forgejo
-  url: https://grafana.com/api/dashboards/13192/revisions/1/download
+  url: https://grafana.com/api/dashboards/17802/revisions/3/download
   tags:
   - CI
