@@ -109,7 +109,7 @@ jenkins:
   controller:
     image:
       # renovate: datasource=docker depName=jenkins/jenkins
-      tag: 2.541.1-lts-alpine
+      tag: 2.541.3-lts-alpine
     disableRememberMe: true
     prometheus:
       enabled: false
