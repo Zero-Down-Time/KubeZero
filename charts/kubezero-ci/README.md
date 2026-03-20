@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.10.2](https://img.shields.io/badge/Version-0.10.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.10.3](https://img.shields.io/badge/Version-0.10.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.9.8 |
+| https://charts.jenkins.io | jenkins | 5.9.9 |
 | oci://code.forgejo.org/forgejo-helm | forgejo | 16.2.1 |
-| oci://ghcr.io/renovatebot/charts | renovate | 46.72.5 |
+| oci://ghcr.io/renovatebot/charts | renovate | 46.79.0 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -102,7 +102,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.garbageCollection.enabled | bool | `true` |  |
 | jenkins.agent.idleMinutes | int | `30` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
-| jenkins.agent.image.tag | string | `"v0.8.5"` |  |
+| jenkins.agent.image.tag | string | `"v0.8.7"` |  |
 | jenkins.agent.inheritYamlMergeStrategy | bool | `true` |  |
 | jenkins.agent.podName | string | `"podman-aws"` |  |
 | jenkins.agent.podRetention | string | `"Default"` |  |

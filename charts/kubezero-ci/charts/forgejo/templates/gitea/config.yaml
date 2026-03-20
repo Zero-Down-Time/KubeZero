@@ -50,4 +50,4 @@ stringData:
 
     {{- end }}
   config_environment.sh: |-
-{{ $.Files.Get "scripts/config_environment.sh" | indent 4 }}
+{{ .Files.Get "scripts/config_environment.sh" | indent 4 }}

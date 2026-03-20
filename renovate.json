@@ -15,7 +15,8 @@
       ],
       "matchManagers": [
         "helmv3",
-        "helm-values"
+        "helm-values",
+        "custom.regex"
       ],
       "additionalBranchPrefix": "{{parentDir}}-",
       "matchFileNames": [
