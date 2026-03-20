@@ -1,6 +1,6 @@
 # kubezero-network
 
-![Version: 0.5.11](https://img.shields.io/badge/Version-0.5.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.5.12](https://img.shields.io/badge/Version-0.5.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things network
 
@@ -20,7 +20,7 @@ Kubernetes: `>= 1.30.0-0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://haproxytech.github.io/helm-charts | haproxy | 1.28.0 |
-| https://helm.cilium.io/ | cilium | 1.19.0 |
+| https://helm.cilium.io/ | cilium | 1.19.1 |
 
 ## Values
 

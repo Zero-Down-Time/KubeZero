@@ -19,7 +19,8 @@
       ],
       "additionalBranchPrefix": "{{parentDir}}-",
       "matchFileNames": [
-        "charts/*/Chart.yaml"
+        "charts/*/Chart.yaml",
+        "charts/*/values.yaml"
       ],
       "groupName": "{{parentDir}}-dependencies",
       "bumpVersion": "patch"
