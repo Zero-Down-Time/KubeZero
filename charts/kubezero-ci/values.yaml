@@ -115,7 +115,7 @@ jenkins:
       enabled: false
     testEnabled: false
     enableRawHtmlMarkupFormatter: true
-    javaOpts: "-XX:+UseContainerSupport -XX:+UseStringDeduplication"
+    javaOpts: "-XX:+UseContainerSupport -XX:+UseStringDeduplication -Djava.util.logging.config.file=/var/jenkins_home/logging.properties"
     jenkinsOpts: "--sessionTimeout=300 --sessionEviction=10800"
 
     initializeOnce: true
@@ -243,7 +243,7 @@ jenkins:
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.8.7
+      tag: v0.8.9
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false
@@ -311,6 +311,16 @@ jenkins:
 
   persistence:
     size: "4Gi"
+
+    volumes:
+      - name: logging-config
+        configMap:
+          name: jenkins-logging
+
+    mounts:
+      - name: logging-config
+        mountPath: /var/jenkins_home/logging.properties
+        subPath: logging.properties
 
   istio:
     enabled: false

@@ -123,7 +123,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.containerEnv[1].value | string | `"none"` |  |
 | jenkins.controller.disableRememberMe | bool | `true` |  |
 | jenkins.controller.enableRawHtmlMarkupFormatter | bool | `true` |  |
-| jenkins.controller.image.tag | string | `"2.541.1-lts-alpine"` |  |
+| jenkins.controller.image.tag | string | `"2.541.3-lts-alpine"` |  |
 | jenkins.controller.initializeOnce | bool | `true` |  |
 | jenkins.controller.installPlugins[0] | string | `"kubernetes"` |  |
 | jenkins.controller.installPlugins[10] | string | `"configuration-as-code"` |  |

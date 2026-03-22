@@ -1,0 +1,11 @@
+{{- if and .Values.jenkins.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-logging
+data:
+  logging.properties: |
+    handlers = java.util.logging.ConsoleHandler
+    java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
+    java.util.logging.SimpleFormatter.format = {"time":"%1$tFT%1$tT.%1$tL%1$tz","level":"%4$s","logger":"%3$s","msg":"%5$s%6$s"}%n
+{{ end }}
