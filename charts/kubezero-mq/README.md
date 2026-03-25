@@ -41,6 +41,8 @@ Kubernetes: `>= 1.33.0`
 | kafka.storage.size | string | `"1Gi"` |  |
 | nats.config.cluster.routeURLs.useFQDN | bool | `true` |  |
 | nats.config.jetstream.enabled | bool | `true` |  |
+| nats.config.jetstream.fileStore.maxSize | string | `"8GB"` |  |
+| nats.config.jetstream.fileStore.pvc.size | string | `"10Gi"` |  |
 | nats.enabled | bool | `false` |  |
 | nats.istio.enabled | bool | `false` |  |
 | nats.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |

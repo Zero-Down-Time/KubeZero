@@ -17,3 +17,22 @@ spec:
         size: {{ .Values.storage.size }}
         deleteClaim: false
         kraftMetadata: shared
+  {{- with .Values.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.jvmOptions }}
+  jvmOptions:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    pod:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                strimzi.io/cluster: {{ .Values.cluster.name }}
+                strimzi.io/pool-name: default-nodes
+            topologyKey: "kubernetes.io/hostname"
+

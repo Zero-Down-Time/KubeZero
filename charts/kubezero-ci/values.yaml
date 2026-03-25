@@ -171,6 +171,11 @@ jenkins:
             noUsageStatistics: true
             disabledAdministrativeMonitors:
             - "jenkins.security.ResourceDomainRecommendation"
+          tool:
+            git:
+              installations:
+              - home: "/usr/bin/git"
+                name: "Default"
           security:
             scriptApproval:
               forceSandbox: true
@@ -187,6 +192,10 @@ jenkins:
                   ignoreAnonymousReports: true
               enforce: true
           unclassified:
+            gitSCM:
+              globalConfigName: "jenkins"
+              globalConfigEmail: "jenkins@kubezero.com"
+              createAccountBasedOnEmail: false
             openTelemetry:
               configurationProperties: |-
                 otel.exporter.otlp.protocol=grpc
