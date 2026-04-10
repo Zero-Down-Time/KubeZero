@@ -43,6 +43,10 @@ spec:
         exact: "/github-webhook/"
       method:
         exact: "POST"
+    - uri:
+        exact: "/generic-webhook-trigger/invoke"
+      method:
+        exact: "POST"
 {{- end }}
 {{- if .Values.jenkins.istio.agent.enabled }}
 ---
