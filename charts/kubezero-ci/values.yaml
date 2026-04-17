@@ -3,7 +3,7 @@ forgejo:
 
   image:
     # renovate: datasource=docker depName=code.forgejo.org/forgejo/forgejo
-    tag: 14.0.3
+    tag: 14.0.4
     rootless: true
 
   replicaCount: 1
@@ -109,7 +109,7 @@ jenkins:
   controller:
     image:
       # renovate: datasource=docker depName=jenkins/jenkins
-      tag: 2.541.3-lts-alpine
+      tag: 2.555.1-lts-alpine
     disableRememberMe: true
     prometheus:
       enabled: false
