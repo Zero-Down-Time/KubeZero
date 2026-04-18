@@ -91,7 +91,7 @@ containerSecurityContext: {}
 ## @deprecated The securityContext variable has been split two:
 ## - containerSecurityContext
 ## - podSecurityContext.
-## @param securityContext Run init and Forgejo containers as a specific securityContext
+## @param securityContext **DEPRECATED** Run init and Forgejo containers as a specific securityContext
 securityContext: {}
 
 ## @param podDisruptionBudget Pod disruption budget

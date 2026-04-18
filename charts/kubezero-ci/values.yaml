@@ -3,7 +3,7 @@ forgejo:
 
   image:
     # renovate: datasource=docker depName=code.forgejo.org/forgejo/forgejo
-    tag: 14.0.4
+    tag: 15.0.0
     rootless: true
 
   replicaCount: 1
@@ -192,7 +192,7 @@ jenkins:
                   ignoreAnonymousReports: true
               enforce: true
           unclassified:
-            gitSCM:
+            scmGit:
               globalConfigName: "jenkins"
               globalConfigEmail: "jenkins@kubezero.com"
               createAccountBasedOnEmail: false

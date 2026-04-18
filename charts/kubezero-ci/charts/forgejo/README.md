@@ -861,12 +861,12 @@ Do not use `RollingUpdate` for `strategy.type`, it will cause issues with the de
 
 Security context is only usable with rootless image due to image design.
 
-| Name                         | Description                                                     | Value  |
-| ---------------------------- | --------------------------------------------------------------- | ------ |
-| `podSecurityContext.fsGroup` | Set the shared file system group for all containers in the pod. | `1000` |
-| `containerSecurityContext`   | Security context                                                | `{}`   |
-| `securityContext`            | Run init and Forgejo containers as a specific securityContext   | `{}`   |
-| `podDisruptionBudget`        | Pod disruption budget                                           | `{}`   |
+| Name                         | Description                                                                  | Value  |
+| ---------------------------- | ---------------------------------------------------------------------------- | ------ |
+| `podSecurityContext.fsGroup` | Set the shared file system group for all containers in the pod.              | `1000` |
+| `containerSecurityContext`   | Security context                                                             | `{}`   |
+| `securityContext`            | **DEPRECATED** Run init and Forgejo containers as a specific securityContext | `{}`   |
+| `podDisruptionBudget`        | Pod disruption budget                                                        | `{}`   |
 
 ### Service
 

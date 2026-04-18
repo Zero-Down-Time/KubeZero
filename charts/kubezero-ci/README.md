@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.10.4](https://img.shields.io/badge/Version-0.10.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.10.5](https://img.shields.io/badge/Version-0.10.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.9.12 |
-| oci://code.forgejo.org/forgejo-helm | forgejo | 16.2.1 |
-| oci://ghcr.io/renovatebot/charts | renovate | 46.106.10 |
+| https://charts.jenkins.io | jenkins | 5.9.18 |
+| oci://code.forgejo.org/forgejo-helm | forgejo | 16.2.2 |
+| oci://ghcr.io/renovatebot/charts | renovate | 46.116.2 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -78,7 +78,7 @@ Kubernetes: `>= 1.30.0`
 | forgejo.gitea.metrics.enabled | bool | `false` |  |
 | forgejo.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | forgejo.image.rootless | bool | `true` |  |
-| forgejo.image.tag | string | `"14.0.3"` |  |
+| forgejo.image.tag | string | `"15.0.0"` |  |
 | forgejo.istio.blockApi | bool | `false` |  |
 | forgejo.istio.branding.enabled | bool | `false` |  |
 | forgejo.istio.enabled | bool | `false` |  |
@@ -123,7 +123,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.containerEnv[1].value | string | `"none"` |  |
 | jenkins.controller.disableRememberMe | bool | `true` |  |
 | jenkins.controller.enableRawHtmlMarkupFormatter | bool | `true` |  |
-| jenkins.controller.image.tag | string | `"2.541.3-lts-alpine"` |  |
+| jenkins.controller.image.tag | string | `"2.555.1-lts-alpine"` |  |
 | jenkins.controller.initializeOnce | bool | `true` |  |
 | jenkins.controller.installPlugins[0] | string | `"kubernetes"` |  |
 | jenkins.controller.installPlugins[10] | string | `"configuration-as-code"` |  |

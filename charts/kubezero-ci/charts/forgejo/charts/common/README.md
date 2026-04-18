@@ -51,7 +51,7 @@ If you are looking for our previous generation of images based on Debian Linux, 
 
 This chart provides a common template helpers which can be used to develop new charts using [Helm](https://helm.sh) package manager.
 
-## Prerequisites
+## Before you begin
 
 - Kubernetes 1.23+
 - Helm 3.8.0+
@@ -370,6 +370,8 @@ helm install test mychart --set path.to.value00="",path.to.value01=""
 ```
 
 ## Upgrading
+
+The following subsections describe notable changes when upgrading.
 
 ### To 1.0.0
 
