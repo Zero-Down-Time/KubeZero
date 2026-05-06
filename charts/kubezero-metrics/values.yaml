@@ -160,6 +160,13 @@ kube-prometheus-stack:
       log.console:
         format: json
 
+    resources:
+      requests:
+        cpu: 50m
+        memory: 384Mi
+      limits:
+        memory: 1024Mi
+
     # anonymous auth enabled !
     env:
       GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"
