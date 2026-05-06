@@ -2,6 +2,14 @@ global:
   clusterName: pleasechangeme
   highAvailable: false
 
+# Feature gates for all control plane components
+#  PodAndContainerStatsFromCRI still alpha since v1.23
+#  MemoryQoS try with v1.36
+#  v1.34: CoordinatedLeaderElection higher load, wait
+featureGates:
+  - CustomCPUCFSQuotaPeriod
+  - MutatingAdmissionPolicy
+
 # -- set to $HOSTNAME
 nodeName: kubezero-node
 domain: changeme.org
@@ -13,6 +21,10 @@ api:
   endpoint: kube-api.changeme.org:6443
   listenPort: 6443
   etcdServers: "https://etcd:2379"
+
+  # -- Required for MutatingAdmissionPolicy
+  runtimeConfig: admissionregistration.k8s.io/v1beta1=true
+
   extraArgs: {}
   # -- https://s3.${REGION}.amazonaws.com/${CFN[ConfigBucket]}/k8s/$CLUSTERNAME
   serviceAccountIssuer: ""
@@ -28,8 +40,7 @@ api:
 etcd:
   nodeName: etcd
   state: new
-  # We need to keep etcd on 3.5 during 1.34
-  imageTag: 3.5.26-0
+  #imageTag: 3.5.26-0
 
 # -- Set to false for openrc, eg. on Gentoo or Alpine
 systemd: false

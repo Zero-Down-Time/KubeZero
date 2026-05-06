@@ -1,6 +1,6 @@
 # kubeadm
 
-![Version: 1.34.3](https://img.shields.io/badge/Version-1.34.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.35.4](https://img.shields.io/badge/Version-1.35.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Kubeadm cluster config
 
@@ -14,7 +14,7 @@ KubeZero Kubeadm cluster config
 
 ## Requirements
 
-Kubernetes: `>= 1.34.0-0`
+Kubernetes: `>= 1.35.0-0`
 
 ## Values
 
@@ -28,10 +28,13 @@ Kubernetes: `>= 1.34.0-0`
 | api.falco.enabled | bool | `false` |  |
 | api.listenPort | int | `6443` |  |
 | api.oidcEndpoint | string | `""` | s3://${CFN[ConfigBucket]}/k8s/$CLUSTERNAME |
+| api.runtimeConfig | string | `"admissionregistration.k8s.io/v1beta1=true"` | Required for MutatingAdmissionPolicy |
 | api.serviceAccountIssuer | string | `""` | https://s3.${REGION}.amazonaws.com/${CFN[ConfigBucket]}/k8s/$CLUSTERNAME |
 | domain | string | `"changeme.org"` |  |
 | etcd.nodeName | string | `"etcd"` |  |
 | etcd.state | string | `"new"` |  |
+| featureGates[0] | string | `"CustomCPUCFSQuotaPeriod"` |  |
+| featureGates[1] | string | `"MutatingAdmissionPolicy"` |  |
 | global.clusterName | string | `"pleasechangeme"` |  |
 | global.highAvailable | bool | `false` |  |
 | listenAddress | string | `"0.0.0.0"` | Needs to be set to primary node IP |

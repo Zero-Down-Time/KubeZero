@@ -17,7 +17,7 @@ protectKernelDefaults: {{ .Values.protectKernelDefaults }}
 # tlsPrivateKeyFile: /var/lib/kubelet/pki/kubelet.key
 tlsCipherSuites: [TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256]
 featureGates:
-  {{- include "kubeadm.featuregates" ( dict "return" "map" ) | nindent 2 }}
+  {{- include "kubeadm.featuregates" ( dict "return" "map" "gates" .Values.featureGates ) | nindent 2 }}
 # Minimal unit is 40m per pod
 podsPerCore: 25
 # cpuCFSQuotaPeriod: 10ms

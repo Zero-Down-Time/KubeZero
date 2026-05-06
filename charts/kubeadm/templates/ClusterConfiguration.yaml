@@ -72,11 +72,11 @@ controllerManager:
     - name: logging-format
       value: json
     - name: feature-gates
-      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
+      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" "gates" .Values.featureGates ) | trimSuffix "," | quote }}
 scheduler:
   extraArgs:
     - name: feature-gates
-      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
+      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" "gates" .Values.featureGates ) | trimSuffix "," | quote }}
     - name: leader-elect
       value: {{ .Values.global.highAvailable | quote }}
     - name: logging-format
@@ -128,7 +128,7 @@ apiServer:
       value: v1
     {{- end }}
     - name: feature-gates
-      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" ) | trimSuffix "," | quote }}
+      value: {{ include "kubeadm.featuregates" ( dict "return" "csv" "gates" .Values.featureGates ) | trimSuffix "," | quote }}
     - name: authorization-config
       value: /etc/kubernetes/apiserver/authz-config.yaml
     - name: authentication-config
@@ -141,10 +141,10 @@ apiServer:
     {{- end }}
     - name: logging-format
       value: json
-    # Required for MutatingAdmissionPolicy
-    # Required for CoordinatedLeaderElection
-    #- name: runtime-config
-    #  value: admissionregistration.k8s.io/v1alpha1=true,coordination.k8s.io/v1alpha1=true
+    {{- with .Values.api.runtimeConfig }}
+    - name: runtime-config
+      value: {{ . | quote }}
+    {{- end }}
     {{- with .Values.api.extraArgs }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
