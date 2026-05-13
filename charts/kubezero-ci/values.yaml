@@ -3,7 +3,7 @@ forgejo:
 
   image:
     # renovate: datasource=docker depName=code.forgejo.org/forgejo/forgejo
-    tag: 15.0.0
+    tag: 15.0.2
     rootless: true
 
   replicaCount: 1
