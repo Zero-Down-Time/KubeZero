@@ -2,18 +2,17 @@
 set -eE
 set -o pipefail
 
-KUBE_VERSION=v1.34
+KUBE_VERSION=v1.35
 
 ARGO_APP=${1:-/tmp/new-kubezero-argoapp.yaml}
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 # shellcheck disable=SC1091
 [ -n "$DEBUG" ] && set -x
 
 . "$SCRIPT_DIR"/libhelm.sh
 
 ARGOCD=$(argo_used)
-
 
 control_plane_phase1() {
   admin_job "upgrade_control_plane, upgrade_kubezero"
@@ -40,7 +39,7 @@ cluster_modules() {
   admin_job "apply_policy, apply_addons, apply_storage, apply_operators, apply_cert-manager, apply_istio, apply_istio-ingress, apply_istio-private-ingress, apply_logging, apply_metrics, apply_telemetry, apply_argo"
 
   # Final step is to commit the new argocd kubezero app
-  kubectl get app kubezero -n argocd -o yaml | yq 'del(.status) | del(.metadata) | del(.operation) | .metadata.name="kubezero" | .metadata.namespace="argocd"' | yq 'sort_keys(..)' > $ARGO_APP
+  kubectl get app kubezero -n argocd -o yaml | yq 'del(.status) | del(.metadata) | del(.operation) | .metadata.name="kubezero" | .metadata.namespace="argocd"' | yq 'sort_keys(..)' >$ARGO_APP
 }
 
 backup() {
@@ -53,7 +52,6 @@ backup() {
   done
 }
 
-
 control_plane_healthy() {
   echo "Checking control-plane is healthy..."
   kubectl rollout status ds cilium -n kube-system
@@ -61,7 +59,6 @@ control_plane_healthy() {
 }
 
 #####
-
 
 control_plane_healthy
 

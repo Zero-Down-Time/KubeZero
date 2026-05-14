@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.10.5](https://img.shields.io/badge/Version-0.10.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.10.6](https://img.shields.io/badge/Version-0.10.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -20,8 +20,8 @@ Kubernetes: `>= 1.30.0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.jenkins.io | jenkins | 5.9.18 |
-| oci://code.forgejo.org/forgejo-helm | forgejo | 16.2.2 |
-| oci://ghcr.io/renovatebot/charts | renovate | 46.116.2 |
+| oci://code.forgejo.org/forgejo-helm | forgejo | 17.1.0 |
+| oci://ghcr.io/renovatebot/charts | renovate | 46.150.4 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -78,7 +78,7 @@ Kubernetes: `>= 1.30.0`
 | forgejo.gitea.metrics.enabled | bool | `false` |  |
 | forgejo.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | forgejo.image.rootless | bool | `true` |  |
-| forgejo.image.tag | string | `"15.0.0"` |  |
+| forgejo.image.tag | string | `"15.0.2"` |  |
 | forgejo.istio.blockApi | bool | `false` |  |
 | forgejo.istio.branding.enabled | bool | `false` |  |
 | forgejo.istio.enabled | bool | `false` |  |
@@ -115,8 +115,8 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.serviceAccount | string | `"jenkins-podman-aws"` |  |
 | jenkins.agent.showRawYaml | bool | `false` |  |
 | jenkins.agent.yamlMergeStrategy | string | `"merge"` |  |
-| jenkins.agent.yamlTemplate | string | `"apiVersion: v1\nkind: Pod\nspec:\n  securityContext:\n    fsGroup: 1000\n  containers:\n  - name: jnlp\n    resources:\n      requests:\n        cpu: \"200m\"\n        memory: \"512Mi\"\n      limits:\n        cpu: \"4\"\n        memory: \"6144Mi\"\n    volumeMounts:\n    - name: host-registries-conf\n      mountPath: \"/home/jenkins/.config/containers/registries.conf\"\n      readOnly: true\n  volumes:\n  - name: host-registries-conf\n    hostPath:\n      path: /etc/containers/registries.conf\n      type: File"` |  |
-| jenkins.controller.JCasC.configScripts.zdt-settings | string | `"appearance:\n  themeManager:\n    disableUserThemes: true\n    theme: \"dark\"\n  loginTheme:\n    branding: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\n    footer: |-\n      <div style=\"text-align:center;\">\n      Zero Down Time edition\n      </div>\n    useDefaultTheme: true\n  simpleTheme:\n    elements:\n    - cssText:\n        text: |-\n          .pipeline-new-node {\n              display: none;\n          }\n          .jenkins-header .app-jenkins-logo #jenkins-head-icon {\n              content: url('https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg');\n          }\n    - faviconUrl:\n        url: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\njenkins:\n  noUsageStatistics: true\n  disabledAdministrativeMonitors:\n  - \"jenkins.security.ResourceDomainRecommendation\"\ntool:\n  git:\n    installations:\n    - home: \"/usr/bin/git\"\n      name: \"Default\"\nsecurity:\n  scriptApproval:\n    forceSandbox: true\n  contentSecurityPolicy:\n    advanced:\n    - custom:\n        rules:\n        - allowFetch:\n            allow:\n              byDomain:\n                domain: \"cdn.zero-downtime.net\"\n            directive: \"img-src\"\n    - reporting:\n        ignoreAnonymousReports: true\n    enforce: true\nunclassified:\n  gitSCM:\n    globalConfigName: \"jenkins\"\n    globalConfigEmail: \"jenkins@kubezero.com\"\n    createAccountBasedOnEmail: false\n  openTelemetry:\n    configurationProperties: |-\n      otel.exporter.otlp.protocol=grpc\n      otel.instrumentation.jenkins.web.enabled=false\n    ignoredSteps: \"dir,echo,isUnix,pwd,properties\"\n    #endpoint: \"telemetry-jaeger-collector.telemetry:4317\"\n    exportOtelConfigurationAsEnvironmentVariables: false\n    #observabilityBackends:\n    # - jaeger:\n    #     jaegerBaseUrl: \"https://jaeger.example.com\"\n    #     name: \"KubeZero Jaeger\"\n    serviceName: \"Jenkins\"\n  buildDiscarders:\n    configuredBuildDiscarders:\n    - \"jobBuildDiscarder\"\n    - defaultBuildDiscarder:\n        discarder:\n          logRotator:\n            artifactDaysToKeepStr: \"32\"\n            artifactNumToKeepStr: \"10\"\n            daysToKeepStr: \"100\"\n            numToKeepStr: \"10\"\n"` |  |
+| jenkins.agent.yamlTemplate | string | `"apiVersion: v1\nkind: Pod\nspec:\n  securityContext:\n    fsGroup: 1000\n  containers:\n  - name: jnlp\n    resources:\n      requests:\n        cpu: \"200m\"\n        memory: \"512Mi\"\n      limits:\n        cpu: \"4\"\n        # memory: \"4096Mi\"\n    volumeMounts:\n    - name: host-registries-conf\n      mountPath: \"/home/jenkins/.config/containers/registries.conf\"\n      readOnly: true\n  volumes:\n  - name: host-registries-conf\n    hostPath:\n      path: /etc/containers/registries.conf\n      type: File"` |  |
+| jenkins.controller.JCasC.configScripts.zdt-settings | string | `"appearance:\n  themeManager:\n    disableUserThemes: true\n    theme: \"dark\"\n  loginTheme:\n    branding: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\n    footer: |-\n      <div style=\"text-align:center;\">\n      Zero Down Time edition\n      </div>\n    useDefaultTheme: true\n  simpleTheme:\n    elements:\n    - cssText:\n        text: |-\n          .pipeline-new-node {\n              display: none;\n          }\n          .jenkins-header .app-jenkins-logo #jenkins-head-icon {\n              content: url('https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg');\n          }\n    - faviconUrl:\n        url: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\njenkins:\n  noUsageStatistics: true\n  disabledAdministrativeMonitors:\n  - \"jenkins.security.ResourceDomainRecommendation\"\ntool:\n  git:\n    installations:\n    - home: \"/usr/bin/git\"\n      name: \"Default\"\nsecurity:\n  scriptApproval:\n    forceSandbox: true\n  contentSecurityPolicy:\n    advanced:\n    - custom:\n        rules:\n        - allowFetch:\n            allow:\n              byDomain:\n                domain: \"cdn.zero-downtime.net\"\n            directive: \"img-src\"\n    - reporting:\n        ignoreAnonymousReports: true\n    enforce: true\nunclassified:\n  scmGit:\n    globalConfigName: \"jenkins\"\n    globalConfigEmail: \"jenkins@kubezero.com\"\n    createAccountBasedOnEmail: false\n  openTelemetry:\n    configurationProperties: |-\n      otel.exporter.otlp.protocol=grpc\n      otel.instrumentation.jenkins.web.enabled=false\n    ignoredSteps: \"dir,echo,isUnix,pwd,properties\"\n    #endpoint: \"telemetry-jaeger-collector.telemetry:4317\"\n    exportOtelConfigurationAsEnvironmentVariables: false\n    #observabilityBackends:\n    # - jaeger:\n    #     jaegerBaseUrl: \"https://jaeger.example.com\"\n    #     name: \"KubeZero Jaeger\"\n    serviceName: \"Jenkins\"\n  buildDiscarders:\n    configuredBuildDiscarders:\n    - \"jobBuildDiscarder\"\n    - defaultBuildDiscarder:\n        discarder:\n          logRotator:\n            artifactDaysToKeepStr: \"32\"\n            artifactNumToKeepStr: \"10\"\n            daysToKeepStr: \"100\"\n            numToKeepStr: \"10\"\n"` |  |
 | jenkins.controller.containerEnv[0].name | string | `"OTEL_LOGS_EXPORTER"` |  |
 | jenkins.controller.containerEnv[0].value | string | `"none"` |  |
 | jenkins.controller.containerEnv[1].name | string | `"OTEL_METRICS_EXPORTER"` |  |

@@ -441,6 +441,8 @@ initContainers:
 ## @param signing.gpgHome GPG home directory
 ## @param signing.privateKey Inline private GPG key for signed internal Git activity
 ## @param signing.existingSecret Use an existing secret to store the value of `signing.privateKey`
+## @param signing.ssh.privateKey Inline private SSH key for signed internal Git activity
+## @param signing.ssh.existingSecret Use an existing secret to store the value of `signing.ssh.privateKey`
 signing:
   enabled: false
   gpgHome: /data/git/.gnupg
@@ -450,6 +452,9 @@ signing:
   #   ...
   #   -----END PGP PRIVATE KEY BLOCK-----
   existingSecret: ''
+  ssh:
+    privateKey: ''
+    existingSecret: ''
 
 ## @section Gitea
 #

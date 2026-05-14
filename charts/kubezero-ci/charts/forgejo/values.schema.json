@@ -1,0 +1,1329 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Forgejo Helm chart values",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "global": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "imageRegistry": {
+          "type": "string",
+          "description": "global image registry override"
+        },
+        "imagePullSecrets": {
+          "type": "array",
+          "items": {},
+          "description": "global image pull secrets override; can be extended by `imagePullSecrets`"
+        },
+        "storageClass": {
+          "type": "string",
+          "description": "global storage class override"
+        },
+        "hostAliases": {
+          "type": "array",
+          "items": {},
+          "description": "global hostAliases which will be added to the pod's hosts files"
+        }
+      }
+    },
+    "namespaceOverride": {
+      "type": "string",
+      "description": "String to fully override common.names.namespace"
+    },
+    "clusterDomain": { "type": "string", "description": "cluster domain" },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "strategy type",
+          "enum": ["Recreate", "RollingUpdate"]
+        },
+        "rollingUpdate": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "maxSurge": {
+              "type": ["integer", "string"],
+              "description": "maxSurge"
+            },
+            "maxUnavailable": {
+              "type": ["integer", "string"],
+              "description": "maxUnavailable"
+            }
+          }
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "registry": {
+          "type": "string",
+          "description": "image registry, e.g. gcr.io,docker.io"
+        },
+        "repository": {
+          "type": "string",
+          "description": "Image to start for this pod"
+        },
+        "tag": {
+          "type": ["string", "number"],
+          "description": "Visit: [Image tag](https://code.forgejo.org/forgejo/-/packages/container/forgejo/versions). Defaults to `appVersion` within Chart.yaml."
+        },
+        "digest": {
+          "type": "string",
+          "description": "Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "description": "Image pull policy",
+          "enum": ["Always", "IfNotPresent", "Never"]
+        },
+        "rootless": {
+          "type": "boolean",
+          "description": "Whether or not to pull the rootless version of Forgejo"
+        },
+        "fullOverride": {
+          "type": "string",
+          "description": "Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).**"
+        }
+      }
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "items": {},
+      "description": "Secret to use for pulling the image"
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "fsGroup": {
+          "type": "integer",
+          "description": "Set the shared file system group for all containers in the pod."
+        }
+      }
+    },
+    "containerSecurityContext": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {},
+      "description": "Security context"
+    },
+    "securityContext": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {},
+      "description": "DEPRECATED: Run init and Forgejo containers as a specific securityContext. The securityContext variable has been split two: containerSecurityContext, podSecurityContext.",
+      "deprecated": true
+    },
+    "podDisruptionBudget": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {},
+      "description": "Pod disruption budget"
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "http": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "Kubernetes service type for web traffic",
+              "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+            },
+            "port": {
+              "type": "integer",
+              "description": "Port number for web traffic",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "clusterIP": {
+              "type": ["string", "null"],
+              "description": "ClusterIP setting for http autosetup for deployment"
+            },
+            "loadBalancerIP": {
+              "type": ["string", "null"],
+              "description": "LoadBalancer IP setting"
+            },
+            "nodePort": {
+              "type": ["integer", "null"],
+              "description": "NodePort for http service",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "externalTrafficPolicy": {
+              "type": ["string", "null"],
+              "description": "If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation",
+              "enum": ["Cluster", "Local", null]
+            },
+            "externalIPs": {
+              "type": ["array", "null"],
+              "description": "External IPs for service",
+              "items": { "type": "string" }
+            },
+            "ipFamilyPolicy": {
+              "type": ["string", "null"],
+              "description": "HTTP service dual-stack policy",
+              "enum": [
+                "SingleStack",
+                "PreferDualStack",
+                "RequireDualStack",
+                null
+              ]
+            },
+            "ipFamilies": {
+              "type": ["array", "null"],
+              "description": "HTTP service dual-stack family selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).",
+              "items": { "type": "string", "enum": ["IPv4", "IPv6"] }
+            },
+            "loadBalancerSourceRanges": {
+              "type": "array",
+              "items": {},
+              "description": "Source range filter for http loadbalancer"
+            },
+            "annotations": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {},
+              "description": "HTTP service annotations"
+            },
+            "labels": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {},
+              "description": "HTTP service additional labels"
+            },
+            "loadBalancerClass": {
+              "type": ["string", "null"],
+              "description": "Loadbalancer class"
+            },
+            "extraPorts": {
+              "type": "array",
+              "items": {},
+              "description": "Additional ports"
+            }
+          }
+        },
+        "ssh": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "Kubernetes service type for ssh traffic",
+              "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+            },
+            "port": {
+              "type": "integer",
+              "description": "Port number for ssh traffic",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "clusterIP": {
+              "type": ["string", "null"],
+              "description": "ClusterIP setting for ssh autosetup for deployment"
+            },
+            "loadBalancerIP": {
+              "type": ["string", "null"],
+              "description": "LoadBalancer IP setting"
+            },
+            "nodePort": {
+              "type": ["integer", "null"],
+              "description": "NodePort for ssh service",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "externalTrafficPolicy": {
+              "type": ["string", "null"],
+              "description": "If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation",
+              "enum": ["Cluster", "Local", null]
+            },
+            "externalIPs": {
+              "type": ["array", "null"],
+              "description": "External IPs for service",
+              "items": { "type": "string" }
+            },
+            "ipFamilyPolicy": {
+              "type": ["string", "null"],
+              "description": "SSH service dual-stack policy",
+              "enum": [
+                "SingleStack",
+                "PreferDualStack",
+                "RequireDualStack",
+                null
+              ]
+            },
+            "ipFamilies": {
+              "type": ["array", "null"],
+              "description": "SSH service dual-stack family selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).",
+              "items": { "type": "string", "enum": ["IPv4", "IPv6"] }
+            },
+            "hostPort": {
+              "type": ["integer", "null"],
+              "description": "HostPort for ssh service",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "loadBalancerSourceRanges": {
+              "type": "array",
+              "items": {},
+              "description": "Source range filter for ssh loadbalancer"
+            },
+            "annotations": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {},
+              "description": "SSH service annotations"
+            },
+            "labels": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {},
+              "description": "SSH service additional labels"
+            },
+            "loadBalancerClass": {
+              "type": ["string", "null"],
+              "description": "Loadbalancer class"
+            }
+          }
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": { "type": "boolean", "description": "Enable ingress" },
+        "className": {
+          "type": ["string", "null"],
+          "description": "Ingress class name"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Ingress annotations"
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "host": {
+                "type": "string",
+                "description": "Default Ingress host"
+              },
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "description": "Default Ingress path"
+                    },
+                    "pathType": {
+                      "type": "string",
+                      "description": "Ingress path type",
+                      "enum": ["Exact", "Prefix", "ImplementationSpecific"]
+                    },
+                    "port": {
+                      "type": "string",
+                      "description": "Target port for Ingress"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tls": {
+          "type": "array",
+          "items": {},
+          "description": "Ingress tls settings"
+        }
+      }
+    },
+    "httpRoute": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enables Gateway API HTTPRoute as a replacement for traditional Ingress resources"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Annotations to add to the HTTPRoute resource"
+        },
+        "parentRefs": {
+          "type": "array",
+          "items": {},
+          "description": "List of parentRefs for the HTTPRoute, typically referencing the Gateway(name, namespace)"
+        },
+        "hostnames": {
+          "type": "array",
+          "items": {},
+          "description": "Hostnames this HTTPRoute applies to"
+        },
+        "matches": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "path": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Type of path match (e.g., PathPrefix or Exact or RegularExpression)",
+                  "enum": ["Exact", "PathPrefix", "RegularExpression"]
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Path value for matching incoming requests"
+                }
+              }
+            },
+            "timeouts": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {},
+              "description": "Object containing timeouts."
+            }
+          }
+        },
+        "filters": {
+          "type": "array",
+          "items": {},
+          "description": "Filters to apply on HTTP requests, such as header rewrites or request redirects"
+        },
+        "port": {
+          "type": ["integer", "null"],
+          "description": "Target port for HTTPRoute. Must be a port number.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "terminate": {
+          "type": "boolean",
+          "description": "wether the Gateway listener terminates the TLS connection. This just affects the forgejo `ROOT_URL` configuration."
+        }
+      }
+    },
+    "tcpRoute": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enables Gateway API TCPRoute for SSH traffic"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Annotations to add to the TCPRoute resource"
+        },
+        "parentRefs": {
+          "type": "array",
+          "items": {},
+          "description": "List of parentRefs for the TCPRoute, typically referencing the Gateway (name, namespace, sectionName)"
+        },
+        "port": {
+          "type": ["integer", "null"],
+          "description": "Target port for TCPRoute. Must be a port number. Defaults to service.ssh.port.",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": { "type": "boolean", "description": "Enable route" },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Route annotations"
+        },
+        "host": {
+          "type": ["string", "null"],
+          "description": "Host to use for the route (will be assigned automatically by OKD / OpenShift is not defined)"
+        },
+        "wildcardPolicy": {
+          "type": ["string", "null"],
+          "description": "Wildcard policy if any for the route, currently only 'Subdomain' or 'None' is allowed.",
+          "enum": ["None", "Subdomain", null]
+        },
+        "tls": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "termination": {
+              "type": ["string", "null"],
+              "description": "termination type (see [OKD documentation](https://docs.okd.io/latest/rest_api/network_apis/route-route-openshift-io-v1.html#spec-tls))",
+              "enum": ["edge", "passthrough", "reencrypt", null]
+            },
+            "insecureEdgeTerminationPolicy": {
+              "type": ["string", "null"],
+              "description": "the desired behavior for insecure connections to a route (e.g. with http)",
+              "enum": ["Allow", "Redirect", "None", null]
+            },
+            "existingSecret": {
+              "type": ["string", "null"],
+              "description": "the name of a predefined secret of type kubernetes.io/tls with both key (tls.crt and tls.key) set accordingly (if defined attributes 'certificate', 'caCertificate' and 'privateKey' are ignored)"
+            },
+            "certificate": {
+              "type": ["string", "null"],
+              "description": "PEM encoded single certificate"
+            },
+            "privateKey": {
+              "type": ["string", "null"],
+              "description": "PEM encoded private key"
+            },
+            "caCertificate": {
+              "type": ["string", "null"],
+              "description": "PEM encoded CA certificate or chain that issued the certificate"
+            },
+            "destinationCACertificate": {
+              "type": ["string", "null"],
+              "description": "PEM encoded CA certificate used to verify the authenticity of final end point when 'termination' is set to 'passthrough' (ignored otherwise)"
+            }
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {},
+      "description": "Kubernetes resources"
+    },
+    "schedulerName": {
+      "type": "string",
+      "description": "Use an alternate scheduler, e.g. \"stork\""
+    },
+    "nodeSelector": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {},
+      "description": "NodeSelector for the deployment"
+    },
+    "tolerations": {
+      "type": "array",
+      "items": {},
+      "description": "Tolerations for the deployment"
+    },
+    "affinity": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {},
+      "description": "Affinity for the deployment"
+    },
+    "topologySpreadConstraints": {
+      "type": "array",
+      "items": {},
+      "description": "TopologySpreadConstraints for the deployment"
+    },
+    "dnsPolicy": {
+      "type": "string",
+      "description": "dnsPolicy for the deployment"
+    },
+    "dnsConfig": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {},
+      "description": "dnsConfig for the deployment"
+    },
+    "priorityClassName": {
+      "type": "string",
+      "description": "priorityClassName for the deployment"
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "env": {
+          "type": "array",
+          "items": {},
+          "description": "Additional environment variables to pass to containers"
+        },
+        "terminationGracePeriodSeconds": {
+          "type": "integer",
+          "description": "How long to wait until forcefully kill the pod",
+          "minimum": 0
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Labels for the deployment"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Annotations for the Forgejo deployment to be created"
+        }
+      }
+    },
+    "replicaCount": {
+      "type": "integer",
+      "description": "number of replicas for the deployment",
+      "minimum": 1
+    },
+    "serviceAccount": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "create": {
+          "type": "boolean",
+          "description": "Enable the creation of a ServiceAccount"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the created ServiceAccount, defaults to release name. Can also link to an externally provided ServiceAccount that should be used."
+        },
+        "automountServiceAccountToken": {
+          "type": "boolean",
+          "description": "Enable/disable auto mounting of the service account token"
+        },
+        "imagePullSecrets": {
+          "type": "array",
+          "items": {},
+          "description": "Image pull secrets, available to the ServiceAccount"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Custom annotations for the ServiceAccount"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Custom labels for the ServiceAccount"
+        }
+      }
+    },
+    "persistence": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable persistent storage"
+        },
+        "create": {
+          "type": "boolean",
+          "description": "Whether to create the persistentVolumeClaim for shared storage"
+        },
+        "mount": {
+          "type": "boolean",
+          "description": "Whether the persistentVolumeClaim should be mounted (even if not created)"
+        },
+        "claimName": {
+          "type": "string",
+          "description": "Use an existing claim to store repository information"
+        },
+        "size": {
+          "type": "string",
+          "description": "Size for persistence to store repo information"
+        },
+        "accessModes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "AccessMode for persistence"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Labels for the persistence volume claim to be created"
+        },
+        "storageClass": {
+          "type": ["string", "null"],
+          "description": "Name of the storage class to use"
+        },
+        "subPath": {
+          "type": ["string", "null"],
+          "description": "Subdirectory of the volume to mount at"
+        },
+        "volumeName": {
+          "type": "string",
+          "description": "Name of persistent volume in PVC"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "helm.sh/resource-policy": {
+              "type": "string",
+              "description": "Resource policy for the persistence volume claim"
+            }
+          }
+        }
+      }
+    },
+    "extraContainers": {
+      "type": "array",
+      "items": {},
+      "description": "Additional sidecar containers to run in the pod"
+    },
+    "extraVolumes": {
+      "type": "array",
+      "items": {},
+      "description": "Additional volumes to mount to the Forgejo deployment"
+    },
+    "extraContainerVolumeMounts": {
+      "type": "array",
+      "items": {},
+      "description": "Mounts that are only mapped into the Forgejo runtime/main container, to e.g. override custom templates."
+    },
+    "extraInitVolumeMounts": {
+      "type": "array",
+      "items": {},
+      "description": "Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration."
+    },
+    "extraVolumeMounts": {
+      "type": "array",
+      "items": {},
+      "description": "DEPRECATED: Additional volume mounts for init containers and the Forgejo main container. The extraVolumeMounts variable has been split two: extraContainerVolumeMounts, extraInitVolumeMounts. As an example, can be used to mount a client cert when connecting to an external Postgres server.",
+      "deprecated": true
+    },
+    "initPreScript": {
+      "type": "string",
+      "description": "Bash shell script copied verbatim to the start of the init-container."
+    },
+    "initContainers": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "resources": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "limits": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {},
+              "description": "initContainers.limits Kubernetes resource limits for init containers"
+            },
+            "requests": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "cpu": {
+                  "type": "string",
+                  "description": "initContainers.requests.cpu Kubernetes cpu resource limits for init containers"
+                },
+                "memory": {
+                  "type": "string",
+                  "description": "initContainers.requests.memory Kubernetes memory resource limits for init containers"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "signing": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable commit/action signing"
+        },
+        "gpgHome": { "type": "string", "description": "GPG home directory" },
+        "privateKey": {
+          "type": "string",
+          "description": "Inline private GPG key for signed internal Git activity"
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Use an existing secret to store the value of `signing.privateKey`"
+        },
+        "ssh": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "privateKey": {
+              "type": "string",
+              "description": "Inline private SSH key for signed internal Git activity"
+            },
+            "existingSecret": {
+              "type": "string",
+              "description": "Use an existing secret to store the value of `signing.ssh.privateKey`"
+            }
+          }
+        }
+      }
+    },
+    "gitea": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "admin": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "existingSecret": {
+              "type": ["string", "null"],
+              "description": "Use an existing secret to store admin user credentials"
+            },
+            "username": {
+              "type": "string",
+              "description": "Username for the Forgejo admin user"
+            },
+            "password": {
+              "type": "string",
+              "description": "Password for the Forgejo admin user"
+            },
+            "email": {
+              "type": "string",
+              "description": "Email for the Forgejo admin user"
+            },
+            "passwordMode": {
+              "type": "string",
+              "description": "Mode for how to set/update the admin user password. Options are: initialOnlyNoReset, initialOnlyRequireReset, and keepUpdated",
+              "enum": [
+                "keepUpdated",
+                "initialOnlyNoReset",
+                "initialOnlyRequireReset"
+              ]
+            }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable Forgejo metrics"
+            },
+            "serviceMonitor": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Enable Forgejo metrics service monitor"
+                },
+                "namespace": {
+                  "type": "string",
+                  "description": "Namespace in which Prometheus is running"
+                }
+              }
+            }
+          }
+        },
+        "ldap": {
+          "type": "array",
+          "items": {},
+          "description": "LDAP configuration"
+        },
+        "oauth": {
+          "type": "array",
+          "items": {},
+          "description": "OAuth configuration"
+        },
+        "additionalConfigSources": {
+          "type": "array",
+          "items": {},
+          "description": "Additional configuration from secret or configmap"
+        },
+        "additionalConfigFromEnvs": {
+          "type": "array",
+          "items": {},
+          "description": "Additional configuration sources from environment variables"
+        },
+        "podAnnotations": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {},
+          "description": "Annotations for the Forgejo pod"
+        },
+        "ssh": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "logLevel": {
+              "type": "string",
+              "description": "Configure OpenSSH's log level. Only available for root-based Forgejo image."
+            }
+          }
+        },
+        "config": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "APP_NAME": {
+              "type": "string",
+              "description": "Application name, used in the page title"
+            },
+            "RUN_MODE": {
+              "type": "string",
+              "description": "Application run mode, affects performance and debugging: `dev` or `prod`"
+            },
+            "repository": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "General repository settings"
+            },
+            "cors": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Cross-origin resource sharing settings"
+            },
+            "ui": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "User interface settings"
+            },
+            "markdown": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Markdown parser settings"
+            },
+            "server": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "[object] General server settings"
+            },
+            "database": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Database configuration (only necessary with an [externally managed DB](#external-database))."
+            },
+            "indexer": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Settings for what content is indexed and how"
+            },
+            "queue": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Job queue configuration"
+            },
+            "admin": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Admin user settings"
+            },
+            "security": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Site security settings"
+            },
+            "camo": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Settings for the [camo](https://github.com/cactus/go-camo) media proxy server (disabled by default)"
+            },
+            "openid": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Configuration for authentication with OpenID (disabled by default)"
+            },
+            "oauth2_client": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "OAuth2 client settings"
+            },
+            "service": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Configuration for miscellaneous Forgejo services"
+            },
+            "ssh.minimum_key_sizes": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "SSH minimum key sizes"
+            },
+            "webhook": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Webhook settings"
+            },
+            "mailer": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Mailer configuration (disabled by default)"
+            },
+            "email.incoming": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Configuration for handling incoming mail (disabled by default)"
+            },
+            "cache": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Cache configuration"
+            },
+            "session": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Session/cookie handling"
+            },
+            "picture": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "User avatar settings"
+            },
+            "project": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Project board defaults"
+            },
+            "attachment": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Issue and PR attachment configuration"
+            },
+            "log": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Logging configuration"
+            },
+            "cron": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Cron job configuration"
+            },
+            "git": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Global settings for Git"
+            },
+            "metrics": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Settings for the Prometheus endpoint (disabled by default)"
+            },
+            "api": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Settings for the Swagger API documentation endpoints"
+            },
+            "oauth2": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Settings for the [OAuth2 provider](https://forgejo.org/docs/latest/admin/oauth2-provider/)"
+            },
+            "i18n": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Internationalization settings"
+            },
+            "markup": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Configuration for advanced markup processors"
+            },
+            "highlight.mapping": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "File extension to language mapping overrides for syntax highlighting"
+            },
+            "time": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Locale settings"
+            },
+            "migrations": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Settings for Git repository migrations"
+            },
+            "federation": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Federation configuration"
+            },
+            "packages": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Package registry settings"
+            },
+            "mirror": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Configuration for repository mirroring"
+            },
+            "lfs": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Large File Storage configuration"
+            },
+            "repo-avatar": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Repository avatar storage configuration"
+            },
+            "avatar": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "User/org avatar storage configuration"
+            },
+            "storage": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "General storage settings"
+            },
+            "proxy": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Proxy configuration (disabled by default)"
+            },
+            "actions": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Configuration for [Forgejo Actions](https://forgejo.org/docs/latest/user/actions/)"
+            },
+            "other": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "Uncategorized configuration options"
+            }
+          }
+        },
+        "livenessProbe": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable liveness probe"
+            },
+            "tcpSocket": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "port": {
+                  "type": ["integer", "string"],
+                  "description": "Port to probe for liveness",
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              }
+            },
+            "initialDelaySeconds": {
+              "type": "integer",
+              "description": "Initial delay before liveness probe is initiated",
+              "minimum": 0
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "description": "Timeout for liveness probe",
+              "minimum": 1
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "description": "Period for liveness probe",
+              "minimum": 1
+            },
+            "successThreshold": {
+              "type": "integer",
+              "description": "Success threshold for liveness probe",
+              "minimum": 1
+            },
+            "failureThreshold": {
+              "type": "integer",
+              "description": "Failure threshold for liveness probe",
+              "minimum": 1
+            },
+            "httpGet": {
+              "properties": {
+                "port": {
+                  "type": ["integer", "string"],
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              }
+            }
+          }
+        },
+        "readinessProbe": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable readiness probe"
+            },
+            "httpGet": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Path to probe for readiness"
+                },
+                "port": {
+                  "type": ["integer", "string"],
+                  "description": "Port to probe for readiness",
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              }
+            },
+            "initialDelaySeconds": {
+              "type": "integer",
+              "description": "Initial delay before readiness probe is initiated",
+              "minimum": 0
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "description": "Timeout for readiness probe",
+              "minimum": 1
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "description": "Period for readiness probe",
+              "minimum": 1
+            },
+            "successThreshold": {
+              "type": "integer",
+              "description": "Success threshold for readiness probe",
+              "minimum": 1
+            },
+            "failureThreshold": {
+              "type": "integer",
+              "description": "Failure threshold for readiness probe",
+              "minimum": 1
+            },
+            "tcpSocket": {
+              "properties": {
+                "port": {
+                  "type": ["integer", "string"],
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              }
+            }
+          }
+        },
+        "startupProbe": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable startup probe"
+            },
+            "tcpSocket": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "port": {
+                  "type": ["integer", "string"],
+                  "description": "Port to probe for startup",
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              }
+            },
+            "initialDelaySeconds": {
+              "type": "integer",
+              "description": "Initial delay before startup probe is initiated",
+              "minimum": 0
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "description": "Timeout for startup probe",
+              "minimum": 1
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "description": "Period for startup probe",
+              "minimum": 1
+            },
+            "successThreshold": {
+              "type": "integer",
+              "description": "Success threshold for startup probe",
+              "minimum": 1
+            },
+            "failureThreshold": {
+              "type": "integer",
+              "description": "Failure threshold for startup probe",
+              "minimum": 1
+            },
+            "httpGet": {
+              "properties": {
+                "port": {
+                  "type": ["integer", "string"],
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "checkDeprecation": {
+      "type": "boolean",
+      "description": "Whether to run this basic validation check."
+    },
+    "test": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether to use test-connection Pod."
+        },
+        "image": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Image name for the wget container used in the test-connection Pod."
+            },
+            "tag": {
+              "type": "string",
+              "description": "Image tag for the wget container used in the test-connection Pod."
+            }
+          }
+        }
+      }
+    },
+    "extraDeploy": {
+      "type": "array",
+      "items": {},
+      "description": "Array of extra objects to deploy with the release."
+    },
+    "nameOverride": {
+      "type": "string",
+      "description": "String to partially override common.names.fullname."
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "description": "String to fully override common.names.fullname."
+    },
+    "common": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Values passed to the Bitnami common dependency chart."
+    }
+  }
+}

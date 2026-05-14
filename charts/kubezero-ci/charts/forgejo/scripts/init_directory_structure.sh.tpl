@@ -26,10 +26,13 @@ chown 1000:1000 "${GITEA_TEMP}"
 {{- end }}
 chmod ug+rwx "${GITEA_TEMP}"
 
-{{ if .Values.signing.enabled -}}
+{{ if include "gitea.gpg-signing-enabled" . -}}
 if [ ! -d "${GNUPGHOME}" ]; then
   mkdir -p "${GNUPGHOME}"
   chmod 700 "${GNUPGHOME}"
   chown 1000:1000 "${GNUPGHOME}"
 fi
+{{- end }}
+{{ if include "gitea.ssh-signing-enabled" . -}}
+install -d -m 700 -o 1000 -g 1000 /data/git/.ssh-signing
 {{- end }}

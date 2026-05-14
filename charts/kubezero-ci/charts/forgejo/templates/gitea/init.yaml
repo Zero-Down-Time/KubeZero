@@ -9,6 +9,8 @@ type: Opaque
 stringData:
   configure_gpg_environment.sh: |-
 {{ .Files.Get "scripts/configure_gpg_environment.sh" | indent 4 }}
+  configure_ssh_signing.sh: |-
+{{ .Files.Get "scripts/configure_ssh_signing.sh" | indent 4 }}
   init_directory_structure.sh: |-
 {{ tpl (.Files.Get "scripts/init_directory_structure.sh.tpl") . | indent 4 }}
   configure_gitea.sh: |-

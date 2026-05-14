@@ -75,7 +75,7 @@ spec:
             {{- if .Values.deployment.env }}
             {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
-            {{- if .Values.signing.enabled }}
+            {{- if include "gitea.gpg-signing-enabled" . }}
             - name: GNUPGHOME
               value: {{ .Values.signing.gpgHome }}
             {{- end }}
@@ -134,7 +134,7 @@ spec:
             {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.containerSecurityContext "context" $) | nindent 12 }}
           resources:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
-        {{- if .Values.signing.enabled }}
+        {{- if include "gitea.gpg-signing-enabled" . }}
         - name: configure-gpg
           image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/configure_gpg_environment.sh"]
@@ -158,6 +158,35 @@ spec:
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
             - name: gpg-private-key
+              mountPath: /raw
+              readOnly: true
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.initContainers.resources | nindent 12 }}
+        {{- end }}
+        {{- if include "gitea.ssh-signing-enabled" . }}
+        - name: configure-ssh-signing
+          image: "{{ include "gitea.image" . }}"
+          command: ["/usr/sbin/configure_ssh_signing.sh"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- /* By default this container runs as user 1000 unless otherwise stated */ -}}
+            {{- $csc := deepCopy .Values.containerSecurityContext -}}
+            {{- if not (hasKey $csc "runAsUser") -}}
+            {{- $_ := set $csc "runAsUser" 1000 -}}
+            {{- end -}}
+            {{- include "common.compatibility.renderSecurityContext" (dict "secContext" $csc "context" $) | nindent 12 }}
+          volumeMounts:
+            - name: init
+              mountPath: /usr/sbin
+            - name: data
+              mountPath: /data
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+              {{- end }}
+            - name: ssh-signing-key
               mountPath: /raw
               readOnly: true
             {{- if .Values.extraVolumeMounts }}
@@ -286,7 +315,7 @@ spec:
             - name: HOME
               value: /data/gitea/git
             {{- end }}
-            {{- if .Values.signing.enabled }}
+            {{- if include "gitea.gpg-signing-enabled" . }}
             - name: GNUPGHOME
               value: {{ .Values.signing.gpgHome }}
             {{- end }}
@@ -422,13 +451,22 @@ spec:
         {{- end }}
         - name: temp
           emptyDir: {}
-        {{- if .Values.signing.enabled }}
+        {{- if include "gitea.gpg-signing-enabled" . }}
         - name: gpg-private-key
           secret:
             secretName: {{ include "gitea.gpg-key-secret-name" . }}
             items:
               - key: privateKey
                 path: private.asc
+            defaultMode: 0100
+        {{- end }}
+        {{- if include "gitea.ssh-signing-enabled" . }}
+        - name: ssh-signing-key
+          secret:
+            secretName: {{ include "gitea.ssh-signing-key-secret-name" . }}
+            items:
+              - key: privateKey
+                path: ssh-signing-key
             defaultMode: 0100
         {{- end }}
   {{- if .Values.persistence.enabled }}

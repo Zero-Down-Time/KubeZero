@@ -1,11 +1,11 @@
 apiVersion: v2
-appVersion: 14.0.4
+appVersion: 15.0.2
 dependencies:
 - name: common
   repository: oci://ghcr.io/visualon/bitnamicharts
   tags:
   - bitnami-common
-  version: 2.38.0
+  version: 2.39.0
 description: Forgejo Helm chart for Kubernetes
 home: https://forgejo.org/
 icon: https://code.forgejo.org/forgejo/forgejo/raw/branch/forgejo/assets/logo.svg
@@ -27,4 +27,4 @@ sources:
 - https://code.forgejo.org/forgejo-helm/forgejo-helm
 - https://codeberg.org/forgejo/forgejo
 type: application
-version: 16.2.2
+version: 17.1.0

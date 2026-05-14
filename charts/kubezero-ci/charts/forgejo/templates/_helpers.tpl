@@ -342,6 +342,18 @@ https
 {{ default (printf "%s-gpg-key" (include "gitea.fullname" .)) .Values.signing.existingSecret }}
 {{- end -}}
 
+{{- define "gitea.gpg-signing-enabled" -}}
+{{- if and .Values.signing.enabled (or .Values.signing.privateKey .Values.signing.existingSecret) -}}true{{- end -}}
+{{- end -}}
+
+{{- define "gitea.ssh-signing-key-secret-name" -}}
+{{ default (printf "%s-ssh-signing-key" (include "gitea.fullname" .)) .Values.signing.ssh.existingSecret }}
+{{- end -}}
+
+{{- define "gitea.ssh-signing-enabled" -}}
+{{- if and .Values.signing.enabled (or .Values.signing.ssh.privateKey .Values.signing.ssh.existingSecret) -}}true{{- end -}}
+{{- end -}}
+
 {{- define "gitea.serviceAccountName" -}}
 {{ .Values.serviceAccount.name | default (include "gitea.fullname" .) }}
 {{- end -}}

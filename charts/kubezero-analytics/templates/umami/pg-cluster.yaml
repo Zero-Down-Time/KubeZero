@@ -10,6 +10,10 @@ spec:
     kind: ClusterImageCatalog
     name: postgresql
     major: 17
+  inheritedMetadata:
+    annotations:
+      container.apparmor.security.beta.kubernetes.io/postgres: unconfined
+      container.apparmor.security.beta.kubernetes.io/bootstrap-controller: unconfined
   bootstrap:
     initdb:
       database: umami

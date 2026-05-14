@@ -296,7 +296,7 @@ jenkins:
               memory: "512Mi"
             limits:
               cpu: "4"
-              memory: "6144Mi"
+              # memory: "4096Mi"
           volumeMounts:
           - name: host-registries-conf
             mountPath: "/home/jenkins/.config/containers/registries.conf"

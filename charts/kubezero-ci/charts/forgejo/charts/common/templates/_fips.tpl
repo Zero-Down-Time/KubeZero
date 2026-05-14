@@ -82,7 +82,9 @@ Map Golang values for FIPS configuration
 {{- end -}}
 
 {{/*
-OpenSSL FIPS provider path (empty unless mode is restricted). Uses fips.openssl with global.defaultFips fallback.
+OpenSSL FIPS provider path. Uses fips.openssl with global.defaultFips fallback.
+- restricted: /etc/ssl/provider_fips.cnf  (loads the FIPS provider)
+- relaxed/off: /etc/ssl/provider_default.cnf  (loads the default provider, required by photon-5 distro.cnf)
 {{ include "common.fips.openssl.provider.path" (dict "fips" .Values.fips "global" .Values.global) }}
 */}}
 {{- define "common.fips.openssl.provider.path" -}}
@@ -99,6 +101,6 @@ OpenSSL FIPS provider path (empty unless mode is restricted). Uses fips.openssl 
     {{- if empty $value -}}
         {{- printf "Please configure a value for 'fips.openssl' or 'global.defaultFips'" | fail -}}
     {{- else -}}
-        {{- ternary "/etc/ssl/provider_fips.cnf" "" (eq $value "restricted") | print -}}
+        {{- ternary "/etc/ssl/provider_fips.cnf" "/etc/ssl/provider_default.cnf" (eq $value "restricted") | print -}}
     {{- end -}}
 {{- end -}}
