@@ -121,6 +121,7 @@ jenkins:
     initializeOnce: true
 
     # until https://github.com/kiwigrid/k8s-sidecar/issues/400 is fixed
+    # https://github.com/kubernetes-client/python/issues/2394#issuecomment-4217562130
     sidecars:
       configAutoReload:
         image:
@@ -265,7 +266,7 @@ jenkins:
       enabled: true
     customJenkinsLabels:
       - podman-aws-grype
-    idleMinutes: 30
+    idleMinutes: 60
     containerCap: 2
     envVars:
       - name: HOME
