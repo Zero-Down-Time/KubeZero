@@ -1,6 +1,7 @@
 configmap: grafana-dashboards
 gzip: true
 folder: Logging
+condition: '.Values.fluent-bit.enabled'
 dashboards:
 - name: fluent-logging
   url: https://grafana.com/api/dashboards/7752/revisions/6/download
