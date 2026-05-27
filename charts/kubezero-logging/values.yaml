@@ -1,3 +1,168 @@
+networkPolicy:
+  enabled: false
+  # Label selector identifying in-cluster Vector agents allowed to reach :6000.
+  agentSelector:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Agent
+ 
+# Single switch for the entire remote HTTP path: the http_in source, its bearer
+# auth, the token enrichment table, and the tenant tagging. false => :6000 only.
+vectorHttpIngest:
+  enabled: false
+
+vector:
+  enabled: false
+
+  istio:
+    enabled: false
+    gateway: istio-ingress/private-ingressgateway
+    url: vector.example.com
+    # Only POST requests to this exact path are routed to the aggregator :8080.
+    ingestPath: /ingest
+
+  role: Aggregator
+  replicas: 1
+ 
+  image:
+    base: alpine
+ 
+  # Disk buffer for the sink
+  dataDir: /vector-data-dir
+  persistence:
+    enabled: true
+    size: 1Gi
+    # storageClassName: ""   # set to your RWO class
+ 
+  extraVolumes:
+    - name: http-tokens
+      secret:
+        secretName: vector-http-tokens   # key: tokens.csv
+  extraVolumeMounts:
+    - name: http-tokens
+      mountPath: /etc/vector-auth
+      readOnly: true
+
+  args:
+    - --config-dir
+    - /etc/vector/
+    - --watch-config
+    - --watch-config-method
+    - poll
+ 
+  # OpenSearch credentials. Create the `vector-opensearch` Secret
+  env:
+    - name: OPENSEARCH_ENDPOINT
+      valueFrom: { secretKeyRef: { name: vector-opensearch, key: endpoint } }
+    - name: OPENSEARCH_USER
+      valueFrom: { secretKeyRef: { name: vector-opensearch, key: username } }
+    - name: OPENSEARCH_PASSWORD
+      valueFrom: { secretKeyRef: { name: vector-opensearch, key: password } }
+ 
+  # Ports must match customConfig for all three: container / service / headless.
+  containerPorts:
+    - { name: vector,  containerPort: 6000, protocol: TCP }
+    - { name: http,    containerPort: 8080, protocol: TCP }
+    - { name: api,     containerPort: 8686, protocol: TCP }
+    - { name: prom-exporter,    containerPort: 9090, protocol: TCP }
+ 
+  service:
+    enabled: true
+    type: ClusterIP            # LoadBalancer if remote senders are outside the cluster
+    ports:
+      - { name: vector, port: 6000, targetPort: 6000, protocol: TCP }
+      - { name: http,   port: 8080, targetPort: 8080, protocol: TCP }
+      - { name: prom-exporter,   port: 9090, targetPort: 9090, protocol: TCP }
+ 
+  serviceHeadless:
+    enabled: true
+    ports:
+      - { name: vector, port: 6000, targetPort: 6000, protocol: TCP }
+ 
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+ 
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+ 
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: vector
+                app.kubernetes.io/component: Aggregator
+ 
+  existingConfigMaps:
+    - vector-aggregator-config
+    - vector-remap-lib
+
+  podMonitor:
+    enabled: false
+    interval: 30s
+    honorLabels: true
+
+opensearch:
+  enabled: false
+
+  singleNode: true
+  maxUnavailable: 0
+
+  config:
+    opensearch.yml: |
+      cluster.name: opensearch-cluster
+      network.host: 0.0.0.0
+      discovery.type: single-node
+
+  opensearchJavaOpts: "-Xmx1024M -Xms1024M"
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "2Gi"
+    limits:
+      memory: "2Gi"
+  persistence:
+    size: 8Gi
+
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+
+opensearch-dashboards:
+  enabled: false
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512M"
+    limits:
+      cpu: null
+      memory: "512M"
+
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+
+  istio:
+    enabled: false
+    gateway: istio-ingress/private-ingressgateway
+    url: logging-dashboard.example.com
+
+
+
+# ##### Below is legacy !!!
 # use this for backwards compatability
 # fullnameOverride: ""
 

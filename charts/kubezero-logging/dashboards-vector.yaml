@@ -1,0 +1,9 @@
+configmap: vector-grafana-dashboards
+gzip: true
+folder: Logging
+condition: '.Values.vector.podMonitor.enabled'
+dashboards:
+- name: vector-logging
+  url: https://grafana.com/api/dashboards/19649/revisions/1/download
+  tags:
+  - vector

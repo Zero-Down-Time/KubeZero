@@ -1,0 +1,146 @@
+{{- if .Values.vector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-remap-lib
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+data:
+  remap_cloudtrail.yaml: |
+    transforms:
+      cloudtrail_unpack:
+        type: remap
+        inputs:
+          - event_router.cloudtrail
+        source: |
+          %event_type = "aws.cloudtrail"
+          . = array(.event.Records) ?? []
+    
+      parsed_cloudtrail:
+        type: remap
+        inputs:
+          - cloudtrail_unpack
+        source: |
+          raw = .
+    
+          # ---- derived / conditional values (computed first) ----------------------
+          ts = parse_timestamp(raw.eventTime, "%+") ??
+              parse_timestamp(raw.eventTime, "%Y-%m-%dT%H:%M:%SZ") ??
+              now()
+    
+          outcome = if exists(raw.errorCode) { "failure" } else { "success" }
+          etype   = if raw.readOnly == true { ["access"] } else { ["change"] }
+          ecat    = null
+    
+          if raw.eventName == "ConsoleLogin" {
+              ecat  = ["authentication"]
+              etype = ["start"]
+              login = raw.responseElements.ConsoleLogin
+              if login == "Failure" { outcome = "failure" }
+              if login == "Success" { outcome = "success" }
+          }
+    
+          # source ip (sourceIPAddress may be an AWS service hostname, not an IP)
+          ip = to_string(raw.sourceIPAddress) ?? ""
+          src_addr = null
+          src_ip   = null
+          if ip != "" {
+              src_addr = ip
+              if match(ip, r'^\d{1,3}(\.\d{1,3}){3}$') || match(ip, r'^[0-9a-fA-F:]+:[0-9a-fA-F:]+') {
+                  src_ip = ip
+              }
+          }
+    
+          # || not ?? : a missing path returns null, and ?? only catches errors
+          uname = raw.userIdentity.userName ||
+                  raw.userIdentity.sessionContext.sessionIssuer.userName
+    
+          # variable-structure objects -> stringify to avoid mapping explosion
+          req  = if exists(raw.requestParameters)   { encode_json(raw.requestParameters) }   else { null }
+          resp = if exists(raw.responseElements)    { encode_json(raw.responseElements) }    else { null }
+          addl = if exists(raw.additionalEventData) { encode_json(raw.additionalEventData) } else { null }
+          svc  = if exists(raw.serviceEventDetails) { encode_json(raw.serviceEventDetails) } else { null }
+    
+          # related.* (ECS pivot fields)
+          related = {}
+          users = []
+          if raw.userIdentity.userName != null { users = push(users, raw.userIdentity.userName) }
+          if raw.userIdentity.arn != null      { users = push(users, raw.userIdentity.arn) }
+          if length(users) > 0 { related.user = users }
+          if src_ip != null    { related.ip = [src_ip] }
+    
+          # ---- build ECS doc: one nested literal per top-level group --------------
+          . = {}
+    
+          .@timestamp = ts
+          .ecs = { "version": "8.11.0" }
+    
+          .event = {
+              "kind":     "event",
+              "module":   "aws",
+              "dataset":  "aws.cloudtrail",
+              "provider": raw.eventSource,
+              "action":   raw.eventName,
+              "id":       raw.eventID,
+              "original": encode_json(raw),   # keeps unmapped fields (tlsDetails, onBehalfOf, ...)
+              "outcome":  outcome,
+              "type":     etype,
+              "category": ecat
+          }
+    
+          .cloud = {
+              "provider": "aws",
+              "region":   raw.awsRegion,
+              "account":  { "id": raw.recipientAccountId }
+          }
+    
+          .source     = { "address": src_addr, "ip": src_ip }
+          .user       = { "id": raw.userIdentity.principalId, "name": uname }
+          .user_agent = { "original": raw.userAgent }
+          .error      = { "code": raw.errorCode, "message": raw.errorMessage }
+          .related    = related
+    
+          .aws = {
+              "cloudtrail": {
+                  "event_version":        raw.eventVersion,
+                  "event_type":           raw.eventType,
+                  "event_category":       raw.eventCategory,
+                  "management_event":     raw.managementEvent,
+                  "read_only":            raw.readOnly,
+                  "recipient_account_id": raw.recipientAccountId,
+                  "request_id":           raw.requestID,
+                  "api_version":          raw.apiVersion,
+                  "shared_event_id":      raw.sharedEventID,
+                  "vpc_endpoint_id":      raw.vpcEndpointId,
+                  "error_code":           raw.errorCode,
+                  "error_message":        raw.errorMessage,
+                  "request_parameters":   req,
+                  "response_elements":    resp,
+                  "additional_eventdata": addl,
+                  "service_event_details": svc,
+                  "resources":            raw.resources,
+                  "user_identity": {
+                      "type":          raw.userIdentity.type,
+                      "arn":           raw.userIdentity.arn,
+                      "account_id":    raw.userIdentity.accountId,
+                      "principal_id":  raw.userIdentity.principalId,
+                      "access_key_id": raw.userIdentity.accessKeyId,
+                      "invoked_by":    raw.userIdentity.invokedBy,
+                      "session_context": {
+                          "mfa_authenticated": raw.userIdentity.sessionContext.attributes.mfaAuthenticated,
+                          "creation_date":     raw.userIdentity.sessionContext.attributes.creationDate,
+                          "session_issuer": {
+                              "type":      raw.userIdentity.sessionContext.sessionIssuer.type,
+                              "arn":       raw.userIdentity.sessionContext.sessionIssuer.arn,
+                              "user_name": raw.userIdentity.sessionContext.sessionIssuer.userName
+                          }
+                      }
+                  }
+              }
+          }
+    
+          # drop nulls / empty objects so absent fields don't create empty keys
+          . = compact(., recursive: true, null: true)
+
+    {{- end }}

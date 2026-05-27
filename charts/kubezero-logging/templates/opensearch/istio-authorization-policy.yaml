@@ -1,0 +1,28 @@
+{{- if index .Values "opensearch-dashboards" "istio" "enabled" }}
+{{- if index .Values "opensearch-dashboards" "istio" "ipBlocks" }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: logging-dashboard-deny-not-in-ipblocks
+  namespace: istio-system
+  labels:
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  action: DENY
+  rules:
+  - from:
+    - source:
+        notIpBlocks:
+        {{- toYaml (index .Values "opensearch-dashboards" "istio" "ipBlocks") | nindent 8 }}
+    to:
+    - operation:
+        hosts: [{{ index .Values "opensearch-dashboards" "istio" "url" }}]
+    when:
+    - key: connection.sni
+      values:
+      - '*'
+{{- end }}
+{{- end }}

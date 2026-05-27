@@ -1,8 +1,8 @@
 # kubezero-logging
 
-![Version: 0.8.14](https://img.shields.io/badge/Version-0.8.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.0](https://img.shields.io/badge/AppVersion-1.6.0-informational?style=flat-square)
+![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
-KubeZero Umbrella Chart for complete EFK stack
+KubeZero Logging module
 
 **Homepage:** <https://kubezero.com>
 
@@ -14,13 +14,16 @@ KubeZero Umbrella Chart for complete EFK stack
 
 ## Requirements
 
-Kubernetes: `>= 1.26.0`
+Kubernetes: `>= 1.34.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://fluent.github.io/helm-charts | fluent-bit | 0.47.10 |
 | https://fluent.github.io/helm-charts | fluentd | 0.5.2 |
+| https://helm.vector.dev | vector | 0.52.0 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch | 3.6.0 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.6.0 |
 
 ## Changes from upstream
 ### ECK
@@ -141,6 +144,103 @@ Kubernetes: `>= 1.26.0`
 | kibana.istio.enabled | bool | `false` |  |
 | kibana.istio.gateway | string | `"istio-system/ingressgateway"` |  |
 | kibana.istio.url | string | `""` |  |
+| networkPolicy.agentSelector."app.kubernetes.io/component" | string | `"Agent"` |  |
+| networkPolicy.agentSelector."app.kubernetes.io/name" | string | `"vector"` |  |
+| networkPolicy.enabled | bool | `false` |  |
+| opensearch-dashboards.enabled | bool | `false` |  |
+| opensearch-dashboards.istio.enabled | bool | `false` |  |
+| opensearch-dashboards.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
+| opensearch-dashboards.istio.url | string | `"logging-dashboard.example.com"` |  |
+| opensearch-dashboards.resources.limits.cpu | string | `nil` |  |
+| opensearch-dashboards.resources.limits.memory | string | `"512M"` |  |
+| opensearch-dashboards.resources.requests.cpu | string | `"100m"` |  |
+| opensearch-dashboards.resources.requests.memory | string | `"512M"` |  |
+| opensearch-dashboards.serviceMonitor.enabled | bool | `false` |  |
+| opensearch-dashboards.serviceMonitor.interval | string | `"30s"` |  |
+| opensearch.config."opensearch.yml" | string | `"cluster.name: opensearch-cluster\nnetwork.host: 0.0.0.0\ndiscovery.type: single-node\n"` |  |
+| opensearch.enabled | bool | `false` |  |
+| opensearch.maxUnavailable | int | `0` |  |
+| opensearch.opensearchJavaOpts | string | `"-Xmx1024M -Xms1024M"` |  |
+| opensearch.persistence.size | string | `"8Gi"` |  |
+| opensearch.resources.limits.memory | string | `"2Gi"` |  |
+| opensearch.resources.requests.cpu | string | `"500m"` |  |
+| opensearch.resources.requests.memory | string | `"2Gi"` |  |
+| opensearch.serviceMonitor.enabled | bool | `false` |  |
+| opensearch.serviceMonitor.interval | string | `"30s"` |  |
+| opensearch.singleNode | bool | `true` |  |
+| vector.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels."app.kubernetes.io/component" | string | `"Aggregator"` |  |
+| vector.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels."app.kubernetes.io/name" | string | `"vector"` |  |
+| vector.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
+| vector.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
+| vector.containerPorts[0].containerPort | int | `6000` |  |
+| vector.containerPorts[0].name | string | `"vector"` |  |
+| vector.containerPorts[0].protocol | string | `"TCP"` |  |
+| vector.containerPorts[1].containerPort | int | `8080` |  |
+| vector.containerPorts[1].name | string | `"http"` |  |
+| vector.containerPorts[1].protocol | string | `"TCP"` |  |
+| vector.containerPorts[2].containerPort | int | `8686` |  |
+| vector.containerPorts[2].name | string | `"api"` |  |
+| vector.containerPorts[2].protocol | string | `"TCP"` |  |
+| vector.containerPorts[3].containerPort | int | `9090` |  |
+| vector.containerPorts[3].name | string | `"prom-exporter"` |  |
+| vector.containerPorts[3].protocol | string | `"TCP"` |  |
+| vector.dataDir | string | `"/vector-data-dir"` |  |
+| vector.enabled | bool | `false` |  |
+| vector.env[0].name | string | `"OPENSEARCH_ENDPOINT"` |  |
+| vector.env[0].valueFrom.secretKeyRef.key | string | `"endpoint"` |  |
+| vector.env[0].valueFrom.secretKeyRef.name | string | `"vector-opensearch"` |  |
+| vector.env[1].name | string | `"OPENSEARCH_USER"` |  |
+| vector.env[1].valueFrom.secretKeyRef.key | string | `"username"` |  |
+| vector.env[1].valueFrom.secretKeyRef.name | string | `"vector-opensearch"` |  |
+| vector.env[2].name | string | `"OPENSEARCH_PASSWORD"` |  |
+| vector.env[2].valueFrom.secretKeyRef.key | string | `"password"` |  |
+| vector.env[2].valueFrom.secretKeyRef.name | string | `"vector-opensearch"` |  |
+| vector.existingConfigMaps[0] | string | `"vector-aggregator-config"` |  |
+| vector.extraVolumeMounts[0].mountPath | string | `"/etc/vector-auth"` |  |
+| vector.extraVolumeMounts[0].name | string | `"http-tokens"` |  |
+| vector.extraVolumeMounts[0].readOnly | bool | `true` |  |
+| vector.extraVolumes[0].name | string | `"http-tokens"` |  |
+| vector.extraVolumes[0].secret.secretName | string | `"vector-http-tokens"` |  |
+| vector.image.base | string | `"alpine"` |  |
+| vector.istio.enabled | bool | `false` |  |
+| vector.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
+| vector.istio.ingestPath | string | `"/ingest"` |  |
+| vector.istio.url | string | `"vector.example.com"` |  |
+| vector.persistence.enabled | bool | `true` |  |
+| vector.persistence.size | string | `"1Gi"` |  |
+| vector.podMonitor.enabled | bool | `false` |  |
+| vector.podMonitor.honorLabels | bool | `true` |  |
+| vector.podMonitor.interval | string | `"30s"` |  |
+| vector.podSecurityContext.fsGroup | int | `1000` |  |
+| vector.replicas | int | `1` |  |
+| vector.resources.limits.memory | string | `"256Mi"` |  |
+| vector.resources.requests.cpu | string | `"10m"` |  |
+| vector.resources.requests.memory | string | `"64Mi"` |  |
+| vector.role | string | `"Aggregator"` |  |
+| vector.securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| vector.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| vector.securityContext.runAsNonRoot | bool | `true` |  |
+| vector.securityContext.runAsUser | int | `1000` |  |
+| vector.service.enabled | bool | `true` |  |
+| vector.service.ports[0].name | string | `"vector"` |  |
+| vector.service.ports[0].port | int | `6000` |  |
+| vector.service.ports[0].protocol | string | `"TCP"` |  |
+| vector.service.ports[0].targetPort | int | `6000` |  |
+| vector.service.ports[1].name | string | `"http"` |  |
+| vector.service.ports[1].port | int | `8080` |  |
+| vector.service.ports[1].protocol | string | `"TCP"` |  |
+| vector.service.ports[1].targetPort | int | `8080` |  |
+| vector.service.ports[2].name | string | `"prom-exporter"` |  |
+| vector.service.ports[2].port | int | `9090` |  |
+| vector.service.ports[2].protocol | string | `"TCP"` |  |
+| vector.service.ports[2].targetPort | int | `9090` |  |
+| vector.service.type | string | `"ClusterIP"` |  |
+| vector.serviceHeadless.enabled | bool | `true` |  |
+| vector.serviceHeadless.ports[0].name | string | `"vector"` |  |
+| vector.serviceHeadless.ports[0].port | int | `6000` |  |
+| vector.serviceHeadless.ports[0].protocol | string | `"TCP"` |  |
+| vector.serviceHeadless.ports[0].targetPort | int | `6000` |  |
+| vectorHttpIngest.enabled | bool | `false` |  |
 | version | string | `"7.17.7"` |  |
 
 ## Resources:

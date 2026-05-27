@@ -1,0 +1,40 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: vector-aggregator
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+spec:
+  # Selecting these pods makes ALL ingress denied except the rules below (default-deny).
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: vector
+      app.kubernetes.io/component: Aggregator
+  policyTypes: [Ingress]
+  ingress:
+    # :6000 Vector native protocol — only from in-cluster Vector agents.
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              {{- toYaml .Values.networkPolicy.agentSelector | nindent 14 }}
+      ports:
+        - { port: 6000, protocol: TCP }
+    {{- if .Values.vectorHttpIngest.enabled }}
+    # :8080 HTTP ingest — from any in-cluster namespace.
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - { port: 8080, protocol: TCP }
+    {{- end }}
+    # :9090 Prometheus scrape — from any in-cluster namespace.
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - { port: 9090, protocol: TCP }
+  # NOTE: :8686 (API) is intentionally not allowed pod-to-pod. Kubelet probe
+  # traffic is node-sourced and exempted by most CNIs; if yours enforces it,
+  # add a rule allowing 8686.
+{{- end }}

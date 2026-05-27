@@ -1,0 +1,25 @@
+{{- if index .Values "vector" "istio" "enabled" }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ template "kubezero-lib.fullname" . }}-vector
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "kubezero-lib.labels" . | indent 4 }}
+spec:
+  hosts:
+  - {{ index .Values "vector" "istio" "url" }}
+  gateways:
+  - {{ default "istio-system/ingressgateway" ( index .Values "vector" "istio" "gateway" ) }}
+  http:
+  - match:
+    - method:
+        exact: POST
+      uri:
+        exact: {{ default "/ingest" (index .Values "vector" "istio" "ingestPath") }}
+    route:
+    - destination:
+        host: {{ template "kubezero-lib.fullname" $ }}-vector
+        port:
+          number: 8080
+{{- end }}

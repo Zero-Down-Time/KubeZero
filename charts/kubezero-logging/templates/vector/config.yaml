@@ -1,0 +1,170 @@
+{{- if .Values.vector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-aggregator-config
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+data:
+  vector.yaml: |
+    data_dir: /vector-data-dir
+
+    api:
+      enabled: true
+      address: 0.0.0.0:8686
+
+    {{- if .Values.vectorHttpIngest.enabled }}
+    # CSV token table for http_in custom auth (Secret: vector-http-tokens).
+    enrichment_tables:
+      auth_data:
+        type: file
+        file:
+          path: /etc/vector-auth/tokens.csv
+          encoding: { type: csv }
+        schema:
+          token_sha256: string
+          tenant: string
+          active: boolean
+    {{- end }}
+
+    sources:
+      vector_in:
+        type: vector
+        address: 0.0.0.0:6000
+        version: "2"
+    #   tls:
+    #     enabled: true
+    #     crt_file: /etc/vector-tls/tls.crt
+    #     key_file: /etc/vector-tls/tls.key
+    #     ca_file: /etc/vector-tls/ca.crt
+    #     verify_certificate: true
+    {{- if .Values.vectorHttpIngest.enabled }}
+      # Remote HTTP events (POST JSON to /ingest), bearer-token auth.
+      http_in:
+        type: http_server
+        address: 0.0.0.0:8080
+        path: /ingest
+        method: POST
+        decoding:
+          codec: json
+        headers:
+          - authorization
+        auth:
+          strategy: custom
+          source: |
+            parts = split!(.headers.authorization, " ", 2)
+            if parts[0] != "Bearer" {
+              false
+            } else {
+              digest = sha2!(parts[1], variant: "SHA-256")
+              row = get_enrichment_table_record!("auth_data", { "token_sha256": digest })
+              row.active == true
+            }
+    {{- end }}
+
+      internal_metrics:
+        type: internal_metrics
+
+    transforms:
+      {{- if .Values.vectorHttpIngest.enabled }}
+      # tenant from validated bearer token, then drop the token
+      http_auth_tenant:
+        type: remap
+        inputs:
+          - http_in
+        source: |
+          if exists(.authorization) {
+            tok    = split(string(.authorization) ?? "", " ", 2)[1]
+            digest = sha2(tok, variant: "SHA-256") ?? ""
+            row    = get_enrichment_table_record("auth_data", { "token_sha256": digest }) ?? {}
+            .tenant = string(row.tenant) ?? "unknown"
+            del(.authorization)
+          }
+      {{- end }}
+
+      normalize:
+        type: remap
+        inputs:
+          - vector_in
+          {{- if .Values.vectorHttpIngest.enabled }}
+          - http_auth_tenant
+          {{- end }}
+        source: |
+          if is_string(.message) {
+            parsed, err = parse_json(.message)
+            if err == null && is_object(parsed) {
+              . = merge(., object!(parsed), deep: true)
+            }
+          }
+
+      event_router:
+        type: route
+        inputs:
+          - normalize
+        route:
+          cloudtrail: |
+            .source == "s3" &&
+            exists(.event.Records) &&
+            contains(string(.key) ?? "", "/CloudTrail/")
+          vpcflow: |
+            .source == "s3" &&
+            contains(string(.key) ?? "", "/vpcflowlogs/")
+
+
+      sink_router:
+        type: route
+        inputs:
+          - parsed_*
+          - event_router._unmatched
+        route:
+          cloudtrail: '%event_type == "aws.cloudtrail"'
+
+      # Drop metrics emitted BY the metrics plumbing itself
+      metrics_clean:
+        type: filter
+        inputs: [internal_metrics]
+        condition: '!includes(["internal_metrics", "metrics_clean"], string(.tags.component_id) ?? "")'
+
+    sinks:
+      opensearch:
+        type: elasticsearch
+        inputs:
+          - sink_router.cloudtrail
+        endpoints: ["${OPENSEARCH_ENDPOINT}"]
+        api_version: v7
+        mode: bulk
+        bulk:
+          index: 'logs-%Y.%m.%d'
+        auth:
+          strategy: basic
+          user: "${OPENSEARCH_USER}"
+          password: "${OPENSEARCH_PASSWORD}"
+        tls:
+          verify_certificate: false
+        compression: gzip
+        batch: { max_events: 2000, timeout_secs: 5 }
+        buffer: { type: disk, max_size: 536870912, when_full: block }
+        healthcheck: { enabled: true }
+
+      dlq:
+        type: elasticsearch
+        inputs:
+          - sink_router._unmatched
+        endpoints: ["${OPENSEARCH_ENDPOINT}"]
+        api_version: v7
+        mode: bulk
+        bulk: { index: "logs-dlq-%Y.%m.%d" }
+        auth:
+          strategy: basic
+          user: "${OPENSEARCH_USER}"
+          password: "${OPENSEARCH_PASSWORD}"
+        tls:
+          verify_certificate: false
+        buffer: { type: memory, max_events: 500, when_full: drop_newest }
+
+      metrics:
+        type: prometheus_exporter
+        inputs: [metrics_clean]
+        address: 0.0.0.0:9090
+{{- end }}
