@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 #
-# replay-s3-events.sh
-#   Recursively list objects under an s3:// URL and publish a simulated
-#   S3 "ObjectCreated:Put" notification to an SNS topic for each one.
-#   Intended for backfill: re-triggers a pipeline (SNS -> SQS -> consumer)
-#   to reprocess objects that already exist in the bucket.
+# replay-cloudtrail-s3-sns.sh
+#   Backfill helper for the CloudTrail log delivery pipeline that uses SNS.
+#   Lists every CloudTrail log object under an s3:// URL and publishes a
+#   CloudTrail-shaped SNS notification ({"s3Bucket":..,"s3ObjectKey":[..]})
+#   for each one, so a subscriber (SQS -> log processor) re-ingests the
+#   already-existing log files.
 #
-#   The objects are NOT modified; only the notification is replayed, so the
-#   downstream consumer must still be able to fetch each key from S3.
+#   This is NOT an S3 Event Notification replay — the message body matches
+#   the format CloudTrail itself emits when configured with an SNS topic.
+#   Objects are NOT modified; the consumer must still fetch each key from S3.
 #
 # Usage:
-#   ./replay-s3-events.sh s3://bucket/prefix/ --topic-arn arn:aws:sns:... \
-#       [--region us-east-1] [--concurrency 8] [--dry-run]
+#   ./replay-cloudtrail-s3-sns.sh s3://bucket/AWSLogs/.../CloudTrail/ \
+#       --topic-arn arn:aws:sns:... [--region us-east-1] [--concurrency 8] [--dry-run]
 #
 # Requires: bash 4.3+, aws CLI v2, jq.  (Alpine: apk add bash jq aws-cli)
 #
@@ -26,7 +28,7 @@ TOPIC_ARN=""
 REGION=""          # bucket region (event awsRegion); auto-detected if empty
 S3_URL=""
 
-usage() { sed -n '2,20p' "$0"; }
+usage() { sed -n '2,18p' "$0"; }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -70,7 +72,7 @@ fi
 SNS_REGION=""
 [[ -n "$TOPIC_ARN" ]] && SNS_REGION="$(cut -d: -f4 <<<"$TOPIC_ARN")"
 
-FAIL_LOG="replay-failures-$(date +%Y%m%dT%H%M%SZ).jsonl"
+FAIL_LOG="replay-cloudtrail-failures-$(date +%Y%m%dT%H%M%SZ).jsonl"
 
 echo "bucket=$BUCKET prefix='${PREFIX}' bucket_region=$REGION sns_region=${SNS_REGION:-n/a} concurrency=$CONCURRENCY dry_run=$DRY_RUN" >&2
 
