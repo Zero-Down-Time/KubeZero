@@ -1,0 +1,329 @@
+{{- if and .Values.vector.enabled .Values.vector.installIntegrationTemplates }}
+# Installs the OpenSearch Catalog "aws_cloudtrail" integration's component and
+# index templates (the Integrations UI only ships Dashboards saved objects, not
+# templates). Without these, dynamic mapping makes `aws.cloudtrail.*` strings
+# `text` instead of `keyword`, breaking the integration's Terms aggregations.
+#
+# Source: opensearch-project/opensearch-catalog
+#   integrations/observability/aws_cloudtrail/schemas/*.json
+# The `data_stream: {}` field is intentionally omitted from the index template
+# so Vector can PUT into regular indices (ss4o_logs-aws_cloudtrail-%Y.%m).
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-opensearch-templates
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+data:
+  cloud.json: |-
+    {
+      "template": {
+        "mappings": {
+          "_meta": {
+            "version": "1.0.0",
+            "catalog": "observability",
+            "type": "logs",
+            "component": "cloud",
+            "labels": ["cloud"]
+          },
+          "properties": {
+            "cloud": {
+              "properties": {
+                "provider":          { "type": "keyword" },
+                "availability_zone": { "type": "keyword" },
+                "region":            { "type": "keyword" },
+                "machine":  { "type": "object", "properties": { "type": { "type": "keyword" } } },
+                "account":  { "type": "object", "properties": { "id":   { "type": "keyword" }, "name": { "type": "keyword" } } },
+                "platform":          { "type": "keyword" },
+                "service":  { "type": "object", "properties": { "name": { "type": "keyword" } } },
+                "project":  { "type": "object", "properties": { "id":   { "type": "keyword" }, "name": { "type": "keyword" } } },
+                "resource_id":       { "type": "keyword" },
+                "instance": { "type": "object", "properties": { "id":   { "type": "keyword" }, "name": { "type": "keyword" } } }
+              }
+            }
+          }
+        }
+      }
+    }
+  aws_s3.json: |-
+    {
+      "template": {
+        "mappings": {
+          "_meta": {
+            "version": "1.0.0",
+            "catalog": "observability",
+            "type": "logs",
+            "component": "s3",
+            "labels": ["aws", "s3"]
+          },
+          "properties": {
+            "aws": {
+              "properties": {
+                "s3": {
+                  "properties": {
+                    "bucket_owner":        { "type": "keyword" },
+                    "bucket":              { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "remote_ip":           { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "requester":           { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "request_id":          { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "operation":           { "type": "keyword" },
+                    "key":                 { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "copy_source":         { "type": "keyword" },
+                    "upload_id":           { "type": "keyword" },
+                    "delete":              { "type": "keyword" },
+                    "part_number":         { "type": "keyword" },
+                    "request_uri":         { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "http_status":         { "type": "keyword" },
+                    "error_code":          { "type": "keyword" },
+                    "bytes_sent":          { "type": "long" },
+                    "object_size":         { "type": "long" },
+                    "total_time":          { "type": "integer" },
+                    "turn_around_time":    { "type": "integer" },
+                    "referrer":            { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "user_agent":          { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "version_id":          { "type": "keyword" },
+                    "host_id":             { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "signature_version":   { "type": "keyword" },
+                    "cipher_suite":        { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "authentication_type": { "type": "keyword" },
+                    "host_header":         { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "tls_version":         { "type": "keyword" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  aws_cloudtrail.json: |-
+    {
+      "template": {
+        "mappings": {
+          "_meta": {
+            "version": "1.0.0",
+            "catalog": "observability",
+            "type": "logs",
+            "component": "aws_cloudtrail",
+            "labels": ["aws", "cloudtrail"]
+          },
+          "properties": {
+            "aws": {
+              "type": "object",
+              "properties": {
+                "cloudtrail": {
+                  "type": "object",
+                  "properties": {
+                    "eventVersion":   { "type": "keyword" },
+                    "eventName":      { "type": "keyword" },
+                    "eventSource":    { "type": "keyword" },
+                    "eventTime":      { "type": "date" },
+                    "eventType":      { "type": "keyword" },
+                    "eventCategory":  { "type": "keyword" },
+                    "sourceIPAddress":{ "type": "keyword" },
+                    "apiVersion":     { "type": "keyword" },
+                    "awsRegion":      { "type": "keyword" },
+                    "requestParameters": {
+                      "properties": {
+                        "endTime":   { "type": "date" },
+                        "startTime": { "type": "date" }
+                      }
+                    },
+                    "responseElements": {
+                      "properties": {
+                        "version":      { "type": "keyword" },
+                        "lastModified": { "type": "date" }
+                      }
+                    },
+                    "userIdentity": {
+                      "properties": {
+                        "sessionContext": {
+                          "properties": {
+                            "attributes": {
+                              "properties": {
+                                "creationDate": { "type": "date" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  logs-aws_cloudtrail.json: |-
+    {
+      "index_patterns": ["ss4o_logs-aws_cloudtrail-*"],
+      "priority": 900,
+      "composed_of": ["cloud", "aws_cloudtrail", "aws_s3"],
+      "version": 1,
+      "template": {
+        "aliases": {
+          "logs-cloudtrail": {}
+        },
+        "mappings": {
+          "_meta": {
+            "version": "1.0.0",
+            "catalog": "observability",
+            "type": "logs",
+            "component": "log",
+            "labels": ["log", "aws", "s3", "cloud", "cloudtrail"]
+          },
+          "_source": { "enabled": true },
+          "dynamic_templates": [
+            { "resources_map":                       { "mapping": { "type": "keyword" }, "path_match": "resource.*" } },
+            { "attributes_map":                      { "mapping": { "type": "keyword" }, "path_match": "attributes.*" } },
+            { "instrumentation_scope_attributes_map":{ "mapping": { "type": "keyword" }, "path_match": "instrumentationScope.attributes.*" } }
+          ],
+          "properties": {
+            "severity": {
+              "properties": {
+                "number": { "type": "long" },
+                "text":   { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } }
+              }
+            },
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "data_stream": {
+                  "properties": {
+                    "dataset":   { "type": "keyword", "ignore_above": 128 },
+                    "namespace": { "type": "keyword", "ignore_above": 128 },
+                    "type":      { "type": "keyword", "ignore_above": 56 }
+                  }
+                }
+              }
+            },
+            "body":              { "type": "text" },
+            "@message":          { "type": "alias", "path": "body" },
+            "@timestamp":        { "type": "date" },
+            "observedTimestamp": { "type": "date" },
+            "observerTime":      { "type": "alias", "path": "observedTimestamp" },
+            "traceId":  { "type": "keyword", "ignore_above": 256 },
+            "spanId":   { "type": "keyword", "ignore_above": 256 },
+            "schemaUrl":{ "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+            "instrumentationScope": {
+              "properties": {
+                "name":                     { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 128 } } },
+                "version":                  { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                "dropped_attributes_count": { "type": "integer" },
+                "schemaUrl":                { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } }
+              }
+            },
+            "event": {
+              "properties": {
+                "domain":   { "type": "keyword", "ignore_above": 256 },
+                "name":     { "type": "keyword", "ignore_above": 256 },
+                "source":   { "type": "keyword", "ignore_above": 256 },
+                "category": { "type": "keyword", "ignore_above": 256 },
+                "type":     { "type": "keyword", "ignore_above": 256 },
+                "kind":     { "type": "keyword", "ignore_above": 256 },
+                "result":   { "type": "keyword", "ignore_above": 256 },
+                "exception": {
+                  "properties": {
+                    "message":    { "type": "keyword", "ignore_above": 1024 },
+                    "type":       { "type": "keyword", "ignore_above": 256 },
+                    "stacktrace": { "type": "text" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "mapping": { "total_fields": { "limit": 10000 } },
+            "refresh_interval": "5s"
+          }
+        }
+      }
+    }
+  install.sh: |-
+    #!/bin/sh
+    set -eu
+
+    echo "waiting for OpenSearch at $OPENSEARCH_ENDPOINT ..."
+    i=0
+    until curl -sSfk -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
+        "$OPENSEARCH_ENDPOINT/_cluster/health" >/dev/null 2>&1; do
+      i=$((i + 1))
+      if [ "$i" -ge 60 ]; then
+        echo "timed out waiting for OpenSearch" >&2
+        exit 1
+      fi
+      sleep 5
+    done
+
+    put() {
+      path=$1; file=$2
+      echo "PUT $path"
+      curl -sSfk -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
+        -H 'Content-Type: application/json' \
+        -X PUT --data-binary "@/templates/$file" \
+        "$OPENSEARCH_ENDPOINT$path"
+      echo
+    }
+
+    put /_component_template/cloud           cloud.json
+    put /_component_template/aws_s3          aws_s3.json
+    put /_component_template/aws_cloudtrail  aws_cloudtrail.json
+    put /_index_template/logs-aws_cloudtrail logs-aws_cloudtrail.json
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vector-opensearch-templates
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 6
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: OnFailure
+#     securityContext:
+#       runAsNonRoot: true
+      containers:
+        - name: install
+          image: curlimages/curl:8.11.0
+          command: ["/bin/sh", "/templates/install.sh"]
+          env:
+            - name: OPENSEARCH_ENDPOINT
+              valueFrom: { secretKeyRef: { name: vector-opensearch, key: endpoint } }
+            - name: OPENSEARCH_USER
+              valueFrom: { secretKeyRef: { name: vector-opensearch, key: username } }
+            - name: OPENSEARCH_PASSWORD
+              valueFrom: { secretKeyRef: { name: vector-opensearch, key: password } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+            readOnlyRootFilesystem: true
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits:   { memory: 64Mi }
+          volumeMounts:
+            - name: templates
+              mountPath: /templates
+              readOnly: true
+      volumes:
+        - name: templates
+          configMap:
+            name: vector-opensearch-templates
+            defaultMode: 0555
+{{- end }}

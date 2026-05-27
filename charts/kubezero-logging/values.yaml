@@ -13,6 +13,10 @@ vectorHttpIngest:
 vector:
   enabled: false
 
+  # Install the OpenSearch Catalog aws_cloudtrail integration's component/index
+  # templates via a post-install/post-upgrade Helm hook Job
+  installIntegrationTemplates: true
+
   istio:
     enabled: false
     gateway: istio-ingress/private-ingressgateway

@@ -134,11 +134,13 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        # _id = CloudTrail eventID
-        id_key: event.id 
+        # _id = CloudTrail eventID (idempotent retries)
+        id_key: aws.cloudtrail.eventID
         bulk:
           action: index
-          index: 'logs-cloudtrail-{{ "{{ index_suffix }}" }}'
+          # ss4o_logs-aws_cloudtrail-* matches the OpenSearch Catalog integration
+          # (alias logs-cloudtrail). index_suffix = %Y.%m derived from eventTime.
+          index: 'ss4o_logs-aws_cloudtrail-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
           user: "${OPENSEARCH_USER}"
