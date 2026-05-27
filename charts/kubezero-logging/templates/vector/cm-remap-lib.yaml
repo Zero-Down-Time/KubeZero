@@ -76,6 +76,9 @@ data:
           .@timestamp = ts
           .ecs = { "version": "8.11.0" }
     
+          # deterministic monthly-index suffix from the event time (NOT ingest time):
+          .index_suffix = format_timestamp!(ts, "%Y.%m")
+
           .event = {
               "kind":     "event",
               "module":   "aws",

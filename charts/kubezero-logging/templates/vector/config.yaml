@@ -127,15 +127,18 @@ data:
         condition: '!includes(["internal_metrics", "metrics_clean"], string(.tags.component_id) ?? "")'
 
     sinks:
-      opensearch:
+      opensearch_cloudtrail:
         type: elasticsearch
         inputs:
           - sink_router.cloudtrail
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
+        # _id = CloudTrail eventID
+        id_key: event.id 
         bulk:
-          index: 'logs-%Y.%m.%d'
+          action: index
+          index: 'logs-cloudtrail-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
           user: "${OPENSEARCH_USER}"
@@ -144,24 +147,29 @@ data:
           verify_certificate: false
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: disk, max_size: 536870912, when_full: block }
+        #buffer: { type: memory, max_events: 500, when_full: drop_newest }
+        buffer: { type: disk, max_size: 268435488, when_full: block }
         healthcheck: { enabled: true }
 
-      dlq:
+      opensearch_logs:
         type: elasticsearch
         inputs:
           - sink_router._unmatched
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        bulk: { index: "logs-dlq-%Y.%m.%d" }
+        bulk: { index: "logs-%Y.%m.%d" }
         auth:
           strategy: basic
           user: "${OPENSEARCH_USER}"
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
-        buffer: { type: memory, max_events: 500, when_full: drop_newest }
+        compression: gzip
+        batch: { max_events: 2000, timeout_secs: 5 }
+        buffer: { type: disk, max_size: 268435488, when_full: block }
+        healthcheck: { enabled: true }
+        #buffer: { type: memory, max_events: 500, when_full: drop_newest }
 
       metrics:
         type: prometheus_exporter
