@@ -13,10 +13,6 @@ vectorHttpIngest:
 vector:
   enabled: false
 
-  # Install the OpenSearch Catalog aws_cloudtrail integration's component/index
-  # templates via a post-install/post-upgrade Helm hook Job
-  installIntegrationTemplates: true
-
   istio:
     enabled: false
     gateway: istio-ingress/private-ingressgateway
@@ -120,6 +116,22 @@ vector:
     enabled: false
     interval: 30s
     honorLabels: true
+
+# Pre-configured OpenSearch Dashboards from AWS Centralized Logging with
+# OpenSearch (CLO). Index templates + saved-object dashboards per service are
+# generated into ConfigMaps by scipts/sync-osd-dashboards.sh and applied at
+# helm install/upgrade by templates/OSDashboards/install-job.yaml.
+osdashboards:
+  enabled: false
+  # OSD service inside the cluster. Default matches the upstream chart's
+  # service name when this chart is released as `logging`.
+  endpoint: http://logging-opensearch-dashboards:5601
+  # Services to install. Must each have a generated ConfigMap
+  # (templates/OSDashboards/<svc>.yaml) — re-run the sync script after
+  # adding entries here.
+  services:
+    - cloudfront
+    - cloudtrail
 
 opensearch:
   enabled: false

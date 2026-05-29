@@ -11,21 +11,20 @@ data:
     transforms:
       # Explode siphon-wrapped CloudTrail Records into one event per record.
       # Wire format: { observed_at, attributes: {...}, body: { Records: [...] } }.
-      # Stash wrapper metadata via `%` so parsed_cloudtrail can reattach it.
       cloudtrail_unpack:
         type: remap
         inputs:
           - event_router.cloudtrail
         source: |
-          %event_type   = "aws.cloudtrail"
-          %observed_at  = .observed_at
-          %s3_bucket    = .attributes."aws.s3.bucket"
-          %s3_key       = .attributes."aws.s3.key"
+          %event_type = "aws.cloudtrail"
           . = array(.body.Records) ?? []
-    
-      # Emits the ss4o shape consumed by the OpenSearch Catalog "aws_cloudtrail"
-      # integration (index pattern ss4o_logs-aws_cloudtrail-*, alias logs-cloudtrail).
-      # aws.cloudtrail is the raw CloudTrail record verbatim (camelCase preserved).
+
+      # Emit the flat CloudTrail record at top level, matching the AWS CLO
+      # cloudtrail index template (eventName / eventTime / eventID / etc. as
+      # top-level fields). requestParameters and responseElements are mapped
+      # as `keyword` in CLO; stringify them so the index doesn't try to
+      # interpret arbitrary per-API sub-fields (the source of the prior
+      # `requestParameters.endTime` date-parse failures).
       parsed_cloudtrail:
         type: remap
         inputs:
@@ -37,58 +36,16 @@ data:
                parse_timestamp(raw.eventTime, "%Y-%m-%dT%H:%M:%SZ") ??
                now()
 
-          result   = if exists(raw.errorCode) { "failure" } else { "success" }
-          etype    = if raw.readOnly == true  { "access" }  else { "change" }
-          category = to_string(raw.eventCategory) ?? null
-
-          if raw.eventName == "ConsoleLogin" {
-              category = "authentication"
-              etype    = "start"
-              login    = to_string(raw.responseElements.ConsoleLogin) ?? ""
-              if login == "Failure" { result = "failure" }
-              if login == "Success" { result = "success" }
+          if exists(raw.requestParameters) && !is_null(raw.requestParameters) {
+              raw.requestParameters = encode_json(raw.requestParameters)
+          }
+          if exists(raw.responseElements) && !is_null(raw.responseElements) {
+              raw.responseElements = encode_json(raw.responseElements)
           }
 
-          . = {}
+          . = raw
 
-          .@timestamp        = ts
-          # siphon's observation time; fall back to ingest time if missing/invalid
-          .observedTimestamp = parse_timestamp(to_string(%observed_at) ?? "", "%+") ?? now()
-
-          # monthly index suffix derived from event-time (not ingest-time)
-          .index_suffix = format_timestamp!(ts, "%Y.%m")
-
-          .event = {
-              "domain":   "cloudtrail",
-              "kind":     "event",
-              "name":     raw.eventName,
-              "source":   raw.eventSource,
-              "category": category,
-              "type":     etype,
-              "result":   result
-          }
-
-          .attributes = {
-              "data_stream": {
-                  "dataset":   "aws.cloudtrail",
-                  "namespace": "default",
-                  "type":      "logs"
-              }
-          }
-
-          .cloud = {
-              "provider": "aws",
-              "region":   raw.awsRegion,
-              "account":  { "id": raw.recipientAccountId }
-          }
-
-          # Preserve full CloudTrail record under aws.cloudtrail; the integration's
-          # component template explicitly maps eventTime, sessionContext dates, etc.
-          .aws = { "cloudtrail": raw }
-
-          # body enables free-text search across unmapped CloudTrail fields.
-          .body = encode_json(raw)
-
-          . = compact(., recursive: true, null: true)
-
-    {{- end }}
+          # Daily-rotated index, suffix templated from CloudTrail eventTime
+          # (not vector ingest time) so backfills land in the correct index.
+          .index_suffix = format_timestamp!(ts, "%Y.%m.%d")
+{{- end }}

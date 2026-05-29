@@ -148,13 +148,13 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        # _id = CloudTrail eventID (idempotent retries)
-        id_key: aws.cloudtrail.eventID
+        # _id = CloudTrail eventID (top-level after flat-shape parser rewrite).
+        id_key: eventID
         bulk:
           action: index
-          # ss4o_logs-aws_cloudtrail-* matches the OpenSearch Catalog integration
-          # (alias logs-cloudtrail). index_suffix = %Y.%m derived from eventTime.
-          index: 'ss4o_logs-aws_cloudtrail-{{ "{{ index_suffix }}" }}'
+          # AWS CLO cloudtrail-* index pattern. index_suffix = %Y.%m.%d
+          # derived from eventTime so backfills land in the correct daily index.
+          index: 'cloudtrail-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
           user: "${OPENSEARCH_USER}"
@@ -174,16 +174,14 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        # _id = CloudFront x-edge-request-id (idempotent retries). The id is
-        # also surfaced as .event.id in parsed_cloudfront so this path stays
-        # free of hyphens.
-        id_key: event.id
+        # _id = CloudFront x-edge-request-id. Mirrored into .id by the parser
+        # to keep this path hyphen-free.
+        id_key: id
         bulk:
           action: index
-          # ss4o_logs-aws_cloudfront-* matches the OpenSearch Catalog
-          # amazon_cloudfront integration (alias logs-aws-cloudfront).
-          # index_suffix = %Y.%m derived from the log line's date/time fields.
-          index: 'ss4o_logs-aws_cloudfront-{{ "{{ index_suffix }}" }}'
+          # AWS CLO cloudfront-* index pattern. index_suffix = %Y.%m.%d
+          # derived from the log line's date/time fields.
+          index: 'cloudfront-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
           user: "${OPENSEARCH_USER}"
