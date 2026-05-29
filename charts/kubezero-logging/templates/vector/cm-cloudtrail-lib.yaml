@@ -45,7 +45,8 @@ data:
 
           . = raw
 
-          # Daily-rotated index, suffix templated from CloudTrail eventTime
-          # (not vector ingest time) so backfills land in the correct index.
-          .index_suffix = format_timestamp!(ts, "%Y.%m.%d")
+          # Index suffix templated from CloudTrail eventTime (not vector ingest
+          # time) so backfills land in the correct dated index. The strftime
+          # format is configurable via vector.cloudtrail.indexSuffix.
+          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" .Values.vector.cloudtrail.indexSuffix | quote }})
 {{- end }}

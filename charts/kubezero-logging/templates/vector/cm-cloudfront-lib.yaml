@@ -87,5 +87,6 @@ data:
           # id_key can use a plain dotted path for idempotent dedup.
           .id = fields[14]
 
-          .index_suffix = format_timestamp!(ts, "%Y.%m.%d")
+          # strftime format configurable via vector.cloudfront.indexSuffix.
+          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" .Values.vector.cloudfront.indexSuffix | quote }})
 {{- end }}

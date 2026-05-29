@@ -112,6 +112,15 @@ vector:
     - vector-cloudtrail-lib
     - vector-cloudfront-lib
 
+  # Per-parser knobs. indexSuffix is a strftime format applied to the event's
+  # own timestamp (CloudTrail eventTime / CloudFront date+time), templated into
+  # the sink's bulk.index as cloudtrail-<suffix> / cloudfront-<suffix>.
+  # Default `%Y.%m.%d` = daily indices; use `%Y.%m` for monthly, `%Y` for yearly.
+  cloudtrail:
+    indexSuffix: "%Y.%m"
+  cloudfront:
+    indexSuffix: "%Y.%m"
+
   podMonitor:
     enabled: false
     interval: 30s
