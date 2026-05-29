@@ -113,7 +113,8 @@ vector:
  
   existingConfigMaps:
     - vector-aggregator-config
-    - vector-remap-lib
+    - vector-cloudtrail-lib
+    - vector-cloudfront-lib
 
   podMonitor:
     enabled: false

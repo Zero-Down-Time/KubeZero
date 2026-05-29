@@ -1,0 +1,146 @@
+{{- if .Values.vector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-cloudfront-lib
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+data:
+  remap_cloudfront.yaml: |
+    transforms:
+      # Explode a single CloudFront standard-log (V1) object into one event
+      # per log line. siphon delivers the decompressed file content in `.body`
+      # as a string; lines starting with `#` (#Version, #Fields) are dropped.
+      # Stash wrapper metadata via `%` so parsed_cloudfront can reattach it.
+      cloudfront_unpack:
+        type: remap
+        inputs:
+          - event_router.cloudfront
+        source: |
+          %event_type   = "aws.cloudfront"
+          %observed_at  = .observed_at
+          %s3_bucket    = .attributes."aws.s3.bucket"
+          %s3_key       = .attributes."aws.s3.key"
+
+          raw   = to_string(.body) ?? ""
+          lines = split(raw, "\n")
+          data  = filter(lines) -> |_idx, line| {
+            line != "" && !starts_with(line, "#")
+          }
+          # Vector events must be objects; wrap each TSV row so the downstream
+          # parser can pull it out via ._line.
+          . = map_values(data) -> |line| { { "_line": line } }
+
+      # Parse one tab-separated CloudFront V1 row into the ss4o shape used by
+      # the OpenSearch Catalog amazon_cloudfront integration (index pattern
+      # ss4o_logs-amazon_cloudfront-*). Field order is the AWS-documented
+      # CloudFront standard log v1.0 (33 columns); names are kept verbatim
+      # (hyphens preserved) under aws.cloudfront.* so AWS docs map 1:1.
+      # `-` values mean "absent" in CloudFront logs and are left as-is.
+      parsed_cloudfront:
+        type: remap
+        inputs:
+          - cloudfront_unpack
+        source: |
+          line   = string!(._line)
+          fields = split(line, "\t")
+
+          # Bail on short/malformed rows — feeds opensearch_logs via dropped.
+          if length(fields) < 33 {
+            abort
+          }
+
+          # VRL types array indexing as `any|null` regardless of the length
+          # guard above, so `+` over fields[N] is flagged fallible. Assert with
+          # `string!()` — split produces string elements, so it never panics.
+          ts = parse_timestamp(string!(fields[0]) + "T" + string!(fields[1]) + "Z",
+                               "%Y-%m-%dT%H:%M:%SZ") ?? now()
+
+          obs_ts = parse_timestamp(to_string(%observed_at) ?? "", "%+") ?? now()
+
+          # sc-status is `keyword` in the integration schema; keep as string but
+          # cast a copy to compute the success/failure result.
+          sc_status_int = to_int(fields[8]) ?? 0
+          result        = if sc_status_int >= 200 && sc_status_int < 400 { "success" } else { "failure" }
+
+          . = {}
+
+          .@timestamp        = ts
+          .observedTimestamp = obs_ts
+          .index_suffix      = format_timestamp!(ts, "%Y.%m.%d")
+
+          .event = {
+              "id":       fields[14],
+              "domain":   "cloudfront",
+              "kind":     "event",
+              "name":     "ObjectAccess",
+              "category": "web",
+              "type":     "access",
+              "result":   result
+          }
+
+          .attributes = {
+              "data_stream": {
+                  "dataset":   "amazon.cloudfront",
+                  "namespace": "default",
+                  "type":      "logs"
+              }
+          }
+
+          .cloud = {
+              "provider": "aws",
+              "service":  { "name": "cloudfront" }
+          }
+
+          # aws.s3.bucket/key live at top-level, not under attributes — the
+          # index template's dynamic_templates map `attributes.*` to keyword,
+          # which collides with the nested object the dotted key unfolds into.
+          # The aws_s3 component template already types these as text+keyword.
+          .aws = {
+              "cloudfront": {
+                  "date":                          fields[0],
+                  "time":                          fields[1],
+                  "x-edge-location":               fields[2],
+                  "sc-bytes":                      to_int(fields[3])  ?? null,
+                  "c-ip":                          fields[4],
+                  "cs-method":                     fields[5],
+                  "cs-host":                       fields[6],
+                  "cs-uri-stem":                   fields[7],
+                  "sc-status":                     fields[8],
+                  "cs-referer":                    fields[9],
+                  "cs-user-agent":                 fields[10],
+                  "cs-uri-query":                  fields[11],
+                  "cs-cookie":                     fields[12],
+                  "x-edge-result-type":            fields[13],
+                  "x-edge-request-id":             fields[14],
+                  "x-host-header":                 fields[15],
+                  "cs-protocol":                   fields[16],
+                  "cs-bytes":                      to_int(fields[17]) ?? null,
+                  "time-taken":                    to_float(fields[18]) ?? null,
+                  "x-forwarded-for":               fields[19],
+                  "ssl-protocol":                  fields[20],
+                  "ssl-cipher":                    fields[21],
+                  "x-edge-response-result-type":   fields[22],
+                  "cs-protocol-version":           fields[23],
+                  "fle-status":                    fields[24],
+                  "fle-encrypted-fields":          fields[25],
+                  "c-port":                        fields[26],
+                  "time-to-first-byte":            to_float(fields[27]) ?? null,
+                  "x-edge-detailed-result-type":   fields[28],
+                  "sc-content-type":               fields[29],
+                  "sc-content-len":                to_int(fields[30]) ?? null,
+                  "sc-range-start":                to_int(fields[31]) ?? null,
+                  "sc-range-end":                  to_int(fields[32]) ?? null
+              }
+          }
+          # VRL requires the parent object to exist before nested writes;
+          # compact() at the bottom drops `.aws.s3` if neither field gets set.
+          .aws.s3 = {}
+          if exists(%s3_bucket) { .aws.s3.bucket = %s3_bucket }
+          if exists(%s3_key)    { .aws.s3.key    = %s3_key }
+
+          .body = line
+
+          . = compact(., recursive: true, null: true)
+{{- end }}

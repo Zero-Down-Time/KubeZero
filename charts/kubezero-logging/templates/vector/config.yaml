@@ -103,8 +103,11 @@ data:
             }
           }
 
-      # Classify siphon-wrapped events by attributes."event.name" + the S3 key
-      # path. attributes is a flat map of OTel-style dotted keys.
+      # Classify siphon-wrapped events. All S3-sourced deliveries arrive as
+      # attributes."event.name" == "aws.s3.object_received"; the discriminator
+      # between log types is the S3 key naming convention. Routes are matched
+      # in order — the cloudfront regex is more specific than the cloudtrail
+      # substring, but ordering still puts each type next to its own marker.
       event_router:
         type: route
         inputs:
@@ -116,6 +119,10 @@ data:
           vpcflow: |
             .attributes."event.name" == "aws.s3.object_received" &&
             contains(string(.attributes."aws.s3.key") ?? "", "/vpcflowlogs/")
+          cloudfront: |
+            .attributes."event.name" == "aws.s3.object_received" &&
+            match(string(.attributes."aws.s3.key") ?? "",
+                  r'E[A-Z0-9]+\.\d{4}-\d{2}-\d{2}-\d{2}\.[A-Za-z0-9]+\.gz$')
 
 
       sink_router:
@@ -125,6 +132,7 @@ data:
           - event_router._unmatched
         route:
           cloudtrail: '%event_type == "aws.cloudtrail"'
+          cloudfront: '%event_type == "aws.cloudfront"'
 
       # Drop metrics emitted BY the metrics plumbing itself
       metrics_clean:
@@ -156,6 +164,34 @@ data:
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
         #buffer: { type: memory, max_events: 500, when_full: drop_newest }
+        buffer: { type: disk, max_size: 268435488, when_full: block }
+        healthcheck: { enabled: true }
+
+      opensearch_cloudfront:
+        type: elasticsearch
+        inputs:
+          - sink_router.cloudfront
+        endpoints: ["${OPENSEARCH_ENDPOINT}"]
+        api_version: v7
+        mode: bulk
+        # _id = CloudFront x-edge-request-id (idempotent retries). The id is
+        # also surfaced as .event.id in parsed_cloudfront so this path stays
+        # free of hyphens.
+        id_key: event.id
+        bulk:
+          action: index
+          # ss4o_logs-aws_cloudfront-* matches the OpenSearch Catalog
+          # amazon_cloudfront integration (alias logs-aws-cloudfront).
+          # index_suffix = %Y.%m derived from the log line's date/time fields.
+          index: 'ss4o_logs-aws_cloudfront-{{ "{{ index_suffix }}" }}'
+        auth:
+          strategy: basic
+          user: "${OPENSEARCH_USER}"
+          password: "${OPENSEARCH_PASSWORD}"
+        tls:
+          verify_certificate: false
+        compression: gzip
+        batch: { max_events: 2000, timeout_secs: 5 }
         buffer: { type: disk, max_size: 268435488, when_full: block }
         healthcheck: { enabled: true }
 

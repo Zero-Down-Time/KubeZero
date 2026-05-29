@@ -1,13 +1,16 @@
 {{- if and .Values.vector.enabled .Values.vector.installIntegrationTemplates }}
-# Installs the OpenSearch Catalog "aws_cloudtrail" integration's component and
-# index templates (the Integrations UI only ships Dashboards saved objects, not
-# templates). Without these, dynamic mapping makes `aws.cloudtrail.*` strings
-# `text` instead of `keyword`, breaking the integration's Terms aggregations.
+# Installs OpenSearch Catalog integration component and index templates for
+# the log datasets we ingest (the Integrations UI only ships Dashboards saved
+# objects, not templates). Without these, dynamic mapping makes hyphenated
+# CloudFront fields and CloudTrail strings `text` instead of `keyword`,
+# breaking Terms aggregations the integration dashboards rely on.
 #
-# Source: opensearch-project/opensearch-catalog
+# Sources: opensearch-project/opensearch-catalog
 #   integrations/observability/aws_cloudtrail/schemas/*.json
-# The `data_stream: {}` field is intentionally omitted from the index template
-# so Vector can PUT into regular indices (ss4o_logs-aws_cloudtrail-%Y.%m).
+#   integrations/observability/amazon_cloudfront/schemas/*.json
+# Component templates `cloud` and `aws_s3` are shared across both integrations
+# and are only installed once. `data_stream: {}` is stripped from each index
+# template so Vector can PUT into regular dated indices instead of streams.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -162,6 +165,161 @@ data:
         }
       }
     }
+  aws_cloudfront.json: |-
+    {
+      "template": {
+        "mappings": {
+          "_meta": {
+            "version": "1.0.0",
+            "catalog": "observability",
+            "type": "logs",
+            "component": "aws_cloudfront",
+            "labels": ["aws", "cloudfront"]
+          },
+          "properties": {
+            "aws": {
+              "properties": {
+                "cloudfront": {
+                  "properties": {
+                    "c-ip":                          { "type": "ip" },
+                    "geo_location":                  { "type": "geo_point" },
+                    "geo_iso_code":                  { "type": "keyword" },
+                    "geo_country":                   { "type": "keyword" },
+                    "geo_city":                      { "type": "keyword" },
+                    "ua_browser":                    { "type": "keyword" },
+                    "ua_browser_version":            { "type": "keyword" },
+                    "ua_os":                         { "type": "keyword" },
+                    "ua_os_version":                 { "type": "keyword" },
+                    "ua_device":                     { "type": "keyword" },
+                    "ua_category":                   { "type": "keyword" },
+                    "c-port":                        { "type": "keyword" },
+                    "cs-cookie":                     { "type": "text" },
+                    "cs-host":                       { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "cs-referer":                    { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "cs-user-agent":                 { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "cs-bytes":                      { "type": "long" },
+                    "cs-method":                     { "type": "keyword" },
+                    "cs-protocol":                   { "type": "keyword" },
+                    "cs-protocol-version":           { "type": "keyword" },
+                    "cs-uri-query":                  { "type": "text" },
+                    "cs-uri-stem":                   { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "fle-encrypted-fields":          { "type": "text" },
+                    "fle-status":                    { "type": "keyword" },
+                    "sc-bytes":                      { "type": "long" },
+                    "sc-content-len":                { "type": "long" },
+                    "sc-content-type":               { "type": "keyword" },
+                    "sc-range-end":                  { "type": "long" },
+                    "sc-range-start":                { "type": "long" },
+                    "sc-status":                     { "type": "keyword" },
+                    "ssl-cipher":                    { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "ssl-protocol":                  { "type": "keyword" },
+                    "time-taken":                    { "type": "float" },
+                    "time-to-first-byte":            { "type": "float" },
+                    "x-edge-detailed-result-type":   { "type": "keyword" },
+                    "x-edge-location":               { "type": "keyword" },
+                    "x-edge-request-id":             { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "x-edge-result-type":            { "type": "keyword" },
+                    "x-edge-response-result-type":   { "type": "keyword" },
+                    "x-forwarded-for":               { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                    "x-host-header":                 { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  logs-aws_cloudfront.json: |-
+    {
+      "index_patterns": ["ss4o_logs-aws_cloudfront-*"],
+      "priority": 900,
+      "composed_of": ["aws_s3", "aws_cloudfront", "cloud"],
+      "version": 1,
+      "template": {
+        "aliases": {
+          "logs-aws-cloudfront": {}
+        },
+        "mappings": {
+          "_meta": {
+            "version": "1.0.0",
+            "catalog": "observability",
+            "type": "logs",
+            "component": "log",
+            "labels": ["log", "aws", "s3", "cloud", "cloudfront"]
+          },
+          "_source": { "enabled": true },
+          "dynamic_templates": [
+            { "resources_map":                       { "mapping": { "type": "keyword" }, "path_match": "resource.*" } },
+            { "attributes_map":                      { "mapping": { "type": "keyword" }, "path_match": "attributes.*" } },
+            { "instrumentation_scope_attributes_map":{ "mapping": { "type": "keyword" }, "path_match": "instrumentationScope.attributes.*" } }
+          ],
+          "properties": {
+            "severity": {
+              "properties": {
+                "number": { "type": "long" },
+                "text":   { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } }
+              }
+            },
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "data_stream": {
+                  "properties": {
+                    "dataset":   { "type": "keyword", "ignore_above": 128 },
+                    "namespace": { "type": "keyword", "ignore_above": 128 },
+                    "type":      { "type": "keyword", "ignore_above": 56 }
+                  }
+                }
+              }
+            },
+            "body":              { "type": "text" },
+            "@message":          { "type": "alias", "path": "body" },
+            "@timestamp":        { "type": "date" },
+            "observedTimestamp": { "type": "date" },
+            "observerTime":      { "type": "alias", "path": "observedTimestamp" },
+            "traceId":  { "type": "keyword", "ignore_above": 256 },
+            "spanId":   { "type": "keyword", "ignore_above": 256 },
+            "schemaUrl":{ "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+            "instrumentationScope": {
+              "properties": {
+                "name":                     { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 128 } } },
+                "version":                  { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+                "dropped_attributes_count": { "type": "integer" },
+                "schemaUrl":                { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } }
+              }
+            },
+            "event": {
+              "properties": {
+                "domain":   { "type": "keyword", "ignore_above": 256 },
+                "name":     { "type": "keyword", "ignore_above": 256 },
+                "source":   { "type": "keyword", "ignore_above": 256 },
+                "category": { "type": "keyword", "ignore_above": 256 },
+                "type":     { "type": "keyword", "ignore_above": 256 },
+                "kind":     { "type": "keyword", "ignore_above": 256 },
+                "result":   { "type": "keyword", "ignore_above": 256 },
+                "exception": {
+                  "properties": {
+                    "message":    { "type": "keyword", "ignore_above": 1024 },
+                    "type":       { "type": "keyword", "ignore_above": 256 },
+                    "stacktrace": { "type": "text" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "settings": {
+          "index": {
+            "mapping": {
+              "total_fields":     { "limit": 10000 },
+              "ignore_malformed": true
+            },
+            "refresh_interval": "5s"
+          }
+        }
+      }
+    }
   logs-aws_cloudtrail.json: |-
     {
       "index_patterns": ["ss4o_logs-aws_cloudtrail-*"],
@@ -243,7 +401,10 @@ data:
         },
         "settings": {
           "index": {
-            "mapping": { "total_fields": { "limit": 10000 } },
+            "mapping": {
+              "total_fields":     { "limit": 10000 },
+              "ignore_malformed": true
+            },
             "refresh_interval": "5s"
           }
         }
@@ -278,7 +439,9 @@ data:
     put /_component_template/cloud           cloud.json
     put /_component_template/aws_s3          aws_s3.json
     put /_component_template/aws_cloudtrail  aws_cloudtrail.json
+    put /_component_template/aws_cloudfront  aws_cloudfront.json
     put /_index_template/logs-aws_cloudtrail logs-aws_cloudtrail.json
+    put /_index_template/logs-aws_cloudfront logs-aws_cloudfront.json
 ---
 apiVersion: batch/v1
 kind: Job
