@@ -123,6 +123,12 @@ data:
             .attributes."event.name" == "aws.s3.object_received" &&
             match(string(.attributes."aws.s3.key") ?? "",
                   r'E[A-Z0-9]+\.\d{4}-\d{2}-\d{2}-\d{2}\.[A-Za-z0-9]+\.gz$')
+          # S3 server access logs land in the target bucket with the key
+          # convention `[<prefix>]YYYY-MM-DD-HH-MM-SS-<16-char-unique-id>`.
+          s3: |
+            .attributes."event.name" == "aws.s3.object_received" &&
+            match(string(.attributes."aws.s3.key") ?? "",
+                  r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}-[A-Z0-9]{16}$')
 
 
       sink_router:
@@ -133,6 +139,7 @@ data:
         route:
           cloudtrail: '%event_type == "aws.cloudtrail"'
           cloudfront: '%event_type == "aws.cloudfront"'
+          s3:         '%event_type == "aws.s3"'
 
       # Drop metrics emitted BY the metrics plumbing itself
       metrics_clean:
@@ -163,8 +170,8 @@ data:
           verify_certificate: false
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
-        #buffer: { type: memory, max_events: 500, when_full: drop_newest }
-        buffer: { type: disk, max_size: 268435488, when_full: block }
+        #buffer: { type: disk, max_size: 268435488, when_full: block }
+        buffer: { type: memory, max_events: 1000, when_full: block }
         healthcheck: { enabled: true }
 
       opensearch_cloudfront:
@@ -190,7 +197,32 @@ data:
           verify_certificate: false
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: disk, max_size: 268435488, when_full: block }
+        buffer: { type: memory, max_events: 1000, when_full: block }
+        healthcheck: { enabled: true }
+
+      opensearch_s3:
+        type: elasticsearch
+        inputs:
+          - sink_router.s3
+        endpoints: ["${OPENSEARCH_ENDPOINT}"]
+        api_version: v7
+        mode: bulk
+        # _id = S3 request_id (mirrored to .id by the parser).
+        id_key: id
+        bulk:
+          action: index
+          # AWS CLO s3-* index pattern. index_suffix derived from each log
+          # line's bracketed timestamp.
+          index: 's3-{{ "{{ index_suffix }}" }}'
+        auth:
+          strategy: basic
+          user: "${OPENSEARCH_USER}"
+          password: "${OPENSEARCH_PASSWORD}"
+        tls:
+          verify_certificate: false
+        compression: gzip
+        batch: { max_events: 2000, timeout_secs: 5 }
+        buffer: { type: memory, max_events: 1000, when_full: block }
         healthcheck: { enabled: true }
 
       opensearch_logs:
@@ -209,9 +241,9 @@ data:
           verify_certificate: false
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: disk, max_size: 268435488, when_full: block }
+        buffer: { type: memory, max_events: 1000, when_full: block }
         healthcheck: { enabled: true }
-        #buffer: { type: memory, max_events: 500, when_full: drop_newest }
+        #buffer: { type: disk, max_size: 268435488, when_full: block }
 
       metrics:
         type: prometheus_exporter

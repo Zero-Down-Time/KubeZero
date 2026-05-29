@@ -1,0 +1,85 @@
+{{- if .Values.vector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-s3-lib
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+data:
+  remap_s3.yaml: |
+    transforms:
+      # Explode an S3 server-access-log object into one event per line. The
+      # file is plain text (S3 does not compress server access logs), one
+      # request per line, no header rows.
+      s3_unpack:
+        type: remap
+        inputs:
+          - event_router.s3
+        source: |
+          %event_type = "aws.s3"
+
+          raw   = to_string(.body) ?? ""
+          lines = split(raw, "\n")
+          data  = filter(lines) -> |_idx, line| { line != "" }
+          . = map_values(data) -> |line| { { "_line": line } }
+
+      # Parse one S3 server-access-log V2 line into the flat field shape
+      # expected by the AWS CLO s3 index template. Capture groups follow the
+      # AWS-documented field order; quoted segments (request_uri, referrer,
+      # user_agent) are captured as a whole (may contain spaces, which is why
+      # `\S+`-only splitting wouldn't work).
+      # Fields after `tls_version` (access_point_arn, acl_required) are
+      # ignored — the CLO index template doesn't map them.
+      parsed_s3:
+        type: remap
+        inputs:
+          - s3_unpack
+        source: |
+          line = string!(._line)
+
+          pattern = r'^(?P<bucket_owner>\S+) (?P<bucket>\S+) \[(?P<time>[^\]]+)\] (?P<remote_ip>\S+) (?P<requester>\S+) (?P<request_id>\S+) (?P<operation>\S+) (?P<key>\S+) "(?P<request_uri>[^"]*)" (?P<http_status>\S+) (?P<error_code>\S+) (?P<bytes_sent>\S+) (?P<object_size>\S+) (?P<total_time>\S+) (?P<turn_around_time>\S+) "(?P<referrer>[^"]*)" "(?P<user_agent>[^"]*)" (?P<version_id>\S+) (?P<host_id>\S+) (?P<signature_version>\S+) (?P<cipher_suite>\S+) (?P<authentication_type>\S+) (?P<host_header>\S+) (?P<tls_version>\S+)'
+
+          c, err = parse_regex(line, pattern)
+          if err != null {
+              abort
+          }
+
+          # CLO indexes the bracket-stripped time string directly using the
+          # date format `dd/MMM/yyyy:HH:mm:ss Z` on the index mapping. Parse
+          # it once locally for the index_suffix computation only.
+          ts = parse_timestamp(c.time, "%d/%b/%Y:%H:%M:%S %z") ?? now()
+
+          . = {
+              "timestamp":           c.time,
+              "bucket_owner":        c.bucket_owner,
+              "bucket":              c.bucket,
+              "remote_ip":           c.remote_ip,
+              "requester":           c.requester,
+              "request_id":          c.request_id,
+              "operation":           c.operation,
+              "key":                 c.key,
+              "request_uri":         c.request_uri,
+              "http_status":         c.http_status,
+              "error_code":          c.error_code,
+              "bytes_sent":          to_int(c.bytes_sent)       ?? null,
+              "object_size":         to_int(c.object_size)      ?? null,
+              "total_time":          to_int(c.total_time)       ?? null,
+              "turn_around_time":    to_int(c.turn_around_time) ?? null,
+              "referrer":            c.referrer,
+              "user_agent":          c.user_agent,
+              "version_id":          c.version_id,
+              "host_id":             c.host_id,
+              "signature_version":   c.signature_version,
+              "cipher_suite":        c.cipher_suite,
+              "authentication_type": c.authentication_type,
+              "host_header":         c.host_header,
+              "tls_version":         c.tls_version
+          }
+
+          # Mirror request_id for sink id_key (idempotent retries on replay).
+          .id = c.request_id
+
+          # strftime format configurable via vector.s3.indexSuffix.
+          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" .Values.vector.s3.indexSuffix | quote }})
+{{- end }}

@@ -36,7 +36,7 @@ mkdir -p "$OUT"
 # Default service list. Each name is used as: CLO filename, the value
 # substituted for %%INDEX%%, the ConfigMap name suffix, and the asset
 # mount directory in the install Job.
-default_services=(cloudfront cloudtrail)
+default_services=(cloudfront cloudtrail s3)
 services=("${@:-${default_services[@]}}")
 
 # Portable base64 (Linux/macOS), no line wraps.

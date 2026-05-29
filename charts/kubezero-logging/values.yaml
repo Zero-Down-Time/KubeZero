@@ -31,7 +31,7 @@ vector:
   # Disk buffer for the sink
   dataDir: /vector-data-dir
   persistence:
-    enabled: true
+    enabled: false
     size: 1Gi
     # storageClassName: ""   # set to your RWO class
  
@@ -111,14 +111,17 @@ vector:
     - vector-aggregator-config
     - vector-cloudtrail-lib
     - vector-cloudfront-lib
+    - vector-s3-lib
 
-  # Per-parser knobs. indexSuffix is a strftime format applied to the event's
-  # own timestamp (CloudTrail eventTime / CloudFront date+time), templated into
-  # the sink's bulk.index as cloudtrail-<suffix> / cloudfront-<suffix>.
-  # Default `%Y.%m.%d` = daily indices; use `%Y.%m` for monthly, `%Y` for yearly.
+  # Per-parser knobs. indexSuffix is a strftime format applied to each event's
+  # own timestamp (CloudTrail eventTime / CloudFront date+time / S3 request
+  # time), templated into the sink's bulk.index as <svc>-<suffix>.
+  # `%Y.%m.%d` = daily indices; use `%Y.%m` for monthly, `%Y` for yearly.
   cloudtrail:
     indexSuffix: "%Y.%m"
   cloudfront:
+    indexSuffix: "%Y.%m"
+  s3:
     indexSuffix: "%Y.%m"
 
   podMonitor:
@@ -141,6 +144,7 @@ osdashboards:
   services:
     - cloudfront
     - cloudtrail
+    - s3
 
 opensearch:
   enabled: false
