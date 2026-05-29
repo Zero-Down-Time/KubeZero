@@ -40,11 +40,16 @@ data:
     #     ca_file: /etc/vector-tls/ca.crt
     #     verify_certificate: true
     {{- if .Values.vectorHttpIngest.enabled }}
-      # Remote HTTP events (POST JSON to /ingest), bearer-token auth.
+      # Remote HTTP events from siphon: POST /ingest/<event.name> with body
+      #   { observed_at, attributes: {"event.name", "aws.s3.bucket", ...}, body }
+      # Bearer-token auth. Path is informational (path-vs-method gate lives in
+      # istio); routing uses attributes."event.name". strict_path: false so the
+      # source accepts any path under the istio-allowed prefix.
       http_in:
         type: http_server
         address: 0.0.0.0:8080
-        path: /ingest
+        path: /
+        strict_path: false
         method: POST
         decoding:
           codec: json
@@ -98,18 +103,19 @@ data:
             }
           }
 
+      # Classify siphon-wrapped events by attributes."event.name" + the S3 key
+      # path. attributes is a flat map of OTel-style dotted keys.
       event_router:
         type: route
         inputs:
           - normalize
         route:
           cloudtrail: |
-            .source == "s3" &&
-            exists(.event.Records) &&
-            contains(string(.key) ?? "", "/CloudTrail/")
+            .attributes."event.name" == "aws.s3.object_received" &&
+            contains(string(.attributes."aws.s3.key") ?? "", "/CloudTrail/")
           vpcflow: |
-            .source == "s3" &&
-            contains(string(.key) ?? "", "/vpcflowlogs/")
+            .attributes."event.name" == "aws.s3.object_received" &&
+            contains(string(.attributes."aws.s3.key") ?? "", "/vpcflowlogs/")
 
 
       sink_router:

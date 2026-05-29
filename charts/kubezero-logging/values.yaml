@@ -21,8 +21,10 @@ vector:
     enabled: false
     gateway: istio-ingress/private-ingressgateway
     url: vector.example.com
-    # Only POST requests to this exact path are routed to the aggregator :8080.
-    ingestPath: /ingest
+    # POST requests whose URI matches this regex are routed to the aggregator
+    # :8080. siphon posts to /ingest/<event.name> (e.g. /ingest/aws.s3.object_received);
+    # the default permits any /ingest/<event-name> path (lowercase, dotted).
+    ingestPathRegex: '^/ingest/[a-z][a-z0-9._-]*$'
 
   role: Aggregator
   replicas: 1

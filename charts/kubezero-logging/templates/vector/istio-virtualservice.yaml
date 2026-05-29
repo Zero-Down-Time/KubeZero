@@ -12,11 +12,16 @@ spec:
   gateways:
   - {{ default "istio-system/ingressgateway" ( index .Values "vector" "istio" "gateway" ) }}
   http:
+  # siphon posts to /ingest/<event.name> (e.g. /ingest/aws.s3.object_received).
+  # Allow only POST to a path with the /ingest/ prefix followed by a single
+  # lowercase dotted/dash/underscore event-name segment — blocks arbitrary
+  # URIs and path traversal while leaving room for new event names without
+  # chart edits.
   - match:
     - method:
         exact: POST
       uri:
-        exact: {{ default "/ingest" (index .Values "vector" "istio" "ingestPath") }}
+        regex: {{ default "^/ingest/[a-z][a-z0-9._-]*$" (index .Values "vector" "istio" "ingestPathRegex") | quote }}
     route:
     - destination:
         host: {{ template "kubezero-lib.fullname" $ }}-vector

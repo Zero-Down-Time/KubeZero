@@ -9,13 +9,19 @@ metadata:
 data:
   remap_cloudtrail.yaml: |
     transforms:
+      # Explode siphon-wrapped CloudTrail Records into one event per record.
+      # Wire format: { observed_at, attributes: {...}, body: { Records: [...] } }.
+      # Stash wrapper metadata via `%` so parsed_cloudtrail can reattach it.
       cloudtrail_unpack:
         type: remap
         inputs:
           - event_router.cloudtrail
         source: |
-          %event_type = "aws.cloudtrail"
-          . = array(.event.Records) ?? []
+          %event_type   = "aws.cloudtrail"
+          %observed_at  = .observed_at
+          %s3_bucket    = .attributes."aws.s3.bucket"
+          %s3_key       = .attributes."aws.s3.key"
+          . = array(.body.Records) ?? []
     
       # Emits the ss4o shape consumed by the OpenSearch Catalog "aws_cloudtrail"
       # integration (index pattern ss4o_logs-aws_cloudtrail-*, alias logs-cloudtrail).
@@ -46,7 +52,8 @@ data:
           . = {}
 
           .@timestamp        = ts
-          .observedTimestamp = now()
+          # siphon's observation time; fall back to ingest time if missing/invalid
+          .observedTimestamp = parse_timestamp(to_string(%observed_at) ?? "", "%+") ?? now()
 
           # monthly index suffix derived from event-time (not ingest-time)
           .index_suffix = format_timestamp!(ts, "%Y.%m")
