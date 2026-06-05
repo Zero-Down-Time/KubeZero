@@ -2,22 +2,22 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: vector-s3-lib
+  name: vector-s3-access-logs-lib
   labels:
     app.kubernetes.io/name: vector
     app.kubernetes.io/component: Aggregator
 data:
-  remap_s3.yaml: |
+  remap_s3-access-logs.yaml: |
     transforms:
       # Explode an S3 server-access-log object into one event per line. The
       # file is plain text (S3 does not compress server access logs), one
       # request per line, no header rows.
-      s3_unpack:
+      s3-access-logs_unpack:
         type: remap
         inputs:
-          - event_router.s3
+          - event_router.s3-access-logs
         source: |
-          %event_type = "aws.s3"
+          %event_type = "aws.s3-access-logs"
 
           raw   = to_string(.body) ?? ""
           lines = split(raw, "\n")
@@ -25,16 +25,16 @@ data:
           . = map_values(data) -> |line| { { "_line": line } }
 
       # Parse one S3 server-access-log V2 line into the flat field shape
-      # expected by the AWS CLO s3 index template. Capture groups follow the
-      # AWS-documented field order; quoted segments (request_uri, referrer,
-      # user_agent) are captured as a whole (may contain spaces, which is why
-      # `\S+`-only splitting wouldn't work).
+      # expected by the AWS CLO s3-access-logs index template. Capture groups
+      # follow the AWS-documented field order; quoted segments (request_uri,
+      # referrer, user_agent) are captured as a whole (may contain spaces,
+      # which is why `\S+`-only splitting wouldn't work).
       # Fields after `tls_version` (access_point_arn, acl_required) are
       # ignored — the CLO index template doesn't map them.
-      parsed_s3:
+      parsed_s3-access-logs:
         type: remap
         inputs:
-          - s3_unpack
+          - s3-access-logs_unpack
         source: |
           line = string!(._line)
 
@@ -80,6 +80,6 @@ data:
           # Mirror request_id for sink id_key (idempotent retries on replay).
           .id = c.request_id
 
-          # strftime format configurable via vector.s3.indexSuffix.
-          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" .Values.vector.s3.indexSuffix | quote }})
+          # strftime format configurable via vector.s3-access-logs.indexSuffix.
+          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" (index .Values.vector "s3-access-logs" "indexSuffix") | quote }})
 {{- end }}

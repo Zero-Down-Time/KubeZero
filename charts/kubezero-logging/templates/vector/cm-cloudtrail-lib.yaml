@@ -11,13 +11,18 @@ data:
     transforms:
       # Explode siphon-wrapped CloudTrail Records into one event per record.
       # Wire format: { observed_at, attributes: {...}, body: { Records: [...] } }.
+      # `.body` may arrive as a decoded object or as JSON text — handle both.
       cloudtrail_unpack:
         type: remap
         inputs:
           - event_router.cloudtrail
         source: |
           %event_type = "aws.cloudtrail"
-          . = array(.body.Records) ?? []
+          body = .body
+          if is_string(body) {
+              body = parse_json(string!(body)) ?? {}
+          }
+          . = array(body.Records) ?? []
 
       # Emit the flat CloudTrail record at top level, matching the AWS CLO
       # cloudtrail index template (eventName / eventTime / eventID / etc. as

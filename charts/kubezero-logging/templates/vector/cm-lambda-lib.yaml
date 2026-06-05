@@ -1,0 +1,80 @@
+{{- if .Values.vector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-lambda-lib
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+data:
+  remap_lambda.yaml: |
+    transforms:
+      # Explode a CloudWatch Logs subscription payload into one event per
+      # logEvents[] entry. siphon assumption (A): .body is the raw CWL
+      # DATA_MESSAGE { messageType, owner, logGroup, logStream, logEvents[] }.
+      # Wrapper fields are stashed as metadata so parsed_lambda can reattach
+      # them to each exploded event (the array elements only carry id/timestamp/
+      # message). This mirrors cloudtrail_unpack's `.body.Records[]` explosion.
+      lambda_unpack:
+        type: remap
+        inputs:
+          - event_router.lambda
+        source: |
+          %event_type = "aws.lambda"
+
+          # .body may arrive as a decoded object or as JSON text — handle both.
+          body = .body
+          if is_string(body) {
+              body = parse_json(string!(body)) ?? {}
+          }
+
+          %log_group  = body.logGroup
+          %log_stream = body.logStream
+          %owner      = body.owner
+
+          # AWS region rides on the siphon envelope as the `cloud.region`
+          %region     = .attributes."cloud.region"
+
+          # CloudWatch sends periodic CONTROL_MESSAGE keep-alives carrying a
+          # dummy logEvent — drop the whole payload (empty array => 0 events).
+          if (string(body.messageType) ?? "") == "CONTROL_MESSAGE" {
+              . = []
+          } else {
+              . = array(body.logEvents) ?? []
+          }
+
+      # One CloudWatch log event -> flat doc matching the AWS CLO lambda index
+      # template (time / log_group / log_stream / owner / log-detail). `time` is
+      # epoch-millis: the CLO template's `time` mapping accepts epoch_millis and
+      # aliases @timestamp to it, so the raw logEvents[].timestamp goes in as-is.
+      parsed_lambda:
+        type: remap
+        inputs:
+          - lambda_unpack
+        source: |
+          ev = .
+          ms = to_int(ev.timestamp) ?? 0
+          ts = from_unix_timestamp(ms, unit: "milliseconds") ?? now()
+
+          . = {
+              "time":       ms,
+              "log_group":  %log_group,
+              "log_stream": %log_stream,
+              "owner":      %owner,
+              "region":     %region,
+              "log-detail": ev.message
+          }
+
+          # CloudWatch logEvents[].id is globally unique -> idempotent retries.
+          .id = ev.id
+
+          # FUTURE: for /aws/lambda/ groups whose message is a platform REPORT
+          # line ("Duration: .. ms  Billed Duration: .. ms  Memory Size: .. MB
+          # Max Memory Used: .. MB"), parse_regex it here and add numeric fields
+          # (duration_ms / billed_duration_ms / memory_size_mb / max_memory_mb).
+          # Purely additive — the doc shape above does not change.
+
+          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" .Values.vector.lambda.indexSuffix | quote }})
+
+          . = compact(., recursive: true, null: true)
+{{- end }}

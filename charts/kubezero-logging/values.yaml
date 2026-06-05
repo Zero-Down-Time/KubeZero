@@ -5,7 +5,7 @@ networkPolicy:
     app.kubernetes.io/name: vector
     app.kubernetes.io/component: Agent
  
-# Single switch for the entire remote HTTP path: the http_in source, its bearer
+# Single switch for the entire remote HTTP path: the http_in source, its token
 # auth, the token enrichment table, and the tenant tagging. false => :6000 only.
 vectorHttpIngest:
   enabled: false
@@ -111,17 +111,20 @@ vector:
     - vector-aggregator-config
     - vector-cloudtrail-lib
     - vector-cloudfront-lib
-    - vector-s3-lib
+    - vector-s3-access-logs-lib
+    - vector-lambda-lib
 
   # Per-parser knobs. indexSuffix is a strftime format applied to each event's
   # own timestamp (CloudTrail eventTime / CloudFront date+time / S3 request
-  # time), templated into the sink's bulk.index as <svc>-<suffix>.
-  # `%Y.%m.%d` = daily indices; use `%Y.%m` for monthly, `%Y` for yearly.
+  # time / CloudWatch event time), templated into the sink's bulk.index as
+  # <svc>-<suffix>. `%Y.%m.%d` = daily indices; `%Y.%m` monthly, `%Y` yearly.
   cloudtrail:
     indexSuffix: "%Y.%m"
   cloudfront:
     indexSuffix: "%Y.%m"
-  s3:
+  s3-access-logs:
+    indexSuffix: "%Y.%m"
+  lambda:
     indexSuffix: "%Y.%m"
 
   podMonitor:
@@ -144,7 +147,8 @@ osdashboards:
   services:
     - cloudfront
     - cloudtrail
-    - s3
+    - s3-access-logs
+    - lambda
 
 opensearch:
   enabled: false

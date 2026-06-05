@@ -109,7 +109,7 @@ fi
 echo
 echo "=== issued tokens — copy now, they are NOT stored anywhere ==="
 for entry in "${ISSUED[@]}"; do
-  printf '  %-16s Authorization: Bearer %s\n' "${entry%%=*}:" "${entry#*=}"
+  printf '  %-16s Authorization: %s\n' "${entry%%=*}:" "${entry#*=}"
 done
 echo "=============================================================="
 [ "$RESTART" = true ] || echo "note: run with -r (or rollout-restart $STS) so Vector reloads the table."

@@ -5,6 +5,9 @@ set -ex
 
 update_helm
 
+# OSD dashboards-vector
+./scipts/sync-osd-dashboards.sh
+
 FLUENT_BIT_VERSION=$(yq eval '.dependencies[] | select(.name=="fluent-bit") | .version' Chart.yaml)
 FLUENTD_VERSION=$(yq eval '.dependencies[] | select(.name=="fluentd") | .version' Chart.yaml)
 

@@ -52,7 +52,7 @@ data:
       if [ -f "$asset_dir/index_template.json.gz" ]; then
         echo "PUT /_index_template/$svc"
         gunzip -c "$asset_dir/index_template.json.gz" \
-          | curl -sSfk -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
+          | curl -sSk --fail-with-body -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
                  -H 'Content-Type: application/json' \
                  -X PUT --data-binary @- \
                  "$OPENSEARCH_ENDPOINT/_index_template/$svc"
@@ -62,7 +62,7 @@ data:
       if [ -f "$asset_dir/dashboard.ndjson.gz" ]; then
         echo "POST $svc saved objects -> OSD"
         gunzip -c "$asset_dir/dashboard.ndjson.gz" \
-          | curl -sSfk -u "$OSD_USER:$OSD_PASSWORD" \
+          | curl -sSk --fail-with-body -u "$OSD_USER:$OSD_PASSWORD" \
                  -H 'osd-xsrf: true' \
                  -F "file=@-;filename=$svc.ndjson" \
                  "$OSD_ENDPOINT/api/saved_objects/_import?overwrite=true"

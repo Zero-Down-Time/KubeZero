@@ -42,9 +42,6 @@ data:
     {{- if .Values.vectorHttpIngest.enabled }}
       # Remote HTTP events from siphon: POST /ingest/<event.name> with body
       #   { observed_at, attributes: {"event.name", "aws.s3.bucket", ...}, body }
-      # Bearer-token auth. Path is informational (path-vs-method gate lives in
-      # istio); routing uses attributes."event.name". strict_path: false so the
-      # source accepts any path under the istio-allowed prefix.
       http_in:
         type: http_server
         address: 0.0.0.0:8080
@@ -53,19 +50,17 @@ data:
         method: POST
         decoding:
           codec: json
+        # Capture the authenticated header onto the event so the tenant transform
+        # can derive .tenant from it
         headers:
           - authorization
         auth:
           strategy: custom
+          # Whole Authorization header value is the opaque token
           source: |
-            parts = split!(.headers.authorization, " ", 2)
-            if parts[0] != "Bearer" {
-              false
-            } else {
-              digest = sha2!(parts[1], variant: "SHA-256")
-              row = get_enrichment_table_record!("auth_data", { "token_sha256": digest })
-              row.active == true
-            }
+            digest = sha2!(.headers.authorization, variant: "SHA-256")
+            row = get_enrichment_table_record!("auth_data", { "token_sha256": digest })
+            row.active == true
     {{- end }}
 
       internal_metrics:
@@ -73,15 +68,15 @@ data:
 
     transforms:
       {{- if .Values.vectorHttpIngest.enabled }}
-      # tenant from validated bearer token, then drop the token
+      # Derive tenant from the authenticated Authorization header
+      # then drop the token so it never reaches a sink
       http_auth_tenant:
         type: remap
         inputs:
           - http_in
         source: |
           if exists(.authorization) {
-            tok    = split(string(.authorization) ?? "", " ", 2)[1]
-            digest = sha2(tok, variant: "SHA-256") ?? ""
+            digest = sha2(string(.authorization) ?? "", variant: "SHA-256")
             row    = get_enrichment_table_record("auth_data", { "token_sha256": digest }) ?? {}
             .tenant = string(row.tenant) ?? "unknown"
             del(.authorization)
@@ -103,11 +98,12 @@ data:
             }
           }
 
-      # Classify siphon-wrapped events. All S3-sourced deliveries arrive as
-      # attributes."event.name" == "aws.s3.object_received"; the discriminator
-      # between log types is the S3 key naming convention. Routes are matched
-      # in order — the cloudfront regex is more specific than the cloudtrail
-      # substring, but ordering still puts each type next to its own marker.
+      # Classify siphon-wrapped events. S3-sourced deliveries arrive as
+      # attributes."event.name" == "aws.s3.object_received" and are
+      # discriminated by the S3 key naming convention. Non-S3 sources
+      # CloudWatch Logs via siphon carry their payload in .body
+      # and are discriminated on body fields (e.g. .body.logGroup). Routes are
+      # matched in order.
       event_router:
         type: route
         inputs:
@@ -125,10 +121,13 @@ data:
                   r'E[A-Z0-9]+\.\d{4}-\d{2}-\d{2}-\d{2}\.[A-Za-z0-9]+\.gz$')
           # S3 server access logs land in the target bucket with the key
           # convention `[<prefix>]YYYY-MM-DD-HH-MM-SS-<16-char-unique-id>`.
-          s3: |
+          s3-access-logs: |
             .attributes."event.name" == "aws.s3.object_received" &&
             match(string(.attributes."aws.s3.key") ?? "",
                   r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}-[A-Z0-9]{16}$')
+          # CloudWatch Logs via siphon
+          lambda: |
+            starts_with(string(.body.logGroup) ?? "", "/aws/lambda/")
 
 
       sink_router:
@@ -137,9 +136,10 @@ data:
           - parsed_*
           - event_router._unmatched
         route:
-          cloudtrail: '%event_type == "aws.cloudtrail"'
-          cloudfront: '%event_type == "aws.cloudfront"'
-          s3:         '%event_type == "aws.s3"'
+          cloudtrail:     '%event_type == "aws.cloudtrail"'
+          cloudfront:     '%event_type == "aws.cloudfront"'
+          s3-access-logs: '%event_type == "aws.s3-access-logs"'
+          lambda:         '%event_type == "aws.lambda"'
 
       # Drop metrics emitted BY the metrics plumbing itself
       metrics_clean:
@@ -200,10 +200,10 @@ data:
         buffer: { type: memory, max_events: 1000, when_full: block }
         healthcheck: { enabled: true }
 
-      opensearch_s3:
+      opensearch_s3-access-logs:
         type: elasticsearch
         inputs:
-          - sink_router.s3
+          - sink_router.s3-access-logs
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
@@ -211,9 +211,34 @@ data:
         id_key: id
         bulk:
           action: index
-          # AWS CLO s3-* index pattern. index_suffix derived from each log
-          # line's bracketed timestamp.
-          index: 's3-{{ "{{ index_suffix }}" }}'
+          # AWS CLO s3-access-logs-* index pattern. index_suffix derived from
+          # each log line's bracketed timestamp.
+          index: 's3-access-logs-{{ "{{ index_suffix }}" }}'
+        auth:
+          strategy: basic
+          user: "${OPENSEARCH_USER}"
+          password: "${OPENSEARCH_PASSWORD}"
+        tls:
+          verify_certificate: false
+        compression: gzip
+        batch: { max_events: 2000, timeout_secs: 5 }
+        buffer: { type: memory, max_events: 1000, when_full: block }
+        healthcheck: { enabled: true }
+
+      opensearch_lambda:
+        type: elasticsearch
+        inputs:
+          - sink_router.lambda
+        endpoints: ["${OPENSEARCH_ENDPOINT}"]
+        api_version: v7
+        mode: bulk
+        # _id = CloudWatch logEvents[].id (mirrored to .id by the parser).
+        id_key: id
+        bulk:
+          action: index
+          # AWS CLO lambda-* index pattern. index_suffix derived from each log
+          # event's epoch-millis timestamp.
+          index: 'lambda-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
           user: "${OPENSEARCH_USER}"
