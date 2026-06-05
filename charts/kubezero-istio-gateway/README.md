@@ -1,6 +1,6 @@
 # kubezero-istio-gateway
 
-![Version: 0.29.1](https://img.shields.io/badge/Version-0.29.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.29.4](https://img.shields.io/badge/Version-0.29.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio gateways
 
@@ -16,12 +16,12 @@ Installs Istio Ingress Gateways, requires kubezero-istio to be installed !
 
 ## Requirements
 
-Kubernetes: `>= 1.30.0-0`
+Kubernetes: `>= 1.34.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://istio-release.storage.googleapis.com/charts | gateway | 1.29.1 |
+| https://istio-release.storage.googleapis.com/charts | gateway | 1.29.4 |
 
 ## Values
 
