@@ -12,6 +12,9 @@ metadata:
   annotations:
     argocd.argoproj.io/compare-options: IncludeMutationWebhook=true
     # argocd.argoproj.io/sync-options: Replace=true
+    {{- with ( index .Values $name "syncWave" ) }}
+    argocd.argoproj.io/sync-wave: {{ . | quote }}
+    {{- end }}
     {{- with ( index .Values $name "annotations" ) }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -29,7 +32,7 @@ spec:
     helm:
       skipTests: true
       valuesObject:
-        {{- toYaml (merge (omit (index .Values $name) "enabled" "namespace" "retain" "targetRevision") (fromYaml (include (print $name "-values") $ ))) | nindent 8 }}
+        {{- toYaml (merge (omit (index .Values $name) "enabled" "namespace" "retain" "targetRevision" "syncWave" "retryLimit") (fromYaml (include (print $name "-values") $ ))) | nindent 8 }}
 
   destination:
     server: "https://kubernetes.default.svc"
@@ -43,6 +46,12 @@ spec:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
       - ServerSideApply=true
+    retry:
+      limit: {{ default 2 ( index .Values $name "retryLimit" ) }}
+      backoff:
+        duration: 30s
+        factor: 2
+        maxDuration: 5m
   info:
     - name: "Source:"
       value: "https://git.zero-downtime.net/ZeroDownTime/KubeZero/src/branch/release/v1.33/charts/kubezero-{{ $name }}"

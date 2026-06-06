@@ -34,6 +34,8 @@ gateway:
 
   podAnnotations:
     proxy.istio.io/config: '{ "terminationDrainDuration": "90s" }'
+    # Pin the injected proxy image so the gateway version
+    sidecar.istio.io/proxyImage: docker.io/istio/proxyv2:1.29.4-distroless
 
 certificates: []
 #- name: ingress-cert

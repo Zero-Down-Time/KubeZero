@@ -66,13 +66,15 @@ storage:
 istio:
   enabled: false
   namespace: istio-system
-  targetRevision: 0.29.1
+  targetRevision: 0.29.4
 
 istio-ingress:
   enabled: false
   chart: kubezero-istio-gateway
   namespace: istio-ingress
-  targetRevision: 0.29.1
+  targetRevision: 0.29.4
+  # sync after the istio control plane (istiod) is healthy
+  syncWave: "3"
   gateway:
     service: {}
 
@@ -80,7 +82,9 @@ istio-private-ingress:
   enabled: false
   chart: kubezero-istio-gateway
   namespace: istio-ingress
-  targetRevision: 0.29.1
+  targetRevision: 0.29.4
+  # sync after the istio control plane (istiod) is healthy
+  syncWave: "3"
   gateway:
     service: {}
 
