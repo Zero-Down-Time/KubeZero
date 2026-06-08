@@ -22,6 +22,7 @@ Kubernetes: `>= 1.34.0`
 | https://fluent.github.io/helm-charts | fluent-bit | 0.47.10 |
 | https://fluent.github.io/helm-charts | fluentd | 0.5.2 |
 | https://helm.vector.dev | vector | 0.52.0 |
+| https://helm.vector.dev | vector-agent(vector) | 0.52.0 |
 | https://opensearch-project.github.io/helm-charts/ | opensearch | 3.6.0 |
 | https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.6.0 |
 
@@ -168,10 +169,44 @@ Kubernetes: `>= 1.34.0`
 | opensearch.serviceMonitor.enabled | bool | `false` |  |
 | opensearch.serviceMonitor.interval | string | `"30s"` |  |
 | opensearch.singleNode | bool | `true` |  |
+| osdashboards.enabled | bool | `false` |  |
+| osdashboards.endpoint | string | `"http://logging-opensearch-dashboards:5601"` |  |
+| osdashboards.services[0] | string | `"cloudfront"` |  |
+| osdashboards.services[1] | string | `"cloudtrail"` |  |
+| osdashboards.services[2] | string | `"s3-access-logs"` |  |
+| osdashboards.services[3] | string | `"lambda"` |  |
+| vector-agent.containerPorts[0].containerPort | int | `9090` |  |
+| vector-agent.containerPorts[0].name | string | `"prom-exporter"` |  |
+| vector-agent.containerPorts[0].protocol | string | `"TCP"` |  |
+| vector-agent.dataDir | string | `"/vector-data-dir"` |  |
+| vector-agent.defaultVolumeMounts[0].mountPath | string | `"/var/log/"` |  |
+| vector-agent.defaultVolumeMounts[0].name | string | `"var-log"` |  |
+| vector-agent.defaultVolumeMounts[0].readOnly | bool | `true` |  |
+| vector-agent.defaultVolumes[0].hostPath.path | string | `"/var/log/"` |  |
+| vector-agent.defaultVolumes[0].name | string | `"var-log"` |  |
+| vector-agent.enabled | bool | `false` |  |
+| vector-agent.existingConfigMaps[0] | string | `"vector-agent-config"` |  |
+| vector-agent.image.base | string | `"alpine"` |  |
+| vector-agent.podMonitor.enabled | bool | `false` |  |
+| vector-agent.podMonitor.honorLabels | bool | `true` |  |
+| vector-agent.podMonitor.interval | string | `"30s"` |  |
+| vector-agent.resources.limits.memory | string | `"256Mi"` |  |
+| vector-agent.resources.requests.cpu | string | `"10m"` |  |
+| vector-agent.resources.requests.memory | string | `"64Mi"` |  |
+| vector-agent.role | string | `"Agent"` |  |
+| vector-agent.service.enabled | bool | `false` |  |
+| vector-agent.serviceHeadless.enabled | bool | `false` |  |
 | vector.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels."app.kubernetes.io/component" | string | `"Aggregator"` |  |
 | vector.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels."app.kubernetes.io/name" | string | `"vector"` |  |
 | vector.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.topologyKey | string | `"kubernetes.io/hostname"` |  |
 | vector.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight | int | `100` |  |
+| vector.args[0] | string | `"--config-dir"` |  |
+| vector.args[1] | string | `"/etc/vector/"` |  |
+| vector.args[2] | string | `"--watch-config"` |  |
+| vector.args[3] | string | `"--watch-config-method"` |  |
+| vector.args[4] | string | `"poll"` |  |
+| vector.cloudfront.indexSuffix | string | `"%Y.%m"` |  |
+| vector.cloudtrail.indexSuffix | string | `"%Y.%m"` |  |
 | vector.containerPorts[0].containerPort | int | `6000` |  |
 | vector.containerPorts[0].name | string | `"vector"` |  |
 | vector.containerPorts[0].protocol | string | `"TCP"` |  |
@@ -196,6 +231,10 @@ Kubernetes: `>= 1.34.0`
 | vector.env[2].valueFrom.secretKeyRef.key | string | `"password"` |  |
 | vector.env[2].valueFrom.secretKeyRef.name | string | `"vector-opensearch"` |  |
 | vector.existingConfigMaps[0] | string | `"vector-aggregator-config"` |  |
+| vector.existingConfigMaps[1] | string | `"vector-cloudtrail-lib"` |  |
+| vector.existingConfigMaps[2] | string | `"vector-cloudfront-lib"` |  |
+| vector.existingConfigMaps[3] | string | `"vector-s3-access-logs-lib"` |  |
+| vector.existingConfigMaps[4] | string | `"vector-lambda-lib"` |  |
 | vector.extraVolumeMounts[0].mountPath | string | `"/etc/vector-auth"` |  |
 | vector.extraVolumeMounts[0].name | string | `"http-tokens"` |  |
 | vector.extraVolumeMounts[0].readOnly | bool | `true` |  |
@@ -204,9 +243,10 @@ Kubernetes: `>= 1.34.0`
 | vector.image.base | string | `"alpine"` |  |
 | vector.istio.enabled | bool | `false` |  |
 | vector.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
-| vector.istio.ingestPath | string | `"/ingest"` |  |
+| vector.istio.ingestPathRegex | string | `"^/ingest/[a-z][a-z0-9._-]*$"` |  |
 | vector.istio.url | string | `"vector.example.com"` |  |
-| vector.persistence.enabled | bool | `true` |  |
+| vector.lambda.indexSuffix | string | `"%Y.%m"` |  |
+| vector.persistence.enabled | bool | `false` |  |
 | vector.persistence.size | string | `"1Gi"` |  |
 | vector.podMonitor.enabled | bool | `false` |  |
 | vector.podMonitor.honorLabels | bool | `true` |  |
@@ -217,6 +257,7 @@ Kubernetes: `>= 1.34.0`
 | vector.resources.requests.cpu | string | `"10m"` |  |
 | vector.resources.requests.memory | string | `"64Mi"` |  |
 | vector.role | string | `"Aggregator"` |  |
+| vector.s3-access-logs.indexSuffix | string | `"%Y.%m"` |  |
 | vector.securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | vector.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | vector.securityContext.runAsNonRoot | bool | `true` |  |

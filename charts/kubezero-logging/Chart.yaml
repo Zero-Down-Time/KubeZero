@@ -29,6 +29,11 @@ dependencies:
     version: 0.52.0
     repository: https://helm.vector.dev
     condition: vector.enabled
+  - name: vector
+    alias: vector-agent
+    version: 0.52.0
+    repository: https://helm.vector.dev
+    condition: vector-agent.enabled
   - name: fluentd
     version: 0.5.2
     repository: https://fluent.github.io/helm-charts

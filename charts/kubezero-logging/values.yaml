@@ -2,7 +2,7 @@ networkPolicy:
   enabled: false
   # Label selector identifying in-cluster Vector agents allowed to reach :6000.
   agentSelector:
-    app.kubernetes.io/name: vector
+    app.kubernetes.io/name: vector-agent
     app.kubernetes.io/component: Agent
  
 # Single switch for the entire remote HTTP path: the http_in source, its token
@@ -113,6 +113,7 @@ vector:
     - vector-cloudfront-lib
     - vector-s3-access-logs-lib
     - vector-lambda-lib
+    - vector-kubernetes-lib
 
   # Per-parser knobs. indexSuffix is a strftime format applied to each event's
   # own timestamp (CloudTrail eventTime / CloudFront date+time / S3 request
@@ -126,6 +127,64 @@ vector:
     indexSuffix: "%Y.%m"
   lambda:
     indexSuffix: "%Y.%m"
+  kubernetes:
+    indexSuffix: "%Y.%m.%d"
+    indexTemplate:
+      enabled: true
+      totalFieldsLimit: 2000
+      shards: 1
+      replicas: 1
+
+  podMonitor:
+    enabled: false
+    interval: 30s
+    honorLabels: true
+
+# Node-local agent: same upstream vector chart (aliased), deployed as a
+# DaemonSet to gather pod logs and ship them to the Aggregator above (:6000).
+# role: Agent makes the upstream chart create the DaemonSet, ServiceAccount,
+# ClusterRole/Binding for kubernetes_logs and the /var/log hostPath mounts.
+vector-agent:
+  enabled: false
+
+  role: Agent
+
+  image:
+    base: alpine
+
+  dataDir: /vector-data-dir
+
+  # Custom config: kubernetes_logs -> vector sink to the Aggregator service.
+  existingConfigMaps:
+    - vector-agent-config
+
+  # The upstream Agent role mounts /var/log, /var/lib, /proc and /sys by default.
+  # We only tail pod logs (kubernetes_logs reads /var/log/pods) and run no
+  # host_metrics source, so keep just /var/log and drop the rest (containerd
+  # stores real log files under /var/log/pods; /var/lib is only for docker).
+  defaultVolumes:
+    - name: var-log
+      hostPath:
+        path: /var/log/
+  defaultVolumeMounts:
+    - name: var-log
+      mountPath: /var/log/
+      readOnly: true
+
+  service:
+    enabled: false
+  serviceHeadless:
+    enabled: false
+
+  containerPorts:
+    - { name: prom-exporter, containerPort: 9090, protocol: TCP }
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
 
   podMonitor:
     enabled: false

@@ -1,0 +1,38 @@
+{{- if .Values.vector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-kubernetes-lib
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+data:
+  remap_kubernetes.yaml: |
+    transforms:
+      parsed_kubernetes:
+        type: remap
+        inputs:
+          - event_router.kubernetes
+        source: |
+          %event_type = "kubernetes"
+
+          # kubernetes_logs stamps .timestamp as the log line's time; fall back
+          # to now() if a malformed event lacks it.
+          ts = .timestamp
+          if !is_timestamp(ts) { ts = now() }
+          ."@timestamp" = ts
+
+          # Idempotent _id: same physical log line (file + nanosecond timestamp +
+          # message) hashes identically
+          nanos = to_unix_timestamp(.timestamp, unit: "nanoseconds") ?? 0
+          fp = (string(.file) ?? "") + "|" + to_string(nanos) + "|" + (string(.message) ?? "")
+          .id = sha2(fp, variant: "SHA-256")
+
+          # .timestamp is replaced by .@timestamp
+          del(.timestamp)
+          del(.source_type)
+
+          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" .Values.vector.kubernetes.indexSuffix | quote }})
+
+          . = compact(., recursive: true, null: true)
+{{- end }}

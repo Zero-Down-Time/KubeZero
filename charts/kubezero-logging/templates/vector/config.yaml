@@ -33,6 +33,8 @@ data:
         type: vector
         address: 0.0.0.0:6000
         version: "2"
+        acknowledgements:
+          enabled: true
     #   tls:
     #     enabled: true
     #     crt_file: /etc/vector-tls/tls.crt
@@ -128,6 +130,10 @@ data:
           # CloudWatch Logs via siphon
           lambda: |
             starts_with(string(.body.logGroup) ?? "", "/aws/lambda/")
+          # Node pod logs from the vector-agent DaemonSet. Only kubernetes_logs
+          # events carry .kubernetes.pod_name; siphon/S3/CWL events never do.
+          kubernetes: |
+            exists(.kubernetes.pod_name)
 
 
       sink_router:
@@ -140,6 +146,7 @@ data:
           cloudfront:     '%event_type == "aws.cloudfront"'
           s3-access-logs: '%event_type == "aws.s3-access-logs"'
           lambda:         '%event_type == "aws.lambda"'
+          kubernetes:     '%event_type == "kubernetes"'
 
       # Drop metrics emitted BY the metrics plumbing itself
       metrics_clean:
@@ -239,6 +246,33 @@ data:
           # AWS CLO lambda-* index pattern. index_suffix derived from each log
           # event's epoch-millis timestamp.
           index: 'lambda-{{ "{{ index_suffix }}" }}'
+        auth:
+          strategy: basic
+          user: "${OPENSEARCH_USER}"
+          password: "${OPENSEARCH_PASSWORD}"
+        tls:
+          verify_certificate: false
+        compression: gzip
+        batch: { max_events: 2000, timeout_secs: 5 }
+        buffer: { type: memory, max_events: 1000, when_full: block }
+        healthcheck: { enabled: true }
+
+      opensearch_kubernetes:
+        type: elasticsearch
+        inputs:
+          - sink_router.kubernetes
+        endpoints: ["${OPENSEARCH_ENDPOINT}"]
+        api_version: v7
+        mode: bulk
+        # _id = synthetic sha256(file|ts_nanos|message) from parsed_kubernetes,
+        # so a retried bulk re-indexes the same doc instead of duplicating it.
+        id_key: id
+        bulk:
+          action: index
+          # kubernetes-* index pattern; index_suffix = daily %Y.%m.%d derived
+          # from each event's own log timestamp. flat_object mappings for
+          # pod_labels et al. come from the kubernetes index template.
+          index: 'kubernetes-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
           user: "${OPENSEARCH_USER}"

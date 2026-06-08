@@ -1,0 +1,114 @@
+{{- if and .Values.vector.enabled .Values.vector.kubernetes.indexTemplate.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-kubernetes-index-template
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+data:
+  kubernetes.json: |
+    {
+      "index_patterns": ["kubernetes-*"],
+      "template": {
+        "settings": {
+          "index": {
+            "number_of_shards": {{ .Values.vector.kubernetes.indexTemplate.shards }},
+            "number_of_replicas": {{ .Values.vector.kubernetes.indexTemplate.replicas }},
+            "mapping": {
+              "total_fields": { "limit": {{ .Values.vector.kubernetes.indexTemplate.totalFieldsLimit }} }
+            }
+          }
+        },
+        "mappings": {
+          "properties": {
+            "@timestamp": { "type": "date" },
+            "message":    { "type": "text" },
+            "id":         { "type": "keyword" },
+            "file":       { "type": "keyword" },
+            "stream":     { "type": "keyword" },
+            "kubernetes": {
+              "properties": {
+                "pod_labels":          { "type": "flat_object" },
+                "pod_annotations":     { "type": "flat_object" },
+                "namespace_labels":    { "type": "flat_object" },
+                "namespace_annotations": { "type": "flat_object" },
+                "node_labels":         { "type": "flat_object" },
+                "pod_name":            { "type": "keyword" },
+                "pod_namespace":       { "type": "keyword" },
+                "pod_node_name":       { "type": "keyword" },
+                "pod_ip":              { "type": "keyword" },
+                "container_name":      { "type": "keyword" },
+                "container_id":        { "type": "keyword" },
+                "container_image":     { "type": "keyword" }
+              }
+            }
+          }
+        }
+      }
+    }
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vector-kubernetes-index-template
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Aggregator
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 6
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: install
+          image: curlimages/curl:8.11.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              i=0
+              until curl -sSfk -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
+                    "$OPENSEARCH_ENDPOINT/_cluster/health" >/dev/null 2>&1; do
+                i=$((i + 1))
+                if [ $i -ge 60 ]; then echo "timeout waiting for OpenSearch" >&2; exit 1; fi
+                sleep 5
+              done
+              echo "PUT /_index_template/kubernetes"
+              curl -sSk --fail-with-body -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
+                   -H 'Content-Type: application/json' \
+                   -X PUT --data-binary @/assets/kubernetes.json \
+                   "$OPENSEARCH_ENDPOINT/_index_template/kubernetes"
+              echo
+          env:
+            - name: OPENSEARCH_ENDPOINT
+              valueFrom: { secretKeyRef: { name: vector-opensearch, key: endpoint } }
+            - name: OPENSEARCH_USER
+              valueFrom: { secretKeyRef: { name: vector-opensearch, key: username } }
+            - name: OPENSEARCH_PASSWORD
+              valueFrom: { secretKeyRef: { name: vector-opensearch, key: password } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+            readOnlyRootFilesystem: true
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits:   { memory: 64Mi }
+          volumeMounts:
+            - { name: template, mountPath: /assets, readOnly: true }
+      volumes:
+        - name: template
+          configMap:
+            name: vector-kubernetes-index-template
+{{- end }}

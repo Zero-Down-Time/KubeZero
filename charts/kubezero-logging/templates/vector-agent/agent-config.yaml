@@ -1,0 +1,79 @@
+{{- if (index .Values "vector-agent" "enabled") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-agent-config
+  labels:
+    app.kubernetes.io/name: vector
+    app.kubernetes.io/component: Agent
+data:
+  vector.yaml: |
+    data_dir: /vector-data-dir
+
+    api:
+      enabled: true
+      address: 0.0.0.0:8686
+
+    sources:
+      # Tails this node's pod logs (/var/log/pods/**/*.log) and enriches each
+      # event with .kubernetes.* metadata. Reads only pods on the local node.
+      k8s:
+        type: kubernetes_logs
+      {{- if (index .Values "vector-agent" "podMonitor" "enabled") }}
+      internal_metrics:
+        type: internal_metrics
+      {{- end }}
+
+    transforms:
+      # Drop annotation maps early, at the source node. pod/namespace annotations
+      # are unbounded, high-cardinality and large (e.g. last-applied-configuration)
+      # and we never index them -> stripping here cuts wire bytes and gRPC batch
+      # size before the events leave the node. pod_labels are kept (mapped as
+      # flat_object in the kubernetes-* index template at the aggregator).
+      drop_annotations:
+        type: remap
+        inputs: [k8s]
+        source: |
+          del(.kubernetes.pod_annotations)
+          del(.kubernetes.namespace_annotations)
+      {{- if (index .Values "vector-agent" "podMonitor" "enabled") }}
+      # Drop metrics emitted BY the metrics plumbing itself
+      metrics_clean:
+        type: filter
+        inputs: [internal_metrics]
+        condition: '!includes(["internal_metrics", "metrics_clean"], string(.tags.component_id) ?? "")'
+      {{- end }}
+
+    sinks:
+      # Forward to the cluster-wide Aggregator over the vector native protocol.
+      # The Aggregator's :6000 NetworkPolicy already allows Agent-labelled pods.
+      to_aggregator:
+        type: vector
+        inputs: [drop_annotations]
+        address: {{ .Release.Name }}-vector:6000
+        # No Vector-side buffer: when the Aggregator is unavailable the in-memory
+        # buffer fills and `block` backpressures kubernetes_logs, which stops
+        # reading and holds its checkpoint.
+        acknowledgements:
+          enabled: true
+        # Bound each gRPC message. Fat kubernetes_logs events (~2-8KB each with
+        # .kubernetes metadata) batched too large can exceed the aggregator
+        # vector source's gRPC max message size, which RST_STREAMs below Vector's
+        # log layer -> aggregator stays silent, agent sees "connection reset".
+        batch:
+          max_events: 256
+          timeout_secs: 5
+        buffer:
+          type: memory
+          max_events: 2000
+          when_full: block
+        # tls: { enabled: true, ca_file: /etc/vector-tls/ca.crt }  # if vector_in enables TLS
+      {{- if (index .Values "vector-agent" "podMonitor" "enabled") }}
+      # Per-node metrics endpoint scraped by the PodMonitor on the named
+      # containerPort prom-exporter (:9090). Mirrors the Aggregator's exporter.
+      metrics:
+        type: prometheus_exporter
+        inputs: [metrics_clean]
+        address: 0.0.0.0:9090
+      {{- end }}
+{{- end }}
