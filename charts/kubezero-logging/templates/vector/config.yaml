@@ -93,7 +93,11 @@ data:
           - http_auth_tenant
           {{- end }}
         source: |
-          if is_string(.message) {
+          # Non-k8s sources: merge a JSON .message into the root as before. k8s
+          # node logs are handled in parsed_kubernetes, which nests the parsed
+          # payload under kube.<namespace> to avoid cross-namespace OpenSearch
+          # mapping collisions -- so do NOT root-merge them here.
+          if !exists(.kubernetes) && is_string(.message) {
             parsed, err = parse_json(.message)
             if err == null && is_object(parsed) {
               . = merge(., object!(parsed), deep: true)
@@ -175,6 +179,9 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
+        # index_suffix is a bulk.index routing helper only
+        encoding:
+          except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
         #buffer: { type: disk, max_size: 268435488, when_full: block }
@@ -202,6 +209,9 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
+        # index_suffix is a bulk.index routing helper only
+        encoding:
+          except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
         buffer: { type: memory, max_events: 1000, when_full: block }
@@ -227,6 +237,9 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
+        # index_suffix is a bulk.index routing helper only
+        encoding:
+          except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
         buffer: { type: memory, max_events: 1000, when_full: block }
@@ -252,6 +265,9 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
+        # index_suffix is a bulk.index routing helper only
+        encoding:
+          except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
         buffer: { type: memory, max_events: 1000, when_full: block }
@@ -279,6 +295,9 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
+        # index_suffix is a bulk.index routing helper only
+        encoding:
+          except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
         buffer: { type: memory, max_events: 1000, when_full: block }
@@ -298,6 +317,9 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
+        # index_suffix is a bulk.index routing helper only
+        encoding:
+          except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
         buffer: { type: memory, max_events: 1000, when_full: block }

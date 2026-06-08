@@ -28,6 +28,18 @@ data:
           fp = (string(.file) ?? "") + "|" + to_string(nanos) + "|" + (string(.message) ?? "")
           .id = sha2(fp, variant: "SHA-256")
 
+          # Nest a structured (JSON) app-log payload under kube.<namespace> so the
+          # same field name across different namespaces maps to a distinct path,
+          # avoiding cross-namespace OpenSearch mapping collisions
+          ns = string(.kubernetes.pod_namespace) ?? "unknown"
+          if is_string(.message) {
+            parsed, err = parse_json(.message)
+            if err == null && is_object(parsed) {
+              . = set!(., ["kube", ns], parsed)
+              del(.message)
+            }
+          }
+
           # .timestamp is replaced by .@timestamp
           del(.timestamp)
           del(.source_type)
