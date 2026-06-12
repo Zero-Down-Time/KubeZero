@@ -1,8 +1,7 @@
 {{- if .Values.vector.enabled }}
 {{- $rf := .Values.vector.remoteForward.enabled }}
-{{- /* A storing node ($opensearch) renders the local OpenSearch sinks + sink_router
-       and always accepts forwarded events (ingress_class) in parallel with the
-       normal parse path. A forward-only node (remoteForward.enabled) does neither. */}}
+{{- /* Storing node: OpenSearch sinks + accepts forwarded events. Forward-only
+       node (remoteForward.enabled): neither. */}}
 {{- $opensearch := not $rf }}
 apiVersion: v1
 kind: ConfigMap
@@ -40,15 +39,8 @@ data:
         version: "2"
         acknowledgements:
           enabled: true
-    #   tls:
-    #     enabled: true
-    #     crt_file: /etc/vector-tls/tls.crt
-    #     key_file: /etc/vector-tls/tls.key
-    #     ca_file: /etc/vector-tls/ca.crt
-    #     verify_certificate: true
     {{- if .Values.vectorHttpIngest.enabled }}
-      # Remote HTTP events from siphon: POST /ingest/<event.name> with body
-      #   { observed_at, attributes: {"event.name", "aws.s3.bucket", ...}, body }
+      # Remote HTTP ingest from siphon (POST /ingest/<event.name>).
       http_in:
         type: http_server
         address: 0.0.0.0:8080
@@ -57,13 +49,12 @@ data:
         method: POST
         decoding:
           codec: json
-        # Capture the authenticated header onto the event so the tenant transform
-        # can derive .tenant from it
+        # Capture the auth header onto the event for tenant derivation below.
         headers:
           - authorization
         auth:
           strategy: custom
-          # Whole Authorization header value is the opaque token
+          # The whole Authorization value is the opaque token (no Bearer prefix).
           source: |
             digest = sha2!(.headers.authorization, variant: "SHA-256")
             row = get_enrichment_table_record!("auth_data", { "token_sha256": digest })
@@ -75,8 +66,7 @@ data:
 
     transforms:
       {{- if .Values.vectorHttpIngest.enabled }}
-      # Derive tenant from the authenticated Authorization header
-      # then drop the token so it never reaches a sink
+      # Tenant from the validated token; drop the token before any sink.
       http_auth_tenant:
         type: remap
         inputs:
@@ -98,10 +88,8 @@ data:
           - http_auth_tenant
           {{- end }}
         source: |
-          # Non-k8s sources: merge a JSON .message into the root as before. k8s
-          # node logs are handled in parsed_kubernetes, which nests the parsed
-          # payload under kube.<namespace> to avoid cross-namespace OpenSearch
-          # mapping collisions -- so do NOT root-merge them here.
+          # k8s logs are nested under kube.<ns> by parsed_kubernetes to avoid
+          # cross-namespace mapping collisions, so don't root-merge them here.
           if !exists(.kubernetes) && is_string(.message) {
             parsed, err = parse_json(.message)
             if err == null && is_object(parsed) {
@@ -109,18 +97,9 @@ data:
             }
           }
 
-      # Classify siphon-wrapped events. S3-sourced deliveries arrive as
-      # attributes."event.name" == "aws.s3.object_received" and are
-      # discriminated by the S3 key naming convention. Non-S3 sources
-      # CloudWatch Logs via siphon carry their payload in .body
-      # and are discriminated on body fields (e.g. .body.logGroup). Routes are
-      # matched in order.
       {{- if $opensearch }}
-      # Split forwarded events (from another aggregator's remoteForward) out of
-      # the raw ingest stream so they bypass event_router/parsed_* entirely
-      # (prevents double parsing). They carry .forwarded set by forward_prep.
-      # Always present on a storing node so remote events are handled in parallel
-      # with normal events; if none arrive the route simply never matches.
+      # Forwarded events (from a remote aggregator) bypass event_router/parsed_*
+      # to avoid double-parsing; the route never matches normal local events.
       ingress_class:
         type: route
         inputs:
@@ -128,12 +107,8 @@ data:
         route:
           forwarded: '.forwarded == true'
 
-      # Re-promote the lifted metadata: .event_type -> %event_type so the
-      # downstream set_index_suffix / sink_router route to the correct
-      # opensearch_<svc>. The carried .index_ts (event-time, epoch-ms) rides
-      # through to set_index_suffix, which derives index_suffix with THIS
-      # cluster's format/retention. Drop the helper fields that must never be
-      # stored.
+      # Re-promote .event_type -> %event_type for routing; drop the wire-only
+      # helper fields. .index_ts rides through to set_index_suffix.
       forwarded_promote:
         type: remap
         inputs:
@@ -174,18 +149,15 @@ data:
           # CloudWatch Logs via siphon
           lambda: |
             starts_with(string(.body.logGroup) ?? "", "/aws/lambda/")
-          # Node pod logs from the vector-agent DaemonSet. Only kubernetes_logs
-          # events carry .kubernetes.pod_name; siphon/S3/CWL events never do.
+          # vector-agent node logs: only kubernetes_logs events set .kubernetes.
           kubernetes: |
             exists(.kubernetes.pod_name)
 
 
       {{- if $opensearch }}
-      # Final step before local routing: derive the dated index_suffix from the
-      # uniform .index_ts (event-time epoch-ms set by every parser, carried across
-      # the forward hop). Centralizes what used to live in each parser, and lets
-      # THIS cluster decide granularity/retention for forwarded events too.
-      # .index_ts is a routing helper only -> dropped here, never stored.
+      # Derive the dated index_suffix from the uniform .index_ts (event-time,
+      # epoch-ms) using THIS cluster's per-service format, so the remote owns
+      # granularity/retention for forwarded events. .index_ts is then dropped.
       set_index_suffix:
         type: remap
         inputs:
@@ -224,13 +196,9 @@ data:
       {{- end }}
 
       {{- if $rf }}
-      # Forward path: %event_type is metadata and would be lost by JSON encoding,
-      # so lift it to a field; mark the event (.forwarded) so the remote
-      # detects-and-bypasses its parsers (prevents double parsing). .index_ts
-      # (event-time, epoch-ms) and .id are already fields and ride along
-      # automatically: the remote derives index_suffix from .index_ts with ITS
-      # OWN format/retention (the source no longer decides), and .id gives
-      # cross-hop dedup. index_suffix itself is intentionally NOT sent.
+      # %event_type is metadata (lost over JSON), so lift it to a field and mark
+      # .forwarded so the remote bypasses its parsers. .index_ts/.id ride along;
+      # the remote decides index_suffix/retention. index_suffix is not sent.
       forward_prep:
         type: remap
         inputs:
@@ -258,12 +226,10 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        # _id = CloudTrail eventID (top-level after flat-shape parser rewrite).
+        # _id = CloudTrail eventID.
         id_key: eventID
         bulk:
           action: index
-          # AWS CLO cloudtrail-* index pattern. index_suffix = %Y.%m.%d
-          # derived from eventTime so backfills land in the correct daily index.
           index: 'cloudtrail-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
@@ -271,12 +237,10 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
-        # index_suffix is a bulk.index routing helper only
         encoding:
           except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
-        #buffer: { type: disk, max_size: 268435488, when_full: block }
         buffer: { type: memory, max_events: 1000, when_full: block }
         healthcheck: { enabled: true }
 
@@ -287,13 +251,10 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        # _id = CloudFront x-edge-request-id. Mirrored into .id by the parser
-        # to keep this path hyphen-free.
+        # _id = CloudFront x-edge-request-id (mirrored to .id, hyphen-free path).
         id_key: id
         bulk:
           action: index
-          # AWS CLO cloudfront-* index pattern. index_suffix = %Y.%m.%d
-          # derived from the log line's date/time fields.
           index: 'cloudfront-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
@@ -301,7 +262,6 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
-        # index_suffix is a bulk.index routing helper only
         encoding:
           except_fields: ["index_suffix"]
         compression: gzip
@@ -316,12 +276,10 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        # _id = S3 request_id (mirrored to .id by the parser).
+        # _id = S3 request_id (mirrored to .id).
         id_key: id
         bulk:
           action: index
-          # AWS CLO s3-access-logs-* index pattern. index_suffix derived from
-          # each log line's bracketed timestamp.
           index: 's3-access-logs-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
@@ -329,7 +287,6 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
-        # index_suffix is a bulk.index routing helper only
         encoding:
           except_fields: ["index_suffix"]
         compression: gzip
@@ -344,12 +301,10 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        # _id = CloudWatch logEvents[].id (mirrored to .id by the parser).
+        # _id = CloudWatch logEvents[].id (mirrored to .id).
         id_key: id
         bulk:
           action: index
-          # AWS CLO lambda-* index pattern. index_suffix derived from each log
-          # event's epoch-millis timestamp.
           index: 'lambda-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
@@ -357,7 +312,6 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
-        # index_suffix is a bulk.index routing helper only
         encoding:
           except_fields: ["index_suffix"]
         compression: gzip
@@ -372,14 +326,11 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        # _id = synthetic sha256(file|ts_nanos|message) from parsed_kubernetes,
-        # so a retried bulk re-indexes the same doc instead of duplicating it.
+        # _id = synthetic sha256(file|ts|message) for idempotent retries.
         id_key: id
         bulk:
           action: index
-          # kubernetes-* index pattern; index_suffix = daily %Y.%m.%d derived
-          # from each event's own log timestamp. flat_object mappings for
-          # pod_labels et al. come from the kubernetes index template.
+          # flat_object label mappings come from the kubernetes index template.
           index: 'kubernetes-{{ "{{ index_suffix }}" }}'
         auth:
           strategy: basic
@@ -387,7 +338,6 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
-        # index_suffix is a bulk.index routing helper only
         encoding:
           except_fields: ["index_suffix"]
         compression: gzip
@@ -409,19 +359,16 @@ data:
           password: "${OPENSEARCH_PASSWORD}"
         tls:
           verify_certificate: false
-        # index_suffix is a bulk.index routing helper only
         encoding:
           except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
         buffer: { type: memory, max_events: 1000, when_full: block }
         healthcheck: { enabled: true }
-        #buffer: { type: disk, max_size: 268435488, when_full: block }
       {{- end }}
 
       {{- if $rf }}
-      # Forward all (prepped) events to the remote aggregator over HTTPS + bearer
-      # token.
+      # Forward all events to the remote aggregator (HTTPS + bearer token).
       remote_forward:
         type: http
         inputs:

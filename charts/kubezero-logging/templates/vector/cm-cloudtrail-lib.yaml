@@ -9,9 +9,7 @@ metadata:
 data:
   remap_cloudtrail.yaml: |
     transforms:
-      # Explode siphon-wrapped CloudTrail Records into one event per record.
-      # Wire format: { observed_at, attributes: {...}, body: { Records: [...] } }.
-      # `.body` may arrive as a decoded object or as JSON text — handle both.
+      # One event per CloudTrail record; .body may be a decoded object or JSON text.
       cloudtrail_unpack:
         type: remap
         inputs:
@@ -24,12 +22,8 @@ data:
           }
           . = array(body.Records) ?? []
 
-      # Emit the flat CloudTrail record at top level, matching the AWS CLO
-      # cloudtrail index template (eventName / eventTime / eventID / etc. as
-      # top-level fields). requestParameters and responseElements are mapped
-      # as `keyword` in CLO; stringify them so the index doesn't try to
-      # interpret arbitrary per-API sub-fields (the source of the prior
-      # `requestParameters.endTime` date-parse failures).
+      # Flat record matching the AWS CLO cloudtrail template. requestParameters/
+      # responseElements are stringified to avoid per-API mapping conflicts.
       parsed_cloudtrail:
         type: remap
         inputs:
@@ -50,9 +44,6 @@ data:
 
           . = raw
 
-          # Carry the canonical event-time (CloudTrail eventTime) as epoch-ms.
-          # The final set_index_suffix step (local sink path) or the remote
-          # aggregator derives index_suffix from this; it is never stored
-          # (dropped before the sink). Format lives in set_index_suffix now.
+          # Event-time (epoch-ms) for set_index_suffix; never stored.
           .index_ts = to_unix_timestamp(ts, unit: "milliseconds")
 {{- end }}

@@ -9,9 +9,7 @@ metadata:
 data:
   remap_s3-access-logs.yaml: |
     transforms:
-      # Explode an S3 server-access-log object into one event per line. The
-      # file is plain text (S3 does not compress server access logs), one
-      # request per line, no header rows.
+      # One event per S3 server-access-log line (plain text, no header rows).
       s3-access-logs_unpack:
         type: remap
         inputs:
@@ -24,13 +22,8 @@ data:
           data  = filter(lines) -> |_idx, line| { line != "" }
           . = map_values(data) -> |line| { { "_line": line } }
 
-      # Parse one S3 server-access-log V2 line into the flat field shape
-      # expected by the AWS CLO s3-access-logs index template. Capture groups
-      # follow the AWS-documented field order; quoted segments (request_uri,
-      # referrer, user_agent) are captured as a whole (may contain spaces,
-      # which is why `\S+`-only splitting wouldn't work).
-      # Fields after `tls_version` (access_point_arn, acl_required) are
-      # ignored — the CLO index template doesn't map them.
+      # Flat shape for the AWS CLO s3-access-logs template. Quoted segments
+      # (request_uri/referrer/user_agent) are captured whole as they contain spaces.
       parsed_s3-access-logs:
         type: remap
         inputs:
@@ -45,9 +38,7 @@ data:
               abort
           }
 
-          # CLO indexes the bracket-stripped time string directly using the
-          # date format `dd/MMM/yyyy:HH:mm:ss Z` on the index mapping. Parse it
-          # once locally only to carry .index_ts (epoch-ms) for index routing.
+          # Event-time for .index_ts below; CLO indexes the raw bracket string itself.
           ts = parse_timestamp(c.time, "%d/%b/%Y:%H:%M:%S %z") ?? now()
 
           . = {
@@ -77,11 +68,9 @@ data:
               "tls_version":         c.tls_version
           }
 
-          # Mirror request_id for sink id_key (idempotent retries on replay).
+          # .id mirrors request_id for id_key dedup.
           .id = c.request_id
 
-          # Carry the canonical event-time as epoch-ms; the final
-          # set_index_suffix step (or the remote aggregator) derives
-          # index_suffix from it. Never stored (dropped before the sink).
+          # Event-time (epoch-ms) for set_index_suffix; never stored.
           .index_ts = to_unix_timestamp(ts, unit: "milliseconds")
 {{- end }}

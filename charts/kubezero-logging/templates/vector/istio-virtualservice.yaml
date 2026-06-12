@@ -12,11 +12,8 @@ spec:
   gateways:
   - {{ default "istio-system/ingressgateway" ( index .Values "vector" "istio" "gateway" ) }}
   http:
-  # siphon posts to /ingest/<event.name> (e.g. /ingest/aws.s3.object_received).
-  # Allow only POST to a path with the /ingest/ prefix followed by a single
-  # lowercase dotted/dash/underscore event-name segment — blocks arbitrary
-  # URIs and path traversal while leaving room for new event names without
-  # chart edits.
+  # Allow only POST /ingest/<event-name> (lowercase): blocks arbitrary URIs and
+  # path traversal while allowing new event names without chart edits.
   - match:
     - method:
         exact: POST

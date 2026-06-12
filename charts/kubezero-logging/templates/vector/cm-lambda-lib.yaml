@@ -9,12 +9,8 @@ metadata:
 data:
   remap_lambda.yaml: |
     transforms:
-      # Explode a CloudWatch Logs subscription payload into one event per
-      # logEvents[] entry. siphon assumption (A): .body is the raw CWL
-      # DATA_MESSAGE { messageType, owner, logGroup, logStream, logEvents[] }.
-      # Wrapper fields are stashed as metadata so parsed_lambda can reattach
-      # them to each exploded event (the array elements only carry id/timestamp/
-      # message). This mirrors cloudtrail_unpack's `.body.Records[]` explosion.
+      # Explode a CWL DATA_MESSAGE into one event per logEvents[] entry; wrapper
+      # fields (logGroup/logStream/owner) are stashed as metadata for parsed_lambda.
       lambda_unpack:
         type: remap
         inputs:
@@ -35,18 +31,15 @@ data:
           # AWS region rides on the siphon envelope as the `cloud.region`
           %region     = .attributes."cloud.region"
 
-          # CloudWatch sends periodic CONTROL_MESSAGE keep-alives carrying a
-          # dummy logEvent — drop the whole payload (empty array => 0 events).
+          # Drop CloudWatch CONTROL_MESSAGE keep-alives.
           if (string(body.messageType) ?? "") == "CONTROL_MESSAGE" {
               . = []
           } else {
               . = array(body.logEvents) ?? []
           }
 
-      # One CloudWatch log event -> flat doc matching the AWS CLO lambda index
-      # template (time / log_group / log_stream / owner / log-detail). `time` is
-      # epoch-millis: the CLO template's `time` mapping accepts epoch_millis and
-      # aliases @timestamp to it, so the raw logEvents[].timestamp goes in as-is.
+      # Flat doc for the AWS CLO lambda template; `time` is epoch-ms (CLO aliases
+      # @timestamp to it).
       parsed_lambda:
         type: remap
         inputs:
@@ -64,18 +57,10 @@ data:
               "log-detail": ev.message
           }
 
-          # CloudWatch logEvents[].id is globally unique -> idempotent retries.
+          # logEvents[].id is globally unique -> idempotent retries.
           .id = ev.id
 
-          # FUTURE: for /aws/lambda/ groups whose message is a platform REPORT
-          # line ("Duration: .. ms  Billed Duration: .. ms  Memory Size: .. MB
-          # Max Memory Used: .. MB"), parse_regex it here and add numeric fields
-          # (duration_ms / billed_duration_ms / memory_size_mb / max_memory_mb).
-          # Purely additive — the doc shape above does not change.
-
-          # Carry the canonical event-time (CloudWatch event ts) as epoch-ms;
-          # the final set_index_suffix step (or the remote aggregator) derives
-          # index_suffix from it. Never stored (dropped before the sink).
+          # Event-time (epoch-ms) for set_index_suffix; never stored.
           .index_ts = ms
 
           . = compact(., recursive: true, null: true)

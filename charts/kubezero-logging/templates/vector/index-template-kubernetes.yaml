@@ -1,11 +1,9 @@
 {{- if and .Values.vector.enabled (or .Values.vector.kubernetes.indexTemplate.enabled .Values.vector.internalRetention.enabled) }}
-# Post-install/upgrade hook that bootstraps OpenSearch-side assets for this
-# logging stack via the OS API (templates apply to indices created after the
-# PUT). Two independent concerns, each toggled in values:
-#   - kubernetes-* composable index template (flat_object label maps etc.)
-#   - ISM retention policy that deletes OpenSearch's own internal indices
-#     (query-insights top_queries-*, security plugin security-auditlog-*) after
-#     N days so they don't grow unbounded.
+# Post-install/upgrade hook (OS API; applies to indices created after the PUT).
+# Two independent toggles:
+#   - kubernetes-* index template (flat_object label maps)
+#   - ISM policy deleting OpenSearch internal indices (top_queries-*,
+#     security-auditlog-*) after N days.
 ---
 apiVersion: v1
 kind: ConfigMap

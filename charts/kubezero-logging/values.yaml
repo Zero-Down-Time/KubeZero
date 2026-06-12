@@ -5,8 +5,8 @@ networkPolicy:
     app.kubernetes.io/name: vector-agent
     app.kubernetes.io/component: Agent
  
-# Single switch for the entire remote HTTP path: the http_in source, its token
-# auth, the token enrichment table, and the tenant tagging. false => :6000 only.
+# Master switch for the remote HTTP ingest path (http_in + token auth).
+# false => :6000 only.
 vectorHttpIngest:
   enabled: false
 
@@ -17,9 +17,7 @@ vector:
     enabled: false
     gateway: istio-ingress/private-ingressgateway
     url: vector.example.com
-    # POST requests whose URI matches this regex are routed to the aggregator
-    # :8080. siphon posts to /ingest/<event.name> (e.g. /ingest/aws.s3.object_received);
-    # the default permits any /ingest/<event-name> path (lowercase, dotted).
+    # POST /ingest/<event-name> routed to :8080; default permits any lowercase name.
     ingestPathRegex: '^/ingest/[a-z][a-z0-9._-]*$'
 
   role: Aggregator
@@ -28,7 +26,6 @@ vector:
   image:
     base: alpine
  
-  # Disk buffer for the sink
   dataDir: /vector-data-dir
   persistence:
     enabled: false
@@ -118,11 +115,9 @@ vector:
     - vector-lambda-lib
     - vector-kubernetes-lib
 
-  # Per-service index granularity. Each parser carries the event's own time as
-  # .index_ts (epoch-ms); the central set_index_suffix transform formats it with
-  # this strftime per %event_type into the sink's bulk.index as <svc>-<suffix>.
-  # For forwarded events THIS (remote) cluster's value wins -> it owns retention.
-  # `%Y.%m.%d` = daily indices; `%Y.%m` monthly, `%Y` yearly.
+  # Per-service index granularity. set_index_suffix formats each event's
+  # .index_ts into <svc>-<suffix>; for forwarded events THIS cluster's value
+  # wins. %Y.%m.%d=daily, %Y.%m=monthly, %Y=yearly.
   cloudtrail:
     indexSuffix: "%Y.%m"
   cloudfront:
@@ -148,23 +143,19 @@ vector:
       - "top_queries-*"
       - "security-auditlog-*"
 
-  # Optional cross-cluster forwarding: send ALL events to a remote
-  # kubezero-logging aggregator over HTTPS + bearer token. enabled => this is a
-  # forward-only node (no local OpenSearch sinks render). A storing node
-  # (enabled: false) always also accepts forwarded events from other clusters,
-  # processed in parallel with its own normal events.
+  # Cross-cluster forwarding to a remote aggregator (HTTPS + bearer). enabled =>
+  # forward-only node (no local OpenSearch); disabled => storing node, which also
+  # accepts forwarded events in parallel with its own.
   remoteForward:
     enabled: false
-    # full URL incl. path; the remote istio VirtualService only routes
-    # POST /ingest/<lowercase-name>, and "/ingest/forwarded" matches.
+    # full URL; remote VS routes POST /ingest/<lowercase-name>.
     uri: https://vector.remote.example.com/ingest/forwarded
-    # bearer token injected as ${VECTOR_REMOTE_TOKEN} (env from this secret).
+    # bearer token injected as ${VECTOR_REMOTE_TOKEN}.
     tokenSecret:
       name: vector-remote-forward
       key: token
-    # disk buffer = WAN durability anchor. whenFull: block backpressures the
-    # aggregator on a remote outage; use drop_newest to decouple. Disk buffer
-    # survives restarts only with persistence.enabled: true (else emptyDir).
+    # WAN durability anchor; block backpressures on remote outage (drop_newest to
+    # decouple). Survives restarts only with persistence.enabled.
     buffer:
       maxSize: 268435488   # 256Mi
       whenFull: block
@@ -176,10 +167,8 @@ vector:
     interval: 30s
     honorLabels: true
 
-# Node-local agent: same upstream vector chart (aliased), deployed as a
-# DaemonSet to gather pod logs and ship them to the Aggregator above (:6000).
-# role: Agent makes the upstream chart create the DaemonSet, ServiceAccount,
-# ClusterRole/Binding for kubernetes_logs and the /var/log hostPath mounts.
+# Node-local agent (aliased vector chart, role: Agent => DaemonSet + RBAC +
+# /var/log mount) shipping pod logs to the aggregator (:6000).
 vector-agent:
   enabled: false
 
@@ -194,10 +183,8 @@ vector-agent:
   existingConfigMaps:
     - vector-agent-config
 
-  # The upstream Agent role mounts /var/log, /var/lib, /proc and /sys by default.
-  # We only tail pod logs (kubernetes_logs reads /var/log/pods) and run no
-  # host_metrics source, so keep just /var/log and drop the rest (containerd
-  # stores real log files under /var/log/pods; /var/lib is only for docker).
+  # Upstream Agent role also mounts /var/lib,/proc,/sys (docker + host_metrics);
+  # we only tail pod logs, so keep just /var/log.
   defaultVolumes:
     - name: var-log
       hostPath:
@@ -227,18 +214,12 @@ vector-agent:
     interval: 30s
     honorLabels: true
 
-# Pre-configured OpenSearch Dashboards from AWS Centralized Logging with
-# OpenSearch (CLO). Index templates + saved-object dashboards per service are
-# generated into ConfigMaps by scipts/sync-osd-dashboards.sh and applied at
-# helm install/upgrade by templates/OSDashboards/install-job.yaml.
+# AWS CLO OpenSearch dashboards + index templates, generated by
+# scipts/sync-osd-dashboards.sh and applied by OSDashboards/install-job.yaml.
 osdashboards:
   enabled: false
-  # OSD service inside the cluster. Default matches the upstream chart's
-  # service name when this chart is released as `logging`.
   endpoint: http://logging-opensearch-dashboards:5601
-  # Services to install. Must each have a generated ConfigMap
-  # (templates/OSDashboards/<svc>.yaml) — re-run the sync script after
-  # adding entries here.
+  # Each service needs a generated ConfigMap; re-run the sync script after edits.
   services:
     - cloudfront
     - cloudtrail

@@ -16,21 +16,18 @@ data:
         source: |
           %event_type = "kubernetes"
 
-          # kubernetes_logs stamps .timestamp as the log line's time; fall back
-          # to now() if a malformed event lacks it.
+          # fall back to now() if a malformed event lacks .timestamp.
           ts = .timestamp
           if !is_timestamp(ts) { ts = now() }
           ."@timestamp" = ts
 
-          # Idempotent _id: same physical log line (file + nanosecond timestamp +
-          # message) hashes identically
+          # Idempotent _id: hash of file + ns timestamp + message.
           nanos = to_unix_timestamp(.timestamp, unit: "nanoseconds") ?? 0
           fp = (string(.file) ?? "") + "|" + to_string(nanos) + "|" + (string(.message) ?? "")
           .id = sha2(fp, variant: "SHA-256")
 
-          # Nest a structured (JSON) app-log payload under kube.<namespace> so the
-          # same field name across different namespaces maps to a distinct path,
-          # avoiding cross-namespace OpenSearch mapping collisions
+          # Nest app-log JSON under kube.<namespace> so same field names in
+          # different namespaces don't collide in OpenSearch mappings.
           ns = string(.kubernetes.pod_namespace) ?? "unknown"
           if is_string(.message) {
             parsed, err = parse_json(.message)
@@ -40,14 +37,11 @@ data:
             }
           }
 
-          # .timestamp is replaced by .@timestamp
           del(.timestamp)
           del(.source_type)
 
-          # Carry the canonical event-time as epoch-ms; the final
-          # set_index_suffix step (or the remote aggregator) derives
-          # index_suffix from it. Never stored (dropped before the sink).
-          .index_ts = to_unix_timestamp(ts, unit: "milliseconds")
+          # Event-time (epoch-ms) for set_index_suffix; never stored.
+          .index_ts = to_unix_timestamp!(ts, unit: "milliseconds")
 
           . = compact(., recursive: true, null: true)
 {{- end }}

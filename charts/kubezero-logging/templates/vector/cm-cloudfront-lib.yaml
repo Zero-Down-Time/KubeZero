@@ -9,9 +9,7 @@ metadata:
 data:
   remap_cloudfront.yaml: |
     transforms:
-      # Explode a single CloudFront standard-log (V1) object into one event
-      # per log line. siphon delivers the decompressed file content in `.body`
-      # as a string; lines starting with `#` (#Version, #Fields) are dropped.
+      # One event per CloudFront V1 log line; #-prefixed header lines dropped.
       cloudfront_unpack:
         type: remap
         inputs:
@@ -24,14 +22,10 @@ data:
           data  = filter(lines) -> |_idx, line| {
             line != "" && !starts_with(line, "#")
           }
-          # Vector events must be objects; wrap each TSV row so the downstream
-          # parser can pull it out via ._line.
+          # Wrap each row as an object (Vector events must be objects); read via ._line.
           . = map_values(data) -> |line| { { "_line": line } }
 
-      # Parse one tab-separated CloudFront V1 row into a flat document
-      # matching the AWS CLO cloudfront index template (top-level hyphenated
-      # field names; timestamp is a single "yyyy-MM-dd HH:mm:ss" string with
-      # @timestamp aliased to it server-side).
+      # Flat document matching the AWS CLO cloudfront template.
       parsed_cloudfront:
         type: remap
         inputs:
@@ -83,12 +77,9 @@ data:
               "sc-range-end":                  to_int(fields[32]) ?? null
           }
 
-          # Mirror x-edge-request-id into a hyphen-free path so the sink's
-          # id_key can use a plain dotted path for idempotent dedup.
+          # .id mirrors x-edge-request-id (hyphen-free path for id_key dedup).
           .id = fields[14]
 
-          # Carry the canonical event-time as epoch-ms; the final
-          # set_index_suffix step (or the remote aggregator) derives
-          # index_suffix from it. Never stored (dropped before the sink).
+          # Event-time (epoch-ms) for set_index_suffix; never stored.
           .index_ts = to_unix_timestamp(ts, unit: "milliseconds")
 {{- end }}
