@@ -51,15 +51,18 @@ vector:
     - --watch-config-method
     - poll
  
-  # OpenSearch credentials. Create the `vector-opensearch` Secret
+  # OpenSearch credentials (Secret `vector-opensearch`), all optional
   env:
     - name: OPENSEARCH_ENDPOINT
-      valueFrom: { secretKeyRef: { name: vector-opensearch, key: endpoint } }
+      valueFrom: { secretKeyRef: { name: vector-opensearch, key: endpoint, optional: true } }
     - name: OPENSEARCH_USER
-      valueFrom: { secretKeyRef: { name: vector-opensearch, key: username } }
+      valueFrom: { secretKeyRef: { name: vector-opensearch, key: username, optional: true } }
     - name: OPENSEARCH_PASSWORD
-      valueFrom: { secretKeyRef: { name: vector-opensearch, key: password } }
- 
+      valueFrom: { secretKeyRef: { name: vector-opensearch, key: password, optional: true } }
+    # Bearer token for remoteForward (see vector.remoteForward)
+    - name: VECTOR_REMOTE_TOKEN
+      valueFrom: { secretKeyRef: { name: vector-remote-forward, key: token, optional: true } }
+
   # Ports must match customConfig for all three: container / service / headless.
   containerPorts:
     - { name: vector,  containerPort: 6000, protocol: TCP }
@@ -134,6 +137,38 @@ vector:
       totalFieldsLimit: 2000
       shards: 1
       replicas: 1
+
+  # ISM retention for OpenSearch's own internal indices (query-insights
+  # top_queries-* and security plugin security-auditlog-*)
+  internalRetention:
+    enabled: true
+    days: 7
+    patterns:
+      - "top_queries-*"
+      - "security-auditlog-*"
+
+  # Optional cross-cluster forwarding: send ALL events to a remote
+  # kubezero-logging aggregator over HTTPS + bearer token. enabled => this is a
+  # forward-only node (no local OpenSearch sinks render). A storing node
+  # (enabled: false) always also accepts forwarded events from other clusters,
+  # processed in parallel with its own normal events.
+  remoteForward:
+    enabled: false
+    # full URL incl. path; the remote istio VirtualService only routes
+    # POST /ingest/<lowercase-name>, and "/ingest/forwarded" matches.
+    uri: https://vector.remote.example.com/ingest/forwarded
+    # bearer token injected as ${VECTOR_REMOTE_TOKEN} (env from this secret).
+    tokenSecret:
+      name: vector-remote-forward
+      key: token
+    # disk buffer = WAN durability anchor. whenFull: block backpressures the
+    # aggregator on a remote outage; use drop_newest to decouple. Disk buffer
+    # survives restarts only with persistence.enabled: true (else emptyDir).
+    buffer:
+      maxSize: 268435488   # 256Mi
+      whenFull: block
+    request:
+      retryAttempts: 10
 
   podMonitor:
     enabled: false

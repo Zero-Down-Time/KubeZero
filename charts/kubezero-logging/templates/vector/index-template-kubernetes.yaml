@@ -1,4 +1,11 @@
-{{- if and .Values.vector.enabled .Values.vector.kubernetes.indexTemplate.enabled }}
+{{- if and .Values.vector.enabled (or .Values.vector.kubernetes.indexTemplate.enabled .Values.vector.internalRetention.enabled) }}
+# Post-install/upgrade hook that bootstraps OpenSearch-side assets for this
+# logging stack via the OS API (templates apply to indices created after the
+# PUT). Two independent concerns, each toggled in values:
+#   - kubernetes-* composable index template (flat_object label maps etc.)
+#   - ISM retention policy that deletes OpenSearch's own internal indices
+#     (query-insights top_queries-*, security plugin security-auditlog-*) after
+#     N days so they don't grow unbounded.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -12,6 +19,7 @@ metadata:
     "helm.sh/hook-weight": "-10"
     "helm.sh/hook-delete-policy": before-hook-creation
 data:
+  {{- if .Values.vector.kubernetes.indexTemplate.enabled }}
   kubernetes.json: |
     {
       "index_patterns": ["kubernetes-*"],
@@ -61,6 +69,33 @@ data:
         }
       }
     }
+  {{- end }}
+  {{- if .Values.vector.internalRetention.enabled }}
+  internal-retention-ism.json: |
+    {
+      "policy": {
+        "description": "kubezero-logging: delete internal OpenSearch indices after {{ .Values.vector.internalRetention.days }} days",
+        "default_state": "hot",
+        "states": [
+          {
+            "name": "hot",
+            "actions": [],
+            "transitions": [
+              { "state_name": "delete", "conditions": { "min_index_age": "{{ .Values.vector.internalRetention.days }}d" } }
+            ]
+          },
+          {
+            "name": "delete",
+            "actions": [ { "delete": {} } ],
+            "transitions": []
+          }
+        ],
+        "ism_template": [
+          { "index_patterns": {{ .Values.vector.internalRetention.patterns | toJson }}, "priority": 100 }
+        ]
+      }
+    }
+  {{- end }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -94,12 +129,39 @@ spec:
                 if [ $i -ge 60 ]; then echo "timeout waiting for OpenSearch" >&2; exit 1; fi
                 sleep 5
               done
+              {{- if .Values.vector.kubernetes.indexTemplate.enabled }}
               echo "PUT /_index_template/kubernetes"
               curl -sSk --fail-with-body -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
                    -H 'Content-Type: application/json' \
                    -X PUT --data-binary @/assets/kubernetes.json \
                    "$OPENSEARCH_ENDPOINT/_index_template/kubernetes"
               echo
+              {{- end }}
+              {{- if .Values.vector.internalRetention.enabled }}
+              POLICY=internal-index-retention
+              echo "PUT _plugins/_ism/policies/$POLICY"
+              # ISM policy PUT needs if_seq_no/if_primary_term when it already
+              # exists (idempotent across upgrades); omit them to create.
+              meta=$(curl -sSk -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
+                     "$OPENSEARCH_ENDPOINT/_plugins/_ism/policies/$POLICY" || true)
+              seq=$(printf '%s' "$meta"  | grep -oE '"_seq_no":[0-9]+'       | grep -oE '[0-9]+' | head -1 || true)
+              prim=$(printf '%s' "$meta" | grep -oE '"_primary_term":[0-9]+' | grep -oE '[0-9]+' | head -1 || true)
+              q=""
+              if [ -n "$seq" ] && [ -n "$prim" ]; then q="?if_seq_no=$seq&if_primary_term=$prim"; fi
+              curl -sSk --fail-with-body -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
+                   -H 'Content-Type: application/json' \
+                   -X PUT --data-binary @/assets/internal-retention-ism.json \
+                   "$OPENSEARCH_ENDPOINT/_plugins/_ism/policies/$POLICY$q"
+              echo
+              # ism_template only manages NEW indices; attach to existing ones too
+              # (already-managed indices report a harmless failure -> best effort).
+              echo "attach $POLICY to existing indices"
+              curl -sSk -u "$OPENSEARCH_USER:$OPENSEARCH_PASSWORD" \
+                   -H 'Content-Type: application/json' \
+                   -X POST --data "{\"policy_id\":\"$POLICY\"}" \
+                   "$OPENSEARCH_ENDPOINT/_plugins/_ism/add/{{ join "," .Values.vector.internalRetention.patterns }}" || true
+              echo
+              {{- end }}
           env:
             - name: OPENSEARCH_ENDPOINT
               valueFrom: { secretKeyRef: { name: vector-opensearch, key: endpoint } }

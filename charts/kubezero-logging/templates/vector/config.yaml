@@ -1,4 +1,9 @@
 {{- if .Values.vector.enabled }}
+{{- $rf := .Values.vector.remoteForward.enabled }}
+{{- /* A storing node ($opensearch) renders the local OpenSearch sinks + sink_router
+       and always accepts forwarded events (ingress_class) in parallel with the
+       normal parse path. A forward-only node (remoteForward.enabled) does neither. */}}
+{{- $opensearch := not $rf }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -110,10 +115,43 @@ data:
       # CloudWatch Logs via siphon carry their payload in .body
       # and are discriminated on body fields (e.g. .body.logGroup). Routes are
       # matched in order.
-      event_router:
+      {{- if $opensearch }}
+      # Split forwarded events (from another aggregator's remoteForward) out of
+      # the raw ingest stream so they bypass event_router/parsed_* entirely
+      # (prevents double parsing). They carry .forwarded set by forward_prep.
+      # Always present on a storing node so remote events are handled in parallel
+      # with normal events; if none arrive the route simply never matches.
+      ingress_class:
         type: route
         inputs:
           - normalize
+        route:
+          forwarded: '.forwarded == true'
+
+      # Re-promote the lifted metadata: .event_type -> %event_type so sink_router
+      # routes to the correct opensearch_<svc>. .index_suffix is kept (the sink's
+      # bulk.index reuses it) and stripped before storage by the sink's
+      # except_fields. Drop the helper fields that must never be stored.
+      forwarded_promote:
+        type: remap
+        inputs:
+          - ingress_class.forwarded
+        source: |
+          if exists(.event_type) {
+            %event_type = string!(.event_type)
+            del(.event_type)
+          }
+          del(.forwarded)
+      {{- end }}
+
+      event_router:
+        type: route
+        inputs:
+          {{- if $opensearch }}
+          - ingress_class._unmatched
+          {{- else }}
+          - normalize
+          {{- end }}
         route:
           cloudtrail: |
             .attributes."event.name" == "aws.s3.object_received" &&
@@ -140,17 +178,39 @@ data:
             exists(.kubernetes.pod_name)
 
 
+      {{- if $opensearch }}
       sink_router:
         type: route
         inputs:
           - parsed_*
           - event_router._unmatched
+          - forwarded_promote
         route:
           cloudtrail:     '%event_type == "aws.cloudtrail"'
           cloudfront:     '%event_type == "aws.cloudfront"'
           s3-access-logs: '%event_type == "aws.s3-access-logs"'
           lambda:         '%event_type == "aws.lambda"'
           kubernetes:     '%event_type == "kubernetes"'
+      {{- end }}
+
+      {{- if $rf }}
+      # Forward path: %event_type is metadata and would be lost by JSON encoding,
+      # so lift it to a field; mark the event (.forwarded) so the remote
+      # detects-and-bypasses its parsers (prevents double parsing). .index_suffix
+      # and .id are already fields on parsed events and ride along automatically
+      # (remote reuses index_suffix for bulk.index, then strips it before
+      # storage; .id gives cross-hop dedup).
+      forward_prep:
+        type: remap
+        inputs:
+          - parsed_*
+          - event_router._unmatched
+        source: |
+          .forwarded = true
+          if exists(%event_type) {
+            .event_type = %event_type
+          }
+      {{- end }}
 
       # Drop metrics emitted BY the metrics plumbing itself
       metrics_clean:
@@ -159,6 +219,7 @@ data:
         condition: '!includes(["internal_metrics", "metrics_clean"], string(.tags.component_id) ?? "")'
 
     sinks:
+      {{- if $opensearch }}
       opensearch_cloudtrail:
         type: elasticsearch
         inputs:
@@ -325,6 +386,34 @@ data:
         buffer: { type: memory, max_events: 1000, when_full: block }
         healthcheck: { enabled: true }
         #buffer: { type: disk, max_size: 268435488, when_full: block }
+      {{- end }}
+
+      {{- if $rf }}
+      # Forward all (prepped) events to the remote aggregator over HTTPS + bearer
+      # token.
+      remote_forward:
+        type: http
+        inputs:
+          - forward_prep
+        uri: {{ .Values.vector.remoteForward.uri | quote }}
+        method: post
+        encoding:
+          codec: json
+        auth:
+          strategy: bearer
+          token: "${VECTOR_REMOTE_TOKEN}"
+        compression: gzip
+        acknowledgements:
+          enabled: true
+        request:
+          retry_attempts: {{ .Values.vector.remoteForward.request.retryAttempts }}
+        buffer:
+          type: disk
+          max_size: {{ .Values.vector.remoteForward.buffer.maxSize }}
+          when_full: {{ .Values.vector.remoteForward.buffer.whenFull }}
+        healthcheck:
+          enabled: false
+      {{- end }}
 
       metrics:
         type: prometheus_exporter
