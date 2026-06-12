@@ -118,10 +118,11 @@ vector:
     - vector-lambda-lib
     - vector-kubernetes-lib
 
-  # Per-parser knobs. indexSuffix is a strftime format applied to each event's
-  # own timestamp (CloudTrail eventTime / CloudFront date+time / S3 request
-  # time / CloudWatch event time), templated into the sink's bulk.index as
-  # <svc>-<suffix>. `%Y.%m.%d` = daily indices; `%Y.%m` monthly, `%Y` yearly.
+  # Per-service index granularity. Each parser carries the event's own time as
+  # .index_ts (epoch-ms); the central set_index_suffix transform formats it with
+  # this strftime per %event_type into the sink's bulk.index as <svc>-<suffix>.
+  # For forwarded events THIS (remote) cluster's value wins -> it owns retention.
+  # `%Y.%m.%d` = daily indices; `%Y.%m` monthly, `%Y` yearly.
   cloudtrail:
     indexSuffix: "%Y.%m"
   cloudfront:

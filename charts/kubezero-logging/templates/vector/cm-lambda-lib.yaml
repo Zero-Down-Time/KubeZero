@@ -54,7 +54,6 @@ data:
         source: |
           ev = .
           ms = to_int(ev.timestamp) ?? 0
-          ts = from_unix_timestamp(ms, unit: "milliseconds") ?? now()
 
           . = {
               "time":       ms,
@@ -74,7 +73,10 @@ data:
           # (duration_ms / billed_duration_ms / memory_size_mb / max_memory_mb).
           # Purely additive — the doc shape above does not change.
 
-          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" .Values.vector.lambda.indexSuffix | quote }})
+          # Carry the canonical event-time (CloudWatch event ts) as epoch-ms;
+          # the final set_index_suffix step (or the remote aggregator) derives
+          # index_suffix from it. Never stored (dropped before the sink).
+          .index_ts = ms
 
           . = compact(., recursive: true, null: true)
 {{- end }}

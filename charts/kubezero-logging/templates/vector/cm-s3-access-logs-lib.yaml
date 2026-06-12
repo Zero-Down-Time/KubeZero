@@ -46,8 +46,8 @@ data:
           }
 
           # CLO indexes the bracket-stripped time string directly using the
-          # date format `dd/MMM/yyyy:HH:mm:ss Z` on the index mapping. Parse
-          # it once locally for the index_suffix computation only.
+          # date format `dd/MMM/yyyy:HH:mm:ss Z` on the index mapping. Parse it
+          # once locally only to carry .index_ts (epoch-ms) for index routing.
           ts = parse_timestamp(c.time, "%d/%b/%Y:%H:%M:%S %z") ?? now()
 
           . = {
@@ -80,6 +80,8 @@ data:
           # Mirror request_id for sink id_key (idempotent retries on replay).
           .id = c.request_id
 
-          # strftime format configurable via vector.s3-access-logs.indexSuffix.
-          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" (index .Values.vector "s3-access-logs" "indexSuffix") | quote }})
+          # Carry the canonical event-time as epoch-ms; the final
+          # set_index_suffix step (or the remote aggregator) derives
+          # index_suffix from it. Never stored (dropped before the sink).
+          .index_ts = to_unix_timestamp(ts, unit: "milliseconds")
 {{- end }}

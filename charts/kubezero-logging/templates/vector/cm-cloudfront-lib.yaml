@@ -87,6 +87,8 @@ data:
           # id_key can use a plain dotted path for idempotent dedup.
           .id = fields[14]
 
-          # strftime format configurable via vector.cloudfront.indexSuffix.
-          .index_suffix = format_timestamp!(ts, {{ default "%Y.%m.%d" .Values.vector.cloudfront.indexSuffix | quote }})
+          # Carry the canonical event-time as epoch-ms; the final
+          # set_index_suffix step (or the remote aggregator) derives
+          # index_suffix from it. Never stored (dropped before the sink).
+          .index_ts = to_unix_timestamp(ts, unit: "milliseconds")
 {{- end }}

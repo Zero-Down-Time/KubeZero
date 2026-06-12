@@ -128,10 +128,12 @@ data:
         route:
           forwarded: '.forwarded == true'
 
-      # Re-promote the lifted metadata: .event_type -> %event_type so sink_router
-      # routes to the correct opensearch_<svc>. .index_suffix is kept (the sink's
-      # bulk.index reuses it) and stripped before storage by the sink's
-      # except_fields. Drop the helper fields that must never be stored.
+      # Re-promote the lifted metadata: .event_type -> %event_type so the
+      # downstream set_index_suffix / sink_router route to the correct
+      # opensearch_<svc>. The carried .index_ts (event-time, epoch-ms) rides
+      # through to set_index_suffix, which derives index_suffix with THIS
+      # cluster's format/retention. Drop the helper fields that must never be
+      # stored.
       forwarded_promote:
         type: remap
         inputs:
@@ -179,12 +181,40 @@ data:
 
 
       {{- if $opensearch }}
-      sink_router:
-        type: route
+      # Final step before local routing: derive the dated index_suffix from the
+      # uniform .index_ts (event-time epoch-ms set by every parser, carried across
+      # the forward hop). Centralizes what used to live in each parser, and lets
+      # THIS cluster decide granularity/retention for forwarded events too.
+      # .index_ts is a routing helper only -> dropped here, never stored.
+      set_index_suffix:
+        type: remap
         inputs:
           - parsed_*
           - event_router._unmatched
           - forwarded_promote
+        source: |
+          fmt = ""
+          if %event_type == "aws.cloudtrail" {
+            fmt = {{ default "%Y.%m.%d" .Values.vector.cloudtrail.indexSuffix | quote }}
+          } else if %event_type == "aws.cloudfront" {
+            fmt = {{ default "%Y.%m.%d" .Values.vector.cloudfront.indexSuffix | quote }}
+          } else if %event_type == "aws.s3-access-logs" {
+            fmt = {{ default "%Y.%m.%d" (index .Values.vector "s3-access-logs" "indexSuffix") | quote }}
+          } else if %event_type == "aws.lambda" {
+            fmt = {{ default "%Y.%m.%d" .Values.vector.lambda.indexSuffix | quote }}
+          } else if %event_type == "kubernetes" {
+            fmt = {{ default "%Y.%m.%d" .Values.vector.kubernetes.indexSuffix | quote }}
+          }
+          if fmt != "" {
+            ts = from_unix_timestamp(to_int(.index_ts) ?? 0, unit: "milliseconds") ?? now()
+            .index_suffix = format_timestamp!(ts, fmt)
+          }
+          del(.index_ts)
+
+      sink_router:
+        type: route
+        inputs:
+          - set_index_suffix
         route:
           cloudtrail:     '%event_type == "aws.cloudtrail"'
           cloudfront:     '%event_type == "aws.cloudfront"'
@@ -196,10 +226,11 @@ data:
       {{- if $rf }}
       # Forward path: %event_type is metadata and would be lost by JSON encoding,
       # so lift it to a field; mark the event (.forwarded) so the remote
-      # detects-and-bypasses its parsers (prevents double parsing). .index_suffix
-      # and .id are already fields on parsed events and ride along automatically
-      # (remote reuses index_suffix for bulk.index, then strips it before
-      # storage; .id gives cross-hop dedup).
+      # detects-and-bypasses its parsers (prevents double parsing). .index_ts
+      # (event-time, epoch-ms) and .id are already fields and ride along
+      # automatically: the remote derives index_suffix from .index_ts with ITS
+      # OWN format/retention (the source no longer decides), and .id gives
+      # cross-hop dedup. index_suffix itself is intentionally NOT sent.
       forward_prep:
         type: remap
         inputs:
