@@ -16,8 +16,14 @@ data:
 
     sources:
       # Tails this node's pod logs, enriched with .kubernetes.* metadata.
+      # Suppress pod annotations at the source so the large maps (e.g.
+      # last-applied-configuration) are never allocated; pod_labels kept.
+      # Source suppression silently no-ops on some versions, so drop_annotations
+      # stays as the fallback and also handles namespace annotations.
       k8s:
         type: kubernetes_logs
+        pod_annotation_fields:
+          pod_annotations: ""
       {{- if (index .Values "vector-agent" "podMonitor" "enabled") }}
       internal_metrics:
         type: internal_metrics
@@ -57,7 +63,7 @@ data:
         # node's log files are then the buffer (no Vector-side disk buffer).
         buffer:
           type: memory
-          max_events: 2000
+          max_events: 500
           when_full: block
       {{- if (index .Values "vector-agent" "podMonitor" "enabled") }}
       # Metrics endpoint scraped by the PodMonitor (named port prom-exporter).
