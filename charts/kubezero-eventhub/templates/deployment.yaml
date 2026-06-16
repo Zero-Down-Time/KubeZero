@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventhub
+  labels:
+    app: eventhub
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: eventhub
+  template:
+    metadata:
+      {{- if .Values.secretConfig }}
+      # Roll the pods when the chart-rendered Secret content changes (other
+      # template changes already trigger their own rollout).
+      annotations:
+        checksum/secret: {{ .Values.secretConfig | toYaml | sha256sum }}
+      {{- end }}
+      labels:
+        app: eventhub
+        {{- include "kubezero-lib.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: apprise-api
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        {{- with .Values.env }}
+        env:
+        {{- range $k, $v := . }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+        {{- end }}
+        {{- end }}
+        # /robots.txt is served as a static 200 even with the web UI disabled.
+        livenessProbe:
+          httpGet:
+            path: /robots.txt
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /robots.txt
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          successThreshold: 1
+        # Keyed apprise configs (simple mode) come straight from the Secret as
+        # /config/<key>.cfg|yml (read-only); emptyDir when no Secret is set so a
+        # read-only root filesystem still has a writable /config at boot.
+        # /tmp, /attach, /plugin are the ephemeral writable paths the rootless,
+        # read-only-root image needs (nginx/gunicorn/supervisord runtime, etc.).
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: tmp
+          mountPath: /tmp
+        - name: attach
+          mountPath: /attach
+        - name: plugin
+          mountPath: /plugin
+        {{- with .Values.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        {{- if or .Values.secretConfig .Values.existingSecret }}
+        secret:
+          secretName: {{ default "eventhub" .Values.existingSecret }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: tmp
+        emptyDir:
+          medium: Memory
+      - name: attach
+        emptyDir: {}
+      - name: plugin
+        emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

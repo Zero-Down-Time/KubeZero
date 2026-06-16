@@ -1,0 +1,70 @@
+# Cluster-internal apprise-api for multi-platform notifications.
+# Exposed only as a ClusterIP Service on :8000.
+
+image:
+  repository: docker.io/caronc/apprise
+  # defaults to the chart's appVersion when empty
+  tag: ""
+  pullPolicy: IfNotPresent
+
+replicas: 1
+
+# Keyed apprise configs (stateful "simple" mode), held in a Secret since the
+# notification URLs usually carry tokens/passwords. Each map key is a filename
+# <key>.cfg (TEXT) or <key>.yml (YAML), mounted directly at /config/<key> and
+# addressable via /notify/<key>.
+secretConfig: {}
+#  ops.cfg: |
+#    slack://TokenA/TokenB/TokenC
+
+# Reference a pre-existing Secret instead of rendering one from secretConfig.
+existingSecret: ""
+
+# APPRISE_* tunables injected as container env.
+# CONFIG_LOCK disables the stateful write/read API (/add, /del, /get) so the
+# mounted Secret is the only config source; /notify/<key> still works.
+env:
+  APPRISE_STATEFUL_MODE: simple
+  APPRISE_CONFIG_LOCK: "yes"
+  APPRISE_WORKER_COUNT: "1"
+  APPRISE_API_ONLY: "yes"
+  APPRISE_ALLOW_SERVICES: "slack"
+
+service:
+  port: 8000
+
+# Optional default-deny NetworkPolicy guarding :8000. `from` is a list of
+# standard NetworkPolicyPeer entries (namespaceSelector / podSelector /
+# ipBlock); default allows any in-cluster namespace.
+networkPolicy:
+  enabled: false
+  from:
+    - namespaceSelector: {}
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 128Mi
+  limits:
+    memory: 256Mi
+
+# Rootless + read-only root filesystem per the upstream hardened deployment.
+# Required writable paths (/tmp, /attach, /plugin) are ephemeral emptyDirs;
+# /config is the read-only Secret (or a writable emptyDir when none is set).
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+tolerations:
+- key: node-role.kubernetes.io/control-plane
+  effect: NoSchedule
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""

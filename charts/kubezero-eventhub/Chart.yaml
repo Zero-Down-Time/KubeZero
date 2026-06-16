@@ -1,0 +1,21 @@
+apiVersion: v2
+name: kubezero-eventhub
+description: KubeZero cluster-internal event/notification hub (apprise-api)
+type: application
+version: 0.1.0
+appVersion: v1.5.0
+home: https://kubezero.com
+icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
+keywords:
+  - kubezero
+  - apprise
+  - eventhub
+  - notifications
+maintainers:
+  - name: Stefan Reimer
+    email: stefan@zero-downtime.net
+dependencies:
+  - name: kubezero-lib
+    version: 0.2.1
+    repository: https://cdn.zero-downtime.net/charts/
+kubeVersion: ">= 1.34.0-0"

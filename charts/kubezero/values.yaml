@@ -127,6 +127,11 @@ logging:
   namespace: logging
   targetRevision: 0.8.14
 
+eventhub:
+  enabled: false
+  namespace: kubezero
+  targetRevision: 0.1.0
+
 argo:
   enabled: false
   namespace: argocd

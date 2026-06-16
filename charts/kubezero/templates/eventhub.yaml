@@ -1,0 +1,7 @@
+{{- define "eventhub-values" }}
+{{- end }}
+
+{{- define "eventhub-argo" }}
+{{- end }}
+
+{{ include "kubezero-app.app" . }}
