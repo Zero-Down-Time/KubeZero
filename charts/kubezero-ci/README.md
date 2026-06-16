@@ -1,6 +1,6 @@
 # kubezero-ci
 
-![Version: 0.10.6](https://img.shields.io/badge/Version-0.10.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.10.7](https://img.shields.io/badge/Version-0.10.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things CI
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jenkins.io | jenkins | 5.9.18 |
-| oci://code.forgejo.org/forgejo-helm | forgejo | 17.1.0 |
-| oci://ghcr.io/renovatebot/charts | renovate | 46.150.4 |
+| https://charts.jenkins.io | jenkins | 5.9.26 |
+| oci://code.forgejo.org/forgejo-helm | forgejo | 17.1.1 |
+| oci://ghcr.io/renovatebot/charts | renovate | 46.192.1 |
 
 # Jenkins
 - default build retention 10 builds, 32days
@@ -78,7 +78,7 @@ Kubernetes: `>= 1.30.0`
 | forgejo.gitea.metrics.enabled | bool | `false` |  |
 | forgejo.gitea.metrics.serviceMonitor.enabled | bool | `true` |  |
 | forgejo.image.rootless | bool | `true` |  |
-| forgejo.image.tag | string | `"15.0.2"` |  |
+| forgejo.image.tag | string | `"15.0.3"` |  |
 | forgejo.istio.blockApi | bool | `false` |  |
 | forgejo.istio.branding.enabled | bool | `false` |  |
 | forgejo.istio.enabled | bool | `false` |  |
@@ -100,7 +100,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.envVars[0].name | string | `"HOME"` |  |
 | jenkins.agent.envVars[0].value | string | `"/home/jenkins/agent"` |  |
 | jenkins.agent.garbageCollection.enabled | bool | `true` |  |
-| jenkins.agent.idleMinutes | int | `30` |  |
+| jenkins.agent.idleMinutes | int | `60` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
 | jenkins.agent.image.tag | string | `"v0.8.10"` |  |
 | jenkins.agent.inheritYamlMergeStrategy | bool | `true` |  |
@@ -123,7 +123,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.containerEnv[1].value | string | `"none"` |  |
 | jenkins.controller.disableRememberMe | bool | `true` |  |
 | jenkins.controller.enableRawHtmlMarkupFormatter | bool | `true` |  |
-| jenkins.controller.image.tag | string | `"2.555.1-lts-alpine"` |  |
+| jenkins.controller.image.tag | string | `"2.555.3-lts-alpine"` |  |
 | jenkins.controller.initializeOnce | bool | `true` |  |
 | jenkins.controller.installPlugins[0] | string | `"kubernetes"` |  |
 | jenkins.controller.installPlugins[10] | string | `"configuration-as-code"` |  |

@@ -253,7 +253,7 @@ jenkins:
   agent:
     image:
       repository: public.ecr.aws/zero-downtime/jenkins-podman
-      tag: v0.8.10
+      tag: v0.8.11
     #alwaysPullImage: true
     podRetention: "Default"
     showRawYaml: false
@@ -271,6 +271,8 @@ jenkins:
     envVars:
       - name: HOME
         value: "/home/jenkins/agent"
+      - name: "APPRISE_API_URL"
+        value: "http://eventhub.kubezero:8000"
     resources:
       requests:
         cpu: ""
