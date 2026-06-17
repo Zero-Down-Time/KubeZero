@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventhub-templates
+  labels:
+    app: eventhub
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
+data:
+  slack-blocks.json: |
+    {{- .Files.Get "files/slack-blocks.json" | nindent 4 }}

@@ -66,6 +66,9 @@ spec:
           mountPath: /attach
         - name: plugin
           mountPath: /plugin
+        - name: templates
+          mountPath: /templates
+          readOnly: true
         {{- with .Values.resources }}
         resources:
           {{- toYaml . | nindent 10 }}
@@ -93,6 +96,9 @@ spec:
         emptyDir: {}
       - name: plugin
         emptyDir: {}
+      - name: templates
+        configMap:
+          name: eventhub-templates
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
