@@ -80,6 +80,28 @@ data:
           # .id mirrors x-edge-request-id (hyphen-free path for id_key dedup).
           .id = fields[14]
 
+          {{- if .Values.vector.geoip.enabled }}
+          geo = get_enrichment_table_record("geoip_city", { "ip": ."c-ip" }) ?? {}
+          if !is_empty(geo) {
+              .geo_iso_code = geo.country_code
+              .geo_country  = geo.country_name
+              .geo_city     = geo.city_name
+              if geo.latitude != null && geo.longitude != null {
+                  .geo_location = { "lat": geo.latitude, "lon": geo.longitude }
+              }
+          }
+          {{- end }}
+
+          # User-agent split, no DB needed. CloudFront percent-encodes
+          # cs-user-agent, so decode before parsing. ua_category has no
+          # parse_user_agent equivalent and is left unset.
+          ua = parse_user_agent(decode_percent(."cs-user-agent") ?? string(."cs-user-agent") ?? "")
+          .ua_browser         = ua.browser.family
+          .ua_browser_version = ua.browser.version
+          .ua_os              = ua.os.family
+          .ua_os_version      = ua.os.version
+          .ua_device          = ua.device.family
+
           # Event-time (epoch-ms) for set_index_suffix; never stored.
           .index_ts = to_unix_timestamp(ts, unit: "milliseconds")
 {{- end }}

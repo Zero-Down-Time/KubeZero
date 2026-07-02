@@ -32,6 +32,7 @@ vector:
     size: 1Gi
     # storageClassName: ""   # set to your RWO class
  
+  # The geoip-db volume/mount is injected (gated on geoip.enabled) by vector.patch.
   extraVolumes:
     - name: http-tokens
       secret:
@@ -114,6 +115,16 @@ vector:
     - vector-s3-access-logs-lib
     - vector-lambda-lib
     - vector-kubernetes-lib
+
+  # MaxMind-format GeoIP lookup, inlined into the per-service parsers. The
+  # enrichment table is loaded once and shared.
+  geoip:
+    enabled: false
+    database: /etc/vector-geoip/db.mmdb
+    locale: en
+    # OCI image carrying the .mmdb (provisioned/updated elsewhere), mounted
+    # read-only as a k8s image volume at dir(database) when enabled.
+    image: "public.ecr.aws/zero-downtime/kubezero-geoip:dbip-lite-2026-06"
 
   # Per-service index granularity. set_index_suffix formats each event's
   # .index_ts into <svc>-<suffix>; for forwarded events THIS cluster's value

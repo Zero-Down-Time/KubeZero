@@ -18,9 +18,10 @@ data:
       enabled: true
       address: 0.0.0.0:8686
 
-    {{- if .Values.vectorHttpIngest.enabled }}
-    # CSV token table for http_in custom auth (Secret: vector-http-tokens).
+    {{- if or .Values.vectorHttpIngest.enabled .Values.vector.geoip.enabled }}
     enrichment_tables:
+      {{- if .Values.vectorHttpIngest.enabled }}
+      # CSV token table for http_in custom auth (Secret: vector-http-tokens).
       auth_data:
         type: file
         file:
@@ -30,6 +31,14 @@ data:
           token_sha256: string
           tenant: string
           active: boolean
+      {{- end }}
+      {{- if .Values.vector.geoip.enabled }}
+      # Shared MaxMind City DB; queried inline by the per-service parsers.
+      geoip_city:
+        type: geoip
+        path: {{ .Values.vector.geoip.database | quote }}
+        locale: {{ .Values.vector.geoip.locale | quote }}
+      {{- end }}
     {{- end }}
 
     sources:

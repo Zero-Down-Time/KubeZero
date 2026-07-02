@@ -5,6 +5,9 @@ set -ex
 
 update_helm
 
+# Vector: tpl extraVolumes/extraVolumeMounts so the optional geoip DB mount can be gated
+patch_chart vector
+
 # OSD dashboards-vector
 ./scipts/sync-osd-dashboards.sh
 
