@@ -40,7 +40,7 @@ wrap_with_condition() {
 
 get_extract_chart() {
   local CHART=$1
-  local VERSION=$(yq eval '.dependencies[] | select(.name=="'$CHART'") | .version' Chart.yaml)
+  local VERSION=$(yq eval '.dependencies[] | select(.name=="'$CHART'") | .version' Chart.yaml | uniq)
 
   if [ -z "$CHART" ]; then
     echo "Missing chart"
