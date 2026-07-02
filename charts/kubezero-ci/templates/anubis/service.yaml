@@ -1,0 +1,19 @@
+{{- if and .Values.forgejo.enabled .Values.forgejo.anubis.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo-anubis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubezero-lib.labels" $ | nindent 4 }}
+    app: forgejo-anubis
+spec:
+  type: ClusterIP
+  ports:
+    - name: anubis
+      protocol: TCP
+      port: 8080
+      targetPort: http
+  selector:
+    app: forgejo-anubis
+{{- end }}

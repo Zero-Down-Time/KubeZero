@@ -1,0 +1,68 @@
+{{- if and .Values.forgejo.enabled .Values.forgejo.anubis.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgejo-anubis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubezero-lib.labels" $ | nindent 4 }}
+    app: forgejo-anubis
+spec:
+  replicas: {{ .Values.forgejo.anubis.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: forgejo-anubis
+  template:
+    metadata:
+      labels:
+        {{- include "kubezero-lib.selectorLabels" $ | nindent 8 }}
+        app: forgejo-anubis
+      annotations:
+        checksum/config: {{ .Files.Get "files/anubis/botPolicies.yaml" | sha256sum }}
+    spec:
+      containers:
+        - name: anubis
+          image: ghcr.io/techarohq/anubis:{{ .Values.forgejo.anubis.image.tag }}
+          env:
+            - name: "BIND"
+              value: ":8080"
+            - name: "DIFFICULTY"
+              value: "6"
+            - name: "TARGET"
+              value: "http://forgejo-http:3000"
+            - name: "CUSTOM_REAL_IP_HEADER"
+              value: "X-Envoy-External-Address"
+            - name: "XFF_STRIP_PRIVATE"
+              value: "false"
+            - name: "POLICY_FNAME"
+              value: "/data/cfg/botPolicies.yaml"
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: anubis-config
+              mountPath: /data/cfg
+              readOnly: true
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+          readinessProbe:
+            tcpSocket:
+              port: http
+          livenessProbe:
+            tcpSocket:
+              port: http
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: anubis-config
+          configMap:
+            name: forgejo-anubis
+{{- end }}

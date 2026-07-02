@@ -7,7 +7,6 @@ set -ex
 update_helm
 
 patch_chart jenkins
-patch_chart forgejo
 
 # Create ZDT dashboard configmap
 ../kubezero-metrics/sync_grafana_dashboards.py dashboard-jenkins.yaml templates/jenkins/grafana-dashboard.yaml

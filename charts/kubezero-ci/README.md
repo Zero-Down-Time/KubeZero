@@ -99,10 +99,12 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.defaultsProviderTemplate | string | `"podman-aws"` |  |
 | jenkins.agent.envVars[0].name | string | `"HOME"` |  |
 | jenkins.agent.envVars[0].value | string | `"/home/jenkins/agent"` |  |
+| jenkins.agent.envVars[1].name | string | `"APPRISE_API_URL"` |  |
+| jenkins.agent.envVars[1].value | string | `"http://eventhub.kubezero:8000"` |  |
 | jenkins.agent.garbageCollection.enabled | bool | `true` |  |
 | jenkins.agent.idleMinutes | int | `60` |  |
 | jenkins.agent.image.repository | string | `"public.ecr.aws/zero-downtime/jenkins-podman"` |  |
-| jenkins.agent.image.tag | string | `"v0.8.10"` |  |
+| jenkins.agent.image.tag | string | `"v0.8.11"` |  |
 | jenkins.agent.inheritYamlMergeStrategy | bool | `true` |  |
 | jenkins.agent.podName | string | `"podman-aws"` |  |
 | jenkins.agent.podRetention | string | `"Default"` |  |
@@ -116,13 +118,15 @@ Kubernetes: `>= 1.30.0`
 | jenkins.agent.showRawYaml | bool | `false` |  |
 | jenkins.agent.yamlMergeStrategy | string | `"merge"` |  |
 | jenkins.agent.yamlTemplate | string | `"apiVersion: v1\nkind: Pod\nspec:\n  securityContext:\n    fsGroup: 1000\n  containers:\n  - name: jnlp\n    resources:\n      requests:\n        cpu: \"200m\"\n        memory: \"512Mi\"\n      limits:\n        cpu: \"4\"\n        # memory: \"4096Mi\"\n    volumeMounts:\n    - name: host-registries-conf\n      mountPath: \"/home/jenkins/.config/containers/registries.conf\"\n      readOnly: true\n  volumes:\n  - name: host-registries-conf\n    hostPath:\n      path: /etc/containers/registries.conf\n      type: File"` |  |
-| jenkins.controller.JCasC.configScripts.zdt-settings | string | `"appearance:\n  themeManager:\n    disableUserThemes: true\n    theme: \"dark\"\n  loginTheme:\n    branding: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\n    footer: |-\n      <div style=\"text-align:center;\">\n      Zero Down Time edition\n      </div>\n    useDefaultTheme: true\n  simpleTheme:\n    elements:\n    - cssText:\n        text: |-\n          .pipeline-new-node {\n              display: none;\n          }\n          .jenkins-header .app-jenkins-logo #jenkins-head-icon {\n              content: url('https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg');\n          }\n    - faviconUrl:\n        url: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\njenkins:\n  noUsageStatistics: true\n  disabledAdministrativeMonitors:\n  - \"jenkins.security.ResourceDomainRecommendation\"\ntool:\n  git:\n    installations:\n    - home: \"/usr/bin/git\"\n      name: \"Default\"\nsecurity:\n  scriptApproval:\n    forceSandbox: true\n  contentSecurityPolicy:\n    advanced:\n    - custom:\n        rules:\n        - allowFetch:\n            allow:\n              byDomain:\n                domain: \"cdn.zero-downtime.net\"\n            directive: \"img-src\"\n    - reporting:\n        ignoreAnonymousReports: true\n    enforce: true\nunclassified:\n  scmGit:\n    globalConfigName: \"jenkins\"\n    globalConfigEmail: \"jenkins@kubezero.com\"\n    createAccountBasedOnEmail: false\n  openTelemetry:\n    configurationProperties: |-\n      otel.exporter.otlp.protocol=grpc\n      otel.instrumentation.jenkins.web.enabled=false\n    ignoredSteps: \"dir,echo,isUnix,pwd,properties\"\n    #endpoint: \"telemetry-jaeger-collector.telemetry:4317\"\n    exportOtelConfigurationAsEnvironmentVariables: false\n    #observabilityBackends:\n    # - jaeger:\n    #     jaegerBaseUrl: \"https://jaeger.example.com\"\n    #     name: \"KubeZero Jaeger\"\n    serviceName: \"Jenkins\"\n  buildDiscarders:\n    configuredBuildDiscarders:\n    - \"jobBuildDiscarder\"\n    - defaultBuildDiscarder:\n        discarder:\n          logRotator:\n            artifactDaysToKeepStr: \"32\"\n            artifactNumToKeepStr: \"10\"\n            daysToKeepStr: \"100\"\n            numToKeepStr: \"10\"\n"` |  |
+| jenkins.controller.JCasC.configScripts.zdt-settings | string | `"appearance:\n  themeManager:\n    disableUserThemes: true\n    theme: \"dark\"\n  loginTheme:\n    branding: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\n    footer: |-\n      <div style=\"text-align:center;\">\n      Zero Down Time edition\n      </div>\n    useDefaultTheme: true\n  simpleTheme:\n    elements:\n    - cssText:\n        text: |-\n          .pipeline-new-node {\n              display: none;\n          }\n          .jenkins-header .app-jenkins-logo #jenkins-head-icon {\n              content: url('https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg');\n          }\n    - faviconUrl:\n        url: \"https://cdn.zero-downtime.net/assets/kubezero/corgi-jenkins.svg\"\njenkins:\n  noUsageStatistics: true\n  disabledAdministrativeMonitors:\n  - \"jenkins.security.ResourceDomainRecommendation\"\n  - \"jenkins.diagnostics.ControllerExecutorsAgents\"\ntool:\n  git:\n    installations:\n    - home: \"/usr/bin/git\"\n      name: \"Default\"\nsecurity:\n  scriptApproval:\n    forceSandbox: true\n  globalJobDslSecurityConfiguration:\n    useScriptSecurity: false\n  contentSecurityPolicy:\n    advanced:\n    - custom:\n        rules:\n        - allowFetch:\n            allow:\n              byDomain:\n                domain: \"cdn.zero-downtime.net\"\n            directive: \"img-src\"\n    - reporting:\n        ignoreAnonymousReports: true\n    enforce: true\nunclassified:\n  scmGit:\n    globalConfigName: \"jenkins\"\n    globalConfigEmail: \"jenkins@kubezero.com\"\n    createAccountBasedOnEmail: false\n  openTelemetry:\n    configurationProperties: |-\n      otel.exporter.otlp.protocol=grpc\n      otel.instrumentation.jenkins.web.enabled=false\n    ignoredSteps: \"dir,echo,isUnix,pwd,properties\"\n    #endpoint: \"telemetry-jaeger-collector.telemetry:4317\"\n    exportOtelConfigurationAsEnvironmentVariables: false\n    #observabilityBackends:\n    # - jaeger:\n    #     jaegerBaseUrl: \"https://jaeger.example.com\"\n    #     name: \"KubeZero Jaeger\"\n    serviceName: \"Jenkins\"\n  buildDiscarders:\n    configuredBuildDiscarders:\n    - \"jobBuildDiscarder\"\n    - defaultBuildDiscarder:\n        discarder:\n          logRotator:\n            artifactDaysToKeepStr: \"32\"\n            artifactNumToKeepStr: \"10\"\n            daysToKeepStr: \"100\"\n            numToKeepStr: \"10\"\n"` |  |
 | jenkins.controller.containerEnv[0].name | string | `"OTEL_LOGS_EXPORTER"` |  |
 | jenkins.controller.containerEnv[0].value | string | `"none"` |  |
 | jenkins.controller.containerEnv[1].name | string | `"OTEL_METRICS_EXPORTER"` |  |
 | jenkins.controller.containerEnv[1].value | string | `"none"` |  |
+| jenkins.controller.customJenkinsLabels[0] | string | `"admin-dsl"` |  |
 | jenkins.controller.disableRememberMe | bool | `true` |  |
 | jenkins.controller.enableRawHtmlMarkupFormatter | bool | `true` |  |
+| jenkins.controller.executorMode | string | `"EXCLUSIVE"` |  |
 | jenkins.controller.image.tag | string | `"2.555.3-lts-alpine"` |  |
 | jenkins.controller.initializeOnce | bool | `true` |  |
 | jenkins.controller.installPlugins[0] | string | `"kubernetes"` |  |
@@ -141,6 +145,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.installPlugins[21] | string | `"matrix-auth"` |  |
 | jenkins.controller.installPlugins[22] | string | `"oic-auth"` |  |
 | jenkins.controller.installPlugins[23] | string | `"opentelemetry"` |  |
+| jenkins.controller.installPlugins[24] | string | `"job-dsl"` |  |
 | jenkins.controller.installPlugins[2] | string | `"workflow-aggregator"` |  |
 | jenkins.controller.installPlugins[3] | string | `"git"` |  |
 | jenkins.controller.installPlugins[4] | string | `"git-forensics"` |  |
@@ -151,6 +156,7 @@ Kubernetes: `>= 1.30.0`
 | jenkins.controller.installPlugins[9] | string | `"pipeline-utility-steps"` |  |
 | jenkins.controller.javaOpts | string | `"-XX:+UseContainerSupport -XX:+UseStringDeduplication -Djava.util.logging.config.file=/var/jenkins_home/logging.properties"` |  |
 | jenkins.controller.jenkinsOpts | string | `"--sessionTimeout=300 --sessionEviction=10800"` |  |
+| jenkins.controller.numExecutors | int | `1` |  |
 | jenkins.controller.prometheus.enabled | bool | `false` |  |
 | jenkins.controller.resources.limits.memory | string | `"4096Mi"` |  |
 | jenkins.controller.resources.requests.cpu | string | `"250m"` |  |

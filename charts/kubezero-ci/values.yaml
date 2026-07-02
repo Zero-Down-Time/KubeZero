@@ -50,7 +50,7 @@ forgejo:
   test:
     enabled: false
 
-  # This add an Anubis sidecar fronting Forgejo
+  # This adds Anubis fronting Forgejo
   anubis:
     enabled: false
     image:
@@ -134,6 +134,11 @@ jenkins:
       - name: OTEL_METRICS_EXPORTER
         value: "none"
 
+    numExecutors: 1
+    executorMode: "EXCLUSIVE"
+    customJenkinsLabels:
+      - admin-dsl
+
     resources:
       requests:
         cpu: "250m"
@@ -172,6 +177,7 @@ jenkins:
             noUsageStatistics: true
             disabledAdministrativeMonitors:
             - "jenkins.security.ResourceDomainRecommendation"
+            - "jenkins.diagnostics.ControllerExecutorsAgents"
           tool:
             git:
               installations:
@@ -180,6 +186,8 @@ jenkins:
           security:
             scriptApproval:
               forceSandbox: true
+            globalJobDslSecurityConfiguration:
+              useScriptSecurity: false
             contentSecurityPolicy:
               advanced:
               - custom:
@@ -245,6 +253,7 @@ jenkins:
       - matrix-auth
       - oic-auth
       - opentelemetry
+      - job-dsl
 
   serviceAccountAgent:
     create: true

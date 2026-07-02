@@ -1,0 +1,13 @@
+{{- if and .Values.forgejo.enabled .Values.forgejo.anubis.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forgejo-anubis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubezero-lib.labels" $ | nindent 4 }}
+    app: forgejo-anubis
+data:
+  botPolicies.yaml: |
+    {{- .Files.Get "files/anubis/botPolicies.yaml" | nindent 4 }}
+{{- end }}
