@@ -1,6 +1,6 @@
 # kubezero-operators
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Various operators supported by KubeZero
 
@@ -19,14 +19,14 @@ Kubernetes: `>= 1.33.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.bitnami.com/bitnami | rabbitmq-cluster-operator | 4.4.34 |
-| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.27.1 |
-| https://docs.altinity.com/clickhouse-operator | altinity-clickhouse-operator | 0.26.1 |
+| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.29.0 |
+| https://docs.altinity.com/clickhouse-operator | altinity-clickhouse-operator | 0.27.1 |
 | https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0 | flink-kubernetes-operator | 1.13.0 |
-| https://helm.elastic.co | eck-operator | 3.3.1 |
-| https://ot-container-kit.github.io/helm-charts | redis-operator | 0.24.0 |
-| oci://ghcr.io/rajsinghtech/charts | garage-operator | 0.1.4 |
+| https://helm.elastic.co | eck-operator | 3.4.1 |
+| https://ot-container-kit.github.io/helm-charts | redis-operator | 0.25.0 |
+| oci://ghcr.io/rajsinghtech/charts | garage-operator | 0.6.19 |
 | oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.51.0 |
+| oci://registry-1.docker.io/cloudpirates | rabbitmq-cluster-operator | 0.3.3 |
 
 ## Values
 
@@ -35,7 +35,7 @@ Kubernetes: `>= 1.33.0-0`
 | altinity-clickhouse-operator.configs.files."config.yaml".reconcile.runtime.reconcileCHIsThreadsNumber | int | `2` |  |
 | altinity-clickhouse-operator.configs.files."config.yaml".reconcile.runtime.reconcileShardsThreadsNumber | int | `1` |  |
 | altinity-clickhouse-operator.configs.files."config.yaml".reconcile.statefulSet.revisionHistoryLimit | int | `2` |  |
-| altinity-clickhouse-operator.configs.files."config.yaml".watch.namespaces[0] | string | `".*"` |  |
+| altinity-clickhouse-operator.configs.files."config.yaml".watch.namespaces.include[0] | string | `".*"` |  |
 | altinity-clickhouse-operator.dashboards.additionalLabels.grafana_dashboard | string | `"1"` |  |
 | altinity-clickhouse-operator.dashboards.enabled | bool | `false` |  |
 | altinity-clickhouse-operator.enabled | bool | `false` |  |
@@ -66,12 +66,13 @@ Kubernetes: `>= 1.33.0-0`
 | garage-operator.metrics.enabled | bool | `false` |  |
 | garage-operator.serviceMonitor.enabled | bool | `true` |  |
 | garage-operator.webhooks.enabled | bool | `true` |  |
-| rabbitmq-cluster-operator.clusterOperator.metrics.enabled | bool | `false` |  |
-| rabbitmq-cluster-operator.clusterOperator.metrics.serviceMonitor.enabled | bool | `true` |  |
+| rabbitmq-cluster-operator.clusterOperator.metrics.service.enabled | bool | `false` |  |
+| rabbitmq-cluster-operator.clusterOperator.metrics.serviceMonitor.enabled | bool | `false` |  |
+| rabbitmq-cluster-operator.clusterOperator.pdb.create | bool | `false` |  |
 | rabbitmq-cluster-operator.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.msgTopologyOperator.enabled | bool | `false` |  |
-| rabbitmq-cluster-operator.msgTopologyOperator.metrics.enabled | bool | `false` |  |
-| rabbitmq-cluster-operator.msgTopologyOperator.metrics.serviceMonitor.enabled | bool | `true` |  |
+| rabbitmq-cluster-operator.msgTopologyOperator.metrics.service.enabled | bool | `false` |  |
+| rabbitmq-cluster-operator.msgTopologyOperator.metrics.serviceMonitor.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.useCertManager | bool | `true` |  |
 | redis-operator.certificate.name | string | `"redis-operator-webhook"` |  |
 | redis-operator.certificate.secretName | string | `"redis-operator-webhook-cert"` |  |

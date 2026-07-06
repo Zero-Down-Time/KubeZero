@@ -60,17 +60,21 @@ rabbitmq-cluster-operator:
   useCertManager: true
 
   clusterOperator:
+    pdb:
+      create: false
     metrics:
-      enabled: false
+      service:
+        enabled: false
       serviceMonitor:
-        enabled: true
+        enabled: false
 
   msgTopologyOperator:
     enabled: false
     metrics:
-      enabled: false
+      service:
+        enabled: false
       serviceMonitor:
-        enabled: true
+        enabled: false
 
 redis-operator:
   enabled: false
@@ -121,7 +125,8 @@ altinity-clickhouse-operator:
     files:
       config.yaml:
         watch:
-          namespaces: [".*"]
+          namespaces:
+            include: [".*"]
         reconcile:
           runtime:
             reconcileCHIsThreadsNumber: 2
