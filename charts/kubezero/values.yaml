@@ -14,7 +14,7 @@ global:
 
 addons:
   enabled: false
-  targetRevision: 0.8.18
+  targetRevision: 0.8.19
   external-dns:
     enabled: false
   forseti:
@@ -33,7 +33,7 @@ addons:
 network:
   enabled: false
   retain: true
-  targetRevision: 0.5.11
+  targetRevision: 0.5.13
   cilium:
     enabled: true
 

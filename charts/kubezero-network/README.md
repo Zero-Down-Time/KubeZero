@@ -1,6 +1,6 @@
 # kubezero-network
 
-![Version: 0.5.12](https://img.shields.io/badge/Version-0.5.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.5.13](https://img.shields.io/badge/Version-0.5.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for all things network
 
@@ -19,8 +19,8 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://haproxytech.github.io/helm-charts | haproxy | 1.28.0 |
-| https://helm.cilium.io/ | cilium | 1.19.1 |
+| https://haproxytech.github.io/helm-charts | haproxy | 1.29.0 |
+| https://helm.cilium.io/ | cilium | 1.19.5 |
 
 ## Values
 
@@ -124,5 +124,5 @@ Kubernetes: `>= 1.30.0-0`
 | multus.defaultNetworks | list | `[]` |  |
 | multus.enabled | bool | `false` |  |
 | multus.image.repository | string | `"ghcr.io/k8snetworkplumbingwg/multus-cni"` |  |
-| multus.image.tag | string | `"v4.2.0"` |  |
+| multus.image.tag | string | `"v4.3.0"` |  |
 | multus.readinessindicatorfile | string | `"/etc/cni/net.d/05-cilium.conflist"` |  |

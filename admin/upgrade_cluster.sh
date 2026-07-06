@@ -70,8 +70,8 @@ control_plane_phase1
 
 control_plane_healthy
 
-#echo "Replace controller nodes first to not stall out V1.32 controllers ... <return> to continue"
-#read -r
+echo "Replace controller nodes first... <return> to continue"
+read -r
 
 cluster_modules
 
