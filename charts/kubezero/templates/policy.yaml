@@ -19,9 +19,6 @@ kyverno:
             - ""
   {{- end }}
 
-  grafana:
-    enabled: {{ include "kubezero.grafana.enabled" . }}
-
   admissionController:
     serviceMonitor:
       enabled: {{ .Values.metrics.enabled }}
@@ -37,6 +34,10 @@ kyverno:
   reportsController:
     serviceMonitor:
       enabled: {{ .Values.metrics.enabled }}
+
+  # custom kubezero
+  dashboards:
+    enabled: {{ include "kubezero.grafana.enabled" . }}
 
 policies:
   enabled: true

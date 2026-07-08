@@ -49,9 +49,9 @@ Kubernetes: `>= 1.33.0-0`
 | kyverno.config.resourceFiltersInclude[5] | string | `"[\"Pod/?*\", \"kube-system\", \"cilium-*\"]"` |  |
 | kyverno.config.webhookAnnotations."admissions.enforcer/disabled" | string | `nil` |  |
 | kyverno.crds.migration.enabled | bool | `false` |  |
+| kyverno.dashboards.enabled | bool | `false` |  |
 | kyverno.enabled | bool | `false` |  |
 | kyverno.features.logging.format | string | `"json"` |  |
-| kyverno.grafana.enabled | bool | `false` |  |
 | kyverno.policyReportsCleanup.enabled | bool | `false` |  |
 | kyverno.reportsController.enabled | bool | `false` |  |
 | kyverno.reportsController.revisionHistoryLimit | int | `2` |  |

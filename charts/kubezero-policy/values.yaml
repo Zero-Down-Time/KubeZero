@@ -41,8 +41,7 @@ kyverno:
     logging:
       format: json
 
-  # Enabled via kubezero metrics.kube-prometheus-stack.grafana.enabled flag
-  grafana:
+  dashboards:
     enabled: false
 
   admissionController:
