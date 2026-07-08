@@ -1,0 +1,20 @@
+ARG ALPINE_VERSION=3.24
+
+# Builder stage
+FROM alpine:${ALPINE_VERSION} as builder
+
+# build dependencies
+RUN apk add --no-cache \
+  cargo \
+  cargo-auditable \
+  cargo-deny \
+  rust-clippy \
+  rustfmt \
+  sccache \
+  just \
+  musl-dev \
+  openssl-dev
+
+ENV RUSTC_WRAPPER=/usr/bin/sccache
+
+WORKDIR /app

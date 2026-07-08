@@ -1,0 +1,67 @@
+# examples/jenkins.casc.yaml
+#
+# Configuration-as-Code bootstrap for the monorepo "job per service" pattern.
+#
+# Defines the ONE seed job. When it runs, it auto-targets the consuming repo
+# (its own SCM), discovers the service subfolders, and generates a Multibranch
+# Pipeline job per service:
+#
+#   JCasC  →  seed job (SCM = consumer repo)  →  N multibranch jobs  →  <svc>/Jenkinsfile
+#
+# The seed's SCM IS the consumer repo, which is what lets seedJob.groovy derive
+# server/owner/repo from `checkout scm` instead of hardcoding them. Set the repo
+# URL below to the consuming project; seedJob.groovy needs no per-repo edits.
+#
+# Commit the 2-line examples/seedJob.groovy wrapper at the consumer repo ROOT
+# (it just calls seedMultiJob() from the library; real logic stays in
+# vars/seedMultiJob.groovy). It cannot be read from inside the .ci submodule —
+# the parent repo tracks .ci as a bare gitlink, so cpsScm can't load a script
+# from it.
+#
+# Apply via the Configuration as Code plugin (Manage Jenkins → CasC, or the
+# CASC_JENKINS_CONFIG env var pointing at this file).
+#
+# Requires plugins: configuration-as-code, job-dsl, gitea,
+# pipeline-utility-steps, workflow-multibranch.
+
+jobs:
+  # JCasC runs this through the Job DSL plugin (same DSL the seed uses), here
+  # only to create the seed job itself.
+  - script: >
+      pipelineJob('seed/container-monorepo') {
+        description('Seed job — auto-targets its own repo and generates one Multibranch job per service.')
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  // The consuming project. This is the only place the target repo is named.
+                  url('https://git.zero-downtime.net/myorg/container-monorepo.git')
+                  credentials('gitea-jenkins-password')
+                }
+                branch('main')
+              }
+            }
+            scriptPath('seedJob.groovy')   // committed at the consumer repo root
+            lightweight(true)              // load the seed script only; the seed does its own checkout scm
+          }
+        }
+        // Re-seed on a schedule; add a Forgejo webhook → this job for instant
+        // re-seeding when a service folder is added or removed.
+        triggers {
+          cron('H H * * *')
+        }
+      }
+
+# Optional: declare the credential the generated jobs use to scan the repo.
+# (Credential VALUES come from a secrets source, not this file.)
+#
+# credentials:
+#   system:
+#     domainCredentials:
+#       - credentials:
+#           - usernamePassword:
+#               scope: GLOBAL
+#               id: gitea-jenkins-password
+#               username: jenkins
+#               password: ${GITEA_JENKINS_TOKEN}   # injected from env/secret store

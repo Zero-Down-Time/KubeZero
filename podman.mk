@@ -29,6 +29,7 @@ ARCH ::= amd64
 ALL_ARCHS ::= amd64 arm64
 _ARCH = $(or $(filter $(ARCH),$(ALL_ARCHS)),$(error $$ARCH [$(ARCH)] must be exactly one of "$(ALL_ARCHS)"))
 
+
 help: ## Show Help
 	grep -E '^[a-zA-Z_-]+:.*?## .*$$' .ci/podman.mk | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
@@ -63,12 +64,24 @@ push: ecr-login ## push images to registry
 		podman manifest push --all $(IMAGE):$$t docker://$(REGISTRY)/$(IMAGE):$$t
 	done
 
-ecr-login: ## log into AWS ECR public
-	aws ecr-public get-login-password --region $(REGION) | podman login --username AWS --password-stdin $(REGISTRY)
+ecr-login: ## log into AWS ECR (public or private), region inferred from registry URL
+	case "$(REGISTRY)" in
+		public.ecr.aws*)
+			aws ecr-public get-login-password --region us-east-1 | podman login --username AWS --password-stdin $(REGISTRY)
+			;;
+		*.dkr.ecr.*.amazonaws.com*)
+			region=$$(echo "$(REGISTRY)" | sed -n 's|^[^.]*\.dkr\.ecr\.\([^.]*\)\.amazonaws\.com.*|\1|p')
+			aws ecr get-login-password --region $$region | podman login --username AWS --password-stdin $(REGISTRY)
+			;;
+		*)
+			echo "Unrecognized ECR registry: $(REGISTRY)" >&2
+			exit 1
+			;;
+	esac
 
 rm-remote-untagged: ## delete all remote untagged and in-dev images, keep 10 tagged
-	echo "Removing all untagged and in-dev images from $(IMAGE) in $(REGION)"
-	.ci/ecr_public_lifecycle.py --repo $(IMAGE) --dev
+	echo "Removing all untagged and in-dev images from $(REGISTRY)/$(IMAGE)"
+	.ci/ecr_lifecycle.py --repo $(IMAGE) --registry $(REGISTRY) --dev
 
 clean:: ## clean up source folder
 
@@ -83,5 +96,17 @@ rm-image:
 ci-pull-upstream: ## pull latest shared .ci subtree
 	git subtree pull --prefix .ci ssh://git@git.zero-downtime.net/ZeroDownTime/ci-tools-lib.git main --squash -m "Merge latest ci-tools-lib"
 
-create-repo: ## create new AWS ECR public repository
-	aws ecr-public create-repository --repository-name $(IMAGE) --region $(REGION)
+create-repo: ## create new AWS ECR (public or private) repository
+	case "$(REGISTRY)" in
+		public.ecr.aws*)
+			aws ecr-public create-repository --repository-name $(IMAGE) --region us-east-1
+			;;
+		*.dkr.ecr.*.amazonaws.com*)
+			region=$$(echo "$(REGISTRY)" | sed -n 's|^[^.]*\.dkr\.ecr\.\([^.]*\)\.amazonaws\.com.*|\1|p')
+			aws ecr create-repository --repository-name $(IMAGE) --region $$region
+			;;
+		*)
+			echo "Unrecognized ECR registry: $(REGISTRY)" >&2
+			exit 1
+			;;
+	esac
