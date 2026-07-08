@@ -38,21 +38,21 @@ spec:
   validations:
     - expression: >-
         variables.hasVolumes ||
-        variables.volumesWithHostPath.all(volume, volume.hostPath.path != '/var/run/docker.sock')
+        variables.volumesWithHostPath.all(volume, !(volume.hostPath.path in ['/var/run/docker.sock', '/run/docker.sock']))
       message: "Use of the Docker Unix socket is not allowed."
 
     - expression: >-
         variables.hasVolumes ||
-        variables.volumesWithHostPath.all(volume, volume.hostPath.path != '/var/run/containerd/containerd.sock')
+        variables.volumesWithHostPath.all(volume, !(volume.hostPath.path in ['/var/run/containerd/containerd.sock', '/run/containerd/containerd.sock']))
       message: "Use of the Containerd Unix socket is not allowed."
 
     - expression: >-
         variables.hasVolumes ||
-        variables.volumesWithHostPath.all(volume, volume.hostPath.path != '/var/run/crio/crio.sock')
+        variables.volumesWithHostPath.all(volume, !(volume.hostPath.path in ['/var/run/crio/crio.sock', '/run/crio/crio.sock']))
       message: "Use of the CRI-O Unix socket is not allowed."
 
     - expression: >-
         variables.hasVolumes ||
-        variables.volumesWithHostPath.all(volume, volume.hostPath.path != '/var/run/cri-dockerd.sock')
+        variables.volumesWithHostPath.all(volume, !(volume.hostPath.path in ['/var/run/cri-dockerd.sock', '/run/cri-dockerd.sock']))
       message: "Use of the Docker CRI socket is not allowed."
 {{- end }}
