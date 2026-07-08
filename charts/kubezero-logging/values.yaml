@@ -141,7 +141,6 @@ vector:
     indexSuffix: "%Y.%m.%d"
     indexTemplate:
       enabled: true
-      totalFieldsLimit: 2000
       shards: 1
       replicas: 1
 

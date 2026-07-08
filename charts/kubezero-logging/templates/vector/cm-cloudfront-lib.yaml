@@ -81,13 +81,16 @@ data:
           .id = fields[14]
 
           {{- if .Values.vector.geoip.enabled }}
-          geo = get_enrichment_table_record("geoip_city", { "ip": ."c-ip" }) ?? {}
+          # Raw mmdb record (GeoIP2 schema). A Country DB fills country only; a
+          # City DB additionally yields city + geo_location (lat/lon).
+          geo = get_enrichment_table_record("geoip", { "ip": ."c-ip" }) ?? {}
           if !is_empty(geo) {
-              .geo_iso_code = geo.country_code
-              .geo_country  = geo.country_name
-              .geo_city     = geo.city_name
-              if geo.latitude != null && geo.longitude != null {
-                  .geo_location = { "lat": geo.latitude, "lon": geo.longitude }
+              .geo_iso_code = geo.country.iso_code
+              .geo_country  = geo.country.names."{{ .Values.vector.geoip.locale }}"
+              city = geo.city.names."{{ .Values.vector.geoip.locale }}"
+              if city != null { .geo_city = city }
+              if geo.location.latitude != null && geo.location.longitude != null {
+                  .geo_location = { "lat": geo.location.latitude, "lon": geo.location.longitude }
               }
           }
           {{- end }}

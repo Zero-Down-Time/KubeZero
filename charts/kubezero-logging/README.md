@@ -265,7 +265,6 @@ Kubernetes: `>= 1.34.0`
 | vector.kubernetes.indexTemplate.enabled | bool | `true` |  |
 | vector.kubernetes.indexTemplate.replicas | int | `1` |  |
 | vector.kubernetes.indexTemplate.shards | int | `1` |  |
-| vector.kubernetes.indexTemplate.totalFieldsLimit | int | `2000` |  |
 | vector.lambda.indexSuffix | string | `"%Y.%m"` |  |
 | vector.persistence.enabled | bool | `false` |  |
 | vector.persistence.size | string | `"1Gi"` |  |

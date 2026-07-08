@@ -33,11 +33,12 @@ data:
           active: boolean
       {{- end }}
       {{- if .Values.vector.geoip.enabled }}
-      # Shared MaxMind City DB; queried inline by the per-service parsers.
-      geoip_city:
-        type: geoip
+      # Shared IP geo DB, queried inline by the per-service parsers. `mmdb` (not
+      # `geoip`) reader: required for DB-IP (DBIP-*) DBs, and returns the raw
+      # GeoIP2-schema record. Locale is applied in the parser.
+      geoip:
+        type: mmdb
         path: {{ .Values.vector.geoip.database | quote }}
-        locale: {{ .Values.vector.geoip.locale | quote }}
       {{- end }}
     {{- end }}
 

@@ -40,7 +40,7 @@ network:
 policy:
   enabled: false
   namespace: kyverno
-  targetRevision: 0.1.4
+  targetRevision: 0.1.5
 
 cert-manager:
   enabled: false
