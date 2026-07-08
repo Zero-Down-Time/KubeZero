@@ -1,0 +1,17 @@
+# Expect: DENIED by ValidatingPolicy disallow-container-sock-mounts
+#   "Use of the Docker Unix socket is not allowed."
+# Verify: kubectl apply -f tests/disallow-cri-sock-mount.yaml   # must be rejected
+# Passing case: remove the hostPath volume below and the Pod is admitted.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-cri-sock-mount
+spec:
+  containers:
+    - name: app
+      image: docker.io/library/busybox:latest
+      command: ["sleep", "3600"]
+  volumes:
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock

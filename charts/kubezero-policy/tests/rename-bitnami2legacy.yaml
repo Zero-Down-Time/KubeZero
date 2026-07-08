@@ -1,0 +1,17 @@
+# Expect: MUTATED by MutatingPolicy rename-bitnami2legacy
+#   docker.io/bitnami/*  ->  docker.io/bitnamilegacy/*
+# Verify: kubectl apply -f tests/rename-bitnami2legacy.yaml
+#         kubectl get pod test-rename-bitnami -o jsonpath='{.spec.initContainers[*].image}{"\n"}{.spec.containers[*].image}{"\n"}'
+# ephemeralContainers are added via `kubectl debug` (pods/ephemeralcontainers), not on CREATE.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-rename-bitnami
+spec:
+  initContainers:
+    - name: init
+      image: docker.io/bitnami/os-shell:latest
+      command: ["true"]
+  containers:
+    - name: app
+      image: docker.io/bitnami/nginx:latest

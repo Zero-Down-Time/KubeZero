@@ -1,0 +1,22 @@
+# Expect: MUTATED by MutatingPolicy add-aws-iam-pod-identity
+#   AWS_* env vars + projected "aws-token" volume/mount injected into every container.
+# Verify: kubectl apply -f tests/iam-pod-identity.yaml
+#         kubectl get pod test-aws-iam -o jsonpath='{.spec.containers[0].env}{"\n"}{.spec.volumes}{"\n"}'
+# The ServiceAccount annotation drives the injection; without it the Pod is left unchanged.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: test-aws-iam
+  annotations:
+    kubezero.com/aws-iam-role-arn: "arn:aws:iam::123456789012:role/test-role"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-aws-iam
+spec:
+  serviceAccountName: test-aws-iam
+  containers:
+    - name: app
+      image: docker.io/library/busybox:latest
+      command: ["sleep", "3600"]
