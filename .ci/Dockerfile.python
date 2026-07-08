@@ -1,0 +1,19 @@
+ARG ALPINE_VERSION=3.24
+
+# Builder stage
+FROM alpine:${ALPINE_VERSION} as builder
+
+# build dependencies
+RUN apk add --no-cache \
+  git \
+  just \
+  openssl-dev \
+  python3 \
+  uv
+
+ENV UV_LINK_MODE=copy
+ENV UV_NO_CACHE=true
+ENV UV_PYTHON_DOWNLOADS=0
+ENV UV_COMPILE_BYTECODE=0
+
+WORKDIR /app
