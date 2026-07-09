@@ -1,7 +1,7 @@
 image:
   repository: envoyproxy/ratelimit
   # see: https://hub.docker.com/r/envoyproxy/ratelimit/tags
-  tag: 110924a5
+  tag: f2fb1577
 
 log:
   level: warn

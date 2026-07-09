@@ -1,6 +1,6 @@
 # kubezero-istio
 
-![Version: 0.29.4](https://img.shields.io/badge/Version-0.29.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.30.2](https://img.shields.io/badge/Version-0.30.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Istio
 
@@ -22,9 +22,9 @@ Kubernetes: `>= 1.34.0-0`
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | envoy-ratelimit | 0.1.3 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://istio-release.storage.googleapis.com/charts | base | 1.29.4 |
-| https://istio-release.storage.googleapis.com/charts | istiod | 1.29.4 |
-| https://kiali.org/helm-charts | kiali-server | 2.23.0 |
+| https://istio-release.storage.googleapis.com/charts | base | 1.30.2 |
+| https://istio-release.storage.googleapis.com/charts | istiod | 1.30.2 |
+| https://kiali.org/helm-charts | kiali-server | 2.28.0 |
 
 ## Values
 
