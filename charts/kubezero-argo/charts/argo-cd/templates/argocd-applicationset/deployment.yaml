@@ -76,7 +76,7 @@ spec:
             {{- end }}
           env:
             {{- with (concat .Values.global.env .Values.applicationSet.extraEnv) }}
-              {{- toYaml . | nindent 12 }}
+              {{- tpl (toYaml .) $ | nindent 12 }}
             {{- end }}
             - name: NAMESPACE
               valueFrom:
@@ -277,6 +277,16 @@ spec:
             timeoutSeconds: {{ .Values.applicationSet.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.applicationSet.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.applicationSet.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.applicationSet.startupProbe.enabled }}
+          startupProbe:
+            tcpSocket:
+              port: probe
+            initialDelaySeconds: {{ .Values.applicationSet.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.applicationSet.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.applicationSet.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.applicationSet.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.applicationSet.startupProbe.failureThreshold }}
           {{- end }}
           resources:
             {{- toYaml .Values.applicationSet.resources | nindent 12 }}

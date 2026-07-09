@@ -4,8 +4,8 @@ A Helm chart for Argo CD, a declarative, GitOps continuous delivery tool for Kub
 
 Source code can be found here:
 
-* <https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd>
 * <https://github.com/argoproj/argo-cd>
+* <https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd>
 
 This is a **community maintained** chart. This chart installs [argo-cd](https://argo-cd.readthedocs.io/en/stable/), a declarative, GitOps continuous delivery tool for Kubernetes.
 
@@ -307,7 +307,7 @@ server:
 
 #### Gateway API with TLS backend
 
-For HTTPS backends with Gateway API, you may need to configure BackendTLSPolicy (experimental, v1alpha3):
+For HTTPS backends with Gateway API, you may need to configure BackendTLSPolicy:
 
 > **Warning:**
 > BackendTLSPolicy is in **EXPERIMENTAL** status. Not all Gateway controllers support this resource (e.g., Cilium does not yet support it).
@@ -328,6 +328,67 @@ server:
     enabled: true
     hostname: argocd-server.argocd.svc.cluster.local
     wellKnownCACertificates: System
+```
+
+#### Gateway API ListenerSet
+
+Use ListenerSet to attach listeners to an existing shared Gateway. This is useful when you want to contribute listeners to a Gateway managed by another team or namespace.
+
+> **Note:**
+> ListenerSet support is **EXPERIMENTAL**. Requires Gateway API v1.5+ and a controller that supports ListenerSet. Refer to [Gateway API implementations](https://gateway-api.sigs.k8s.io/implementations/) for controller-specific details.
+
+```yaml
+server:
+  listenerset:
+    enabled: true
+    parentRef:
+      group: gateway.networking.k8s.io
+      kind: Gateway
+      name: example-gateway
+      namespace: gateway-system
+    listeners:
+      - name: https
+        port: 443
+        protocol: HTTPS
+        hostname: argocd.example.com
+        tls:
+          mode: Terminate
+          certificateRefs:
+            - group: ""
+              kind: Secret
+              name: argocd-server-tls
+        allowedRoutes:
+          namespaces:
+            from: Same
+```
+
+Combined with an HTTPRoute to route traffic from the listener to the Argo CD server:
+
+```yaml
+server:
+  listenerset:
+    enabled: true
+    parentRef:
+      name: example-gateway
+      namespace: gateway-system
+    listeners:
+      - name: https
+        port: 443
+        protocol: HTTPS
+        hostname: argocd.example.com
+        tls:
+          mode: Terminate
+          certificateRefs:
+            - group: ""
+              kind: Secret
+              name: argocd-server-tls
+
+  httproute:
+    enabled: true
+    parentRefs:
+      - name: example-gateway
+        namespace: gateway-system
+        sectionName: https
 ```
 
 ## Setting the initial admin password via Argo CD Application CR
@@ -397,6 +458,11 @@ kubectl apply -k "https://github.com/argoproj/argo-cd/manifests/crds?ref=v2.4.9"
 For full list of changes please check ArtifactHub [changelog].
 
 Highlighted versions provide information about additional steps that should be performed by user when upgrading to newer version.
+
+### 10.0.0
+
+In this chart version we changed the parameter `global.networkPolicy.create` from `false` to `true` to align with the upstream manifests and apply
+security best practices. There might be use cases where users want to disable the network policies, for example when using a service mesh or when you want to use a more specific network policy type like CiliumNetworkPolicy. In this case, please set `global.networkPolicy.create` to `false` in your values.yaml and manage the network policies yourself.
 
 ### 9.1.0
 This chart contains a breaking change (if using `redis-ha`), which was introduced by the dependency `redis-ha` (as seen [here](https://github.com/DandyDeveloper/charts/blob/a03b6a6f4d72b6606ce9a218c7d0026350b48ad0/charts/redis-ha/README.md#4341---upgrade-may-complain-about-selector-label-changes-being-immutable)). The upgrade will complain about selector label changes being immutable, which requires a replacement of the `argocd-redis-ha-haproxy` deployment. To overcome this, you will need to delete (orphaning children) this deployment, updated ArgoCD to disable server-side diffing, then allow the new deployment of `argocd-redis-ha-haproxy` to rollout with the updated label selectors.
@@ -894,7 +960,7 @@ NAME: my-release
 | global.imagePullSecrets | list | `[]` | Secrets with credentials to pull images from a private registry |
 | global.logging.format | string | `"text"` | Set the global logging format. Either: `text` or `json` |
 | global.logging.level | string | `"info"` | Set the global logging level. One of: `debug`, `info`, `warn` or `error` |
-| global.networkPolicy.create | bool | `false` | Create NetworkPolicy objects for all components |
+| global.networkPolicy.create | bool | `true` | Create NetworkPolicy objects for all components |
 | global.networkPolicy.defaultDenyIngress | bool | `false` | Default deny all ingress traffic |
 | global.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | Default node selector for all components |
 | global.podAnnotations | object | `{}` | Annotations for the all deployed pods |
@@ -1007,7 +1073,6 @@ NAME: my-release
 | controller.metrics.rules.namespace | string | `""` | PrometheusRule namespace |
 | controller.metrics.rules.selector | object | `{}` | PrometheusRule selector |
 | controller.metrics.rules.spec | list | `[]` | PrometheusRule.Spec for the application controller |
-| controller.metrics.scrapeTimeout | string | `""` | Prometheus ServiceMonitor scrapeTimeout. If empty, Prometheus uses the global scrape timeout unless it is less than the target's scrape interval value in which the latter is used. |
 | controller.metrics.service.annotations | object | `{}` | Metrics service annotations |
 | controller.metrics.service.clusterIP | string | `""` | Metrics service clusterIP. `None` makes a "headless service" (no virtual IP) |
 | controller.metrics.service.labels | object | `{}` | Metrics service labels |
@@ -1023,6 +1088,7 @@ NAME: my-release
 | controller.metrics.serviceMonitor.namespace | string | `""` | Prometheus ServiceMonitor namespace |
 | controller.metrics.serviceMonitor.relabelings | list | `[]` | Prometheus [RelabelConfigs] to apply to samples before scraping |
 | controller.metrics.serviceMonitor.scheme | string | `""` | Prometheus ServiceMonitor scheme |
+| controller.metrics.serviceMonitor.scrapeTimeout | string | `""` | Prometheus ServiceMonitor scrapeTimeout. If empty, Prometheus uses the global scrape timeout unless it is less than the target's scrape interval value in which the latter is used. |
 | controller.metrics.serviceMonitor.selector | object | `{}` | Prometheus ServiceMonitor selector |
 | controller.metrics.serviceMonitor.tlsConfig | object | `{}` | Prometheus ServiceMonitor tlsConfig |
 | controller.name | string | `"application-controller"` | Application controller name string |
@@ -1037,6 +1103,7 @@ NAME: my-release
 | controller.podLabels | object | `{}` | Labels to be added to application controller pods |
 | controller.priorityClassName | string | `""` (defaults to global.priorityClassName) | Priority class for the application controller pods |
 | controller.readinessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| controller.readinessProbe.httpPath | string | `"/healthz"` | Http path to use for the readiness probe |
 | controller.readinessProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
 | controller.readinessProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
 | controller.readinessProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
@@ -1051,6 +1118,13 @@ NAME: my-release
 | controller.serviceAccount.create | bool | `true` | Create a service account for the application controller |
 | controller.serviceAccount.labels | object | `{}` | Labels applied to created service account |
 | controller.serviceAccount.name | string | `"argocd-application-controller"` | Service account name |
+| controller.startupProbe.enabled | bool | `false` | Enable Kubernetes startup probe for application controller |
+| controller.startupProbe.failureThreshold | int | `20` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| controller.startupProbe.httpPath | string | `"/healthz"` | Http path to use for the startup probe |
+| controller.startupProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
+| controller.startupProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
+| controller.startupProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
+| controller.startupProbe.timeoutSeconds | int | `1` | Number of seconds after which the [probe] times out |
 | controller.statefulsetAnnotations | object | `{}` | Annotations for the application controller StatefulSet |
 | controller.statefulsetLabels | object | `{}` | Labels for the application controller StatefulSet |
 | controller.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for container lifecycle hook |
@@ -1088,6 +1162,7 @@ NAME: my-release
 | repoServer.containerPorts.metrics | int | `8084` | Metrics container port |
 | repoServer.containerPorts.server | int | `8081` | Repo server container port |
 | repoServer.containerSecurityContext | object | See [values.yaml] | Repo server container-level security context |
+| repoServer.copyutil.extraArgs | string | `"--update=none"` | Extra arguments for the cp command in the repo server copyutil initContainer |
 | repoServer.copyutil.resources | object | `{}` | Resource limits and requests for the repo server copyutil initContainer |
 | repoServer.deploymentAnnotations | object | `{}` | Annotations to be added to repo server Deployment |
 | repoServer.deploymentLabels | object | `{}` | Labels for the repo server Deployment |
@@ -1109,6 +1184,7 @@ NAME: my-release
 | repoServer.lifecycle | object | `{}` | Specify postStart and preStop lifecycle hooks for your argo-repo-server container |
 | repoServer.livenessProbe.enabled | bool | `true` | Enable Kubernetes liveness probe for Repo Server |
 | repoServer.livenessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| repoServer.livenessProbe.httpPath | string | `"/healthz?full=true"` | Http path to use for the liveness probe |
 | repoServer.livenessProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
 | repoServer.livenessProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
 | repoServer.livenessProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
@@ -1146,6 +1222,7 @@ NAME: my-release
 | repoServer.rbac | list | `[]` | Repo server rbac rules |
 | repoServer.readinessProbe.enabled | bool | `true` | Enable Kubernetes readiness probe for Repo Server |
 | repoServer.readinessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| repoServer.readinessProbe.httpPath | string | `"/healthz"` | Http path to use for the readiness probe |
 | repoServer.readinessProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
 | repoServer.readinessProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
 | repoServer.readinessProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
@@ -1163,12 +1240,24 @@ NAME: my-release
 | repoServer.serviceAccount.create | bool | `true` | Create repo server service account |
 | repoServer.serviceAccount.labels | object | `{}` | Labels applied to created service account |
 | repoServer.serviceAccount.name | string | `""` | Repo server service account name |
+| repoServer.startupProbe.enabled | bool | `false` | Enable Kubernetes startup probe for Repo Server |
+| repoServer.startupProbe.failureThreshold | int | `20` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| repoServer.startupProbe.httpPath | string | `"/healthz"` | Http path to use for the startup probe |
+| repoServer.startupProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
+| repoServer.startupProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
+| repoServer.startupProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
+| repoServer.startupProbe.timeoutSeconds | int | `1` | Number of seconds after which the [probe] times out |
 | repoServer.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for container lifecycle hook |
 | repoServer.tolerations | list | `[]` (defaults to global.tolerations) | [Tolerations] for use with node taints |
 | repoServer.topologySpreadConstraints | list | `[]` (defaults to global.topologySpreadConstraints) | Assign custom [TopologySpreadConstraints] rules to the repo server |
 | repoServer.useEphemeralHelmWorkingDir | bool | `true` | Toggle the usage of a ephemeral Helm working directory |
 | repoServer.volumeMounts | list | `[]` | Additional volumeMounts to the repo server main container |
 | repoServer.volumes | list | `[]` | Additional volumes to the repo server pod |
+| repoServer.vpa.annotations | object | `{}` | Annotations to be added to repo server vpa |
+| repoServer.vpa.containerPolicy | object | `{}` | Controls how VPA computes the recommended resources for repo server container |
+| repoServer.vpa.enabled | bool | `false` | Deploy a [VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/#scaling-workloads-vertically/) for the repo server |
+| repoServer.vpa.labels | object | `{}` | Labels to be added to repo server vpa |
+| repoServer.vpa.updateMode | string | `"Initial"` | One of the VPA operation modes |
 
 ## Argo Server
 
@@ -1226,7 +1315,7 @@ NAME: my-release
 | server.extensions.extensionList | list | `[]` (See [values.yaml]) | Extensions for Argo CD |
 | server.extensions.image.imagePullPolicy | string | `""` (defaults to global.image.imagePullPolicy) | Image pull policy for extensions |
 | server.extensions.image.repository | string | `"quay.io/argoprojlabs/argocd-extension-installer"` | Repository to use for extension installer image |
-| server.extensions.image.tag | string | `"v0.0.9"` | Tag to use for extension installer image |
+| server.extensions.image.tag | string | `"v1.0.1"` | Tag to use for extension installer image |
 | server.extensions.resources | object | `{}` | Resource limits and requests for the argocd-extensions container |
 | server.extraArgs | list | `[]` | Additional command line arguments to pass to Argo CD server |
 | server.extraContainers | list | `[]` | Additional containers to be added to the server pod |
@@ -1281,8 +1370,14 @@ NAME: my-release
 | server.ingressGrpc.tls | bool | `false` | Enable TLS configuration for the hostname defined at `server.ingressGrpc.hostname` |
 | server.initContainers | list | `[]` | Init containers to add to the server pod |
 | server.lifecycle | object | `{}` | Specify postStart and preStop lifecycle hooks for your argo-cd-server container |
+| server.listenerset.annotations | object | `{}` | Additional ListenerSet annotations |
+| server.listenerset.enabled | bool | `false` | Enable ListenerSet resource for Argo CD server (Gateway API) |
+| server.listenerset.labels | object | `{}` | Additional ListenerSet labels |
+| server.listenerset.listeners | list | `[]` (See [values.yaml]) | Listeners to attach to the parent Gateway |
+| server.listenerset.parentRef | object | `{}` (See [values.yaml]) | Gateway API parentRef for the ListenerSet |
 | server.livenessProbe.enabled | bool | `true` | Enable Kubernetes liveness probe for default backend |
 | server.livenessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| server.livenessProbe.httpPath | string | `"/healthz?full=true"` | Http path to use for the liveness probe |
 | server.livenessProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
 | server.livenessProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
 | server.livenessProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
@@ -1319,6 +1414,7 @@ NAME: my-release
 | server.priorityClassName | string | `""` (defaults to global.priorityClassName) | Priority class for the Argo CD server pods |
 | server.readinessProbe.enabled | bool | `true` | Enable Kubernetes readiness probe for default backend |
 | server.readinessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| server.readinessProbe.httpPath | string | `"/healthz"` | Http path to use for the readiness probe |
 | server.readinessProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
 | server.readinessProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
 | server.readinessProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
@@ -1352,11 +1448,23 @@ NAME: my-release
 | server.serviceAccount.create | bool | `true` | Create server service account |
 | server.serviceAccount.labels | object | `{}` | Labels applied to created service account |
 | server.serviceAccount.name | string | `"argocd-server"` | Server service account name |
+| server.startupProbe.enabled | bool | `false` | Enable Kubernetes startup probe for Argo CD server |
+| server.startupProbe.failureThreshold | int | `20` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| server.startupProbe.httpPath | string | `"/healthz"` | Http path to use for the startup probe |
+| server.startupProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
+| server.startupProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
+| server.startupProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
+| server.startupProbe.timeoutSeconds | int | `1` | Number of seconds after which the [probe] times out |
 | server.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for container lifecycle hook |
 | server.tolerations | list | `[]` (defaults to global.tolerations) | [Tolerations] for use with node taints |
 | server.topologySpreadConstraints | list | `[]` (defaults to global.topologySpreadConstraints) | Assign custom [TopologySpreadConstraints] rules to the Argo CD server |
 | server.volumeMounts | list | `[]` | Additional volumeMounts to the server main container |
 | server.volumes | list | `[]` | Additional volumes to the server pod |
+| server.vpa.annotations | object | `{}` | Annotations to be added to Argo CD server vpa |
+| server.vpa.containerPolicy | object | `{}` | Controls how VPA computes the recommended resources for Argo CD server container |
+| server.vpa.enabled | bool | `false` | Deploy a [VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/#scaling-workloads-vertically/) for the Argo CD server |
+| server.vpa.labels | object | `{}` | Labels to be added to Argo CD server vpa |
+| server.vpa.updateMode | string | `"Initial"` | One of the VPA operation modes |
 
 ## Dex
 
@@ -1449,11 +1557,25 @@ NAME: my-release
 | dex.servicePortHttp | int | `5556` | Service port for HTTP access |
 | dex.servicePortHttpName | string | `"http"` | Service port name for HTTP access |
 | dex.servicePortMetrics | int | `5558` | Service port for metrics access |
+| dex.startupProbe.enabled | bool | `false` | Enable Kubernetes startup probe for Dex >= 2.28.0 |
+| dex.startupProbe.failureThreshold | int | `20` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| dex.startupProbe.httpPath | string | `"/healthz/ready"` | Http path to use for the startup probe |
+| dex.startupProbe.httpPort | string | `"metrics"` | Http port to use for the startup probe |
+| dex.startupProbe.httpScheme | string | `"HTTP"` | Scheme to use for the startup probe (can be HTTP or HTTPS) |
+| dex.startupProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
+| dex.startupProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
+| dex.startupProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
+| dex.startupProbe.timeoutSeconds | int | `1` | Number of seconds after which the [probe] times out |
 | dex.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for container lifecycle hook |
 | dex.tolerations | list | `[]` (defaults to global.tolerations) | [Tolerations] for use with node taints |
 | dex.topologySpreadConstraints | list | `[]` (defaults to global.topologySpreadConstraints) | Assign custom [TopologySpreadConstraints] rules to dex |
 | dex.volumeMounts | list | `[]` | Additional volumeMounts to the dex main container |
 | dex.volumes | list | `[]` | Additional volumes to the dex pod |
+| dex.vpa.annotations | object | `{}` | Annotations to be added to Dex server vpa |
+| dex.vpa.containerPolicy | object | `{}` | Controls how VPA computes the recommended resources for Dex server container |
+| dex.vpa.enabled | bool | `false` | Deploy a [VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/#scaling-workloads-vertically/) for the Dex server |
+| dex.vpa.labels | object | `{}` | Labels to be added to Dex server vpa |
+| dex.vpa.updateMode | string | `"Initial"` | One of the VPA operation modes |
 
 ## Redis
 
@@ -1478,7 +1600,7 @@ NAME: my-release
 | redis.exporter.env | list | `[]` | Environment variables to pass to the Redis exporter |
 | redis.exporter.image.imagePullPolicy | string | `""` (defaults to global.image.imagePullPolicy) | Image pull policy for the redis-exporter |
 | redis.exporter.image.repository | string | `"ghcr.io/oliver006/redis_exporter"` | Repository to use for the redis-exporter |
-| redis.exporter.image.tag | string | `"v1.82.0"` | Tag to use for the redis-exporter |
+| redis.exporter.image.tag | string | `"v1.86.0"` | Tag to use for the redis-exporter |
 | redis.exporter.livenessProbe.enabled | bool | `false` | Enable Kubernetes liveness probe for Redis exporter |
 | redis.exporter.livenessProbe.failureThreshold | int | `5` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
 | redis.exporter.livenessProbe.initialDelaySeconds | int | `30` | Number of seconds after the container has started before [probe] is initiated |
@@ -1555,6 +1677,11 @@ NAME: my-release
 | redis.topologySpreadConstraints | list | `[]` (defaults to global.topologySpreadConstraints) | Assign custom [TopologySpreadConstraints] rules to redis |
 | redis.volumeMounts | list | `[]` | Additional volumeMounts to the redis container |
 | redis.volumes | list | `[]` | Additional volumes to the redis pod |
+| redis.vpa.annotations | object | `{}` | Annotations to be added to Redis vpa |
+| redis.vpa.containerPolicy | object | `{}` | Controls how VPA computes the recommended resources for Redis container |
+| redis.vpa.enabled | bool | `false` | Deploy a [VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/#scaling-workloads-vertically/) for the Redis |
+| redis.vpa.labels | object | `{}` | Labels to be added to Redis vpa |
+| redis.vpa.updateMode | string | `"Initial"` | One of the VPA operation modes |
 
 ### Option 2 - Redis HA
 
@@ -1680,6 +1807,12 @@ If you use an External Redis (See Option 3 above), this Job is not deployed.
 | applicationSet.extraEnvFrom | list | `[]` (See [values.yaml]) | envFrom to pass to the ApplicationSet controller |
 | applicationSet.extraVolumeMounts | list | `[]` | List of extra mounts to add (normally used with extraVolumes) |
 | applicationSet.extraVolumes | list | `[]` | List of extra volumes to add |
+| applicationSet.httproute.annotations | object | `{}` | Additional HTTPRoute annotations |
+| applicationSet.httproute.enabled | bool | `false` | Enable HTTPRoute resource for Argo CD Applicationset Webhook (Gateway API) |
+| applicationSet.httproute.hostnames | list | `[]` (See [values.yaml]) | List of hostnames for the HTTPRoute |
+| applicationSet.httproute.labels | object | `{}` | Additional HTTPRoute labels |
+| applicationSet.httproute.parentRefs | list | `[]` (See [values.yaml]) | Gateway API parentRefs for the HTTPRoute |
+| applicationSet.httproute.rules | list | `[]` (See [values.yaml]) | HTTPRoute rules configuration |
 | applicationSet.image.imagePullPolicy | string | `""` (defaults to global.image.imagePullPolicy) | Image pull policy for the ApplicationSet controller |
 | applicationSet.image.repository | string | `""` (defaults to global.image.repository) | Repository to use for the ApplicationSet controller |
 | applicationSet.image.tag | string | `""` (defaults to global.image.tag) | Tag to use for the ApplicationSet controller |
@@ -1697,6 +1830,11 @@ If you use an External Redis (See Option 3 above), this Job is not deployed.
 | applicationSet.ingress.pathType | string | `"Prefix"` | Ingress path type. One of `Exact`, `Prefix` or `ImplementationSpecific` |
 | applicationSet.ingress.tls | bool | `false` | Enable TLS configuration for the hostname defined at `applicationSet.webhook.ingress.hostname` |
 | applicationSet.initContainers | list | `[]` | Init containers to add to the ApplicationSet controller pod |
+| applicationSet.listenerset.annotations | object | `{}` | Additional ListenerSet annotations |
+| applicationSet.listenerset.enabled | bool | `false` | Enable ListenerSet resource for Argo CD ApplicationSet webhook (Gateway API) |
+| applicationSet.listenerset.labels | object | `{}` | Additional ListenerSet labels |
+| applicationSet.listenerset.listeners | list | `[]` (See [values.yaml]) | Listeners to attach to the parent Gateway |
+| applicationSet.listenerset.parentRef | object | `{}` (See [values.yaml]) | Gateway API parentRef for the ListenerSet |
 | applicationSet.livenessProbe.enabled | bool | `false` | Enable Kubernetes liveness probe for ApplicationSet controller |
 | applicationSet.livenessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
 | applicationSet.livenessProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
@@ -1752,9 +1890,20 @@ If you use an External Redis (See Option 3 above), this Job is not deployed.
 | applicationSet.serviceAccount.create | bool | `true` | Create ApplicationSet controller service account |
 | applicationSet.serviceAccount.labels | object | `{}` | Labels applied to created service account |
 | applicationSet.serviceAccount.name | string | `"argocd-applicationset-controller"` | ApplicationSet controller service account name |
+| applicationSet.startupProbe.enabled | bool | `false` | Enable Kubernetes startup probe for ApplicationSet controller |
+| applicationSet.startupProbe.failureThreshold | int | `20` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| applicationSet.startupProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
+| applicationSet.startupProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
+| applicationSet.startupProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
+| applicationSet.startupProbe.timeoutSeconds | int | `1` | Number of seconds after which the [probe] times out |
 | applicationSet.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for container lifecycle hook |
 | applicationSet.tolerations | list | `[]` (defaults to global.tolerations) | [Tolerations] for use with node taints |
 | applicationSet.topologySpreadConstraints | list | `[]` (defaults to global.topologySpreadConstraints) | Assign custom [TopologySpreadConstraints] rules to the ApplicationSet controller |
+| applicationSet.vpa.annotations | object | `{}` | Annotations to be added to ApplicationSet controller vpa |
+| applicationSet.vpa.containerPolicy | object | `{}` | Controls how VPA computes the recommended resources for ApplicationSet controller container |
+| applicationSet.vpa.enabled | bool | `false` | Deploy a [VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/#scaling-workloads-vertically/) for the ApplicationSet controller |
+| applicationSet.vpa.labels | object | `{}` | Labels to be added to ApplicationSet controller vpa |
+| applicationSet.vpa.updateMode | string | `"Initial"` | One of the VPA operation modes |
 
 ## Notifications
 
@@ -1837,12 +1986,23 @@ If you use an External Redis (See Option 3 above), this Job is not deployed.
 | notifications.serviceAccount.create | bool | `true` | Create notifications controller service account |
 | notifications.serviceAccount.labels | object | `{}` | Labels applied to created service account |
 | notifications.serviceAccount.name | string | `"argocd-notifications-controller"` | Notification controller service account name |
+| notifications.startupProbe.enabled | bool | `false` | Enable Kubernetes startup probe for notifications controller Pods |
+| notifications.startupProbe.failureThreshold | int | `20` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| notifications.startupProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
+| notifications.startupProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
+| notifications.startupProbe.successThreshold | int | `1` | Minimum consecutive successes for the [probe] to be considered successful after having failed |
+| notifications.startupProbe.timeoutSeconds | int | `1` | Number of seconds after which the [probe] times out |
 | notifications.subscriptions | list | `[]` | Contains centrally managed global application subscriptions |
 | notifications.templates | object | `{}` | The notification template is used to generate the notification content |
 | notifications.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for container lifecycle hook |
 | notifications.tolerations | list | `[]` (defaults to global.tolerations) | [Tolerations] for use with node taints |
 | notifications.topologySpreadConstraints | list | `[]` (defaults to global.topologySpreadConstraints) | Assign custom [TopologySpreadConstraints] rules to the application controller |
 | notifications.triggers | object | `{}` | The trigger defines the condition when the notification should be sent |
+| notifications.vpa.annotations | object | `{}` | Annotations to be added to notifications controller vpa |
+| notifications.vpa.containerPolicy | object | `{}` | Controls how VPA computes the recommended resources for notifications controller container |
+| notifications.vpa.enabled | bool | `false` | Deploy a [VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/#scaling-workloads-vertically/) for the notifications controller |
+| notifications.vpa.labels | object | `{}` | Labels to be added to notifications controller vpa |
+| notifications.vpa.updateMode | string | `"Initial"` | One of the VPA operation modes |
 
 ## Commit server (Manifest Hydrator)
 
@@ -1871,6 +2031,7 @@ To read more about this component, please read [Argo CD Manifest Hydrator] and [
 | commitServer.image.tag | string | `""` (defaults to global.image.tag) | Tag to use for the commit server |
 | commitServer.livenessProbe.enabled | bool | `true` | Enable Kubernetes liveness probe for commit server |
 | commitServer.livenessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| commitServer.livenessProbe.httpPath | string | `"/healthz?full=true"` | Http path to use for the liveness probe |
 | commitServer.livenessProbe.initialDelaySeconds | int | `30` | Number of seconds after the container has started before [probe] is initiated |
 | commitServer.livenessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the [probe] |
 | commitServer.livenessProbe.timeoutSeconds | int | `5` | Number of seconds after which the [probe] times out |
@@ -1889,6 +2050,7 @@ To read more about this component, please read [Argo CD Manifest Hydrator] and [
 | commitServer.priorityClassName | string | `""` (defaults to global.priorityClassName) | Priority class for the commit server pods |
 | commitServer.readinessProbe.enabled | bool | `true` | Enable Kubernetes liveness probe for commit server |
 | commitServer.readinessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| commitServer.readinessProbe.httpPath | string | `"/healthz"` | Http path to use for the readiness probe |
 | commitServer.readinessProbe.initialDelaySeconds | int | `5` | Number of seconds after the container has started before [probe] is initiated |
 | commitServer.readinessProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
 | commitServer.readinessProbe.timeoutSeconds | int | `1` | Number of seconds after which the [probe] times out |
@@ -1903,9 +2065,20 @@ To read more about this component, please read [Argo CD Manifest Hydrator] and [
 | commitServer.serviceAccount.create | bool | `true` | Create commit server service account |
 | commitServer.serviceAccount.labels | object | `{}` | Labels applied to created service account |
 | commitServer.serviceAccount.name | string | `"argocd-commit-server"` | commit server service account name |
+| commitServer.startupProbe.enabled | bool | `false` | Enable Kubernetes startup probe for commit server |
+| commitServer.startupProbe.failureThreshold | int | `20` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
+| commitServer.startupProbe.httpPath | string | `"/healthz"` | Http path to use for the startup probe |
+| commitServer.startupProbe.initialDelaySeconds | int | `10` | Number of seconds after the container has started before [probe] is initiated |
+| commitServer.startupProbe.periodSeconds | int | `10` | How often (in seconds) to perform the [probe] |
+| commitServer.startupProbe.timeoutSeconds | int | `1` | Number of seconds after which the [probe] times out |
 | commitServer.terminationGracePeriodSeconds | int | `30` | terminationGracePeriodSeconds for container lifecycle hook |
 | commitServer.tolerations | list | `[]` (defaults to global.tolerations) | [Tolerations] for use with node taints |
 | commitServer.topologySpreadConstraints | list | `[]` (defaults to global.topologySpreadConstraints) | Assign custom [TopologySpreadConstraints] rules to the commit server |
+| commitServer.vpa.annotations | object | `{}` | Annotations to be added to commit server vpa |
+| commitServer.vpa.containerPolicy | object | `{}` | Controls how VPA computes the recommended resources for commit server container |
+| commitServer.vpa.enabled | bool | `false` | Deploy a [VerticalPodAutoscaler](https://kubernetes.io/docs/concepts/workloads/autoscaling/#scaling-workloads-vertically/) for the commit server |
+| commitServer.vpa.labels | object | `{}` | Labels to be added to commit server vpa |
+| commitServer.vpa.updateMode | string | `"Initial"` | One of the VPA operation modes |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs](https://github.com/norwoodj/helm-docs)

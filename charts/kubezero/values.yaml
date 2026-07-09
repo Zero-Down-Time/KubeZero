@@ -135,7 +135,7 @@ eventhub:
 argo:
   enabled: false
   namespace: argocd
-  targetRevision: 0.4.8
+  targetRevision: 0.4.10
   argo-cd:
     enabled: false
     istio:

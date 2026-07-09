@@ -22,7 +22,7 @@ dependencies:
     repository: https://argoproj.github.io/argo-helm
     condition: argo-events.enabled
   - name: argo-cd
-    version: 9.7.1
+    version: 10.1.2
     repository: https://argoproj.github.io/argo-helm
     condition: argo-cd.enabled
   - name: argocd-image-updater
