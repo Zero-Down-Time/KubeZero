@@ -2,7 +2,7 @@ apiVersion: v2
 name: kubezero-logging
 description: KubeZero Logging module
 type: application
-version: 0.9.0
+version: 0.9.1
 home: https://kubezero.com
 icon: https://cdn.zero-downtime.net/assets/kubezero/logo-small-64.png
 keywords:
@@ -18,28 +18,28 @@ dependencies:
     version: 0.2.1
     repository: https://cdn.zero-downtime.net/charts/
   - name: opensearch
-    version: 3.6.0
+    version: 3.7.0
     repository: https://opensearch-project.github.io/helm-charts/
     condition: opensearch.enabled
   - name: opensearch-dashboards
-    version: 3.6.0
+    version: 3.7.0
     repository: https://opensearch-project.github.io/helm-charts/
     condition: opensearch-dashboards.enabled
   - name: vector
-    version: 0.52.0
+    version: 0.56.0
     repository: https://helm.vector.dev
     condition: vector.enabled
   - name: vector
     alias: vector-agent
-    version: 0.52.0
+    version: 0.56.0
     repository: https://helm.vector.dev
     condition: vector-agent.enabled
   - name: fluentd
-    version: 0.5.2
+    version: 0.5.3
     repository: https://fluent.github.io/helm-charts
     condition: fluentd.enabled
   - name: fluent-bit
-    version: 0.47.10
+    version: 0.57.9
     repository: https://fluent.github.io/helm-charts
     condition: fluent-bit.enabled
 kubeVersion: ">= 1.34.0"
