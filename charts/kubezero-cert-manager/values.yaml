@@ -26,6 +26,9 @@ cert-manager:
     leaderElection:
       namespace: "cert-manager"
 
+  networkPolicy:
+    enabled: true
+
   # remove secrets if the cert is deleted
   enableCertificateOwnerRef: true
 

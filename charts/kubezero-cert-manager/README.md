@@ -1,6 +1,6 @@
 # kubezero-cert-manager
 
-![Version: 0.9.14](https://img.shields.io/badge/Version-0.9.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.9.15](https://img.shields.io/badge/Version-0.9.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for cert-manager
 
@@ -19,7 +19,7 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://charts.jetstack.io | cert-manager | v1.19.3 |
+| https://charts.jetstack.io | cert-manager | v1.21.0 |
 
 ## AWS - OIDC IAM roles
 
@@ -43,6 +43,7 @@ If your resolvers need additional sercrets like CloudFlare API tokens etc. make 
 | cert-manager.global.leaderElection.namespace | string | `"cert-manager"` |  |
 | cert-manager.ingressShim.defaultIssuerKind | string | `"ClusterIssuer"` |  |
 | cert-manager.ingressShim.defaultIssuerName | string | `"letsencrypt-dns-prod"` |  |
+| cert-manager.networkPolicy.enabled | bool | `true` |  |
 | cert-manager.prometheus.dashboards | bool | `false` |  |
 | cert-manager.prometheus.enabled | bool | `false` |  |
 | cert-manager.prometheus.rules | bool | `false` |  |
