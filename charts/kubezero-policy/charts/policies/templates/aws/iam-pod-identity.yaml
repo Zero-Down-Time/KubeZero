@@ -26,11 +26,14 @@ spec:
           - CREATE
   matchConditions:
     - name: has-service-account
-      expression: "has(object.spec.serviceAccountName) && object.spec.serviceAccountName != ''"
+      expression: "object.spec.?serviceAccountName.orValue('') != ''"
   variables:
+    - name: serviceAccountName
+      expression: "object.spec.?serviceAccountName.orValue('')"
     - name: annotations
       expression: >-
-        resource.Get("v1", "serviceaccounts", request.namespace, object.spec.serviceAccountName).metadata.?annotations.orValue({})
+        variables.serviceAccountName == '' ? {} :
+        resource.Get("v1", "serviceaccounts", request.namespace, variables.serviceAccountName).metadata.?annotations.orValue({})
     - name: roleArn
       expression: >-
         "kubezero.com/aws-iam-role-arn" in variables.annotations ? variables.annotations["kubezero.com/aws-iam-role-arn"] : ""
