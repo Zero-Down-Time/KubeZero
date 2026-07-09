@@ -1,20 +1,20 @@
-diff -rtuN charts/lvm-localpv.orig/templates/lvm-controller.yaml charts/lvm-localpv/templates/lvm-controller.yaml
---- charts/lvm-localpv.orig/templates/lvm-controller.yaml	2023-08-23 11:28:23.687014522 +0000
-+++ charts/lvm-localpv/templates/lvm-controller.yaml	2023-08-23 11:28:23.690347871 +0000
-@@ -72,16 +72,6 @@
+diff '--color=auto' -rtuN charts/lvm-localpv.orig/templates/lvm-controller.yaml charts/lvm-localpv/templates/lvm-controller.yaml
+--- charts/lvm-localpv.orig/templates/lvm-controller.yaml	2026-07-09 15:31:21.916961755 +0100
++++ charts/lvm-localpv/templates/lvm-controller.yaml	2026-07-09 15:31:40.182959558 +0100
+@@ -71,16 +71,6 @@
                mountPath: /var/lib/csi/sockets/pluginproxy/
            resources:
              {{- toYaml .Values.lvmController.resources | nindent 12 }}
 -        - name: {{ .Values.lvmController.snapshotController.name }}
--          image: "{{ .Values.lvmController.snapshotController.image.registry }}{{ .Values.lvmController.snapshotController.image.repository }}:{{ .Values.lvmController.snapshotController.image.tag }}"
+-          image: {{ include "lvmlocalpv.common.image" (dict "imageRoot" .Values.lvmController.snapshotController.image "global" .Values.global) | quote }}
 -          args:
 -            - "--v={{ .Values.lvmController.logLevel }}"
 -            {{- if gt (int .Values.lvmController.replicas) 1 }}
 -            - "--leader-election=true"
 -            {{- end }}
--          imagePullPolicy: {{ .Values.lvmController.snapshotController.image.pullPolicy }}
+-          imagePullPolicy: {{ default .Values.lvmController.snapshotController.image.pullPolicy .Values.global.imagePullPolicy }}
 -          resources:
 -            {{- toYaml .Values.lvmController.resources | nindent 12 }}
          - name: {{ .Values.lvmController.provisioner.name }}
-           image: "{{ .Values.lvmController.provisioner.image.registry }}{{ .Values.lvmController.provisioner.image.repository }}:{{ .Values.lvmController.provisioner.image.tag }}"
-           imagePullPolicy: {{ .Values.lvmController.provisioner.image.pullPolicy }}
+           image: {{ include "lvmlocalpv.common.image" (dict "imageRoot" .Values.lvmController.provisioner.image "global" .Values.global) | quote }}
+           imagePullPolicy: {{ default .Values.lvmController.provisioner.image.pullPolicy .Values.global.imagePullPolicy}}

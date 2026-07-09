@@ -175,7 +175,7 @@ aws-ebs-csi-driver:
 
   node:
     loggingFormat: json
-    revisionHistoryLimit: 3
+    revisionHistoryLimit: 2
 
     tolerateAllTaints: false
     priorityClassName: system-node-critical
@@ -237,16 +237,12 @@ aws-efs-csi-driver:
 
   useHelmHooksForCSIDriver: false
 
-  # we use the old 1.7 atm
-  replicaCount: 1
-# image:
-#   tag: "v2.0.9"
-
   controller:
     create: true
     logLevel: 2
 
     replicaCount: 1
+    revisionHistoryLimit: 2
 
     tolerations:
     - key: node-role.kubernetes.io/control-plane
@@ -255,6 +251,10 @@ aws-efs-csi-driver:
       node-role.kubernetes.io/control-plane: ""
 
     regionalStsEndpoints: true
+
+    containerSecurityContext:
+      privileged: false
+    workerThreads: 10
 
   node:
     logLevel: 2
