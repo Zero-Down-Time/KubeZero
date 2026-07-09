@@ -1,6 +1,6 @@
 # kubezero-metrics
 
-![Version: 0.12.3](https://img.shields.io/badge/Version-0.12.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.12.4](https://img.shields.io/badge/Version-0.12.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Umbrella Chart for Prometheus, Grafana and Alertmanager as well as all Kubernetes integrations.
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.30.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 81.5.1 |
-| https://prometheus-community.github.io/helm-charts | prometheus-adapter | 5.2.0 |
-| https://prometheus-community.github.io/helm-charts | prometheus-pushgateway | 3.6.0 |
+| https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 87.12.1 |
+| https://prometheus-community.github.io/helm-charts | prometheus-adapter | 5.3.0 |
+| https://prometheus-community.github.io/helm-charts | prometheus-pushgateway | 3.6.1 |
 
 ## Values
 
@@ -105,11 +105,15 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.grafana."grafana.ini".server.enable_gzip | bool | `true` |  |
 | kube-prometheus-stack.grafana.defaultDashboardsEnabled | bool | `false` |  |
 | kube-prometheus-stack.grafana.enabled | bool | `false` |  |
+| kube-prometheus-stack.grafana.env.GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION | string | `"true"` |  |
 | kube-prometheus-stack.grafana.extraContainerVolumes[0].configMap.defaultMode | int | `511` |  |
 | kube-prometheus-stack.grafana.extraContainerVolumes[0].configMap.name | string | `"script-configmap"` |  |
 | kube-prometheus-stack.grafana.extraContainerVolumes[0].name | string | `"script-volume"` |  |
 | kube-prometheus-stack.grafana.initChownData.enabled | bool | `false` |  |
 | kube-prometheus-stack.grafana.plugins[0] | string | `"grafana-piechart-panel"` |  |
+| kube-prometheus-stack.grafana.resources.limits.memory | string | `"1024Mi"` |  |
+| kube-prometheus-stack.grafana.resources.requests.cpu | string | `"50m"` |  |
+| kube-prometheus-stack.grafana.resources.requests.memory | string | `"384Mi"` |  |
 | kube-prometheus-stack.grafana.service.portName | string | `"http-grafana"` |  |
 | kube-prometheus-stack.grafana.sidecar.dashboards.extraMounts[0].mountPath | string | `"/opt/script.sh"` |  |
 | kube-prometheus-stack.grafana.sidecar.dashboards.extraMounts[0].name | string | `"script-volume"` |  |
@@ -179,7 +183,6 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.prometheus-node-exporter.resources.requests.cpu | string | `"20m"` |  |
 | kube-prometheus-stack.prometheus-node-exporter.resources.requests.memory | string | `"24Mi"` |  |
 | kube-prometheus-stack.prometheus.enabled | bool | `false` |  |
-| kube-prometheus-stack.prometheus.prometheusSpec.image.tag | string | `"v3.6.0"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.logFormat | string | `"json"` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues | bool | `false` |  |
 | kube-prometheus-stack.prometheus.prometheusSpec.portName | string | `"http-prometheus"` |  |

@@ -167,6 +167,9 @@ kube-prometheus-stack:
       limits:
         memory: 1024Mi
 
+    networkPolicy:
+      enabled: true
+
     # anonymous auth enabled !
     env:
       GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"
