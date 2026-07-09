@@ -1,6 +1,6 @@
 # kubezero-logging
 
-![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.9.1](https://img.shields.io/badge/Version-0.9.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Logging module
 
@@ -21,10 +21,10 @@ Kubernetes: `>= 1.34.0`
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://fluent.github.io/helm-charts | fluent-bit | 0.47.10 |
 | https://fluent.github.io/helm-charts | fluentd | 0.5.2 |
-| https://helm.vector.dev | vector | 0.52.0 |
-| https://helm.vector.dev | vector-agent(vector) | 0.52.0 |
-| https://opensearch-project.github.io/helm-charts/ | opensearch | 3.6.0 |
-| https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.6.0 |
+| https://helm.vector.dev | vector | 0.56.0 |
+| https://helm.vector.dev | vector-agent(vector) | 0.56.0 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch | 3.7.0 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.7.0 |
 
 ## Changes from upstream
 ### ECK
