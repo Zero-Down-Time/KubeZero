@@ -29,6 +29,8 @@ keycloakx:
       cpu: 100m
       memory: 640Mi
 
+  revisionHistoryLimit: "2"
+
   podDisruptionBudget: {}
   #  maxUnavailable: 1
   #  minAvailable: 1
