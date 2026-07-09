@@ -14,11 +14,10 @@ KubeZero umbrella chart for all things storage incl. AWS EBS/EFS, openEBS-lvm, g
 
 ## Requirements
 
-Kubernetes: `>= 1.30.0-0`
+Kubernetes: `>= 1.35.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | garage | 2.2.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://charts.fairwinds.com/stable | gemini | 2.1.3 |
 | https://k8up-io.github.io/k8up | k8up | 4.9.0 |
@@ -51,7 +50,7 @@ Kubernetes: `>= 1.30.0-0`
 | aws-ebs-csi-driver.node.resources.limits.memory | string | `"32Mi"` |  |
 | aws-ebs-csi-driver.node.resources.requests.cpu | string | `"10m"` |  |
 | aws-ebs-csi-driver.node.resources.requests.memory | string | `"16Mi"` |  |
-| aws-ebs-csi-driver.node.revisionHistoryLimit | int | `3` |  |
+| aws-ebs-csi-driver.node.revisionHistoryLimit | int | `2` |  |
 | aws-ebs-csi-driver.node.tolerateAllTaints | bool | `false` |  |
 | aws-ebs-csi-driver.node.tolerations[0].effect | string | `"NoSchedule"` |  |
 | aws-ebs-csi-driver.node.tolerations[0].key | string | `"kubezero-workergroup"` |  |
@@ -119,21 +118,6 @@ Kubernetes: `>= 1.30.0-0`
 | aws-efs-csi-driver.node.tolerations[4].operator | string | `"Exists"` |  |
 | aws-efs-csi-driver.node.volMetricsOptIn | bool | `false` |  |
 | aws-efs-csi-driver.useHelmHooksForCSIDriver | bool | `false` |  |
-| garage.deployment.replicaCount | int | `1` |  |
-| garage.enabled | bool | `false` |  |
-| garage.garage.compressionLevel | string | `"3"` |  |
-| garage.garage.dbEngine | string | `"sqlite"` |  |
-| garage.garage.existingRpcSecret | string | `"garage-rpc-secret"` |  |
-| garage.garage.metadataAutoSnapshotInterval | string | `"6h"` |  |
-| garage.garage.replicationFactor | string | `"1"` |  |
-| garage.garage.rpcSecret | string | `"secretref+k8s://v1/Secret/kubezero/kubezero-secrets/garage.rpcSecret"` |  |
-| garage.garage.s3.api.region | string | `"local-garage"` |  |
-| garage.garage.s3.api.rootDomain | string | `".s3.garage.cluster.local"` |  |
-| garage.garage.s3.web.index | string | `"index.html"` |  |
-| garage.garage.s3.web.rootDomain | string | `".web.garage.cluster.local"` |  |
-| garage.persistence.data.size | string | `"16Gi"` |  |
-| garage.persistence.enabled | bool | `true` |  |
-| garage.persistence.meta.size | string | `"384Mi"` |  |
 | gemini.enabled | bool | `false` |  |
 | gemini.resources.limits.cpu | string | `"400m"` |  |
 | gemini.resources.limits.memory | string | `"128Mi"` |  |
@@ -166,7 +150,7 @@ Kubernetes: `>= 1.30.0-0`
 | lvm-localpv.storageClass.vgpattern | string | `""` |  |
 | snapshotController.enabled | bool | `false` |  |
 | snapshotController.image.name | string | `"registry.k8s.io/sig-storage/snapshot-controller"` |  |
-| snapshotController.image.tag | string | `"v7.0.1"` |  |
+| snapshotController.image.tag | string | `"v8.6.0"` |  |
 | snapshotController.logLevel | int | `2` |  |
 | snapshotController.nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | snapshotController.replicas | int | `1` |  |
