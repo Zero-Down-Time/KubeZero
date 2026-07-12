@@ -1,0 +1,9 @@
+configmap: grafana-dashboards-rabbitmq
+gzip: true
+condition: 'and ( index .Values "rabbitmq-cluster-operator" "enabled" ) ( index .Values "rabbitmq-cluster-operator" "dashboards" )'
+folder: Messaging
+dashboards:
+- name: rabbitmq-cluster
+  url: "https://grafana.com/api/dashboards/10991/revisions/15/download"
+  tags:
+  - RabbitMQ

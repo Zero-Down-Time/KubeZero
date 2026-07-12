@@ -72,9 +72,21 @@ flink-kubernetes-operator:
 # {{- if eq $.Values.global.platform "aws" }}
 # {{- include "kubezero-lib.control-plane" . | nindent 2 }}
 # {{- end }}
+  {{- toYaml . | nindent 2 }}
+{{- end }}
 
+{{- with index .Values "operators" "rabbitmq-cluster-operator" }}
+rabbitmq-cluster-operator:
   {{- toYaml . | nindent 2 }}
 
+  clusterOperator:
+    metrics:
+      service:
+        enabled: {{ index $.Values "metrics" "enabled" }}
+      serviceMonitor:
+        enabled: {{ index $.Values "metrics" "enabled" }}
+
+  dashboards: {{ include "kubezero.grafana.enabled" $ }}
 {{- end }}
 
 {{- end }}

@@ -24,9 +24,9 @@ Kubernetes: `>= 1.33.0-0`
 | https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0 | flink-kubernetes-operator | 1.13.0 |
 | https://helm.elastic.co | eck-operator | 3.4.1 |
 | https://ot-container-kit.github.io/helm-charts | redis-operator | 0.25.0 |
-| oci://ghcr.io/rajsinghtech/charts | garage-operator | 0.6.19 |
+| oci://ghcr.io/rajsinghtech/charts | garage-operator | 0.6.22 |
 | oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.51.0 |
-| oci://registry-1.docker.io/cloudpirates | rabbitmq-cluster-operator | 0.3.3 |
+| oci://registry-1.docker.io/cloudpirates | rabbitmq-cluster-operator | 0.4.0 |
 
 ## Values
 
@@ -69,6 +69,7 @@ Kubernetes: `>= 1.33.0-0`
 | rabbitmq-cluster-operator.clusterOperator.metrics.service.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.clusterOperator.metrics.serviceMonitor.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.clusterOperator.pdb.create | bool | `false` |  |
+| rabbitmq-cluster-operator.dashboards | bool | `false` |  |
 | rabbitmq-cluster-operator.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.msgTopologyOperator.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.msgTopologyOperator.metrics.service.enabled | bool | `false` |  |
