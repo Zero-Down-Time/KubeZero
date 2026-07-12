@@ -12,6 +12,34 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.9.33
+
+Update `jenkins/jenkins` to version `2.568.1-jdk21`
+
+## 5.9.32
+
+Update `jenkins/inbound-agent` to version `3383.vc8881d4b_0e76-1`
+
+## 5.9.31
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `2.8.0`
+
+## 5.9.30
+
+Added addMasterProxyEnvVars to allow agents to use proxy env settings from the controller.
+
+## 5.9.29
+
+Update `docker.io/kiwigrid/k8s-sidecar` to version `2.7.4`
+
+## 5.9.28
+
+Update `jenkins/inbound-agent` to version `3355.v388858a_47b_33-23`
+
+## 5.9.27
+
+Update `configuration-as-code` to version `2089.v970a_0b_a_8cc6d`
+
 ## 5.9.26
 
 Update `configuration-as-code` to version `2088.ve3b_42c663c80`

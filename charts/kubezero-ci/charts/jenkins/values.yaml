@@ -421,7 +421,7 @@ controller:
     - kubernetes:4423.vb_59f230b_ce53
     - workflow-aggregator:608.v67378e9d3db_1
     - git:5.10.1
-    - configuration-as-code:2088.ve3b_42c663c80
+    - configuration-as-code:2089.v970a_0b_a_8cc6d
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
   # -- Download the minimum required version or latest version of all dependencies
@@ -583,7 +583,7 @@ controller:
         # -- Repository of the image that triggers the reload
         repository: kiwigrid/k8s-sidecar
         # -- Tag for the image that triggers the reload
-        tag: 2.7.3
+        tag: 2.8.0
       imagePullPolicy: IfNotPresent
       # -- Port for sidecar health probes
       healthPort: 8060
@@ -966,6 +966,9 @@ controller:
 #        hYAzODo1Jt59pcqqKJEas0C/lFJEB3frw4ImNx5fNlJYOpx+ijfQs9m39CevDq0=
 
 agent:
+  # -- Add the environment proxy settings form jenkins controller to the agents.
+  addMasterProxyEnvVars: false
+
   # -- Enable Kubernetes plugin jnlp-agent podTemplate
   enabled: true
   # -- The name of the pod template to use for providing default values
@@ -1012,7 +1015,7 @@ agent:
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3355.v388858a_47b_33-22"
+    tag: "3383.vc8881d4b_0e76-1"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"

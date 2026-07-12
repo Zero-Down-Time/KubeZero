@@ -12,7 +12,7 @@ patch_chart redis-operator
 patch_chart eck-operator
 
 mkdir charts/eck-operator/crds
-helm template charts/eck-operator/charts/eck-operator-crds --name-template logging --kube-version 1.32 > charts/eck-operator/crds/all-crds.yaml
+helm template charts/eck-operator/charts/eck-operator-crds --name-template logging --kube-version 1.32 >charts/eck-operator/crds/all-crds.yaml
 
 rm -rf charts/eck-operator/charts
 yq eval -Mi 'del(.dependencies)' charts/eck-operator/Chart.yaml
@@ -25,5 +25,6 @@ wget -qO files/cloudnative-pg/ClusterImageCatalog-bookworm.yaml https://raw.gith
 ../kubezero-metrics/sync_grafana_dashboards.py dashboards-strimzi.yaml templates/strimzi/grafana-dashboards.yaml
 ../kubezero-metrics/sync_grafana_dashboards.py dashboards-redis.yaml templates/redis/grafana-dashboards.yaml
 ../kubezero-metrics/sync_grafana_dashboards.py dashboards-kafka.yaml templates/strimzi/grafana-dashboards-kafka.yaml
+../kubezero-metrics/sync_grafana_dashboards.py dashboards-rabbitmq.yaml templates/rabbitmq/grafana-dashboards.yaml
 
 update_docs
