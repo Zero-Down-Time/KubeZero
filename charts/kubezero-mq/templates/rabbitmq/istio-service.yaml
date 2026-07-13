@@ -2,35 +2,36 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: rabbit-amqp
-  namespace: {{ .Release.Namespace }}
+  name: {{ .Values.rabbitmq.name }}
   labels:
-{{ include "kubezero-lib.labels" . | indent 4 }}
+    {{ include "kubezero-lib.labels" . | nindent 4 }}
 spec:
   gateways:
   - {{ .Values.rabbitmq.istio.gateway }}
   hosts:
-{{ toYaml .Values.rabbitmq.hosts | indent 2 }}
+  - {{ index .Values "rabbitmq" "istio" "url" }}
   http:
   - route:
     - destination:
-        host: rabbitmq
+        host: {{ .Values.rabbitmq.name }}
         port:
           number: 15672
   tcp:
+  {{- if .Values.rabbitmq.istio.amqps }}
   - match:
     - port: 5671
     route:
     - destination:
-        host: rabbitmq
+        host: {{ .Values.rabbitmq.name }}
         port:
           number: 5672
+  {{- end }}
   {{- if .Values.rabbitmq.istio.amqp }}
   - match:
     - port: 5672
     route:
     - destination:
-        host: rabbitmq
+        host: {{ .Values.rabbitmq.name }}
         port:
           number: 5672
   {{- end }}
@@ -39,7 +40,7 @@ spec:
     - port: 8883
     route:
     - destination:
-        host: rabbitmq
+        host: {{ .Values.rabbitmq.name }}
         port:
           number: 1883
   {{- end }}
@@ -48,7 +49,7 @@ spec:
     - port: 1883
     route:
     - destination:
-        host: rabbitmq
+        host: {{ .Values.rabbitmq.name }}
         port:
           number: 1883
   {{- end }}

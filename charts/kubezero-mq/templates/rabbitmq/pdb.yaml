@@ -1,0 +1,17 @@
+{{- if and .Values.rabbitmq.enabled .Values.rabbitmq.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.rabbitmq.name }}
+  labels:
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.rabbitmq.pdb.minAvailable }}
+  minAvailable: {{ .Values.rabbitmq.pdb.minAvailable }}
+  {{- else if .Values.rabbitmq.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.rabbitmq.pdb.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.rabbitmq.name }}
+{{- end }}

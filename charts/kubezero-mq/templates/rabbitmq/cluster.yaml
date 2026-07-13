@@ -1,0 +1,53 @@
+{{- if .Values.rabbitmq.enabled }}
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ .Values.rabbitmq.name }}
+  labels:
+    {{- include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.rabbitmq.replicas }}
+  image: {{ .Values.rabbitmq.image.repository }}:{{ .Values.rabbitmq.image.tag }}
+
+  resources:
+    {{- toYaml .Values.rabbitmq.resources | nindent 4 }}
+
+  {{- with .Values.rabbitmq.persistence }}
+  persistence:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  rabbitmq:
+    {{- with .Values.rabbitmq.additionalPlugins }}
+    additionalPlugins:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.rabbitmq.additionalConfig }}
+    additionalConfig: |
+      {{- tpl . $ | nindent 6 }}
+    {{- end }}
+
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values: ["{{ .Values.rabbitmq.name }}"]
+          topologyKey: kubernetes.io/hostname
+  {{- if .Values.rabbitmq.zoneSpread.enabled }}
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            topologySpreadConstraints:
+              - maxSkew: {{ .Values.rabbitmq.zoneSpread.maxSkew | default 1 }}
+                topologyKey: topology.kubernetes.io/zone
+                whenUnsatisfiable: {{ .Values.rabbitmq.zoneSpread.whenUnsatisfiable | default "DoNotSchedule" }}
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: {{ .Values.rabbitmq.name }}
+  {{- end }}
+{{- end }}

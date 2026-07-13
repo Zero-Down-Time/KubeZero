@@ -22,8 +22,8 @@ generate: clean
 	jsonnet -J vendor -m dashboards -e '(import "dashboards.libsonnet")'
 
 render: generate
-	../../kubezero-metrics/sync_grafana_dashboards.py dashboards.yaml ../templates/lvm/grafana-dashboards.yaml
-	../../kubezero-metrics/sync_prometheus_rules.py rules.yaml ../templates/lvm/
+	../../../../scripts/sync_grafana_dashboards.py dashboards.yaml ../templates/lvm/grafana-dashboards.yaml
+	../../../../scripts/sync_prometheus_rules.py rules.yaml ../templates/lvm/
 
 lint:
 	find . -name 'vendor' -prune -o -name '*.libsonnet' -print -o -name '*.jsonnet' -print | \

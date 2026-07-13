@@ -31,10 +31,10 @@ rm -rf templates/{rules,dashboards} && mkdir -p templates/{rules,dashboards}
 
 cd jsonnet && make && cd -
 
-./sync_grafana_dashboards.py jsonnet/metrics-dashboards.yaml templates/dashboards/metrics.yaml
-./sync_grafana_dashboards.py jsonnet/k8s-dashboards.yaml templates/dashboards/k8s.yaml
-./sync_grafana_dashboards.py jsonnet/zdt-dashboards.yaml templates/dashboards/zdt.yaml
+../../scripts/sync_grafana_dashboards.py jsonnet/metrics-dashboards.yaml templates/dashboards/metrics.yaml
+../../scripts/sync_grafana_dashboards.py jsonnet/k8s-dashboards.yaml templates/dashboards/k8s.yaml
+../../scripts/sync_grafana_dashboards.py jsonnet/zdt-dashboards.yaml templates/dashboards/zdt.yaml
 
-./sync_prometheus_rules.py jsonnet/k8s-rules.yaml templates/rules
+../../scripts/sync_prometheus_rules.py jsonnet/k8s-rules.yaml templates/rules
 
 update_docs

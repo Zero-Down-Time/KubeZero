@@ -1,6 +1,6 @@
 # kubezero-mq
 
-![Version: 0.3.15](https://img.shields.io/badge/Version-0.3.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero umbrella chart for MQ systems like NATS, RabbitMQ
 
@@ -19,9 +19,9 @@ Kubernetes: `>= 1.33.0`
 | Repository | Name | Version |
 |------------|------|---------|
 |  | kafka | 0.1.0 |
-| https://akhq.io/ | akhq | 0.26.0 |
+| https://akhq.io/ | akhq | 0.27.0 |
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
-| https://nats-io.github.io/k8s/helm/charts/ | nats | 2.12.4 |
+| https://nats-io.github.io/k8s/helm/charts/ | nats | 2.14.2 |
 
 ## Values
 

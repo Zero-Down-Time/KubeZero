@@ -6,6 +6,6 @@ set -ex
 login_ecr_public
 update_helm
 
-../kubezero-metrics/sync_grafana_dashboards.py dashboards.yaml templates/kyverno/grafana-dashboards.yaml
+../../scripts/sync_grafana_dashboards.py dashboards.yaml templates/kyverno/grafana-dashboards.yaml
 
 update_docs

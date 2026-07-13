@@ -1,0 +1,18 @@
+{{- if and .Values.rabbitmq.enabled .Values.rabbitmq.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.rabbitmq.name }}
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: prometheus
+      {{- with .Values.rabbitmq.metrics.serviceMonitor.interval }}
+      interval: {{ . }}
+      {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.rabbitmq.name }}
+{{- end }}

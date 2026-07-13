@@ -72,62 +72,55 @@ akhq:
 rabbitmq:
   enabled: false
 
-  # rabbitmq.hosts -- hostnames of rabbitmq services, used for Istio and TLS
-  hosts: []
+  name: rabbitmq
 
-  # Disable trying to change ulimits, not permitted anyways
-  ulimitNofiles: ''
+  image:
+    repository: public.ecr.aws/zero-downtime/zdt-rabbitmq
+    tag: v4.2.8
+
+  replicas: 1
+
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+
+  persistence:
+    storage: 2Gi
+
+  zoneSpread:
+    enabled: false
+    maxSkew: 1
+    whenUnsatisfiable: DoNotSchedule    # ScheduleAnyway if you want soft spread
+
+  pdb:
+    enabled: false
+    minAvailable: 2        # for 3 replicas: tolerate 1 down, keep quorum
+    maxUnavailable: ""     # set one OR the other, not both
+
+  additionalPlugins: []
+  # - rabbitmq_delayed_message_exchange
+  # - rabbitmq_shovel
+  # - rabbitmq_shovel_management
+  # - rabbitmq_federation
+  # - rabbitmq_federation_management
+
+  additionalConfig: |
+    default_queue_type = quorum
+#   disk_free_limit.relative = 1.5
+#   cluster_partition_handling = pause_minority
 
   istio:
+    url: "mq.example.com"
     enabled: false
     gateway: istio-ingress/private-ingressgateway
     amqp: false
     mqtt: false
     mqtts: false
 
-  #extraConfiguration: |-
-  #  mqtt.durable_queue_type = quorum
-
-  auth:
-    existingPasswordSecret: rabbitmq
-    existingErlangSecret: rabbitmq
-    tls:
-      enabled: false
-      failIfNoPeerCert: false
-      existingSecret: rabbitmq-server-certificate
-      existingSecretFullChain: true
-
-  clustering:
-    enabled: false
-    forceBoot: false
-
-  resources:
-    requests:
-      memory: 512Mi
-      cpu: 100m
-
-  replicaCount: 1
-
-  persistence:
-    size: 2Gi
-
-  podAntiAffinityPreset: ""
-  topologySpreadConstraints: |-
-    - maxSkew: 1
-      topologyKey: topology.kubernetes.io/zone
-      whenUnsatisfiable: DoNotSchedule
-      labelSelector:
-        matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
-    - maxSkew: 1
-      topologyKey: kubernetes.io/hostname
-      whenUnsatisfiable: DoNotSchedule
-      labelSelector:
-        matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
-
-  pdb:
-    create: false
-
   metrics:
-    enabled: false
+    enabled: true
     serviceMonitor:
-      enabled: true
+      enabled: false

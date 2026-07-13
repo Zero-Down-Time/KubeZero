@@ -21,10 +21,10 @@ yq eval -Mi 'del(.dependencies)' charts/eck-operator/Chart.yaml
 wget -qO files/cloudnative-pg/ClusterImageCatalog-bookworm.yaml https://raw.githubusercontent.com/cloudnative-pg/postgres-containers/refs/heads/main/Debian/ClusterImageCatalog-bookworm.yaml
 
 # Create ZDT dashboard configmap
-../kubezero-metrics/sync_grafana_dashboards.py dashboards-pg.yaml templates/cloudnative-pg/grafana-dashboards.yaml
-../kubezero-metrics/sync_grafana_dashboards.py dashboards-strimzi.yaml templates/strimzi/grafana-dashboards.yaml
-../kubezero-metrics/sync_grafana_dashboards.py dashboards-redis.yaml templates/redis/grafana-dashboards.yaml
-../kubezero-metrics/sync_grafana_dashboards.py dashboards-kafka.yaml templates/strimzi/grafana-dashboards-kafka.yaml
-../kubezero-metrics/sync_grafana_dashboards.py dashboards-rabbitmq.yaml templates/rabbitmq/grafana-dashboards.yaml
+../../scripts/sync_grafana_dashboards.py dashboards-pg.yaml templates/cloudnative-pg/grafana-dashboards.yaml
+../../scripts/sync_grafana_dashboards.py dashboards-strimzi.yaml templates/strimzi/grafana-dashboards.yaml
+../../scripts/sync_grafana_dashboards.py dashboards-redis.yaml templates/redis/grafana-dashboards.yaml
+../../scripts/sync_grafana_dashboards.py dashboards-kafka.yaml templates/strimzi/grafana-dashboards-kafka.yaml
+../../scripts/sync_grafana_dashboards.py dashboards-rabbitmq.yaml templates/rabbitmq/grafana-dashboards.yaml
 
 update_docs
