@@ -27,6 +27,7 @@ data:
             "number_of_shards": {{ .Values.vector.kubernetes.indexTemplate.shards }},
             "number_of_replicas": {{ .Values.vector.kubernetes.indexTemplate.replicas }},
             "mapping": {
+              "total_fields": { "limit": {{ .Values.vector.kubernetes.indexTemplate.totalFieldsLimit }} },
               "ignore_malformed": true
             }
           }

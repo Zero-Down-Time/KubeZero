@@ -362,7 +362,7 @@ data:
         endpoints: ["${OPENSEARCH_ENDPOINT}"]
         api_version: v7
         mode: bulk
-        bulk: { index: "logs-%Y.%m.%d" }
+        bulk: { index: "logs-{{ .Values.vector.logs.indexSuffix }}" }
         auth:
           strategy: basic
           user: "${OPENSEARCH_USER}"

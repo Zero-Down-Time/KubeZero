@@ -138,11 +138,16 @@ vector:
   lambda:
     indexSuffix: "%Y.%m"
   kubernetes:
-    indexSuffix: "%Y.%m.%d"
+    indexSuffix: "%Y.%m"
     indexTemplate:
       enabled: true
+      totalFieldsLimit: 4000
       shards: 1
       replicas: 1
+  # Catch-all sink for unmatched events; strftime is applied by the sink against
+  # the event timestamp (not via set_index_suffix), so this is a raw strftime.
+  logs:
+    indexSuffix: "%Y.%m"
 
   # ISM retention for OpenSearch's own internal indices (query-insights
   # top_queries-* and security plugin security-auditlog-*)
