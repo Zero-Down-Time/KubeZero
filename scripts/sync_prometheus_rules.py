@@ -66,7 +66,10 @@ for r in config["rules"]:
         with open(os.path.join(config_file_path, r["url"].replace("file://", "")), "r") as file_contents:
             raw_text = file_contents.read()
 
-    obj = json.loads(raw_text)
+    try:
+        obj = json.loads(raw_text)
+    except json.JSONDecodeError:
+        obj = yaml.safe_load(raw_text)
 
     rule = base_rule(r)
 
