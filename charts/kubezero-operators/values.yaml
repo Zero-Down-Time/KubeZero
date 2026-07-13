@@ -63,6 +63,11 @@ rabbitmq-cluster-operator:
   clusterOperator:
     pdb:
       create: false
+
+    logLevel: info
+    extraArgs:
+      - "--zap-encoder=json"
+
     metrics:
       service:
         enabled: false

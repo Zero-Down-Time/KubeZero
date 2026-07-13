@@ -26,7 +26,7 @@ Kubernetes: `>= 1.33.0-0`
 | https://ot-container-kit.github.io/helm-charts | redis-operator | 0.25.0 |
 | oci://ghcr.io/rajsinghtech/charts | garage-operator | 0.6.22 |
 | oci://quay.io/strimzi-helm | strimzi-kafka-operator | 0.51.0 |
-| oci://registry-1.docker.io/cloudpirates | rabbitmq-cluster-operator | 0.4.0 |
+| oci://registry-1.docker.io/cloudpirates | rabbitmq-cluster-operator | 0.4.1 |
 
 ## Values
 

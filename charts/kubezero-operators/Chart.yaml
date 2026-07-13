@@ -32,7 +32,7 @@ dependencies:
     repository: "oci://quay.io/strimzi-helm"
     condition: strimzi-kafka-operator.enabled
   - name: rabbitmq-cluster-operator
-    version: 0.4.0
+    version: 0.4.1
     repository: oci://registry-1.docker.io/cloudpirates
     condition: rabbitmq-cluster-operator.enabled
   - name: altinity-clickhouse-operator
