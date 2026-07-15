@@ -27,4 +27,7 @@ wget -qO files/cloudnative-pg/ClusterImageCatalog-bookworm.yaml https://raw.gith
 ../../scripts/sync_grafana_dashboards.py dashboards-kafka.yaml templates/strimzi/grafana-dashboards-kafka.yaml
 ../../scripts/sync_grafana_dashboards.py dashboards-rabbitmq.yaml templates/rabbitmq/grafana-dashboards.yaml
 
+# Install prometheus-rules
+../../scripts/sync_prometheus_rules.py prometheus-rules-rabbitmq.yaml templates/rabbitmq
+
 update_docs

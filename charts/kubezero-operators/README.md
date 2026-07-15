@@ -66,6 +66,8 @@ Kubernetes: `>= 1.33.0-0`
 | garage-operator.metrics.enabled | bool | `false` |  |
 | garage-operator.serviceMonitor.enabled | bool | `true` |  |
 | garage-operator.webhooks.enabled | bool | `true` |  |
+| rabbitmq-cluster-operator.clusterOperator.extraArgs[0] | string | `"--zap-encoder=json"` |  |
+| rabbitmq-cluster-operator.clusterOperator.logLevel | string | `"info"` |  |
 | rabbitmq-cluster-operator.clusterOperator.metrics.service.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.clusterOperator.metrics.serviceMonitor.enabled | bool | `false` |  |
 | rabbitmq-cluster-operator.clusterOperator.pdb.create | bool | `false` |  |

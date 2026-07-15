@@ -110,6 +110,7 @@ Kubernetes: `>= 1.30.0-0`
 | kube-prometheus-stack.grafana.extraContainerVolumes[0].configMap.name | string | `"script-configmap"` |  |
 | kube-prometheus-stack.grafana.extraContainerVolumes[0].name | string | `"script-volume"` |  |
 | kube-prometheus-stack.grafana.initChownData.enabled | bool | `false` |  |
+| kube-prometheus-stack.grafana.networkPolicy.enabled | bool | `true` |  |
 | kube-prometheus-stack.grafana.plugins[0] | string | `"grafana-piechart-panel"` |  |
 | kube-prometheus-stack.grafana.resources.limits.memory | string | `"1024Mi"` |  |
 | kube-prometheus-stack.grafana.resources.requests.cpu | string | `"50m"` |  |

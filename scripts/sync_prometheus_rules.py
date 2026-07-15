@@ -10,6 +10,16 @@ import textwrap
 config_file = sys.argv[1]
 configmap_folder = sys.argv[2]
 
+
+# Emit multi-line strings (alert expr, annotations) as literal block scalars
+# so line feeds survive as real newlines instead of blank-line-padded quotes.
+def _literal_str_representer(dumper, data):
+    style = "|" if "\n" in data else None
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=style)
+
+
+yaml.add_representer(str, _literal_str_representer)
+
 # basepath of config_file for file:// URLs later one
 config_file_path = os.path.dirname(config_file)
 
@@ -73,7 +83,7 @@ for r in config["rules"]:
 
     rule = base_rule(r)
 
-    text = yaml.dump(obj["spec"], default_flow_style=False, width=1000, indent=2)
+    text = yaml.dump(obj["spec"], sort_keys=False, width=1000, indent=2)
 
     # Encode {{ }} for helm
     text = (

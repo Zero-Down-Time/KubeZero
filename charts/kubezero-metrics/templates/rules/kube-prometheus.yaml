@@ -21,17 +21,12 @@ spec:
         severity: warning
     - alert: Watchdog
       annotations:
-        description: 'This is an alert meant to ensure that the entire alerting pipeline is functional.
-
+        description: |
+          This is an alert meant to ensure that the entire alerting pipeline is functional.
           This alert is always firing, therefore it should always be firing in Alertmanager
-
           and always fire against a receiver. There are integrations with various notification
-
           mechanisms that send a notification when this alert is not firing. For example the
-
           "DeadMansSnitch" integration in PagerDuty.
-
-          '
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/general/watchdog
         summary: An alert that should always be firing to certify that Alertmanager is working properly.
       expr: vector(1)
@@ -39,19 +34,13 @@ spec:
         severity: none
     - alert: InfoInhibitor
       annotations:
-        description: 'This is an alert that is used to inhibit info alerts.
-
+        description: |
+          This is an alert that is used to inhibit info alerts.
           By themselves, the info-level alerts are sometimes very noisy, but they are relevant when combined with
-
           other alerts.
-
-          This alert fires whenever there''s a severity="info" alert, and stops firing when another alert with a
-
-          severity of ''warning'' or ''critical'' starts firing on the same namespace.
-
+          This alert fires whenever there's a severity="info" alert, and stops firing when another alert with a
+          severity of 'warning' or 'critical' starts firing on the same namespace.
           This alert should be routed to a null receiver and configured to inhibit alerts with severity="info".
-
-          '
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/general/infoinhibitor
         summary: Info-level alert inhibition.
       expr: ALERTS{severity = "info"} == 1 unless on(namespace) ALERTS{alertname != "InfoInhibitor", severity =~ "warning|critical", alertstate="firing"} == 1
@@ -64,9 +53,8 @@ spec:
         description: Network interface "{{`{{`}} $labels.device {{`}}`}}" changing its up status often on node-exporter {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod {{`}}`}}
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/general/nodenetworkinterfaceflapping
         summary: Network interface is often changing its status
-      expr: 'changes(node_network_up{job="node-exporter",device!~"veth.+"}[2m]) > 2
-
-        '
+      expr: |
+        changes(node_network_up{job="node-exporter",device!~"veth.+"}[2m]) > 2
       for: 2m
       labels:
         severity: warning
