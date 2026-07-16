@@ -83,7 +83,17 @@ for r in config["rules"]:
 
     rule = base_rule(r)
 
-    text = yaml.dump(obj["spec"], sort_keys=False, width=1000, indent=2)
+    # assume complete PrometheusRule object
+    try:
+        text = yaml.dump(obj["spec"], sort_keys=False, width=1000, indent=2)
+
+    except KeyError:
+        # If not perhaps we only have plain rules group ?
+        if "groups" in obj:
+            text = yaml.dump(obj, sort_keys=False, width=1000, indent=2)
+        else:
+            print("Cannot parse source rules!")
+            sys.exit(1)
 
     # Encode {{ }} for helm
     text = (

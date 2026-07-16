@@ -16,6 +16,7 @@ spec:
         host: {{ .Values.rabbitmq.name }}
         port:
           number: 15672
+  {{- if or .Values.rabbitmq.istio.amqp .Values.rabbitmq.istio.amqps .Values.rabbitmq.istio.mqtt .Values.rabbitmq.istio.mqtts }}
   tcp:
   {{- if .Values.rabbitmq.istio.amqps }}
   - match:
@@ -52,5 +53,6 @@ spec:
         host: {{ .Values.rabbitmq.name }}
         port:
           number: 1883
+  {{- end }}
   {{- end }}
 {{- end }}

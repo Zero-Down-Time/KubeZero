@@ -1,13 +1,4 @@
 rules:
 - name: rabbitmq-cluster-alarms
   condition: 'and ( index .Values "rabbitmq-cluster-operator" "enabled" ) ( index .Values "rabbitmq-cluster-operator" "dashboards" )'
-  url: https://raw.githubusercontent.com/rabbitmq/cluster-operator/refs/heads/main/observability/prometheus/rules/rabbitmq/cluster-alarms.yml
-- name: rabbitmq-high-connection-churn
-  condition: 'and ( index .Values "rabbitmq-cluster-operator" "enabled" ) ( index .Values "rabbitmq-cluster-operator" "dashboards" )'
-  url: https://github.com/rabbitmq/cluster-operator/raw/refs/heads/main/observability/prometheus/rules/rabbitmq/high-connection-churn.yml
-- name: rabbitmq-insufficient-established-erlang-distribution-links
-  condition: 'and ( index .Values "rabbitmq-cluster-operator" "enabled" ) ( index .Values "rabbitmq-cluster-operator" "dashboards" )'
-  url: https://github.com/rabbitmq/cluster-operator/raw/refs/heads/main/observability/prometheus/rules/rabbitmq/insufficient-established-erlang-distribution-links.yml
-- name: rabbitmq-unroutable-messages 
-  condition: 'and ( index .Values "rabbitmq-cluster-operator" "enabled" ) ( index .Values "rabbitmq-cluster-operator" "dashboards" )'
-  url: https://github.com/rabbitmq/cluster-operator/raw/refs/heads/main/observability/prometheus/rules/rabbitmq/unroutable-messages.yml
+  url: https://raw.githubusercontent.com/rabbitmq/cluster-operator/refs/heads/main/observability/prometheus/rule-file.yml
