@@ -17,7 +17,7 @@ forseti:
 
   image:
     name: public.ecr.aws/zero-downtime/forseti
-    tag: v0.1.2
+    tag: v0.3.0
 
   serviceAccount:
     annotations: {}

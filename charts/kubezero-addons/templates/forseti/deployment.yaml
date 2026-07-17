@@ -20,11 +20,9 @@ spec:
         image: "{{ .Values.forseti.image.name }}:{{ .Values.forseti.image.tag }}"
         imagePullPolicy: Always
         args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=:8080
-        #- --zap-log-level=2
+        - --log-format=json
+        - --log-level=info
         #- --dry-run
-        #- --leader-elect
         command:
         - /forseti
         livenessProbe:
