@@ -239,4 +239,35 @@ def cleanBuilder(Map config = [:]) {
     }
 }
 
+// Prune SKIP build records (no source changes) so monorepo job history isn't
+// cluttered by the sibling jobs that trigger on every push. Jenkins has no
+// result-based discarder AND refuses to delete a still-running build, so a build
+// can't delete itself — instead each build sweeps the FINISHED SKIP builds behind
+// it (the current SKIP record is pruned by the next build, so the latest one
+// lingers until then). Safe because `disableConcurrentBuilds` means prior builds
+// are done. On by default; opt out with discardSkipped: false. Best-effort: per
+// build and overall try/catch so a failure (e.g. pending script approval for
+// RunWrapper.getRawBuild / Run.delete) is logged, never failing the build.
+def pruneSkippedBuilds(Map config = [:]) {
+    if (config.discardSkipped == false) return
+
+    try {
+        def b = currentBuild.previousBuild
+        while (b != null) {
+            def prev = b.previousBuild            // capture before b is deleted
+            if (b.description == 'SKIP') {
+                try {
+                    b.rawBuild.delete()
+                } catch (err) {
+                    echo "discardSkipped: could not delete #${b.number} (${err.message})"
+                }
+            }
+            b = prev
+        }
+    } catch (err) {
+        echo "discardSkipped: could not prune SKIP builds (${err.message}); " +
+             "approve RunWrapper.getRawBuild / Run.delete, or set discardSkipped: false"
+    }
+}
+
 return this

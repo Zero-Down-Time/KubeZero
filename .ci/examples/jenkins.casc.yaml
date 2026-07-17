@@ -37,7 +37,10 @@ jobs:
                 remote {
                   // The consuming project. This is the only place the target repo is named.
                   url('https://git.zero-downtime.net/myorg/container-monorepo.git')
-                  credentials('gitea-jenkins-password')
+                  // SCM-clone credential (a PAT) — often distinct from the REST-API
+                  // token seedMultiJob/forgejo use. seedMultiJob's generated jobs default
+                  // to 'gitea-jenkins-password'; pass credentialsId to override (see seedJob.groovy).
+                  credentials('gitea-jenkins-pat')
                 }
                 branch('main')
               }
@@ -53,13 +56,20 @@ jobs:
         }
       }
 
-# Optional: declare the credential the generated jobs use to scan the repo.
+# Optional: declare the credentials the seed + generated jobs use.
 # (Credential VALUES come from a secrets source, not this file.)
+#   gitea-jenkins-pat       — SCM clone (PAT) used by the seed's cpsScm and branch sources
+#   gitea-jenkins-password  — REST-API token (forgejo changeset detection, PR open)
 #
 # credentials:
 #   system:
 #     domainCredentials:
 #       - credentials:
+#           - usernamePassword:
+#               scope: GLOBAL
+#               id: gitea-jenkins-pat
+#               username: jenkins
+#               password: ${GITEA_JENKINS_PAT}     # injected from env/secret store
 #           - usernamePassword:
 #               scope: GLOBAL
 #               id: gitea-jenkins-password
