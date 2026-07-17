@@ -1,19 +1,19 @@
 # ci-tools-lib
 
-Various toolchain bits and pieces shared between projects — a shared CI/CD toolchain library for building, testing, scanning, and publishing containerized applications using Podman, Jenkins, and AWS ECR.
+Shared CI/CD toolchain for building, testing, scanning, and publishing containerized applications with Podman, Jenkins, and AWS ECR. Consumed as a `.ci/` git submodule plus a Jenkins shared library (`@Library('ci-tools-lib')`).
 
 ## Features
 
-- **Container Build Orchestration** — Podman/Buildah rootless container builds with multi-architecture support (amd64, arm64) and a multi-arch manifest
-- **Jenkins Shared Libraries** — Reusable, composable per-stage pipeline templates for Just-based projects
-- **Forgejo SCM Integration** — Native change detection via API for PR and commit changesets (Forgejo is a Gitea fork sharing the `/api/v1` API, so a Gitea instance works too)
-- **AWS ECR (public or private)** — Registry login, push, manifest management, and automated image lifecycle cleanup; public vs private auto-detected from the registry URL
-- **Security Scanning** — Grype vulnerability scanning + betterleaks secret detection (source and image), with configurable severity thresholds and SARIF/JSON reporting surfaced via `recordIssues`
-- **Semantic Versioning** — Automatic version computation from git tags with branch suffix support
-- **Build Protection** — PR safety mechanism that overwrites build config files from the target branch
-- **Builder Containers** — Optional isolated build environments (e.g. Rust toolchain with sccache, cargo-deny, cargo-auditable). One container is reused across all pipeline stages.
-- **GitOps Writeback** — Post-build promotion: commit image tag/digest updates to a Forgejo-hosted manifests repo (direct push or PR-gated) so ArgoCD/Flux sync the change
-- **Build Notifications** — Optional build-lifecycle messages (start / success / failure / aborted) via an apprise-api sidecar, fanning out to Slack / Matrix / Mattermost / Teams
+- **Container builds** — rootless Podman/Buildah, multi-arch (amd64/arm64) manifest
+- **Jenkins shared library** — composable per-stage pipeline for Just-based projects
+- **Forgejo/Gitea SCM** — change detection via `/api/v1` for PR and commit changesets
+- **AWS ECR (public or private)** — login, push, manifest management, lifecycle cleanup
+- **Security scanning** — Grype (vulnerabilities) + betterleaks (secrets), source and image
+- **Semantic versioning** — from git tags, with branch suffix
+- **Build protection** — overwrites build config files from the target branch on PRs
+- **Builder containers** — optional toolchain images (e.g. Rust with sccache), reused across stages
+- **GitOps writeback** — commit image tags to a manifests repo (direct push or PR-gated)
+- **Build notifications** — start / success / failure / aborted via an apprise-api sidecar
 
 ## Quickstart
 
@@ -23,13 +23,9 @@ Various toolchain bits and pieces shared between projects — a shared CI/CD too
 git submodule add -b main https://git.zero-downtime.net/ZeroDownTime/ci-tools-lib.git .ci
 ```
 
-The `-b main` records the tracked branch so [Renovate keeps `.ci/` updated](#maintenance). The URL can be any **mirror** of ci-tools-lib (e.g. your own Forgejo) — whatever you pass is stored in `.gitmodules` and is what Renovate then tracks; nothing in the library hardcodes the canonical URL.
+Clone consumers with `git clone --recurse-submodules` (or run `git submodule update --init` after a plain clone). The URL can be any mirror; it's stored in `.gitmodules`.
 
-Clone consumers with `git clone --recurse-submodules` (or run `git submodule update --init` after a plain clone), otherwise `.ci/` is empty and the `just` imports below fail. `git config --global submodule.recurse true` makes future pulls update it automatically.
-
-### 2. Configure your project
-
-Import the relevant `.just` modules in your `justfile`:
+### 2. Import the `.just` modules in your `justfile`
 
 ```just
 import '.ci/container.just'
@@ -37,9 +33,7 @@ import '.ci/rust.just'
 import '.ci/git.just'
 ```
 
-### 3. Integrate with Jenkins
-
-Add a `Jenkinsfile` using the shared library:
+### 3. Add a `Jenkinsfile`
 
 ```groovy
 @Library('ci-tools-lib') _
@@ -52,56 +46,50 @@ justContainer(
 )
 ```
 
-The Jenkins job must check out submodules so `.ci/` is populated before the pipeline runs — enable *Recursively update submodules* in the multibranch project's Git behaviours, or add an early `git submodule update --init`. (The `@Library` reference is fetched by the controller separately and needs no submodule.)
-
-`registry` is required — set it explicitly per project. The library auto-detects public vs private ECR from the URL shape (`public.ecr.aws/...` vs `*.dkr.ecr.<region>.amazonaws.com`) and dispatches to the correct `aws ecr` / `aws ecr-public` API. Region for private is parsed from the hostname. Both the agent and dev workstation need ambient AWS credentials in scope (env vars, instance profile, etc.) — the library does no credential plumbing.
+`registry` is required — the `registry:` config field, or the `REGISTRY` env var. The Jenkins job must check out submodules so `.ci/` is populated — enable *Recursively update submodules* in the multibranch project's Git behaviours, or add an early `git submodule update --init`. Public vs private ECR is auto-detected from the URL; AWS credentials must be ambient (env vars, instance profile).
 
 ## Components
 
 ### Just — `.just` modules
 
-All build logic lives in these modules so a developer reproduces full CI behaviour locally by running the same `just` recipes Jenkins runs.
-
-| Module            | Key Recipes                                              |
+| Module            | Key recipes                                              |
 |-------------------|----------------------------------------------------------|
-| `container.just`  | `build`, `scan` (Grype + betterleaks), `push` (multi-arch manifest), `ecr-login`, `create-repo`, `rm-remote-untagged`, `clean`. Registry-touching recipes take the registry as their first positional arg; public vs private AWS ECR auto-detected from the URL. No default registry — every consumer declares it. |
+| `container.just`  | `build`, `scan` (Grype + betterleaks), `push` (multi-arch manifest), `ecr-login`, `create-repo`, `rm-remote-untagged`, `clean`. Registry-touching recipes take the registry as their first positional arg, defaulting to the `REGISTRY` env var. Image name defaults to `IMAGE_NAME` (env), else the git repo name. |
 | `rust.just`       | `prepare` (`cargo fetch --locked`), `lint` (clippy + cargo-deny), `build` (cargo auditable), `test`, `update-lock`, `cut-release`. Opt into an Alpine musl target with `CARGO_BUILD_MUSL`. |
 | `python.just`     | uv-based: `prepare` (`uv sync --locked`), `lint` (flake8), `build` (`uv build`), `test` (pytest), `upload` (`uv publish`) |
-| `git.just`        | Version computation from tags (`git describe`, `$TAG_MATCH`-aware), branch-suffixed `tag`, `arch` (`$ARCH`, default amd64), `cleanup-tags`, `ci-pull-upstream` |
-| `builder.just`    | `update-builder` (build toolchain image), `use-builder <target>` (run a target inside the reused toolchain container; mounts repo root + sccache cache for Rust), `clean-builder` |
+| `git.just`        | Version from tags (`$TAG_MATCH`-aware), branch-suffixed `tag`, `arch` (`$ARCH`, default amd64), `cleanup-tags`, `ci-pull-upstream` |
+| `builder.just`    | `update-builder`, `use-builder <target>` (run a target inside the reused toolchain container), `clean-builder` |
 | `common.just`     | `scan-src` source secret scan; imported by the language modules |
-| `gitops.just`     | `update`. Edits image tags / yq paths in a manifests repo, commits, pushes (with rebase-retry). Commit message comes from `$GITOPS_COMMIT_MESSAGE`. PR opening lives in `forgejo.groovy` (`forgejo.openPullRequest`). Updates spec is a JSON file so push-mode promotions reproduce locally. |
+| `gitops.just`     | `update` — edit image tags / yq paths in a manifests repo, commit, push (rebase-retry) |
 
-### Jenkins — Shared Library (`vars/`)
-
-Thin glue only — each helper wraps Jenkins primitives around a `just` invocation; the real logic stays in the `.just` modules.
+### Jenkins — shared library (`vars/`)
 
 | Library                  | Purpose                                              |
 |--------------------------|------------------------------------------------------|
-| `justContainer.groovy`   | Entry point — the declarative pipeline composing the per-stage helpers |
-| `container.groovy`       | Per-stage helpers (`changeset`, `prepare`, `lint`, `build`, `test`, `scan`, `push`, `clean`, `cleanBuilder`) invoked by `justContainer` |
-| `forgejo.groovy`         | Forgejo API integration for change detection and PR open/reuse (Forgejo shares Gitea's `/api/v1` API; formerly `gitea.groovy`) |
-| `notify.groovy`          | Optional build-lifecycle notifications via an apprise-api sidecar (see [Build notifications](#build-notifications)) |
-| `protectBuild.groovy` | Overwrites CI files from the target branch during PR builds; optionally restores pinned submodules (e.g. `.ci`) too |
-| `updateGitops.groovy` | GitOps writeback wrapper: commits yq-path updates to a Forgejo manifests repo (`push` or `pr` mode). Auto-picks `sshagent` vs. `gitUsernamePassword` from the repo URL scheme. See `examples/Jenkinsfile.gitops-{push,pr}.groovy`. |
-| `seedMultiJob.groovy` | Job DSL seed for monorepos: discovers `*/Jenkinsfile` service subfolders and generates one Multibranch Pipeline job per service. Auto-targets the consuming repo (its own SCM). See [Monorepo: automated job-per-service setup](#monorepo-automated-job-per-service-setup). |
+| `justContainer.groovy`   | Entry point — declarative pipeline composing the per-stage helpers |
+| `container.groovy`       | Per-stage helpers (`changeset`, `prepare`, `lint`, `build`, `test`, `scan`, `push`, `clean`, `cleanBuilder`) |
+| `forgejo.groovy`         | Forgejo/Gitea `/api/v1` change detection and PR open/reuse |
+| `notify.groovy`          | Optional build notifications via apprise-api (see [Build notifications](#build-notifications)) |
+| `protectBuild.groovy`    | Overwrites CI files from the target branch on PR builds; optional submodule pin |
+| `updateGitops.groovy`    | GitOps writeback (`push` or `pr`). See `examples/Jenkinsfile.gitops-{push,pr}.groovy` |
+| `seedMultiJob.groovy`    | Job DSL seed — one Multibranch job per monorepo service (see [below](#monorepo-automated-job-per-service-setup)) |
 
 **Pipeline stages:** Changeset → Prepare → Lint → Build → Test → Scan → Push → Cleanup
 
-`Changeset` is a minimal first stage that runs the forgejo change detection and sets the `SKIP` flag (no changed file matched `buildOnly`, and no force build) — every later stage, `Prepare` included, is gated on it, so the skip decision is made before any prep work runs. A `.ci` submodule bump triggers a build too: Forgejo reports the gitlink as the bare path `.ci`, and the matcher also tests `<path>/`, so a `'\\.ci/.*'` entry in `buildOnly` catches it.
+`buildOnly` gates the build; include `'\\.ci/.*'` to rebuild on a `.ci` submodule bump. Set the `FORCE_BUILD` build parameter (in "Build with Parameters") to bypass the gate for a one-off rebuild.
 
-`justContainer` declares a `FORCE_BUILD` boolean build parameter (default off). Tick it in "Build with Parameters" to bypass the `buildOnly` skip gate for a one-off rebuild without editing the Jenkinsfile. (The checkbox appears from the second build onward — Jenkins registers parameters retroactively.)
+Skipped builds (no changed file matched `buildOnly`) are pruned from job history by default, so a monorepo's sibling jobs don't clutter it on every push. Jenkins can't delete a still-running build, so each build deletes the finished SKIP builds before it — the most recent SKIP lingers until the next run. Set `discardSkipped: false` to keep them. Pruning needs a one-time admin approval of `RunWrapper.getRawBuild` / `Run.delete` in *In-process Script Approval* (until then it's a logged no-op — builds never fail over it).
 
 ### Utilities
 
-- **`ecr_lifecycle.py`** — Python utility (requires `boto3`) to manage ECR image lifecycle for public *and* private ECR: removes untagged images, prunes old dev-tagged images, keeps a configurable number of recent tagged images. Detects public vs private from the `--registry` URL.
-- **`utils.sh`** — Bash helpers for semantic version bumping (`bumpVersion`) and git commit/tag/push automation (`addCommitTagPush`).
-- **`Dockerfile.rust`** — Rust toolchain builder image (Alpine 3.24) with cargo, clippy, sccache (`RUSTC_WRAPPER`), cargo-auditable, cargo-deny, and just. Used by the `use-builder` flow.
-- **`Dockerfile.python`** — Python toolchain builder image (Alpine 3.24, uv-based) for the `use-builder` flow.
+- **`ecr_lifecycle.py`** — (requires `boto3`) prune ECR images: removes untagged, prunes old dev-tagged, keeps recent tagged. Public vs private detected from `--registry`.
+- **`utils.sh`** — Bash helpers: `bumpVersion`, `addCommitTagPush`.
+- **`Dockerfile.rust`** — Rust toolchain image (Alpine 3.24): cargo, clippy, sccache, cargo-auditable, cargo-deny, just.
+- **`Dockerfile.python`** — Python toolchain image (Alpine 3.24, uv-based).
 
 ## Monorepo layout
 
-For a monorepo where each service has its own `.justfile`, `Jenkinsfile`, and `Dockerfile` under a subdirectory (e.g. `services/api-users/`), share one `.ci/` submodule at the repo root and pass per-service config:
+Each service has its own `.justfile`, `Jenkinsfile`, and `Dockerfile` under a subdirectory, sharing one `.ci/` submodule at the repo root:
 
 ```
 repo/
@@ -110,6 +98,7 @@ repo/
     └── api-users/
         ├── Jenkinsfile
         ├── .justfile
+        ├── .env                    # per-service IMAGE_NAME + REGISTRY (loaded via set dotenv-load)
         ├── Dockerfile
         └── pyproject.toml
 ```
@@ -117,18 +106,18 @@ repo/
 **`services/api-users/.justfile`:**
 
 ```just
-# Toolchain — flat-imported so `just lint`, `just prepare`, `just scan-src`,
-# `just use-builder lint` etc. work. Pulls common.just, builder.just, git.just.
-import '../../.ci/python.just'
+set dotenv-load                     # load .env before the modules evaluate their variables
 
-# Container recipes namespaced — Jenkins glue calls `just container::build`.
+import '../../.ci/python.just'      # flat import: just lint / prepare / scan-src / use-builder …
 mod container '../../.ci/container.just'
 ```
 
-Per-service tag prefix (so `git describe` only sees this service's releases) is
-set via the **`TAG_MATCH` env var**, not an in-justfile `export` — see the
-Jenkinsfile `env:` below, and `git.just`'s Versioning notes for why. Locally:
-`TAG_MATCH='api-users/v*.*.*' just …` or `just tag_match='api-users/v*.*.*' …`.
+**`services/api-users/.env`:**
+
+```
+IMAGE_NAME=api-users
+REGISTRY=1234567890.dkr.ecr.us-east-1.amazonaws.com
+```
 
 **`services/api-users/Jenkinsfile`:**
 
@@ -141,80 +130,70 @@ justContainer(
     registry:    '1234567890.dkr.ecr.us-east-1.amazonaws.com',  // or public.ecr.aws/<alias>
     buildOnly:   ['services/api-users/.*', '\\.ci/.*'],
     needBuilder: true,
-    // Extra env (withEnv format) applied to the Prepare/Lint/Build/Test stages.
-    // Per-service tag prefix goes here (read by git.just when computing git_tag):
     env: ['TAG_MATCH=api-users/v*.*.*'],
-    // Static values only. Host-safe Rust opt-ins (read by use-builder inside the
-    // Alpine builder): env: ['CARGO_BUILD_MUSL=true', 'ARCH=arm64'].
-    // Optional build notifications via the apprise-api sidecar (see below).
-    // notify: [key: 'team-platform'],   // events default to start/success/failure/aborted
+    // Host-safe Rust opt-ins:  env: ['CARGO_BUILD_MUSL=true', 'ARCH=arm64']
+    // notify: [key: 'team-platform']
 )
 ```
 
-`protect` defaults to `["${workDir}/.justfile", "${workDir}/Jenkinsfile"]`, so service-scoped build files are restored from the target branch on PR builds without needing to override it. (`.ci` is a submodule, which a plain file checkout can't restore — set `protectSubmodules: true` to additionally pin `.ci` to the target branch's commit on PR builds, at the cost of Renovate no longer validating `.ci`-bump PRs against the new pointer; left off, that integrity is a Jenkins controller-trust concern.) Tag releases as `api-users/v1.2.3`.
+Per-service settings:
 
-A Jenkins Multibranch project has a single *Script Path*, so one job can't serve many service subfolders. Give each service its own job either by hand (one Multibranch project per service, same repo, each *Script Path* set to `<service>/Jenkinsfile`) or automatically — see the next section.
+- **Image name** — set `IMAGE_NAME` (via `set dotenv-load` + `.env` as shown, a launch env var `IMAGE_NAME=api-users just container::build`, or the Jenkins `imageName` field). A plain `image_name :=` in the `.justfile` does not cross the `mod` boundary.
+- **Registry** — same pattern via `REGISTRY` (`.env` / launch env), or the Jenkins `registry:` field. Empty when unset — the registry-touching recipes then fail.
+- **Tag prefix** — set `TAG_MATCH`: Jenkins `env: ['TAG_MATCH=api-users/v*.*.*']`, or locally `TAG_MATCH='api-users/v*.*.*' just …` / `just tag_match='api-users/v*.*.*' …`. Tag releases as `api-users/v1.2.3`.
+- **Build-file protection** — `protect` defaults to the service `.justfile` + `Jenkinsfile`; set `protectSubmodules: true` to also restore the `.ci` pointer from the target branch on PR builds.
+- **Nesting depth** — services can sit at any depth (`services/api-users` above is two levels). The build/version machinery is depth-agnostic; just match the config to the depth: the import `../` count (`import '../../.ci/…'` for two levels, `../../../.ci/…` for three), and the full path in `workDir` (`a/b/c`) and `buildOnly` (`a/b/c/.*`).
+
+Each service needs its own Jenkins job (Multibranch *Script Path* `<service>/Jenkinsfile`) — create them by hand or with `seedMultiJob` (next section).
 
 ## Monorepo: automated job-per-service setup
 
-`seedMultiJob` (a Job DSL **seed**) generates one Multibranch Pipeline job per service from a single monorepo, so you don't click them together by hand. It **auto-targets the consuming repo** — the seed's own SCM is the repo, so `checkout scm` + `env.GIT_URL` (parsed by `forgejo.parseGitUrl`) yield server/owner/repo with nothing hardcoded. It globs `*/Jenkinsfile`, and for each match generates a Multibranch job whose only per-service difference is `scriptPath('<service>/Jenkinsfile')`. Re-running reconciles: a new service folder adds a job, a removed folder deletes its job.
+`seedMultiJob` generates one Multibranch Pipeline job per service from a monorepo, auto-targeting the consuming repo (its own SCM). It globs `*/Jenkinsfile` and generates a job per match; re-running reconciles adds/removals.
 
-Wire the seed one of two ways (both auto-target the repo):
+Wire it as the repo's root `Jenkinsfile` (Multibranch / Org-Folder job — self-guards to the primary branch) or a dedicated Pipeline-script-from-SCM job (bootstrap via [`examples/jenkins.casc.yaml`](examples/jenkins.casc.yaml)):
 
 ```groovy
-// The whole file — as the repo's root Jenkinsfile, or a 2-line wrapper (examples/seedJob.groovy)
 @Library('ci-tools-lib') _
 seedMultiJob()
 ```
 
-1. **Root `Jenkinsfile`** under a Multibranch / Org-Folder job — auto-discovered like any other repo. The seed self-guards to run **only on the primary branch** (skips PRs and feature branches), so the per-service Jenkinsfiles in subfolders (which a folder scan ignores at root) get generated without the seed firing on every push.
-2. **Dedicated Pipeline-script-from-SCM job** — bootstrap it as code with [`examples/jenkins.casc.yaml`](examples/jenkins.casc.yaml) (Configuration-as-Code), which points the seed at the consumer repo.
+Options (all optional):
 
-Behaviour and requirements:
+- `jobFolder` — Jenkins folder for the generated jobs (default `<org>-jobs/<repo>`, derived from `JOB_NAME`)
+- `discoveryGlob` — service glob (default `*/Jenkinsfile`, **one level only**). Widen for deeper layouts: `'services/*/Jenkinsfile'` (fixed depth), or `'**/Jenkinsfile'` (any depth — auto-excludes the root seed `Jenkinsfile` and `.ci/`). The service's directory path becomes the Jenkins folder hierarchy, with the leaf as the job display name.
+- `credentialsId` — SCM clone credential (default `gitea-jenkins-password`; ZDT uses `gitea-jenkins-pat`)
 
-- **Runs on the controller.** Pinned to `node('admin-dsl')` (an Exclusive-mode controller node) — it only mutates Jenkins job config and must not consume an agent executor. Keeps minimal build history (`numToKeep: 3`) since it's stateless.
-- **Generated jobs land in a parallel plain folder `<org>-jobs/<repo>/<service>`.** A Gitea/Forgejo Organization Folder is *computed* and can't hold manually-created items, so the seed places jobs in a sibling plain folder (derived from `JOB_NAME`) rather than inside the org folder. Override with `seedMultiJob(jobFolder: '...')`.
-- **Nested service layouts.** The default `discoveryGlob` is `*/Jenkinsfile` (one level). Widen it for the [Monorepo layout](#monorepo-layout) above — `seedMultiJob(discoveryGlob: 'services/*/Jenkinsfile')` — and the service's directory path is preserved as the Jenkins folder hierarchy (`<org>-jobs/<repo>/services/<svc>`), with the leaf as the job's display name. The repo-root seed `Jenkinsfile` and anything under `.ci/` are auto-excluded, so a recursive `**/Jenkinsfile` works too (prefer the explicit form).
-- **The Gitea branch source is injected as raw XML** via a Job DSL `configure {}` block — `GiteaSCMSource` ships no `@Symbol`, so the dynamic `gitea {}` / `$class` DSL can't express it. Generated traits: branch + origin-PR + fork-PR (TrustContributors) discovery, tag discovery (releases arrive as tags), and **recursive submodules** (so `.ci` is checked out for service builds).
-- **Credential.** `credentialsId` is the SCM *clone* credential the generated jobs use — often a PAT distinct from the REST-API one (e.g. ZDT passes `seedMultiJob(credentialsId: 'gitea-jenkins-pat')`); it defaults to `gitea-jenkins-password`.
-- **Plugins:** Job DSL, Gitea, Pipeline Utility Steps. Job DSL **script security must be disabled** (the step runs `sandbox: false` on the trusted controller, avoiding per-generation script approval).
-
-See [`examples/seedJob.groovy`](examples/seedJob.groovy) and [`examples/jenkins.casc.yaml`](examples/jenkins.casc.yaml).
+Runs on `node('admin-dsl')` (the controller). Requires plugins: Job DSL, Gitea, Pipeline Utility Steps, with Job DSL script security disabled. See [`examples/seedJob.groovy`](examples/seedJob.groovy) and [`examples/jenkins.casc.yaml`](examples/jenkins.casc.yaml).
 
 ## Build notifications
 
-Optional build-lifecycle notifications (start / success / failure / aborted) are sent through an [apprise-api](https://github.com/caronc/apprise-api) sidecar running next to the Jenkins controller. `justContainer` POSTs a single JSON event; apprise-api fans out to the configured chat targets (Slack, Matrix, Mattermost, Teams, ...). Off unless `notify` is set — existing consumers are unaffected.
-
-Destinations and their secrets live in apprise-api **config keys**, never in this repo: register e.g. `slack://…`/`matrix://…` URLs under a key (`team-platform`) on the sidecar, then reference the key from the Jenkinsfile. If `key` is omitted (and no `urls` are given), the module falls back to apprise-api's conventional `default` key — so a single shared `default` config requires no per-Jenkinsfile `key` at all.
+Build-lifecycle notifications go through an [apprise-api](https://github.com/caronc/apprise-api) sidecar. Off unless `notify` is set. Destinations live in apprise-api config keys, referenced by `key` (defaults to the `default` key).
 
 ```groovy
 justContainer(
     // ...
     notify: [
-        // key:        'team-platform',                // apprise-api config key (defaults to 'default' when omitted)
-        // urls:       ['slack://T/B/xxx'],             // stateless alternative (destinations in-repo)
-        // events:     ['start', 'success', 'failure', 'aborted'],  // this is the default set
-        tag:           'ci',                            // optional apprise tag filter
-        // url:        'http://apprise-api:8000',       // optional; defaults to env.APPRISE_API_URL
-        // credentialsId: 'apprise-token',              // optional Secret Text -> 'Authorization: Bearer <token>'
-        // notifySkipped: true,                         // also notify SKIP (no-change) builds
-        // messages:   [failure: { "build broke: ${env.BUILD_URL}" }],  // optional per-event body closures
+        // key:           'team-platform',              // apprise-api config key (defaults to 'default')
+        // urls:          ['slack://T/B/xxx'],          // stateless alternative
+        // events:        ['start', 'success', 'failure', 'aborted'],  // default set
+        tag:              'ci',                          // optional apprise tag filter
+        // url:           'http://apprise-api:8000',     // defaults to env.APPRISE_API_URL
+        // credentialsId: 'apprise-token',              // Secret Text -> 'Authorization: Bearer <token>'
+        // notifySkipped: true,                          // also notify SKIP (no-change) builds
+        // messages:      [failure: { "build broke: ${env.BUILD_URL}" }],  // per-event body closures
     ],
 )
 ```
 
-- **Endpoint** is shared infra, so set `APPRISE_API_URL` once on the controller (global env); `notify.url` overrides per-job.
-- **Destinations** resolve in this order: an explicit `key` → `/notify/<key>`; else inline `urls` → stateless `/notify`; else the `default` key → `/notify/default`. Pre-register that `default` config on the sidecar to drive notifications from `notify: [events: [...]]` alone.
-- **Events** map from the build result: `SUCCESS→success`, `FAILURE→failure`, `UNSTABLE→unstable`, `ABORTED`/`NOT_BUILT→aborted`, plus `start`. All five fire by default (`['start','success','failure','aborted']`); set `events` to narrow the set. The apprise notification `type` (`info`/`success`/`warning`/`failure`) drives per-platform colour automatically.
-- **Aborted builds** fire from `post { always }` like any other end event. A UI abort interrupts the in-flight notification step once, so the send is retried a single time to survive the abort — a hard/double-kill that tears the executor down may still skip it.
-- **SKIP builds** (no source changes) are silent unless `notifySkipped: true` (governs start and end symmetrically).
-- **Title** reads like a sentence with a leading status emoji and, on end events, a build-status transition vs. the previous run — e.g. `🚀 Jenkins build of api-users/main started`, `✅ Jenkins build of api-users/main finished successfully (Fixed)`, `❌ … failed (Still failing)`.
-- **Body** defaults to a one-line summary: a PR/branch ref (PR builds link to `CHANGE_URL`; branch builds link to the forgejo branch page), the short commit SHA (linked to the forgejo commit page), and a linked Jenkins `build <number>` followed by the trigger cause (`triggered by user …`) on start events, or the duration (`took …`) on end events. All git links are derived in-process from `GIT_URL` (via `forgejo.parseGitUrl`) — no remote call. Override any event's body with a closure under `messages` (resolved lazily so `env`/`currentBuild` are populated).
-- A notification problem (sidecar down, bad key) is logged and **never fails the build**.
+- Set `APPRISE_API_URL` once on the controller; `notify.url` overrides per-job.
+- Destinations resolve as: explicit `key` → `/notify/<key>`; else `urls` → `/notify`; else `default` key → `/notify/default`.
+- Events: `SUCCESS→success`, `FAILURE→failure`, `UNSTABLE→unstable`, `ABORTED`/`NOT_BUILT→aborted`, plus `start`. Set `events` to narrow the set.
+- SKIP builds are silent unless `notifySkipped: true`.
+- A notification failure never fails the build.
 
 ## GitOps writeback
 
-Promote a freshly built image into a Forgejo-hosted manifests repo so ArgoCD/Flux picks it up. The image tag is captured from `container.push(config)`'s return value (the actual `git_tag` published — e.g. `v1.2.3` on a tagged commit) and threaded into the Promote stage:
+Promote a built image into a Forgejo-hosted manifests repo. The tag is captured from `container.push(config)` and threaded into the Promote stage:
 
 ```groovy
 @Library('ci-tools-lib') _
@@ -244,9 +223,9 @@ pipeline {
 }
 ```
 
-PR-gated mode adds `mode: 'pr'`, `tokenCredentialsId:` (Forgejo API token), `prBranch:`, `prTitle:`, `prBody:`. Returns `[sha, branch, prUrl]`. The PR branch is reused on re-runs (idempotent: existing open PR URL is returned). See `examples/Jenkinsfile.gitops-push.groovy` and `examples/Jenkinsfile.gitops-pr.groovy` for full pipelines.
+PR-gated mode adds `mode: 'pr'`, `tokenCredentialsId:` (Forgejo API token), `prBranch:`, `prTitle:`, `prBody:`; returns `[sha, branch, prUrl]`. See `examples/Jenkinsfile.gitops-push.groovy` and `examples/Jenkinsfile.gitops-pr.groovy`.
 
-Reproduce locally with the same recipes Jenkins runs:
+Reproduce locally:
 
 ```bash
 echo '{"apps/payments/values.yaml":{".image.tag":"v1.2.3"}}' > /tmp/u.json
@@ -266,7 +245,7 @@ just container::push public.ecr.aws/<alias> my-app
 just container::create-repo public.ecr.aws/<alias> my-app
 ```
 
-For ergonomics, define the registry once in your project's root `.justfile` and add convenience wrappers:
+Define the registry once and add convenience wrappers:
 
 ```just
 registry := "public.ecr.aws/<alias>"          # or "<account>.dkr.ecr.<region>.amazonaws.com"
@@ -274,7 +253,6 @@ registry := "public.ecr.aws/<alias>"          # or "<account>.dkr.ecr.<region>.a
 mod container '.ci/container.just'
 import '.ci/python.just'                       # or rust.just
 
-# Convenience wrappers — pass the registry through to module recipes
 push image="":
   just container::push {{ registry }} {{ image }}
 
@@ -285,11 +263,11 @@ create-repo image="":
   just container::create-repo {{ registry }} {{ image }}
 ```
 
-`build`, `scan`, and `clean` recipes don't take a registry, so they remain reachable as `just container::build` etc. without any wrapping. The Jenkins glue passes the registry directly from the `registry:` config field — consumers don't need wrappers for CI.
+`build`, `scan`, and `clean` take no registry. The registry and image-name positionals are optional — they default to the `REGISTRY` and `IMAGE_NAME` env vars (image falls back to the git repo name). Set them via a launch env var or `set dotenv-load` + `.env` (see [Monorepo layout](#monorepo-layout)).
 
 ## Maintenance
 
-`.ci/` is a git submodule tracking `main`. Let Renovate keep it current automatically — enable its built-in submodule manager in the consumer's `renovate.json`:
+`.ci/` tracks `main`. Let Renovate keep it current — enable its submodule manager:
 
 ```json
 {
@@ -298,17 +276,13 @@ create-repo image="":
 }
 ```
 
-Renovate then opens a PR in each consumer whenever `ci-tools-lib` `main` advances. Because the submodule is a separate repo boundary, Renovate does **not** scan the dependencies *inside* `.ci/` (the toolchain Dockerfiles etc.) — those are maintained upstream, so no per-consumer noise.
+To update by hand: `just ci-pull-upstream` (or `git submodule update --remote --merge .ci`) and commit the bumped pointer.
 
-To update by hand instead, run `just ci-pull-upstream` (or `git submodule update --remote --merge .ci`) and commit the bumped pointer.
-
-Ready-to-copy consumer config is in [`examples/renovate.json`](examples/renovate.json). Projects still on the old `git subtree` layout can convert in one shot with [`examples/migrate-to-submodule.sh`](examples/migrate-to-submodule.sh) (run from the consumer repo root; it stages the swap for review).
-
-**Mirroring.** To consume from your own mirror instead of the canonical URL, just point the submodule at it — `git submodule add -b main <your-mirror-url> .ci`, or run the migration script with `CI_TOOLS_URL` (and optionally `CI_TOOLS_BRANCH`) set. The source lives entirely in the consumer's `.gitmodules`; Renovate tracks whatever is there.
+Ready-to-copy config is in [`examples/renovate.json`](examples/renovate.json). Convert from the old `git subtree` layout with [`examples/migrate-to-submodule.sh`](examples/migrate-to-submodule.sh). To use a mirror, point the submodule at it (or run the migration with `CI_TOOLS_URL` / `CI_TOOLS_BRANCH` set).
 
 ## Renovate
 
-Run renovate locally to test custom config:
+Test custom config locally:
 
 ```bash
 LOG_LEVEL=debug ~/node_modules/renovate/dist/renovate.js --platform local --dry-run

@@ -107,6 +107,8 @@ def call(Map config = [:]) {
           dir(config.workDir ?: '.') {
             sh "rm -rf ${TMP_DIR}"
           }
+          // Prune finished SKIP builds from history (default on).
+          script { container.pruneSkippedBuilds(config) }
         }
       }
     }

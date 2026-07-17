@@ -18,7 +18,11 @@
 //   ├── seedJob.groovy    (this file)
 //   └── .ci/              (this library, as a submodule)
 //
-// Override defaults if needed, e.g. seedMultiJob(jobFolder: 'images').
+// Override defaults if needed:
+//   seedMultiJob(jobFolder: 'images')                          // generated-jobs folder (default <org>-jobs/<repo>)
+//   seedMultiJob(discoveryGlob: 'services/*/Jenkinsfile')      // nested layout — default '*/Jenkinsfile' is one level only
+//                                                                 (use '**/Jenkinsfile' for arbitrary depth)
+//   seedMultiJob(credentialsId: 'gitea-jenkins-pat')           // SCM-clone credential (a PAT), if distinct from the REST token
 
 @Library('ci-tools-lib') _
 

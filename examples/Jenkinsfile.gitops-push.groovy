@@ -9,12 +9,13 @@
 // own stage between Push and Cleanup. For container-only projects without
 // GitOps, call `justContainer(config)` at the top level instead.
 //
-// The consumer's root justfile must import the gitops module:
-//   mod gitops '.ci/gitops.just'
+// The service justfile (services/payments/.justfile) must import the gitops module:
+//   mod gitops '../../.ci/gitops.just'
 
 @Library('ci-tools-lib') _
 
 def config = [
+    workDir:     'services/payments',
     imageName:   'payments',
     registry:    '1234567890.dkr.ecr.eu-central-1.amazonaws.com',
     buildOnly:   ['services/payments/.*', '\\.ci/.*'],
@@ -31,11 +32,31 @@ pipeline {
     environment { TMP_DIR = '_tmp' }
 
     stages {
-        stage('Prepare') { steps { script { container.prepare(config) } } }
-        stage('Lint')    { steps { script { container.lint(config) } } }
+        // Changeset gate: sets the SKIP flag when no changed file matches buildOnly,
+        // which every downstream stage's `when` reads. Without it, buildOnly is inert.
+        stage('Changeset') { steps { script { container.changeset(config) } } }
+
+        stage('Prepare') {
+            when {
+                expression { currentBuild.description != 'SKIP' }
+                expression { currentBuild.currentResult != 'FAILURE' }
+            }
+            steps { script { container.prepare(config) } }
+        }
+
+        stage('Lint') {
+            when {
+                expression { currentBuild.description != 'SKIP' }
+                expression { currentBuild.currentResult != 'FAILURE' }
+            }
+            steps { script { container.lint(config) } }
+        }
 
         stage('Build') {
-            when { expression { currentBuild.currentResult != 'FAILURE' } }
+            when {
+                expression { currentBuild.description != 'SKIP' }
+                expression { currentBuild.currentResult != 'FAILURE' }
+            }
             steps { script { container.build(config) } }
         }
 
@@ -96,5 +117,13 @@ pipeline {
         }
     }
 
-    post { cleanup { sh "rm -rf ${TMP_DIR}" } }
+    post {
+        cleanup {
+            // needBuilder:true creates a reusable builder container — tear it down.
+            script { container.cleanBuilder(config) }
+            dir(config.workDir ?: '.') { sh "rm -rf ${TMP_DIR}" }
+            // Prune finished SKIP builds from history (default on).
+            script { container.pruneSkippedBuilds(config) }
+        }
+    }
 }

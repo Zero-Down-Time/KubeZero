@@ -1,12 +1,18 @@
 import 'git.just'
 
-# Recipes that interact with a remote registry take it as the first positional
-# argument. Public ECR (public.ecr.aws/...) and private ECR (*.dkr.ecr.<region>.amazonaws.com)
-# are auto-detected from the URL shape; private region is parsed from the hostname.
-# build/scan/clean don't need a registry and accept only an optional image name.
+# Image name defaults to the git repo name; override per service via IMAGE_NAME.
+image_name := env_var_or_default("IMAGE_NAME", git_repo_name)
+
+# Registry defaults to the REGISTRY env var (e.g. the service .env); still overridable
+# as the first positional arg. Empty when unset — registry-touching recipes then fail.
+default_registry := env_var_or_default("REGISTRY", "")
+
+# Registry-touching recipes (ecr-login/create-repo/push/rm-remote-untagged) take the
+# registry as their first positional arg and auto-detect public (public.ecr.aws/...) vs
+# private (*.dkr.ecr.<region>.amazonaws.com) ECR from the URL. build/scan/clean take no registry.
 
 [no-cd]
-build image=git_repo_name:
+build image=image_name:
   #!/usr/bin/env bash
   set -eo pipefail
   podman build --rm --layers -t {{ image }}:{{ git_tag }}-{{ arch }} --build-arg TAG={{ git_tag }} --build-arg ARCH={{ arch }} --platform linux/{{ arch }} .
@@ -15,7 +21,7 @@ build image=git_repo_name:
 
 # Scan image for secrets and vulnerabilities
 [no-cd]
-scan tmp="." image=git_repo_name:
+scan tmp="." image=image_name:
   #!/usr/bin/env bash
   set -eo pipefail
   echo "Extracting rootfs of {{ image }}:{{ git_tag }}-{{ arch }} ..."
@@ -30,7 +36,7 @@ scan tmp="." image=git_repo_name:
   grype dir:{{ tmp }}/rootfs
 
 # Log into AWS ECR (public or private). Region inferred from the registry URL for private.
-ecr-login registry:
+ecr-login registry=default_registry:
   #!/usr/bin/env bash
   set -eo pipefail
   case "{{ registry }}" in
@@ -50,7 +56,7 @@ ecr-login registry:
   esac
 
 # Create a new AWS ECR (public or private) repository
-create-repo registry image=git_repo_name:
+create-repo registry=default_registry image=image_name:
   #!/usr/bin/env bash
   set -eo pipefail
   case "{{ registry }}" in
@@ -68,7 +74,7 @@ create-repo registry image=git_repo_name:
   esac
 
 # tag and push all actual images and multi-arch manifest
-push registry image=git_repo_name extra_tags="": (ecr-login registry)
+push registry=default_registry image=image_name extra_tags="": (ecr-login registry)
   #!/usr/bin/env bash
   for t in {{ git_tag }} latest {{ extra_tags }}; do
     echo "Tagging image with {{ registry }}/{{ image }}:${t}-{{ arch }}"
@@ -84,7 +90,7 @@ push registry image=git_repo_name extra_tags="": (ecr-login registry)
   done
 
 # cleanup local images
-clean image=git_repo_name extra_tags="":
+clean image=image_name extra_tags="":
   #!/usr/bin/env bash
   for t in {{ git_tag }} latest {{ extra_tags }}; do
     for a in {{ all_archs }}; do
@@ -94,6 +100,6 @@ clean image=git_repo_name extra_tags="":
 
 # delete all remote untagged and in-dev images, keep 10 tagged
 [no-cd]
-rm-remote-untagged registry image=git_repo_name:
+rm-remote-untagged registry=default_registry image=image_name:
   @echo "Removing all untagged and in-dev images from {{ registry }}/{{ image }}"
   {{ source_directory() }}/ecr_lifecycle.py --repo {{ image }} --registry "{{ registry }}" --dev
