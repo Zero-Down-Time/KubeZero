@@ -55,7 +55,7 @@ forgejo:
     enabled: false
     image:
       # renovate: datasource=docker depName=techarohq/anubis registryUrl=https://ghcr.io
-      tag: v1.25.0
+      tag: v1.26.0
 
   gitea:
     admin:
