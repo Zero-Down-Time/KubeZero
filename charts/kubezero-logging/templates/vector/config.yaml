@@ -39,6 +39,10 @@ data:
       geoip:
         type: mmdb
         path: {{ .Values.vector.geoip.database | quote }}
+      # ASN DB from the same image; flat record (autonomous_system_*).
+      asn:
+        type: mmdb
+        path: {{ .Values.vector.geoip.asnDatabase | quote }}
       {{- end }}
     {{- end }}
 

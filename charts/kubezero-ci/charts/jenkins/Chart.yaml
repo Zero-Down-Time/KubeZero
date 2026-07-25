@@ -1,12 +1,12 @@
 annotations:
   artifacthub.io/category: integration-delivery
   artifacthub.io/changes: |
-    - Update `jenkins/jenkins` to version `2.568.1-jdk21`
+    - Update `docker.io/kiwigrid/k8s-sidecar` to version `2.8.1`
   artifacthub.io/images: |
     - name: jenkins
       image: docker.io/jenkins/jenkins:2.568.1-jdk21
     - name: k8s-sidecar
-      image: docker.io/kiwigrid/k8s-sidecar:2.8.0
+      image: docker.io/kiwigrid/k8s-sidecar:2.8.1
     - name: inbound-agent
       image: jenkins/inbound-agent:3383.vc8881d4b_0e76-1
   artifacthub.io/license: Apache-2.0
@@ -46,4 +46,4 @@ sources:
 - https://github.com/maorfr/kube-tasks
 - https://github.com/jenkinsci/configuration-as-code-plugin
 type: application
-version: 5.9.33
+version: 5.9.36

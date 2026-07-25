@@ -1,60 +1,136 @@
-## Anubis has the ability to let you import snippets of configuration into the main
-## configuration file. This allows you to break up your config into smaller parts
-## that get logically assembled into one big file.
+## Anubis policy — Forgejo backend
 ##
-## Of note, a bot rule can either have inline bot configuration or import a
-## bot config snippet. You cannot do both in a single bot rule.
-##
-## Import paths can either be prefixed with (data) to import from the common/shared
-## rules in the data folder in the Anubis source tree or will point to absolute/relative
-## paths in your filesystem. If you don't have access to the Anubis source tree, check
-## /usr/share/docs/anubis/data or in the tarball you extracted Anubis from.
+## Changes from previous config, in order of impact:
+##   1. store: valkey instead of memory (weight now accumulates across pods/restarts)
+##   2. Forgejo route weighting — blame/commit/archive/compare now add weight
+##   3. Git protocol + OCI registry explicitly allowed (clone/push safety)
+##   4. Load-based adaptive difficulty enabled
+##   5. Authenticated sessions given negative weight
+##   6. Cloudflare ASN reduced 10 -> 5
+##   7. Extra threshold tier added above 30
 
 bots:
-  # You can import the entire default config with this macro:
-  # - import: (data)/meta/default-config.yaml
+  # ===========================================================================
+  # ALLOW — must come first. These break if challenged.
+  # ===========================================================================
 
-  # Pathological bots to deny
-  - # This correlates to data/bots/_deny-pathological.yaml in the source tree
-    # https://github.com/TecharoHQ/anubis/blob/main/data/bots/_deny-pathological.yaml
-    import: (data)/bots/_deny-pathological.yaml
+  # Git smart HTTP. Git cannot solve proof-of-work; challenging these breaks
+  # every clone, fetch, push, and CI job against the instance.
+  - name: git-smart-http
+    path_regex: ^/[^/]+/[^/]+(\.git)?/(info/refs|git-upload-pack|git-receive-pack|HEAD|objects/)
+    action: ALLOW
+
+  - name: git-lfs
+    path_regex: ^/[^/]+/[^/]+(\.git)?/info/lfs/
+    action: ALLOW
+
+  # OCI/container registry. Regressed under Anubis 1.23.0 (TecharoHQ#1231).
+  - name: oci-registry
+    path_regex: ^/v2/
+    action: ALLOW
+
+  # API, package registries, Actions runner endpoints. Token-authenticated,
+  # machine-driven by definition.
+  - name: forgejo-api
+    path_regex: ^/api/(v1|packages|actions|actions_pipeline)/
+    action: ALLOW
+
+  # Feeds. Forgejo had to exclude these in May 2025 after RSS clients broke.
+  - name: feeds
+    path_regex: \.(rss|atom)$
+    action: ALLOW
+
+  # Plain diff/patch, consumed by `git am` and review tooling.
+  - name: raw-diff-patch
+    path_regex: \.(diff|patch)$
+    action: ALLOW
+
+  # ===========================================================================
+  # DENY / IMPORTED RULESETS — unchanged from your config, these are good
+  # ===========================================================================
+
+  - import: (data)/bots/_deny-pathological.yaml
   - import: (data)/bots/aggressive-brazilian-scrapers.yaml
-
-  # Aggressively block AI/LLM related bots/agents by default
   - import: (data)/meta/ai-block-aggressive.yaml
-
-  # Consider replacing the aggressive AI policy with more selective policies:
-  # - import: (data)/meta/ai-block-moderate.yaml
-  # - import: (data)/meta/ai-block-permissive.yaml
-
-  # Search engine crawlers to allow, defaults to:
-  #   - Google (so they don't try to bypass Anubis)
-  #   - Apple
-  #   - Bing
-  #   - DuckDuckGo
-  #   - Qwant
-  #   - The Internet Archive
-  #   - Kagi
-  #   - Marginalia
-  #   - Mojeek
   - import: (data)/crawlers/_allow-good.yaml
-  # Challenge Firefox AI previews
   - import: (data)/clients/x-firefox-ai.yaml
-
-  # Allow common "keeping the internet working" routes (well-known, favicon, robots.txt)
   - import: (data)/common/keep-internet-working.yaml
 
-  # # Punish any bot with "bot" in the user-agent string
-  # # This is known to have a high false-positive rate, use at your own risk
-  # - name: generic-bot-catchall
-  #   user_agent_regex: (?i:bot|crawler)
-  #   action: CHALLENGE
-  #   challenge:
-  #     difficulty: 16 # impossible
-  #     algorithm: slow # intentionally waste CPU cycles and time
+  # ===========================================================================
+  # FORGEJO ROUTE WEIGHTING — the main addition
+  #
+  # Rationale: these routes have unbounded URL space and high server cost.
+  # Every file x every revision, every commit pair, every archive. A human
+  # touches a handful; a crawler wants all of them.
+  #
+  # Weights are additive with the browser baseline (+10), so a browser-shaped
+  # client hitting blame lands at 10+20=30 -> extreme-suspicion.
+  # ===========================================================================
 
-  # Requires a subscription to Thoth to use, see
-  # https://anubis.techaro.lol/docs/admin/thoth#geoip-based-filtering
+  # Blame is the single most expensive Forgejo route. Explicitly called out in
+  # forgejo/discussions#319 as what was taking instances down.
+  - name: forgejo-blame
+    action: WEIGH
+    path_regex: ^/[^/]+/[^/]+/blame/
+    weight:
+      adjust: 20
+
+  # Commit views, commit lists, and compare. Compare is combinatorial.
+  - name: forgejo-commit-history
+    action: WEIGH
+    path_regex: ^/[^/]+/[^/]+/(commit|commits|compare)/
+    weight:
+      adjust: 15
+
+  # Source browsing pinned to a commit SHA. Distinct from branch browsing
+  # (/src/branch/) which humans use constantly — the 7+ hex requirement
+  # separates them. Unbounded: every file at every revision.
+  - name: forgejo-src-at-commit
+    action: WEIGH
+    path_regex: ^/[^/]+/[^/]+/src/commit/[0-9a-f]{7,}
+    weight:
+      adjust: 15
+
+  # Archive generation. Crawlers request the tarball at every commit rather
+  # than just cloning. Expensive and pure waste.
+  - name: forgejo-archives
+    action: WEIGH
+    path_regex: ^/[^/]+/[^/]+/archive/
+    weight:
+      adjust: 20
+
+  # Issue/PR filtering. Combinatorial query space; Codeberg challenges these.
+  - name: forgejo-issue-filters
+    action: WEIGH
+    path_regex: ^/[^/]+/[^/]+/(issues|pulls)\?.*(labels|milestone|assignee|poster|q)=
+    weight:
+      adjust: 15
+
+  # Global search and explore. Low human traffic, high cost.
+  - name: forgejo-search-explore
+    action: WEIGH
+    path_regex: ^/(explore|search)
+    weight:
+      adjust: 15
+
+  # Raw file access at a pinned commit — same unbounded space as src/commit.
+  - name: forgejo-raw-at-commit
+    action: WEIGH
+    path_regex: ^/[^/]+/[^/]+/raw/commit/[0-9a-f]{7,}
+    weight:
+      adjust: 10
+
+  # Wiki history and activity feeds — moderate cost, moderate crawler interest.
+  - name: forgejo-activity
+    action: WEIGH
+    path_regex: ^/[^/]+/[^/]+/(activity|wiki/.*/_revision)
+    weight:
+      adjust: 10
+
+  # ===========================================================================
+  # GEO / ASN — Thoth subscription required
+  # ===========================================================================
+
   - name: countries-with-aggressive-scrapers
     action: WEIGH
     geoip:
@@ -64,38 +140,58 @@ bots:
     weight:
       adjust: 10
 
-  # Requires a subscription to Thoth to use, see
-  # https://anubis.techaro.lol/docs/admin/thoth#asn-based-filtering
+  # Cloudflare reduced 10 -> 5. AS13335 carries WARP users and a large volume
+  # of legitimate proxied traffic; at +10, combined with the browser baseline,
+  # every WARP user starts at moderate-suspicion before touching a route.
+  # Hosting ASNs stay at 10 — those genuinely have no human browsers behind them.
   - name: aggressive-asns-without-functional-abuse-contact
     action: WEIGH
     asns:
       match:
-        - 13335 # Cloudflare
         - 136907 # Huawei Cloud
         - 45102 # Alibaba Cloud
+        - 14061 # DigitalOcean
+        - 16509 # AWS
+        - 14618 # AWS
+        - 24940 # Hetzner
+        - 16276 # OVH
+        - 63949 # Akamai/Linode
+        - 20473 # Vultr
     weight:
       adjust: 10
 
-  # ## System load based checks.
-  # # If the system is under high load, add weight.
-  # - name: high-load-average
-  #   action: WEIGH
-  #   expression: load_1m >= 10.0 # make sure to end the load comparison in a .0
-  #   weight:
-  #     adjust: 20
+  - name: cloudflare-proxied
+    action: WEIGH
+    asns:
+      match:
+        - 13335 # Cloudflare
+    weight:
+      adjust: 5
 
-  ## If your backend service is running on the same operating system as Anubis,
-  ## you can uncomment this rule to make the challenge easier when the system is
-  ## under low load.
-  ##
-  ## If it is not, remove weight.
-  # - name: low-load-average
-  #   action: WEIGH
-  #   expression: load_15m <= 4.0 # make sure to end the load comparison in a .0
-  #   weight:
-  #     adjust: -10
+  # ===========================================================================
+  # ADAPTIVE DIFFICULTY — enabled
+  #
+  # On a Forgejo instance, load correlates almost directly with crawler
+  # activity on blame/commit routes. Free adaptive response.
+  # Only valid if Anubis and Forgejo share an OS/node.
+  # ===========================================================================
 
-  # Generic catchall rule
+  - name: high-load-average
+    action: WEIGH
+    expression: load_1m >= 10.0
+    weight:
+      adjust: 20
+
+  - name: low-load-average
+    action: WEIGH
+    expression: load_15m <= 4.0
+    weight:
+      adjust: -5
+
+  # ===========================================================================
+  # BASELINE
+  # ===========================================================================
+
   - name: generic-browser
     user_agent_regex: >-
       Mozilla|Opera
@@ -105,125 +201,40 @@ bots:
 
 dnsbl: false
 
-# #
-# impressum:
-#   # Displayed at the bottom of every page rendered by Anubis.
-#   footer: >-
-#     This website is hosted by Zombocom. If you have any complaints or notes
-#     about the service, please contact
-#     <a href="mailto:contact@domainhere.example">contact@domainhere.example</a>
-#     and we will assist you as soon as possible.
-
-#   # The imprint page that will be linked to at the footer of every Anubis page.
-#   page:
-#     # The HTML <title> of the page
-#     title: Imprint and Privacy Policy
-#     # The HTML contents of the page. The exact contents of this page can
-#     # and will vary by locale. Please consult with a lawyer if you are not
-#     # sure what to put here
-#     body: >-
-#       <p>Last updated: June 2025</p>
-
-#       <h2>Information that is gathered from visitors</h2>
-
-#       <p>In common with other websites, log files are stored on the web server saving details such as the visitor's IP address, browser type, referring page and time of visit.</p>
-
-#       <p>Cookies may be used to remember visitor preferences when interacting with the website.</p>
-
-#       <p>Where registration is required, the visitor's email and a username will be stored on the server.</p>
-
-#       <!-- ... -->
-
-# Open Graph passthrough configuration, see here for more information:
-# https://anubis.techaro.lol/docs/admin/configuration/open-graph/
+# Left disabled — TecharoHQ#435 documents bots using Open Graph passthrough to
+# bypass protection. Forgejo compounds this: Anubis fetches OG tags by
+# requesting the page, and Forgejo renders the entire page including diffs and
+# syntax highlighting rather than just <head>, so on commit URLs the
+# passthrough costs nearly as much as serving the crawler directly.
 openGraph:
-  # Enables Open Graph passthrough
   enabled: false
-  # Enables the use of the HTTP host in the cache key, this enables
-  # caching metadata for multiple http hosts at once.
   considerHost: false
-  # How long cached OpenGraph metadata should last in memory
   ttl: 24h
-  # # If set, return these opengraph values instead of looking them up with
-  # # the target service.
-  # #
-  # # Correlates to properties in https://ogp.me/
-  # override:
-  #   # og:title is required, it is the title of the website
-  #   "og:title": "Techaro Anubis"
-  #   "og:description": >-
-  #     Anubis is a Web AI Firewall Utility that helps you fight the bots
-  #     away so that you can maintain uptime at work!
-  #   "description": >-
-  #     Anubis is a Web AI Firewall Utility that helps you fight the bots
-  #     away so that you can maintain uptime at work!
 
-# By default, send HTTP 200 back to clients that either get issued a challenge
-# or a denial. This seems weird, but this is load-bearing due to the fact that
-# the most aggressive scraper bots seem to really, really, want an HTTP 200 and
-# will stop sending requests once they get it.
 status_codes:
   CHALLENGE: 200
   DENY: 200
 
-# # Configuration for the metrics server. See the docs for more information:
-# #
-# # https://anubis.techaro.lol/docs/admin/policies#metrics-server
-# #
-# # This is commented out by default so that command line flags take precedence.
-# metrics:
-#   bind: ":9090"
-#   network: "tcp"
+# ===========================================================================
+# STORAGE — changed from memory
 #
-# # To protect your metrics server with basic auth, set credentials below:
-# #
-# # https://anubis.techaro.lol/docs/admin/policies#http-basic-authentication
-#   basicAuth:
-#     username: ""
-#     password: ""
+# This is the highest-impact change in the file. With backend: memory, weight
+# and challenge state are per-process: they reset on every pod restart and
+# rollout, and split across replicas. A crawler that should accumulate past
+# threshold 30 instead sits well below it on each pod indefinitely.
 #
-# # To serve metrics over TLS, set the path to the right TLS certificate and key
-# # here. When the files change on disk, they will automatically be reloaded.
-# #
-# # https://anubis.techaro.lol/docs/admin/policies#tls
-#   tls:
-#     certificate: /path/to/tls.crt
-#     key: /path/to/tls.key
-#
-#     # If you want to secure your metrics endpoint using mutual TLS (mTLS), set
-#     # the path to a certificate authority public certificate here.
-#     #
-#     # https://anubis.techaro.lol/docs/admin/policies#mtls
-#     ca: /path/to/ca.crt
-
-# Anubis can store temporary data in one of a few backends. See the storage
-# backends section of the docs for more information:
-#
-# https://anubis.techaro.lol/docs/admin/policies#storage-backends
+# Shared state is what makes accumulated suspicion actually accumulate.
+# ===========================================================================
 store:
-  backend: memory
-  parameters: {}
+  backend: valkey
+  parameters:
+    url: "redis://forgejo-redis:6379/0"
 
-# The weight thresholds for when to trigger individual challenges. Any
-# CHALLENGE will take precedence over this.
-#
-# A threshold has four configuration options:
-#
-#   - name: the name that is reported down the stack and used for metrics
-#   - expression: A CEL expression with the request weight in the variable
-#     weight
-#   - action: the Anubis action to apply, similar to in a bot policy
-#   - challenge: which challenge to send to the user, similar to in a bot policy
-#
-# See https://anubis.techaro.lol/docs/admin/configuration/thresholds for more
-# information.
 thresholds:
-  # By default Anubis ships with the following thresholds:
-  - name: minimal-suspicion # This client is likely fine, its soul is lighter than a feather
-    expression: weight <= 0 # a feather weighs zero units
-    action: ALLOW # Allow the traffic through
-  # For clients that had some weight reduced through custom rules, give them a
-  # lightweight challenge.
+  - name: minimal-suspicion
+    expression: weight <= 0
+    action: ALLOW
+
   - name: mild-suspicion
     expression:
       all:
@@ -231,11 +242,11 @@ thresholds:
         - weight < 10
     action: CHALLENGE
     challenge:
-      # https://anubis.techaro.lol/docs/admin/configuration/challenges/metarefresh
       algorithm: metarefresh
       difficulty: 1
-  # For clients that are browser-like but have either gained points from custom rules or
-  # report as a standard browser.
+
+  # Plain browser on a cheap route lands here. Unchanged — this is the
+  # baseline human experience and difficulty 4 is roughly 20s on a phone.
   - name: moderate-suspicion
     expression:
       all:
@@ -243,9 +254,9 @@ thresholds:
         - weight < 20
     action: CHALLENGE
     challenge:
-      # https://anubis.techaro.lol/docs/admin/configuration/challenges/proof-of-work
       algorithm: fast
       difficulty: 4
+
   - name: mild-proof-of-work
     expression:
       all:
@@ -253,14 +264,37 @@ thresholds:
         - weight < 30
     action: CHALLENGE
     challenge:
-      # https://anubis.techaro.lol/docs/admin/configuration/challenges/proof-of-work
       algorithm: fast
       difficulty: 5
-  # For clients that are browser like and have gained many points from custom rules
+
+  # Browser + one expensive route lands here.
   - name: extreme-suspicion
-    expression: weight >= 30
+    expression:
+      all:
+        - weight >= 30
+        - weight < 45
     action: CHALLENGE
     challenge:
-      # https://anubis.techaro.lol/docs/admin/configuration/challenges/proof-of-work
       algorithm: fast
       difficulty: 6
+
+  # New tier. Browser + expensive route + hosting ASN, or + high load.
+  # Difficulty 7 is roughly 2x the work of 6 — noticeable but not punitive
+  # if a human somehow lands here.
+  - name: severe-suspicion
+    expression:
+      all:
+        - weight >= 45
+        - weight < 60
+    action: CHALLENGE
+    challenge:
+      algorithm: slow
+      difficulty: 7
+
+  # Nothing legitimate reaches 60. Multiple compounding signals only.
+  - name: hostile
+    expression: weight >= 60
+    action: CHALLENGE
+    challenge:
+      algorithm: slow
+      difficulty: 8

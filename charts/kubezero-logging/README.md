@@ -21,8 +21,8 @@ Kubernetes: `>= 1.34.0`
 | https://cdn.zero-downtime.net/charts/ | kubezero-lib | 0.2.1 |
 | https://fluent.github.io/helm-charts | fluent-bit | 0.47.10 |
 | https://fluent.github.io/helm-charts | fluentd | 0.5.2 |
-| https://helm.vector.dev | vector | 0.56.0 |
-| https://helm.vector.dev | vector-agent(vector) | 0.56.0 |
+| https://helm.vector.dev | vector | 0.57.0 |
+| https://helm.vector.dev | vector-agent(vector) | 0.57.0 |
 | https://opensearch-project.github.io/helm-charts/ | opensearch | 3.7.0 |
 | https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.7.0 |
 
@@ -248,9 +248,10 @@ Kubernetes: `>= 1.34.0`
 | vector.extraVolumeMounts[0].readOnly | bool | `true` |  |
 | vector.extraVolumes[0].name | string | `"http-tokens"` |  |
 | vector.extraVolumes[0].secret.secretName | string | `"vector-http-tokens"` |  |
-| vector.geoip.database | string | `"/etc/vector-geoip/db.mmdb"` |  |
+| vector.geoip.asnDatabase | string | `"/etc/vector-geoip/asn.mmdb"` |  |
+| vector.geoip.database | string | `"/etc/vector-geoip/country.mmdb"` |  |
 | vector.geoip.enabled | bool | `false` |  |
-| vector.geoip.image | string | `"public.ecr.aws/zero-downtime/kubezero-geoip:dbip-lite-2026-06"` |  |
+| vector.geoip.image | string | `"public.ecr.aws/zero-downtime/kubezero-geoip:dbip-lite-2026-07"` |  |
 | vector.geoip.locale | string | `"en"` |  |
 | vector.image.base | string | `"alpine"` |  |
 | vector.internalRetention.days | int | `7` |  |
@@ -261,11 +262,13 @@ Kubernetes: `>= 1.34.0`
 | vector.istio.gateway | string | `"istio-ingress/private-ingressgateway"` |  |
 | vector.istio.ingestPathRegex | string | `"^/ingest/[a-z][a-z0-9._-]*$"` |  |
 | vector.istio.url | string | `"vector.example.com"` |  |
-| vector.kubernetes.indexSuffix | string | `"%Y.%m.%d"` |  |
+| vector.kubernetes.indexSuffix | string | `"%Y.%m"` |  |
 | vector.kubernetes.indexTemplate.enabled | bool | `true` |  |
 | vector.kubernetes.indexTemplate.replicas | int | `1` |  |
 | vector.kubernetes.indexTemplate.shards | int | `1` |  |
+| vector.kubernetes.indexTemplate.totalFieldsLimit | int | `4000` |  |
 | vector.lambda.indexSuffix | string | `"%Y.%m"` |  |
+| vector.logs.indexSuffix | string | `"%Y.%m"` |  |
 | vector.persistence.enabled | bool | `false` |  |
 | vector.persistence.size | string | `"1Gi"` |  |
 | vector.podMonitor.enabled | bool | `false` |  |

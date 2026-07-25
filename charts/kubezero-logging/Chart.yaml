@@ -26,12 +26,12 @@ dependencies:
     repository: https://opensearch-project.github.io/helm-charts/
     condition: opensearch-dashboards.enabled
   - name: vector
-    version: 0.56.0
+    version: 0.57.0
     repository: https://helm.vector.dev
     condition: vector.enabled
   - name: vector
     alias: vector-agent
-    version: 0.56.0
+    version: 0.57.0
     repository: https://helm.vector.dev
     condition: vector-agent.enabled
   - name: fluentd

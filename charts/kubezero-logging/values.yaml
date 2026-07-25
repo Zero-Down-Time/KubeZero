@@ -120,11 +120,13 @@ vector:
   # enrichment table is loaded once and shared.
   geoip:
     enabled: false
-    database: /etc/vector-geoip/db.mmdb
+    database: /etc/vector-geoip/country.mmdb
+    # ASN mmdb shipped in the same image, alongside database.
+    asnDatabase: /etc/vector-geoip/asn.mmdb
     locale: en
     # OCI image carrying the .mmdb (provisioned/updated elsewhere), mounted
     # read-only as a k8s image volume at dir(database) when enabled.
-    image: "public.ecr.aws/zero-downtime/kubezero-geoip:dbip-lite-2026-06"
+    image: "public.ecr.aws/zero-downtime/kubezero-geoip:dbip-lite-2026-07"
 
   # Per-service index granularity. set_index_suffix formats each event's
   # .index_ts into <svc>-<suffix>; for forwarded events THIS cluster's value
