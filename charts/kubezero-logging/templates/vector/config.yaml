@@ -18,6 +18,20 @@ data:
       enabled: true
       address: 0.0.0.0:8686
 
+    {{- if $opensearch }}
+    # Basic-auth creds from the mounted vector-opensearch Secret (file per key).
+    secret:
+      opensearch:
+        type: directory
+        path: /etc/vector-secrets/opensearch
+    {{- else if $rf }}
+    # Bearer token from the mounted vector-remote-forward Secret.
+    secret:
+      remote:
+        type: directory
+        path: /etc/vector-secrets/remote
+    {{- end }}
+
     {{- if or .Values.vectorHttpIngest.enabled .Values.vector.geoip.enabled }}
     enrichment_tables:
       {{- if .Values.vectorHttpIngest.enabled }}
@@ -51,8 +65,6 @@ data:
         type: vector
         address: 0.0.0.0:6000
         version: "2"
-        acknowledgements:
-          enabled: true
     {{- if .Values.vectorHttpIngest.enabled }}
       # Remote HTTP ingest from siphon (POST /ingest/<event.name>).
       http_in:
@@ -233,152 +245,47 @@ data:
 
     sinks:
       {{- if $opensearch }}
-      opensearch_cloudtrail:
-        type: elasticsearch
-        inputs:
-          - sink_router.cloudtrail
-        endpoints: ["${OPENSEARCH_ENDPOINT}"]
-        api_version: v7
-        mode: bulk
-        # _id = CloudTrail eventID.
-        id_key: eventID
-        bulk:
-          action: index
-          index: 'cloudtrail-{{ "{{ index_suffix }}" }}'
-        auth:
-          strategy: basic
-          user: "${OPENSEARCH_USER}"
-          password: "${OPENSEARCH_PASSWORD}"
-        tls:
-          verify_certificate: false
-        encoding:
-          except_fields: ["index_suffix"]
-        compression: gzip
-        batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: memory, max_events: 1000, when_full: block }
-        healthcheck: { enabled: true }
+      # _id = CloudTrail eventID.
+      {{- include "kubezero-logging.vector.opensearchSink" (dict "root" $ "svc" "cloudtrail" "idKey" "eventID") | nindent 6 }}
 
-      opensearch_cloudfront:
-        type: elasticsearch
-        inputs:
-          - sink_router.cloudfront
-        endpoints: ["${OPENSEARCH_ENDPOINT}"]
-        api_version: v7
-        mode: bulk
-        # _id = CloudFront x-edge-request-id (mirrored to .id, hyphen-free path).
-        id_key: id
-        bulk:
-          action: index
-          index: 'cloudfront-{{ "{{ index_suffix }}" }}'
-        auth:
-          strategy: basic
-          user: "${OPENSEARCH_USER}"
-          password: "${OPENSEARCH_PASSWORD}"
-        tls:
-          verify_certificate: false
-        encoding:
-          except_fields: ["index_suffix"]
-        compression: gzip
-        batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: memory, max_events: 1000, when_full: block }
-        healthcheck: { enabled: true }
+      # _id = CloudFront x-edge-request-id (mirrored to .id, hyphen-free path).
+      {{- include "kubezero-logging.vector.opensearchSink" (dict "root" $ "svc" "cloudfront" "idKey" "id") | nindent 6 }}
 
-      opensearch_s3-access-logs:
-        type: elasticsearch
-        inputs:
-          - sink_router.s3-access-logs
-        endpoints: ["${OPENSEARCH_ENDPOINT}"]
-        api_version: v7
-        mode: bulk
-        # _id = S3 request_id (mirrored to .id).
-        id_key: id
-        bulk:
-          action: index
-          index: 's3-access-logs-{{ "{{ index_suffix }}" }}'
-        auth:
-          strategy: basic
-          user: "${OPENSEARCH_USER}"
-          password: "${OPENSEARCH_PASSWORD}"
-        tls:
-          verify_certificate: false
-        encoding:
-          except_fields: ["index_suffix"]
-        compression: gzip
-        batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: memory, max_events: 1000, when_full: block }
-        healthcheck: { enabled: true }
+      # _id = S3 request_id (mirrored to .id).
+      {{- include "kubezero-logging.vector.opensearchSink" (dict "root" $ "svc" "s3-access-logs" "idKey" "id") | nindent 6 }}
 
-      opensearch_lambda:
-        type: elasticsearch
-        inputs:
-          - sink_router.lambda
-        endpoints: ["${OPENSEARCH_ENDPOINT}"]
-        api_version: v7
-        mode: bulk
-        # _id = CloudWatch logEvents[].id (mirrored to .id).
-        id_key: id
-        bulk:
-          action: index
-          index: 'lambda-{{ "{{ index_suffix }}" }}'
-        auth:
-          strategy: basic
-          user: "${OPENSEARCH_USER}"
-          password: "${OPENSEARCH_PASSWORD}"
-        tls:
-          verify_certificate: false
-        encoding:
-          except_fields: ["index_suffix"]
-        compression: gzip
-        batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: memory, max_events: 1000, when_full: block }
-        healthcheck: { enabled: true }
+      # _id = CloudWatch logEvents[].id (mirrored to .id).
+      {{- include "kubezero-logging.vector.opensearchSink" (dict "root" $ "svc" "lambda" "idKey" "id") | nindent 6 }}
 
-      opensearch_kubernetes:
-        type: elasticsearch
-        inputs:
-          - sink_router.kubernetes
-        endpoints: ["${OPENSEARCH_ENDPOINT}"]
-        api_version: v7
-        mode: bulk
-        # _id = synthetic sha256(file|ts|message) for idempotent retries.
-        id_key: id
-        bulk:
-          action: index
-          # flat_object label mappings come from the kubernetes index template.
-          index: 'kubernetes-{{ "{{ index_suffix }}" }}'
-        auth:
-          strategy: basic
-          user: "${OPENSEARCH_USER}"
-          password: "${OPENSEARCH_PASSWORD}"
-        tls:
-          verify_certificate: false
-        encoding:
-          except_fields: ["index_suffix"]
-        compression: gzip
-        batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: memory, max_events: 1000, when_full: block }
-        healthcheck: { enabled: true }
+      # _id = synthetic sha256(file|ts|message) for idempotent retries.
+      # flat_object label mappings come from the kubernetes index template.
+      {{- include "kubezero-logging.vector.opensearchSink" (dict "root" $ "svc" "kubernetes" "idKey" "id" ) | nindent 6 }}
 
       opensearch_logs:
         type: elasticsearch
         inputs:
           - sink_router._unmatched
-        endpoints: ["${OPENSEARCH_ENDPOINT}"]
+        endpoints: [{{ .Values.vector.opensearch.endpoint | quote }}]
         api_version: v7
         mode: bulk
         bulk: { index: "logs-{{ .Values.vector.logs.indexSuffix }}" }
         auth:
           strategy: basic
-          user: "${OPENSEARCH_USER}"
-          password: "${OPENSEARCH_PASSWORD}"
+          user: "SECRET[opensearch.username]"
+          password: "SECRET[opensearch.password]"
         tls:
           verify_certificate: false
         encoding:
           except_fields: ["index_suffix"]
         compression: gzip
         batch: { max_events: 2000, timeout_secs: 5 }
-        buffer: { type: memory, max_events: 1000, when_full: block }
+        buffer:
+          type: disk
+          max_size: {{ .Values.vector.opensearch.buffer.maxSize | int64 }}
+          when_full: {{ .Values.vector.opensearch.buffer.whenFull }}
         healthcheck: { enabled: true }
+        acknowledgements:
+          enabled: true
       {{- end }}
 
       {{- if $rf }}
@@ -393,7 +300,7 @@ data:
           codec: json
         auth:
           strategy: bearer
-          token: "${VECTOR_REMOTE_TOKEN}"
+          token: "SECRET[remote.token]"
         compression: gzip
         acknowledgements:
           enabled: true
@@ -401,7 +308,7 @@ data:
           retry_attempts: {{ .Values.vector.remoteForward.request.retryAttempts }}
         buffer:
           type: disk
-          max_size: {{ .Values.vector.remoteForward.buffer.maxSize }}
+          max_size: {{ .Values.vector.remoteForward.buffer.maxSize | int64 }}
           when_full: {{ .Values.vector.remoteForward.buffer.whenFull }}
         healthcheck:
           enabled: false

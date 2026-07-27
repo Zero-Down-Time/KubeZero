@@ -27,19 +27,53 @@ vector:
     base: alpine
  
   dataDir: /vector-data-dir
+  # PVC-backed (not emptyDir): the OpenSearch sinks' disk buffers below anchor
+  # their ack-on-buffer-write guarantee here — an emptyDir would silently lose
+  # already-acked-to-agent events on node loss.
   persistence:
-    enabled: false
-    size: 1Gi
+    enabled: true
+    size: 4Gi
     # storageClassName: ""   # set to your RWO class
- 
+
+  # OpenSearch URL baked into the rendered config (not a secret).
+  opensearch:
+    endpoint: "https://opensearch-cluster-master:9200"
+    # Durable (disk) buffer per sink: Vector acks the source once the event is
+    # persisted here, not once OpenSearch confirms delivery (retries continue
+    # in the background, surviving restarts). 6 sinks share persistence above,
+    # so worst case (full outage) disk usage ~= 6 * maxSize; size accordingly.
+    buffer:
+      # int64 in the template (Helm's YAML->JSON round-trip makes this a float64;
+      # un-cast, Go prints large ones as "2.68435488e+08", which Vector's
+      # max_size: NonZeroU64 rejects).
+      maxSize: 268435488   # 256Mi; Vector's disk buffer minimum
+      whenFull: block
+
+  # Creds/token are read from mounted Secrets via Vector's directory secret
+  # backend (SECRET[opensearch.*]/SECRET[remote.token]); optional so the Secret
+  # absent on the other node role doesn't block mounting.
   # The geoip-db volume/mount is injected (gated on geoip.enabled) by vector.patch.
   extraVolumes:
     - name: http-tokens
       secret:
         secretName: vector-http-tokens   # key: tokens.csv
+    - name: opensearch-creds
+      secret:
+        secretName: vector-opensearch    # keys: username, password
+        optional: true
+    - name: remote-token
+      secret:
+        secretName: vector-remote-forward   # key: token
+        optional: true
   extraVolumeMounts:
     - name: http-tokens
       mountPath: /etc/vector-auth
+      readOnly: true
+    - name: opensearch-creds
+      mountPath: /etc/vector-secrets/opensearch
+      readOnly: true
+    - name: remote-token
+      mountPath: /etc/vector-secrets/remote
       readOnly: true
 
   args:
@@ -48,18 +82,6 @@ vector:
     - --watch-config
     - --watch-config-method
     - poll
- 
-  # OpenSearch credentials (Secret `vector-opensearch`), all optional
-  env:
-    - name: OPENSEARCH_ENDPOINT
-      valueFrom: { secretKeyRef: { name: vector-opensearch, key: endpoint, optional: true } }
-    - name: OPENSEARCH_USER
-      valueFrom: { secretKeyRef: { name: vector-opensearch, key: username, optional: true } }
-    - name: OPENSEARCH_PASSWORD
-      valueFrom: { secretKeyRef: { name: vector-opensearch, key: password, optional: true } }
-    # Bearer token for remoteForward (see vector.remoteForward)
-    - name: VECTOR_REMOTE_TOKEN
-      valueFrom: { secretKeyRef: { name: vector-remote-forward, key: token, optional: true } }
 
   # Ports must match customConfig for all three: container / service / headless.
   containerPorts:
@@ -167,10 +189,6 @@ vector:
     enabled: false
     # full URL; remote VS routes POST /ingest/<lowercase-name>.
     uri: https://vector.remote.example.com/ingest/forwarded
-    # bearer token injected as ${VECTOR_REMOTE_TOKEN}.
-    tokenSecret:
-      name: vector-remote-forward
-      key: token
     # WAN durability anchor; block backpressures on remote outage (drop_newest to
     # decouple). Survives restarts only with persistence.enabled.
     buffer:
