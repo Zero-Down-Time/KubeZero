@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ include "gatewayName" . | trimPrefix "istio-" }}-ja4
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "kubezero-lib.labels" . | nindent 4 }}
+spec:
+  workloadSelector:
+    labels:
+      {{- include "gatewaySelectorLabels" . | nindent 6 }}
+  configPatches:
+    - applyTo: NETWORK_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+      patch:
+        operation: INSERT_BEFORE          # before HCM, so it runs at connection setup
+        value:
+          name: envoy.filters.network.set_filter_state
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.network.set_filter_state.v3.Config
+            on_downstream_tls_handshake:
+            - object_key: ja4
+              factory_key: envoy.string
+              format_string:
+                text_format_source:
+                  inline_string: "%TLS_JA4_FINGERPRINT%"
+              shared_with_upstream: NONE

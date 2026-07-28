@@ -22,7 +22,8 @@ spec:
          name: envoy.filters.listener.tls_inspector
          typed_config:
            "@type": type.googleapis.com/envoy.extensions.filters.listener.tls_inspector.v3.TlsInspector
-           "initialReadBufferSize": 512
+           initial_read_buffer_size: 8192
+           enable_ja4_fingerprinting: true
          filter_disabled:
            destination_port_range:
              start: 1025

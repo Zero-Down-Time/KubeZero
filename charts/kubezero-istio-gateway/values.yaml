@@ -1,55 +1,45 @@
 global:
   networkPolicy:
     enabled: true
-
 gateway:
   autoscaling:
     enabled: false
     minReplicas: 1
     maxReplicas: 4
     targetCPUUtilizationPercentage: 80
-
   replicaCount: 1
-
   terminationGracePeriodSeconds: 120
   minReadySeconds: 10
-
   resources:
     requests:
       cpu: 50m
       memory: 96Mi
     limits:
       memory: 512Mi
-
   service:
     type: NodePort
     externalTrafficPolicy: Local
     # Map port 80/443 to 8080/8443 so we don't need to root
-
-    # ports is extended as follows:
-    # noGateway: true -> this port does NOT get mapped to a Gateway port
-    # tls: optional gateway port setting
-    # gatewayProtocol: Loadbalancer protocol which is NOT the same as Container Procotol !
-    # hosts: list of hosts that server port response to (optional, defaults to certnames)
+  # ports is extended as follows:
+  # noGateway: true -> this port does NOT get mapped to a Gateway port
+  # tls: optional gateway port setting
+  # gatewayProtocol: Loadbalancer protocol which is NOT the same as Container Procotol !
+  # hosts: list of hosts that server port response to (optional, defaults to certnames)
 
   podAnnotations:
     proxy.istio.io/config: '{ "terminationDrainDuration": "90s" }'
     # Pin the injected proxy image so the gateway version
     sidecar.istio.io/proxyImage: docker.io/istio/proxyv2:1.30.3-distroless
-
 certificates: []
 #- name: ingress-cert
 #  dnsNames: []
 
 telemetry:
   enabled: false
-
 proxyProtocol: true
-
 hardening:
   rejectUnderscoresHeaders: true
   unescapeSlashes: true
   preserveExternalRequestId: false
-
 httpFilter:
   grpcWeb: false

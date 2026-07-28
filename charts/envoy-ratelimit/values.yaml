@@ -15,36 +15,34 @@ failureModeDeny: false
 
 # rate limit descriptors for each domain aka. ingress class
 descriptors:
-  ingress: []
-# - key: sourceIp
-#   value: sixtyPerMinute
-#   descriptors:
-#   - key: remote_address
-#     rate_limit:
-#       unit: minute
-#       requests_per_unit: 60
-# - key: sourceIp
-#   value: tenPerSecond
-#   descriptors:
-#   - key: remote_address
-#     value: "10.*"
-#     rate_limit:
-#       unlimited: true
-#   - key: remote_address
-#     value: "172.16.*"
-#     rate_limit:
-#       unlimited: true
-#   - key: remote_address
-#     rate_limit:
-#       unit: second
-#       requests_per_unit: 10
-# - key: headers
-#   value: 180PerMinute
-#   descriptors:
-#   - key: userAgent
-#     rate_limit:
-#       unit: minute
-#       requests_per_unit: 180
+  ingress:
+    # remote_address + generic_key buckets — placeholders, overridden per request
+    - key: remote_address
+      descriptors:
+        - key: generic_key
+          value: per_second
+          rate_limit:
+            unit: second
+            requests_per_unit: 1      # placeholder
+        - key: generic_key
+          value: per_hour
+          rate_limit:
+            unit: hour
+            requests_per_unit: 1      # placeholder
+
+    # JA4 bucket — placeholder, overridden per request
+    - key: ja4_hash
+      descriptors:
+        - key: generic_key
+          value: per_second
+          rate_limit:
+            unit: second
+            requests_per_unit: 1      # placeholder
+        - key: generic_key
+          value: per_hour
+          rate_limit:
+            unit: hour
+            requests_per_unit: 1      # placeholder
 
   privateIngress: []
 # - key: sourceIp
