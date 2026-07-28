@@ -40,16 +40,7 @@ spec:
       authority: cdn.zero-downtime.net
       uri: /assets/zdt/logo-small-64.png
   {{- end }}
-  - name: api
-    match:
-    - uri:
-       prefix: /api/
-    route:
-    - destination:
-        host: {{ ternary "forgejo-anubis" "forgejo-http" .Values.forgejo.anubis.enabled }}
-        port:
-          number: {{ ternary "8080" "3000" .Values.forgejo.anubis.enabled }}
-  - name: notApi
+  - name: forgejo
     route:
     - destination:
         host: {{ ternary "forgejo-anubis" "forgejo-http" .Values.forgejo.anubis.enabled }}

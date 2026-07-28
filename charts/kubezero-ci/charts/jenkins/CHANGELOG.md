@@ -12,6 +12,42 @@ Use the following links to reference issues, PRs, and commits prior to v2.6.0.
 The changelog until v1.5.7 was auto-generated based on git commits.
 Those entries include a reference to the git commit to be able to get more details.
 
+## 5.9.45
+
+Update `kubernetes` to version `4538.v5b_ce7f35b_257`
+
+## 5.9.44
+
+Update `jenkins/inbound-agent` to version `3384.v60d89463d9e0-1`
+
+## 5.9.43
+
+Update `configuration-as-code` to version `2103.vd6f93c3e714a_`
+
+## 5.9.42
+
+Update `docker.io/bats/bats` to version `1.14.0`
+
+## 5.9.41
+
+Update `jenkins/inbound-agent` to version `3383.vc8881d4b_0e76-2`
+
+## 5.9.40
+
+Evaluate `tpl` on `agent.image.registry`, `agent.image.repository`, and `agent.image.tag` so the default kubernetes-agent pod template can compose its jnlp image from other Helm values or named templates. Complements the `tpl`-support added for `controller.javaOpts` / `controller.jenkinsOpts` in 5.9.39.
+
+## 5.9.39
+
+Evaluate `tpl` on `controller.javaOpts` and `controller.jenkinsOpts` so values can reference other Helm values or named templates, matching the templating already supported by fields such as `controller.ingress.hostName`, `controller.secondaryIngress.hostName`, and `controller.admin.existingSecret`.
+
+## 5.9.38
+
+Allow overriding the secondary ingress path type
+
+## 5.9.37
+
+Fix [#1521](https://github.com/jenkinsci/helm-charts/issues/1521): Preserve explicit zero values for agent `runAsUser` and `runAsGroup`
+
 ## 5.9.36
 
 Update `docker.io/kiwigrid/k8s-sidecar` to version `2.8.1`

@@ -215,8 +215,18 @@ jenkins:
       {{- $agent := .Values.agent }}
       {{- range $name, $additionalAgent := .Values.additionalAgents }}
         {{- $additionalContainersEmpty := and (hasKey $additionalAgent "additionalContainers") (empty $additionalAgent.additionalContainers)  }}
+        {{- $runAsUser := $additionalAgent.runAsUser }}
+        {{- $runAsUserSet := not (kindIs "invalid" $runAsUser) }}
+        {{- $runAsGroup := $additionalAgent.runAsGroup }}
+        {{- $runAsGroupSet := not (kindIs "invalid" $runAsGroup) }}
         {{- /* merge original .Values.agent into additional agent to ensure it at least has the default values */}}
         {{- $additionalAgent := merge $additionalAgent $agent }}
+        {{- if $runAsUserSet }}
+        {{- $_ := set $additionalAgent "runAsUser" $runAsUser }}
+        {{- end }}
+        {{- if $runAsGroupSet }}
+        {{- $_ := set $additionalAgent "runAsGroup" $runAsGroup }}
+        {{- end }}
         {{- /* clear list of additional containers in case it is configured empty for this agent (merge might have overwritten that) */}}
         {{- if $additionalContainersEmpty }}
         {{- $_ := set $additionalAgent "additionalContainers" list }}
@@ -309,8 +319,18 @@ jenkins:
        {{- $agent := .Values.agent }}
        {{- range $name, $additionalAgent := .Values.additionalAgents }}
          {{- $additionalContainersEmpty := and (hasKey $additionalAgent "additionalContainers") (empty $additionalAgent.additionalContainers)  }}
+         {{- $runAsUser := $additionalAgent.runAsUser }}
+         {{- $runAsUserSet := not (kindIs "invalid" $runAsUser) }}
+         {{- $runAsGroup := $additionalAgent.runAsGroup }}
+         {{- $runAsGroupSet := not (kindIs "invalid" $runAsGroup) }}
          {{- /* merge original .Values.agent into additional agent to ensure it at least has the default values */}}
          {{- $additionalAgent := merge $additionalAgent $agent }}
+         {{- if $runAsUserSet }}
+         {{- $_ := set $additionalAgent "runAsUser" $runAsUser }}
+         {{- end }}
+         {{- if $runAsGroupSet }}
+         {{- $_ := set $additionalAgent "runAsGroup" $runAsGroup }}
+         {{- end }}
          {{- /* clear list of additional containers in case it is configured empty for this agent (merge might have overwritten that) */}}
          {{- if $additionalContainersEmpty }}
          {{- $_ := set $additionalAgent "additionalContainers" list }}
@@ -404,9 +424,9 @@ Returns kubernetes pod template configuration as code
           {{- end }}
         {{- end }}
     {{- if ne .Values.agent.image.registry "" }}
-    image: "{{ .Values.agent.image.registry}}/{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
+    image: "{{ tpl .Values.agent.image.registry . }}/{{ tpl .Values.agent.image.repository . }}:{{ tpl .Values.agent.image.tag . }}"
     {{- else }}
-    image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
+    image: "{{ tpl .Values.agent.image.repository . }}:{{ tpl .Values.agent.image.tag . }}"
     {{- end }}
     {{- if .Values.agent.livenessProbe }}
     livenessProbe:
@@ -428,11 +448,11 @@ Returns kubernetes pod template configuration as code
     {{- with .Values.agent.resources.requests.ephemeralStorage }}
     resourceRequestEphemeralStorage: {{.}}
     {{- end }}
-    {{- with .Values.agent.runAsUser }}
-    runAsUser: {{ . }}
+    {{- if not (kindIs "invalid" .Values.agent.runAsUser) }}
+    runAsUser: {{ .Values.agent.runAsUser }}
     {{- end }}
-    {{- with .Values.agent.runAsGroup }}
-    runAsGroup: {{ . }}
+    {{- if not (kindIs "invalid" .Values.agent.runAsGroup) }}
+    runAsGroup: {{ .Values.agent.runAsGroup }}
     {{- end }}
     ttyEnabled: {{ .Values.agent.TTYEnabled }}
     workingDir: {{ .Values.agent.workingDir }}
@@ -466,11 +486,15 @@ Returns kubernetes pod template configuration as code
     resourceLimitMemory: {{ if $additionalContainers.resources }}{{ $additionalContainers.resources.limits.memory }}{{ else }}{{ $.Values.agent.resources.limits.memory }}{{ end }}
     resourceRequestCpu: {{ if $additionalContainers.resources }}{{ $additionalContainers.resources.requests.cpu }}{{ else }}{{ $.Values.agent.resources.requests.cpu }}{{ end }}
     resourceRequestMemory: {{ if $additionalContainers.resources }}{{ $additionalContainers.resources.requests.memory }}{{ else }}{{ $.Values.agent.resources.requests.memory }}{{ end }}
-    {{- if or $additionalContainers.runAsUser $.Values.agent.runAsUser }}
-    runAsUser: {{ $additionalContainers.runAsUser | default $.Values.agent.runAsUser }}
+    {{- if not (kindIs "invalid" $additionalContainers.runAsUser) }}
+    runAsUser: {{ $additionalContainers.runAsUser }}
+    {{- else if not (kindIs "invalid" $.Values.agent.runAsUser) }}
+    runAsUser: {{ $.Values.agent.runAsUser }}
     {{- end }}
-    {{- if or $additionalContainers.runAsGroup $.Values.agent.runAsGroup }}
-    runAsGroup: {{ $additionalContainers.runAsGroup | default $.Values.agent.runAsGroup }}
+    {{- if not (kindIs "invalid" $additionalContainers.runAsGroup) }}
+    runAsGroup: {{ $additionalContainers.runAsGroup }}
+    {{- else if not (kindIs "invalid" $.Values.agent.runAsGroup) }}
+    runAsGroup: {{ $.Values.agent.runAsGroup }}
     {{- end }}
     ttyEnabled: {{ $additionalContainers.TTYEnabled | default $.Values.agent.TTYEnabled }}
     workingDir: {{ $additionalContainers.workingDir | default $.Values.agent.workingDir }}

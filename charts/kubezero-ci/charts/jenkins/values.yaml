@@ -418,10 +418,10 @@ controller:
   # Plugins will be installed during Jenkins controller start
   # -- List of Jenkins plugins to install. If you don't want to install plugins, set it to `false`
   installPlugins:
-    - kubernetes:4467.vf26561292824
+    - kubernetes:4538.v5b_ce7f35b_257
     - workflow-aggregator:608.v67378e9d3db_1
     - git:5.10.1
-    - configuration-as-code:2100.vb_fd699d2a_09c
+    - configuration-as-code:2103.vd6f93c3e714a_
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
   # -- Download the minimum required version or latest version of all dependencies
@@ -770,6 +770,8 @@ controller:
     # ex /github-webhook
     # -- Secondary Ingress paths
     paths: []
+    # -- Secondary Ingress rule pathType, choices are: Exact, ImplementationSpecific, Prefix
+    pathType: ImplementationSpecific
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
     # For Kubernetes v1.19+, use 'networking.k8s.io/v1'
     # -- Secondary Ingress API version
@@ -1015,7 +1017,7 @@ agent:
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3383.vc8881d4b_0e76-1"
+    tag: "3384.v60d89463d9e0-1"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"
@@ -1432,4 +1434,4 @@ helmtest:
       # -- Repository of the image used to test the framework
       repository: "bats/bats"
       # -- Tag of the image to test the framework
-      tag: "1.13.0"
+      tag: "1.14.0"
