@@ -46,8 +46,9 @@ vector:
       # int64 in the template (Helm's YAML->JSON round-trip makes this a float64;
       # un-cast, Go prints large ones as "2.68435488e+08", which Vector's
       # max_size: NonZeroU64 rejects).
-      maxSize: 268435488   # 256Mi; Vector's disk buffer minimum
-      whenFull: block
+      type: disk
+      maxSize: 268435489   # 256Mi; Vector's disk buffer minimum
+      maxEvents: 1000
 
   # Creds/token are read from mounted Secrets via Vector's directory secret
   # backend (SECRET[opensearch.*]/SECRET[remote.token]); optional so the Secret
@@ -105,10 +106,10 @@ vector:
  
   resources:
     requests:
-      cpu: 10m
-      memory: 64Mi
+      cpu: 100m
+      memory: 192Mi
     limits:
-      memory: 256Mi
+      memory: 512Mi
  
   podSecurityContext:
     fsGroup: 1000
@@ -167,7 +168,7 @@ vector:
       enabled: true
       totalFieldsLimit: 4000
       shards: 1
-      replicas: 1
+      replicas: 0
   # Catch-all sink for unmatched events; strftime is applied by the sink against
   # the event timestamp (not via set_index_suffix), so this is a raw strftime.
   logs:
@@ -242,7 +243,7 @@ vector-agent:
       cpu: 10m
       memory: 64Mi
     limits:
-      memory: 256Mi
+      memory: 128Mi
 
   podMonitor:
     enabled: false

@@ -54,16 +54,14 @@ data:
         address: {{ .Release.Name }}-vector:6000
         acknowledgements:
           enabled: true
-        # Bound gRPC message size; oversized batches RST below Vector's log layer
-        # (agent sees "connection reset", aggregator silent).
+        request:
+          concurrency: 2
         batch:
-          max_events: 256
-          timeout_secs: 5
-        # block backpressures kubernetes_logs when the aggregator is down; the
-        # node's log files are then the buffer (no Vector-side disk buffer).
+          max_events: 64
+          timeout_secs: 1
         buffer:
           type: memory
-          max_events: 500
+          max_size: 8388608   # 8Mi
           when_full: block
       {{- if (index .Values "vector-agent" "podMonitor" "enabled") }}
       # Metrics endpoint scraped by the PodMonitor (named port prom-exporter).

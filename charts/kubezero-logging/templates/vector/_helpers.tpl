@@ -10,12 +10,15 @@ opensearch_{{ .svc }}:
   inputs:
     - sink_router.{{ .svc }}
   endpoints: [{{ .root.Values.vector.opensearch.endpoint | quote }}]
-  api_version: v7
+  api_version: v8
   mode: bulk
   id_key: {{ .idKey }}
   bulk:
     action: index
     index: '{{ .svc }}-{{ "{{ index_suffix }}" }}'
+  request:
+    retry_attempts: 5
+    retry_initial_backoff_secs: 3
   auth:
     strategy: basic
     user: "SECRET[opensearch.username]"
@@ -25,11 +28,14 @@ opensearch_{{ .svc }}:
   encoding:
     except_fields: ["index_suffix"]
   compression: gzip
-  batch: { max_events: 2000, timeout_secs: 5 }
+  batch: { max_events: 1000, timeout_secs: 5 }
   buffer:
-    type: disk
+    type: {{ .root.Values.vector.opensearch.buffer.type }}
+    {{- if eq .root.Values.vector.opensearch.buffer.type "disk" }}
     max_size: {{ .root.Values.vector.opensearch.buffer.maxSize | int64 }}
-    when_full: {{ .root.Values.vector.opensearch.buffer.whenFull }}
+    {{- else }}
+    max_events: {{ .root.Values.vector.opensearch.buffer.maxEvents }}
+    {{- end }}
   healthcheck: { enabled: true }
   acknowledgements:
     enabled: true
