@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: {{ include "gatewayName" . | trimPrefix "istio-" }}-ja4
+  name: {{ include "gatewayName" . | trimPrefix "istio-" }}-filter-state
   namespace: {{ .Release.Namespace }}
   labels:
     {{ include "kubezero-lib.labels" . | nindent 4 }}
@@ -30,3 +30,22 @@ spec:
                 text_format_source:
                   inline_string: "%TLS_JA4_FINGERPRINT%"
               shared_with_upstream: NONE
+    - applyTo: NETWORK_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.network.set_filter_state
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.network.set_filter_state.v3.Config
+            on_new_connection:
+            - object_key: client_ip
+              factory_key: envoy.network.ip
+              format_string:
+                text_format_source:
+                  inline_string: "%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%"
