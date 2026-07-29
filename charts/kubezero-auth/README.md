@@ -64,6 +64,7 @@ https://github.com/keycloak/keycloak-benchmark/tree/main/provision/minikube/keyc
 | keycloakx.resources.limits.memory | string | `"1024Mi"` |  |
 | keycloakx.resources.requests.cpu | string | `"100m"` |  |
 | keycloakx.resources.requests.memory | string | `"640Mi"` |  |
+| keycloakx.revisionHistoryLimit | string | `"2"` |  |
 | keycloakx.service.httpPort | int | `8080` |  |
 | keycloakx.serviceMonitor.enabled | bool | `false` |  |
 | keycloakx.serviceMonitor.interval | string | `"30s"` |  |
