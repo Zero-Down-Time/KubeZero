@@ -30,11 +30,23 @@ data:
       {{- end }}
 
     transforms:
+      # Drop blank/whitespace-only lines and trim leading/trailing whitespace
+      # from every remaining one, before anything else sees them.
+      trim_message:
+        type: remap
+        inputs: [k8s]
+        source: |
+          msg = strip_whitespace(to_string(.message) ?? "")
+          if msg == "" {
+            abort
+          }
+          .message = msg
+
       # Drop unbounded annotation maps at the node (large, never indexed) to cut
       # wire/gRPC batch size. pod_labels kept (flat_object in the index template).
       drop_annotations:
         type: remap
-        inputs: [k8s]
+        inputs: [trim_message]
         source: |
           del(.kubernetes.pod_annotations)
           del(.kubernetes.namespace_annotations)
@@ -46,11 +58,37 @@ data:
         condition: '!includes(["internal_metrics", "metrics_clean"], string(.tags.component_id) ?? "")'
       {{- end }}
 
+      # JSON-formatted app logs (e.g. logback/log4j2 JSON layout) can contain
+      # literal, unescaped newlines inside a string field (a stack trace dumped
+      # into "msg" without escaping); the container runtime splits on every raw
+      # newline byte, breaking one JSON object into multiple non-JSON lines.
+      reduce_json:
+        type: reduce
+        inputs: [drop_annotations]
+        group_by: [file]
+        expire_after_ms: {{ index .Values "vector-agent" "reduceJson" "expireAfterMs" }}
+        max_events: 200
+        ends_when: 'ends_with(to_string(.message) ?? "", "}")'
+        merge_strategies:
+          message: concat_newline
+          timestamp: discard
+          kubernetes: discard
+
+      # remove all line breaks from json in .message to allow parsing upstream
+      reassemble_json:
+        type: remap
+        inputs: [reduce_json]
+        source: |
+          msg = to_string(.message) ?? ""
+          if starts_with(msg, "{") {
+            .message = replace(msg, "\n", "\\n")
+          }
+
     sinks:
       # Forward to the cluster aggregator (:6000, vector protocol).
       to_aggregator:
         type: vector
-        inputs: [drop_annotations]
+        inputs: [reassemble_json]
         address: {{ .Release.Name }}-vector:6000
         acknowledgements:
           enabled: true

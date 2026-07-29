@@ -219,6 +219,10 @@ vector-agent:
   existingConfigMaps:
     - vector-agent-config
 
+  # reduce_json reassembles a JSON log line broken across multiple physical lines for max
+  reduceJson:
+    expireAfterMs: 50
+
   # Upstream Agent role also mounts /var/lib,/proc,/sys (docker + host_metrics);
   # we only tail pod logs, so keep just /var/log.
   defaultVolumes:
