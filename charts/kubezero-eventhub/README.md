@@ -1,6 +1,6 @@
 # kubezero-eventhub
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.5.0](https://img.shields.io/badge/AppVersion-v1.5.0-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero cluster-internal event/notification hub (apprise-api)
 
@@ -35,10 +35,10 @@ Kubernetes: `>= 1.34.0-0`
 | existingSecret | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"docker.io/caronc/apprise"` |  |
-| image.tag | string | `""` |  |
+| image.tag | string | `"1.5.1"` |  |
 | networkPolicy.enabled | bool | `false` |  |
 | networkPolicy.from[0].namespaceSelector | object | `{}` |  |
-| nodeSelector | object | `{}` |  |
+| nodeSelector."node-role.kubernetes.io/control-plane" | string | `""` |  |
 | podSecurityContext.fsGroup | int | `1000` |  |
 | podSecurityContext.runAsNonRoot | bool | `true` |  |
 | podSecurityContext.runAsUser | int | `1000` |  |
@@ -46,7 +46,8 @@ Kubernetes: `>= 1.34.0-0`
 | replicas | int | `1` |  |
 | resources.limits.memory | string | `"256Mi"` |  |
 | resources.requests.cpu | string | `"10m"` |  |
-| resources.requests.memory | string | `"64Mi"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
 | secretConfig | object | `{}` |  |
 | service.port | int | `8000` |  |
-| tolerations | list | `[]` |  |
+| tolerations[0].effect | string | `"NoSchedule"` |  |
+| tolerations[0].key | string | `"node-role.kubernetes.io/control-plane"` |  |

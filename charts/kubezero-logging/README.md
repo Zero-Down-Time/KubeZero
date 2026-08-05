@@ -190,7 +190,8 @@ Kubernetes: `>= 1.34.0`
 | vector-agent.podMonitor.enabled | bool | `false` |  |
 | vector-agent.podMonitor.honorLabels | bool | `true` |  |
 | vector-agent.podMonitor.interval | string | `"30s"` |  |
-| vector-agent.resources.limits.memory | string | `"256Mi"` |  |
+| vector-agent.reduceJson.expireAfterMs | int | `50` |  |
+| vector-agent.resources.limits.memory | string | `"128Mi"` |  |
 | vector-agent.resources.requests.cpu | string | `"10m"` |  |
 | vector-agent.resources.requests.memory | string | `"64Mi"` |  |
 | vector-agent.role | string | `"Agent"` |  |
@@ -262,7 +263,7 @@ Kubernetes: `>= 1.34.0`
 | vector.kubernetes.indexTemplate.enabled | bool | `true` |  |
 | vector.kubernetes.indexTemplate.replicas | int | `0` |  |
 | vector.kubernetes.indexTemplate.shards | int | `1` |  |
-| vector.kubernetes.indexTemplate.totalFieldsLimit | int | `4000` |  |
+| vector.kubernetes.indexTemplate.totalFieldsLimit | int | `6000` |  |
 | vector.lambda.indexSuffix | string | `"%Y.%m"` |  |
 | vector.logs.indexSuffix | string | `"%Y.%m"` |  |
 | vector.opensearch.buffer.maxEvents | int | `1000` |  |

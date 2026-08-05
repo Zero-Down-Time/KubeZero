@@ -130,7 +130,7 @@ logging:
 eventhub:
   enabled: false
   namespace: kubezero
-  targetRevision: 0.1.0
+  targetRevision: 0.1.1
 
 argo:
   enabled: false
