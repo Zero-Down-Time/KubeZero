@@ -55,7 +55,7 @@ forgejo:
     enabled: false
     image:
       # renovate: datasource=docker depName=techarohq/anubis registryUrl=https://ghcr.io
-      tag: v1.26.2
+      tag: v1.27.0
 
   gitea:
     admin:
@@ -109,7 +109,7 @@ jenkins:
   controller:
     image:
       # renovate: datasource=docker depName=jenkins/jenkins
-      tag: 2.568.1-lts-alpine
+      tag: 2.568.2-lts-alpine
     disableRememberMe: true
     prometheus:
       enabled: false
