@@ -9,9 +9,9 @@ kube-state-metrics:
 kubeStateMetrics:
   enabled: true
 
-{{- if eq .global.platform "aws" }}
 alertmanager:
   enabled: true
+  {{- if eq .global.platform "aws" }}
   alertmanagerSpec:
     podMetadata:
       annotations:
@@ -30,7 +30,7 @@ alertmanager:
             url: http://localhost:9087/alert/AlertHub
     route:
       receiver: alerthub-notifications
-{{- end }}
+  {{- end }}
 
 {{- if ne .global.platform "gke" }}
 coreDns:

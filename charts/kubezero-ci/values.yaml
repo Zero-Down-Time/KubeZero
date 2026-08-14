@@ -248,7 +248,6 @@ jenkins:
       - workflow-aggregator
       - git
       - git-forensics
-      - basic-branch-build-strategies
       - pipeline-graph-view
       - pipeline-stage-view
       - http_request

@@ -1,16 +1,25 @@
 {
-  "blocks": [
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
         "text": "*{{app_title}}*\n\n{{app_body}}"
-      },
-      "accessory": {
-        "type": "image",
-        "image_url": "https://cdn.zero-downtime.net/assets/zdt/apprise/{{app_type}}-128x128.png",
-        "alt_text": "zero-downtime-logo"
-      }
-    }
-  ]
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://cdn.zero-downtime.net/assets/zdt/apprise/{{app_type}}-32x32.png",
+          "alt_text": "zero-downtime-logo"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "Kubezero by <https://zero-downtime.net|ZeroDownTime>"
+				}
+			]
+		}
+	]
 }
