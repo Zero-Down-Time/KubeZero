@@ -31,6 +31,10 @@
 #
 set -euo pipefail
 
+# Index template settings overrides (single-node defaults).
+NUMBER_OF_SHARDS=${NUMBER_OF_SHARDS:-1}
+NUMBER_OF_REPLICAS=${NUMBER_OF_REPLICAS:-0}
+
 REPO=${REPO:-aws-solutions/centralized-logging-with-opensearch}
 REF=${REF:-main}
 BASE="https://raw.githubusercontent.com/${REPO}/${REF}/source/constructs/lambda/pipeline/log-processor/assets"
@@ -66,8 +70,8 @@ for entry in "${services[@]}"; do
   # (intended for multi-node production clusters). Our single-node OpenSearch
   # deployment needs 1 shard and 0 replicas, so patch the settings in place.
   tmpl=$(printf '%s' "$tmpl" \
-    | sed -E 's/"number_of_shards"[[:space:]]*:[[:space:]]*"?[0-9]+"?/"number_of_shards": 1/g
-              s/"number_of_replicas"[[:space:]]*:[[:space:]]*"?[0-9]+"?/"number_of_replicas": 0/g')
+    | sed -E "s/\"number_of_shards\"[[:space:]]*:[[:space:]]*\"?[0-9]+\"?/\"number_of_shards\": ${NUMBER_OF_SHARDS}/g
+              s/\"number_of_replicas\"[[:space:]]*:[[:space:]]*\"?[0-9]+\"?/\"number_of_replicas\": ${NUMBER_OF_REPLICAS}/g")
 
   # Patch known CLO upstream typos: a stray char appended directly after the
   # %%INDEX%% placeholder at the end of a saved-object id/string (e.g. the s3
