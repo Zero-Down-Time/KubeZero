@@ -1,6 +1,6 @@
 # kubezero-logging
 
-![Version: 0.9.1](https://img.shields.io/badge/Version-0.9.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.9.2](https://img.shields.io/badge/Version-0.9.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 KubeZero Logging module
 
@@ -23,8 +23,8 @@ Kubernetes: `>= 1.34.0`
 | https://fluent.github.io/helm-charts | fluentd | 0.5.2 |
 | https://helm.vector.dev | vector | 0.57.0 |
 | https://helm.vector.dev | vector-agent(vector) | 0.57.0 |
-| https://opensearch-project.github.io/helm-charts/ | opensearch | 3.7.0 |
-| https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.7.0 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch | 3.8.0 |
+| https://opensearch-project.github.io/helm-charts/ | opensearch-dashboards | 3.8.0 |
 
 ## Changes from upstream
 ### ECK
@@ -191,7 +191,7 @@ Kubernetes: `>= 1.34.0`
 | vector-agent.podMonitor.honorLabels | bool | `true` |  |
 | vector-agent.podMonitor.interval | string | `"30s"` |  |
 | vector-agent.reduceJson.expireAfterMs | int | `50` |  |
-| vector-agent.resources.limits.memory | string | `"128Mi"` |  |
+| vector-agent.resources.limits.memory | string | `"256Mi"` |  |
 | vector-agent.resources.requests.cpu | string | `"10m"` |  |
 | vector-agent.resources.requests.memory | string | `"64Mi"` |  |
 | vector-agent.role | string | `"Agent"` |  |

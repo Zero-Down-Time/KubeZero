@@ -62,6 +62,13 @@ for entry in "${services[@]}"; do
   tmpl=$(fetch "$BASE/index_template/$src.json")
   ndjs=$(fetch "$BASE/saved_objects/$src.ndjson")
 
+  # CLO ships index templates with number_of_shards=5, number_of_replicas=1
+  # (intended for multi-node production clusters). Our single-node OpenSearch
+  # deployment needs 1 shard and 0 replicas, so patch the settings in place.
+  tmpl=$(printf '%s' "$tmpl" \
+    | sed -E 's/"number_of_shards"[[:space:]]*:[[:space:]]*"?[0-9]+"?/"number_of_shards": 1/g
+              s/"number_of_replicas"[[:space:]]*:[[:space:]]*"?[0-9]+"?/"number_of_replicas": 0/g')
+
   # Patch known CLO upstream typos: a stray char appended directly after the
   # %%INDEX%% placeholder at the end of a saved-object id/string (e.g. the s3
   # dashboard's `panel_1` reference is `...-%%INDEX%%f`, leaving a dangling
